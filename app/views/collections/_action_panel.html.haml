@@ -1,0 +1,11 @@
+.row
+  .col-xs-12
+    .panel.panel-default
+      .panel-body
+        .btn-group
+          = link_to user_path(user), class: 'btn btn-default' do
+            %i.glyphicon.glyphicon-user
+            = "User: #{user.person}"
+          = render partial: 'action_buttons', locals: { collection: collection, size: nil }
+          = link_to meta_datums_path(search_term: @collection.id, search_by: :collection_id), class: 'btn btn-default' do
+            Meta Datums: #{@collection.meta_data.count}

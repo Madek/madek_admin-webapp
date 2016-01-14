@@ -1,0 +1,15 @@
+de:
+  flash:
+    actions:
+      create:
+        success: '%{resource_name} wurde erstellt.'
+        error: '%{resource_name} konnte nicht erstellt werden.'
+      update:
+        success: '%{resource_name} wurde gespeichert.'
+        error: '%{resource_name} konnte nicht gespeichert werden.'
+      destroy:
+        success: '%{resource_name} wurde gelöscht.'
+        error: '%{resource_name} konnte nicht gelöscht werden.'
+      meta_data_update:
+        success: 'Metadaten von %{resource_name} wurden gespeichert.'
+        error: 'Metadaten von %{resource_name} konnten nicht gespeichert werden.'

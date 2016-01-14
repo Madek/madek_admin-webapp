@@ -1,0 +1,58 @@
+!!!
+%html
+
+  %head
+    %title= 'Madek Admin'
+    = stylesheet_link_tag 'application'
+    = javascript_include_tag 'application'
+    = csrf_meta_tag
+
+  %body
+    .container
+      .navbar.navbar-default
+        .container-fluid
+          .navbar-header
+            .navbar-brand
+              Madek Admin
+          %ul.nav.navbar-nav.navbar-right
+            = navbar_item 'Dashboard', root_path
+            = navbar_item 'Settings', app_settings_path
+            = navbar_item 'Sets', collections_path
+            = navbar_item 'Filter Sets', filter_sets_path
+            = navbar_item 'Users', users_path
+            = navbar_item 'People', people_path
+            = navbar_item 'API Clients', api_clients_path
+            = navbar_item 'Groups', groups_path
+            = navbar_item 'Media Entries', media_entries_path
+            = navbar_item 'Vocabularies', vocabularies_path
+            %li.dropdown
+              %a.dropdown-toggle{href: '#', data: { toggle: 'dropdown' }}
+                Meta
+                %b.caret
+              %ul.dropdown-menu
+                = navbar_item 'Meta Datums', meta_datums_path
+                = navbar_item 'Meta Keys', meta_keys_path
+            %li.dropdown
+              %a.dropdown-toggle{href: '#', data: { toggle: 'dropdown' }}
+                IO
+                %b.caret
+              %ul.dropdown-menu
+                = navbar_item 'IO Interfaces', io_interfaces_path
+                = navbar_item 'IO Mappings', io_mappings_path
+            %li.dropdown
+              %a.dropdown-toggle{href: '#', data: { toggle: 'dropdown' }}
+                %i.glyphicon.glyphicon-user
+                User
+                %b.caret
+              %ul.dropdown-menu
+                %li
+                  = link_to '#todo' do # my_dashboard_path
+                    %i.glyphicon.glyphicon-file
+                    Home/My
+      #messages
+        = alerts do |message_type, message, alert_type|
+          .alert.alert-dismissible{ class: "alert-#{alert_type}" }
+            = button_tag '&times;'.html_safe, class: 'close', data: { dismiss: 'alert' }
+            %strong #{message_type.capitalize}!
+            = message
+      = yield

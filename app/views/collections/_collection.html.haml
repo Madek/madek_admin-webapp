@@ -1,0 +1,11 @@
+%tr.collection{id: collection.id}
+  %th= collection.title
+  %td
+    = link_to user_path(collection.responsible_user) do
+      = collection.responsible_user.person
+
+  %td.active.col-xs-4
+    .btn-group
+      = link_to collection_path(collection), class: 'btn btn-default btn-sm' do
+        %i.glyphicon.glyphicon-eye-open
+      = render partial: 'action_buttons', locals: { collection: collection, size: 'btn-sm' }
