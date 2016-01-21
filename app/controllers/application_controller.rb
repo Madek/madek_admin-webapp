@@ -38,7 +38,7 @@ class ApplicationController < ActionController::Base
     render "/errors/#{@status_code}", status: @status_code
   end
 
-  def error_according_to_login_state(error)
+  def error_according_to_login_state
     if current_user
       raise Errors::ForbiddenError, 'Admin access denied!'
     else

@@ -1,11 +1,13 @@
 AllCops:
   Exclude:
     - 'Gemfile'
+    - 'Rakefile'
     - 'config/**/*'
     - 'db/**/*'
     - 'engines/**/*'
     - 'tmp/**/*'
     - 'node_modules/**/*'
+    - 'bin/*'
   RunRailsCops: true
 
 Lint/AmbiguousOperator:
