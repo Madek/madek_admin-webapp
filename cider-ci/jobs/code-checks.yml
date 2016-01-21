@@ -73,27 +73,27 @@ jobs:
 
 
 
-        javascript:
-          task-defaults:
-            traits:
-              nodejs: true
-            # en lieu of 'npm install':
-            git-options:
-              submodules:
-                clone: True
-                timeout: 60
+        # javascript:
+        #   task-defaults:
+        #     traits:
+        #       nodejs: true
+        #     # en lieu of 'npm install':
+        #     git-options:
+        #       submodules:
+        #         clone: True
+        #         timeout: 60
 
-          tasks:
-            lint_coffeescript:
-              name: 'JS: Lint/Stylecheck with Coffeelint'
-              scripts:
-                test:
-                  body: |
-                    #!/bin/bash
-                    set -e
-                    for F in app/assets/javascripts/**/*.{coffee,cjsx}; do
-                      npm run -s coffeelint -- $F
-                    done
+        #   tasks:
+        #     lint_coffeescript:
+        #       name: 'JS: Lint/Stylecheck with Coffeelint'
+        #       scripts:
+        #         test:
+        #           body: |
+        #             #!/bin/bash
+        #             set -e
+        #             for F in app/assets/javascripts/**/*.{coffee,cjsx}; do
+        #               npm run -s coffeelint -- $F
+        #             done
 
         git:
           description: 'Git sanity checks (fixed state)'
