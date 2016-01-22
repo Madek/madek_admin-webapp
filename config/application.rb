@@ -22,14 +22,19 @@ module MadekAdmin
     config.app_generators.scaffold_controller :responders_controller
     config.responders.flash_keys = [ :success, :error ]
 
+    config.active_record.timestamped_migrations = false
+    config.active_record.record_timestamps = false
+    config.active_record.raise_in_transactional_callbacks = true
+    config.active_record.disable_implicit_join_references = true
+
     config.autoload_paths += [
       Rails.root.join('app', 'api'),
-      Rails.root.join('app', 'lib'),
-      Rails.root.join('app', 'models', 'concerns'),
-      Rails.root.join('app', 'modules'),
       Rails.root.join('app', 'views'),
       Rails.root.join('lib')
     ]
+
+    config.paths["db/migrate"] << \
+      Rails.root.join('engines', 'datalayer', 'db', 'migrate')
 
     config.paths['config/initializers'] <<  \
       Rails.root.join('engines', 'datalayer', 'initializers')
