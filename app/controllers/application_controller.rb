@@ -15,9 +15,7 @@ class ApplicationController < ActionController::Base
               with: :error_according_to_login_state
 
   before_action :authorize_admin_if_test
-  before_action do
-    authorize :admin, :logged_in_and_admin?
-  end
+  before_action :authorize_admin, except: :status
 
   include Concerns::ActionMethods
   before_action :forget_vocabulary_url_params_if_requested
@@ -27,7 +25,6 @@ class ApplicationController < ActionController::Base
   helper_method :current_user
 
   def status
-    skip_authorization
     memory_status = InShape::Memory.status
     render json: { memory: memory_status.content }, \
            status: memory_status.is_ok ? 200 : 499
@@ -74,6 +71,10 @@ class ApplicationController < ActionController::Base
       permission_id
       is_persisted
     )
+  end
+
+  def authorize_admin
+    authorize :admin, :logged_in_and_admin?
   end
 
   def authorize_admin_if_test
