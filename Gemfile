@@ -40,6 +40,7 @@ gem 'rails_config', git: 'https://github.com/DrTom/rails_config.git', ref: 'mast
 gem 'bcrypt', '~> 3.1.7'
 gem 'kaminari'
 gem 'uuidtools'
+gem 'inshape', '>= 1.0.1', '< 2.0'
 
 ####################################################################
 # TEST or DEVELOPMENT only

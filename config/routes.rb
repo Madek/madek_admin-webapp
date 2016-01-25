@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+  get :status, controller: :application, action: :status
+
   resources :api_clients
   resources :users do
     member do
