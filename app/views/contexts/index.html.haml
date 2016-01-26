@@ -1,0 +1,16 @@
+.page-header
+  %h1
+    %i.icon-tags
+    Contexts (#{@contexts.count})
+
+.row
+  .col-xs-12
+    %table.table.table-striped
+      %thead
+        %tr
+          %th Name
+          %th Label
+          %th Description
+          %th
+      %tbody
+        = render @contexts

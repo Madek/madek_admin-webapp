@@ -47,6 +47,7 @@ Rails.application.routes.draw do
       resources :vocabulary_group_permissions, path: 'group_permissions'
       resources :vocabulary_api_client_permissions, path: 'api_client_permissions'
     end
+    resources :contexts, only: [:index, :show]
     resources :meta_keys
     resources :meta_datums, only: :index
     resources :io_mappings
