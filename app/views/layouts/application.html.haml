@@ -17,26 +17,35 @@
           %ul.nav.navbar-nav.navbar-right
             = navbar_item 'Dashboard', root_path
             = navbar_item 'Settings', app_settings_path
-            = navbar_item 'Sets', collections_path
-            = navbar_item 'Filter Sets', filter_sets_path
-            = navbar_item 'Users', users_path
-            = navbar_item 'People', people_path
-            = navbar_item 'API Clients', api_clients_path
-            = navbar_item 'Groups', groups_path
-            = navbar_item 'Media Entries', media_entries_path
-            = navbar_item 'Vocabularies', vocabularies_path
+            %li.dropdown
+              %a.dropdown-toggle{href: '#', data: { toggle: 'dropdown' }}
+                Media
+                %b.caret
+              %ul.dropdown-menu
+                = navbar_item 'Media Entries', media_entries_path
+                = navbar_item 'Sets', collections_path
+                = navbar_item 'Filter Sets', filter_sets_path
+
+            %li.dropdown
+              %a.dropdown-toggle{href: '#', data: { toggle: 'dropdown' }}
+                Entities
+                %b.caret
+              %ul.dropdown-menu
+                = navbar_item 'Users', users_path
+                = navbar_item 'Groups', groups_path
+                = navbar_item 'API Clients', api_clients_path
+                %li.divider{role: :separator}
+                = navbar_item 'People (public)', people_path
+
             %li.dropdown
               %a.dropdown-toggle{href: '#', data: { toggle: 'dropdown' }}
                 Meta
                 %b.caret
               %ul.dropdown-menu
-                = navbar_item 'Meta Datums', meta_datums_path
+                = navbar_item 'Vocabularies', vocabularies_path
                 = navbar_item 'Meta Keys', meta_keys_path
-            %li.dropdown
-              %a.dropdown-toggle{href: '#', data: { toggle: 'dropdown' }}
-                IO
-                %b.caret
-              %ul.dropdown-menu
+                = navbar_item 'Meta Data', meta_datums_path
+                %li.divider{role: :separator}
                 = navbar_item 'IO Interfaces', io_interfaces_path
                 = navbar_item 'IO Mappings', io_mappings_path
             %li.dropdown
