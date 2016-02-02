@@ -45,6 +45,15 @@ module MadekAdmin
       Rails.root.join('engines', 'datalayer', 'app', 'lib'),
     ]
 
+    # configure logging
+    if ENV['RAILS_LOG_LEVEL'].present?
+      config.log_level = ENV['RAILS_LOG_LEVEL']
+    else
+      config.log_level = :info
+    end
+    config.log_tags = [->(req) { Time.now.strftime('%T') }, :port, :remote_ip]
+
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
