@@ -38,6 +38,10 @@ class MetaKeysController < ApplicationController
 
   define_destroy_action_for(MetaKey)
 
+  define_move_actions_for(MetaKey) do |meta_key|
+    edit_vocabulary_path(meta_key.vocabulary)
+  end
+
   private
 
   def filter_and_sort

@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'spec_helper_feature'
 
 feature 'Admin Vocabulary Group Permissions' do
-  let(:vocabulary) { Vocabulary.find('madek_orphans') }
+  let(:vocabulary) { Vocabulary.find('archhist') }
   let(:group_permission) do
     create(:vocabulary_group_permission, use: false, view: true)
   end

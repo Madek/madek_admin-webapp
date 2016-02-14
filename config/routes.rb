@@ -46,13 +46,18 @@ Rails.application.routes.draw do
       resources :vocabulary_user_permissions, path: 'user_permissions'
       resources :vocabulary_group_permissions, path: 'group_permissions'
       resources :vocabulary_api_client_permissions, path: 'api_client_permissions'
+      patch :move_up, on: :member
+      patch :move_down, on: :member
+    end
+    resources :meta_keys do
+      patch :move_up, on: :member
+      patch :move_down, on: :member
     end
     resources :contexts, only: [:index, :show, :edit, :update]
     resources :context_keys, only: [:edit, :update] do
       patch :move_up, on: :member
       patch :move_down, on: :member
     end
-    resources :meta_keys
     resources :meta_datums, only: :index
     resources :io_mappings
     resources :io_interfaces, except: [:edit, :update]

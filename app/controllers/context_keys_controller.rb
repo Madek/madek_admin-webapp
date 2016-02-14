@@ -13,15 +13,8 @@ class ContextKeysController < ApplicationController
     end)
   end
 
-  %i(up down).each do |direction|
-    define_method "move_#{direction}" do
-      context_key = ContextKey.find(params[:id])
-      context_key.send("move_#{direction}")
-
-      redirect_to edit_context_path(context_key.context), flash: {
-        success: "The Context Key was successfully moved #{direction}."
-      }
-    end
+  define_move_actions_for(ContextKey) do |context_key|
+    edit_context_path(context_key.context)
   end
 
   private

@@ -3,6 +3,7 @@ require 'spec_helper_feature'
 
 feature 'Admin Meta Keys' do
   let(:meta_key_with_keywords) { MetaKey.with_type('MetaDatum::Keywords').first }
+  let(:vocabulary) { Vocabulary.find('archhist') }
 
   scenario 'Sorting meta keys by ID by default' do
     visit meta_keys_path
@@ -35,6 +36,41 @@ feature 'Admin Meta Keys' do
           meta_key_with_keywords.keywords_alphabetical_order)
       )
     end
+  end
+
+  scenario 'Changing position in scope of a vocabulary' do
+    visit vocabulary_path(vocabulary)
+
+    click_link 'Edit'
+
+    expect_order %w(archhist:ca_thema
+                    archhist:ca_zweck
+                    archhist:ca_kontext
+                    archhist:ca_ausgangsmaterial)
+
+    within find('table tr[data-id="archhist:ca_thema"]') do
+      find('.move-down').click
+    end
+    expect(page).to have_css('.alert-success')
+    expect_order %w(archhist:ca_zweck
+                    archhist:ca_thema
+                    archhist:ca_kontext
+                    archhist:ca_ausgangsmaterial)
+
+    within find('table tbody tr[data-id="archhist:ca_kontext"]') do
+      find('.move-up').click
+    end
+    expect(page).to have_css('.alert-success')
+    expect_order %w(archhist:ca_zweck
+                    archhist:ca_kontext
+                    archhist:ca_thema
+                    archhist:ca_ausgangsmaterial)
+  end
+
+  def expect_order(order, limit = 4)
+    expect(
+      all('table tr[data-id]').map { |tr| tr['data-id'] }[0, limit]
+    ).to eq(order)
   end
 
   def selected_value_from_boolean(value)

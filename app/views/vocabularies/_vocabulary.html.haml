@@ -13,3 +13,9 @@
           class: 'btn btn-default btn-sm'
       = link_to "Keyword: #{vocabulary.keywords.count}", vocabulary_keywords_path(vocabulary),
           class: 'btn btn-default btn-sm'
+      = link_to move_up_vocabulary_path(vocabulary), method: :patch, class: "btn btn-warning btn-sm" do
+        %span.glyphicon.glyphicon-chevron-up
+        Move up
+      = link_to move_down_vocabulary_path(vocabulary), method: :patch, class: "btn btn-warning btn-sm" do
+        %span.glyphicon.glyphicon-chevron-down
+        Move down

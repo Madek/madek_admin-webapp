@@ -67,6 +67,10 @@ describe VocabulariesController do
       expect(assigns[:vocabulary]).to eq vocabulary
       expect(response).to render_template :edit
     end
+
+    it 'assigns @meta_keys correctly' do
+      expect(assigns[:meta_keys]).not_to be_nil
+    end
   end
 
   describe '#update' do
@@ -198,6 +202,54 @@ describe VocabulariesController do
       end
 
       it 'renders error template' do
+        expect(response).to have_http_status(404)
+        expect(response).to render_template 'errors/404'
+      end
+    end
+  end
+
+  describe '#move_up' do
+    let(:vocabulary) { create :vocabulary }
+    before { patch :move_up, { id: vocabulary.id }, user_id: admin_user.id }
+
+    it 'it redirects to admin vocabularies path' do
+      expect(response).to have_http_status(302)
+      expect(response).to redirect_to(vocabularies_path)
+    end
+
+    it 'sets a success flash message' do
+      expect(flash[:success]).to be_present
+    end
+
+    context 'when Vocabulary does not exist' do
+      it 'renders error template' do
+        patch :move_up,
+              { id: UUIDTools::UUID.random_create },
+              user_id: admin_user.id
+
+        expect(response).to have_http_status(404)
+        expect(response).to render_template 'errors/404'
+      end
+    end
+  end
+
+  describe '#move_down' do
+    let(:vocabulary) { create :vocabulary }
+    before { patch :move_down, { id: vocabulary.id }, user_id: admin_user.id }
+
+    it 'it redirects to admin vocabularies path' do
+      expect(response).to have_http_status(302)
+      expect(response).to redirect_to(vocabularies_path)
+    end
+
+    it 'sets a success flash message' do
+      expect(flash[:success]).to be_present
+    end
+
+    context 'when ID is missing' do
+      it 'renders error template' do
+        patch :move_down, { id: '' }, user_id: admin_user.id
+
         expect(response).to have_http_status(404)
         expect(response).to render_template 'errors/404'
       end

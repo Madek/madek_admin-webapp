@@ -31,6 +31,33 @@ feature 'Admin Vocabularies' do
     expect(page).to have_content 'Enabled for public use false'
   end
 
+  scenario 'Changing position' do
+    visit vocabularies_path
+
+    expect_order %w(archhist forschung_zhdk landschaftsvisualisierung
+                    performance_artefakte)
+
+    within find('table tr[data-id="forschung_zhdk"]') do
+      click_link 'Move down'
+    end
+    expect(page).to have_css('.alert-success')
+    expect_order %w(archhist landschaftsvisualisierung forschung_zhdk
+                    performance_artefakte)
+
+    within find('table tbody tr[data-id="landschaftsvisualisierung"]') do
+      click_link 'Move up'
+    end
+    expect(page).to have_css('.alert-success')
+    expect_order %w(landschaftsvisualisierung archhist forschung_zhdk
+                    performance_artefakte)
+  end
+
+  def expect_order(order, limit = 4)
+    expect(
+      all('table tr[data-id]').map { |tr| tr['data-id'] }[0, limit]
+    ).to eq(order)
+  end
+
   def filter(search_term)
     fill_in 'search_term', with: search_term
     click_button 'Apply'

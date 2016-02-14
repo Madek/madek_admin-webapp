@@ -3,7 +3,7 @@ require 'spec_helper_feature'
 
 feature 'Admin Vocabulary User Permissions' do
   let!(:admin_user) { create :admin_user, password: 'password' }
-  let(:vocabulary) { Vocabulary.find('madek_orphans') }
+  let(:vocabulary) { Vocabulary.find('archhist') }
   let(:user_permission) do
     create(:vocabulary_user_permission, use: false, view: true)
   end

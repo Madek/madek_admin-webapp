@@ -9,12 +9,12 @@ class VocabulariesController < ApplicationController
 
   def show
     @vocabulary = Vocabulary.find(params[:id])
-    @meta_keys =
-      @vocabulary.meta_keys.with_keywords_count.page(params[:page]).per(16)
+    @meta_keys = load_meta_keys
   end
 
   def edit
     @vocabulary = Vocabulary.find(params[:id])
+    @meta_keys = load_meta_keys
   end
 
   define_update_action_for(Vocabulary)
@@ -41,6 +41,8 @@ class VocabulariesController < ApplicationController
     end)
   end
 
+  define_move_actions_for(Vocabulary) { vocabularies_path }
+
   private
 
   def new_vocabulary_params
@@ -52,5 +54,9 @@ class VocabulariesController < ApplicationController
                                        :description,
                                        :enabled_for_public_view,
                                        :enabled_for_public_use)
+  end
+
+  def load_meta_keys
+    @vocabulary.meta_keys.with_keywords_count.page(params[:page]).per(16)
   end
 end

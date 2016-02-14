@@ -22,27 +22,4 @@
               %strong= attr.first.humanize
             %td= attr.last
 
-.page-header
-  %h2 Meta Keys
-
-.row
-  .col-xs-12
-    %table.table.table-striped
-      %thead
-        %tr
-          %th ID
-          %th Meta datum object type
-          %th
-      %tbody
-        - @meta_keys.each do |meta_key|
-          %tr
-            %td= link_to meta_key.id, meta_key_path(meta_key)
-            %td= meta_key.meta_datum_object_type
-            %td.active.col-xs-1
-              - if meta_key.can_have_keywords?
-                = link_to vocabulary_keywords_path(@vocabulary, meta_key_id: meta_key.id),
-                  class: 'btn btn-default' do
-                  %i.glyphicon.glyphicon-eye-open
-                  Show keywords (#{meta_key.keywords_count})
-
-    = paginate @meta_keys
+= render 'meta_keys_list'

@@ -270,6 +270,56 @@ describe MetaKeysController do
     end
   end
 
+  describe '#move_up' do
+    let(:meta_key) { create :meta_key_text }
+    before { patch :move_up, { id: meta_key.id }, user_id: admin_user.id }
+
+    it 'it redirects to admin vocabulary path' do
+      expect(response).to have_http_status(302)
+      expect(response).to redirect_to(
+        edit_vocabulary_path(meta_key.vocabulary))
+    end
+
+    it 'sets a success flash message' do
+      expect(flash[:success]).to be_present
+    end
+
+    context 'when MetaKey does not exist' do
+      it 'renders error template' do
+        patch :move_up,
+              { id: UUIDTools::UUID.random_create },
+              user_id: admin_user.id
+
+        expect(response).to have_http_status(404)
+        expect(response).to render_template 'errors/404'
+      end
+    end
+  end
+
+  describe '#move_down' do
+    let(:meta_key) { create :meta_key_text }
+    before { patch :move_down, { id: meta_key.id }, user_id: admin_user.id }
+
+    it 'it redirects to admin vocabulary path' do
+      expect(response).to have_http_status(302)
+      expect(response).to redirect_to(
+        edit_vocabulary_path(meta_key.vocabulary))
+    end
+
+    it 'sets a success flash message' do
+      expect(flash[:success]).to be_present
+    end
+
+    context 'when ID is missing' do
+      it 'renders error template' do
+        patch :move_down, { id: '' }, user_id: admin_user.id
+
+        expect(response).to have_http_status(404)
+        expect(response).to render_template 'errors/404'
+      end
+    end
+  end
+
   def flash_message(action, type)
     I18n.t type, scope: "flash.actions.#{action}", resource_name: 'Meta key'
   end
