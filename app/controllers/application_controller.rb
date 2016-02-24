@@ -78,7 +78,7 @@ class ApplicationController < ActionController::Base
   end
 
   def authorize_admin_if_test
-    if Rails.env.test? && !current_user
+    if (Rails.env.test? || Rails.env.development?) && !current_user
       user = FactoryGirl.create :admin_user
       if user and user.authenticate user.password
         set_madek_session user

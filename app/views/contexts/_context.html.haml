@@ -4,14 +4,9 @@
       = context
   %td= context.label
   %td= context.description
-  %td.active
-    .btn-group.btn-group-vertical
-      = link_to context_path(context), class: 'btn btn-default btn-sm' do
+  %td.active.col-xs-2
+    .btn-group.btn-group-sm
+      = link_to context_path(context), class: 'btn btn-default' do
         %i.glyphicon.glyphicon-eye-open
         Details
-      -# = render partial: 'action_buttons', locals: { context: context, size: 'btn-sm' }
-      -# = link_to "MetaKeys: #{context.meta_keys_count}",
-      -#     meta_keys_path(context_id: context.id),
-      -#     class: 'btn btn-default btn-sm'
-      -# = link_to "Keyword: #{context.keywords.count}", context_keywords_path(context),
-      -#     class: 'btn btn-default btn-sm'
+      = render partial: 'action_buttons', locals: { context: context }
