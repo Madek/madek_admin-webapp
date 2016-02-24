@@ -5,7 +5,7 @@ feature 'Admin Context Keys' do
   let(:context) { Context.find('upload') }
   let(:context_key) { context.context_keys.first }
 
-  scenario 'Editing' do
+  scenario 'Editing Context via Edit button' do
     visit context_path(context)
 
     within "[data-id='#{context_key.id}']" do
@@ -15,7 +15,7 @@ feature 'Admin Context Keys' do
     expect(current_path).to eq edit_context_key_path(context_key)
 
     fill_in 'context_key[label]', with: 'new label'
-    fill_in 'context_key[description]', with: 'new description'
+    fill_in 'context_key[description]', with: 'newdescription'
     fill_in 'context_key[hint]', with: 'new hint'
     expect(page).to have_checked_field 'context_key[is_required]'
     uncheck 'context_key[is_required]'
@@ -34,7 +34,7 @@ feature 'Admin Context Keys' do
     end
 
     expect(page).to have_field 'context_key[label]', with: 'new label'
-    expect(page).to have_field 'context_key[description]', with: 'new description'
+    expect(page).to have_field 'context_key[description]', with: 'newdescription'
     expect(page).to have_field 'context_key[hint]', with: 'new hint'
     expect(page).to have_unchecked_field 'context_key[is_required]'
     expect(page).to have_field 'context_key[length_min]', with: 16
@@ -45,14 +45,13 @@ feature 'Admin Context Keys' do
   end
 
   scenario 'Changing position in scope of a context' do
-    visit context_path(context_key.context)
-
+    visit edit_context_path(context)
     expect_order %w(madek_core:title
                     madek_core:authors
                     madek_core:portrayed_object_date
                     madek_core:keywords)
 
-    within find('table tr:contains("madek_core:authors")') do
+    within('table tr:contains("madek_core:authors")') do
       find('.move-down').click
     end
     expect(page).to have_css('.alert-success')
@@ -61,10 +60,11 @@ feature 'Admin Context Keys' do
                     madek_core:authors
                     madek_core:keywords)
 
-    within find('table tr:contains("madek_core:portrayed_object_date")') do
+    within('table tr:contains("madek_core:portrayed_object_date")') do
       find('.move-up').click
     end
     expect(page).to have_css('.alert-success')
+
     expect_order %w(madek_core:portrayed_object_date
                     madek_core:title
                     madek_core:authors
@@ -73,7 +73,7 @@ feature 'Admin Context Keys' do
 
   def expect_order(order, limit = 4)
     expect(
-      all('table tr[data-id] samp a').map(&:text)[0, limit]
+      all('table.edit-context-keys tr[data-id] samp a').map(&:text)[0, limit]
     ).to eq(order)
   end
 end

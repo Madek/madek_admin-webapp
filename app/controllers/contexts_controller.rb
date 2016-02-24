@@ -5,8 +5,6 @@ class ContextsController < ApplicationController
 
   def show
     @context = Context.find(params[:id])
-    @context_keys =
-      @context.context_keys
   end
 
   def edit

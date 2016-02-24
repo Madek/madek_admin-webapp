@@ -18,7 +18,7 @@ class ContextKeysController < ApplicationController
       context_key = ContextKey.find(params[:id])
       context_key.send("move_#{direction}")
 
-      redirect_to context_path(context_key.context), flash: {
+      redirect_to edit_context_path(context_key.context), flash: {
         success: "The Context Key was successfully moved #{direction}."
       }
     end

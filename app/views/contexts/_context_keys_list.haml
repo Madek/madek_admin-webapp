@@ -1,0 +1,69 @@
+:ruby
+  _EMPTY_MARKER = '---' # how to represent "no value"
+  # locals:
+  move_keys = false unless local_assigns[:move_keys] == true
+
+.page-header
+  %h2 MetaKeys in Context
+
+.row
+  .col-xs-12
+    %table.table.edit-context-keys
+      %thead
+        %tr
+          %th #
+          %th
+            MetaKey
+            %small (type)
+          %th label
+          %th description
+          %th hint
+          %th
+      %tbody
+        -# - fail 1
+        - @context.context_keys.each_with_index  do |ck, index|
+          - striped = (index % 2 > 0) ? :active : nil
+
+          %tr{class: striped, 'data-id' => ck.id}
+            %td= ck.position
+            %td
+              %samp= link_to ck.meta_key.id, meta_key_path(ck.meta_key)
+              = "(#{ck.meta_key.meta_datum_object_type.demodulize})"
+            %td
+              %p= ck.label.presence || _EMPTY_MARKER
+            %td
+              %p= ck.description.presence || _EMPTY_MARKER
+            %td
+              %p= ck.hint.presence || _EMPTY_MARKER
+            %td.col-xs-2.text-center
+              .btn-group-vertical.btn-group-sm
+                = link_to edit_context_key_path(ck), class: 'btn btn-info' do
+                  %span.glyphicon.glyphicon-edit
+                  Edit
+                - if move_keys
+                  = link_to move_up_context_key_path(ck), method: :patch, class: "btn btn-warning text-left move-up" do
+                    %span.glyphicon.glyphicon-chevron-up
+                    Move up
+                  = link_to move_down_context_key_path(ck), method: :patch, class: "btn btn-warning text-left move-down" do
+                    %span.glyphicon.glyphicon-chevron-down
+                    Move down
+
+          %tr.semiborder{class: striped}
+            %td
+            %td
+              %small
+                %em from MetaKey:
+            %td
+              %small
+                %em= ck.meta_key.label.presence || _EMPTY_MARKER
+            %td
+              %small
+                %em= ck.meta_key.description.presence || _EMPTY_MARKER
+            %td
+              %small
+                %em= ck.meta_key.hint.presence || _EMPTY_MARKER
+            %td
+
+:sass
+  table tr.semiborder td
+    border-top-style: dashed

@@ -68,7 +68,7 @@ describe ContextKeysController do
 
     it 'it redirects to a proper context path' do
       expect(response).to have_http_status(302)
-      expect(response).to redirect_to(context_path(context_key.context))
+      expect(response).to redirect_to(edit_context_path(context_key.context))
     end
 
     it 'sets a success flash message' do
@@ -93,7 +93,7 @@ describe ContextKeysController do
 
     it 'it redirects to a proper context path' do
       expect(response).to have_http_status(302)
-      expect(response).to redirect_to(context_path(context_key.context))
+      expect(response).to redirect_to(edit_context_path(context_key.context))
     end
 
     it 'sets a success flash message' do
