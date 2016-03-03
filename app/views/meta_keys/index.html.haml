@@ -3,6 +3,12 @@
     %i.icon-media-entry
     Meta Keys (#{@meta_keys.total_count})
 
+- if @context.present?
+  .row
+    .col-xs-12
+      .alert.alert-info{role: "alert"}
+        Choose a Meta Key to be added to the Context <strong>#{@context}</strong> or #{link_to 'cancel and go back to the context', edit_context_path(@context, forget_context_id: true)}.
+
 .row
   .col-xs-12
     .panel.panel-default

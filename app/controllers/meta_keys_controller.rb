@@ -4,6 +4,9 @@ class MetaKeysController < ApplicationController
                         .page(params[:page])
                         .per(16)
 
+    remember_context_id
+    @context = get_context_from_session
+
     filter_and_sort
   end
 
@@ -87,5 +90,15 @@ class MetaKeysController < ApplicationController
     if params[:sort_by] == 'name_part'
       @meta_keys = @meta_keys.order_by_name_part
     end
+  end
+
+  def remember_context_id
+    if params[:context_id].present?
+      session[:context_id] = params[:context_id]
+    end
+  end
+
+  def get_context_from_session
+    Context.find(session[:context_id]) if session[:context_id].present?
   end
 end

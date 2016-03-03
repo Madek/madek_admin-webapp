@@ -17,6 +17,15 @@ class ContextKeysController < ApplicationController
     edit_context_path(context_key.context)
   end
 
+  def destroy
+    @context_key = ContextKey.find(params[:id])
+    @context_key.destroy!
+
+    respond_with @context_key.meta_key, location: (lambda do
+      edit_context_path(@context_key.context)
+    end)
+  end
+
   private
 
   def context_key_params

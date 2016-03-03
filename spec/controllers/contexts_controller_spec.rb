@@ -84,6 +84,63 @@ describe ContextsController do
     end
   end
 
+  describe '#new' do
+    before { get :new, nil, user_id: admin_user.id }
+
+    it 'assigns @context correctly' do
+      expect(assigns[:context]).to be_an_instance_of(Context)
+      expect(assigns[:context]).to be_new_record
+    end
+
+    it 'renders new template' do
+      expect(response).to render_template :new
+    end
+  end
+
+  describe '#create' do
+    let(:context_params) { attributes_for :context }
+
+    it 'creates a new Context' do
+      expect do
+        post :create, { context: context_params }, user_id: admin_user.id
+      end.to change { Context.count }.by(1)
+    end
+
+    it 'redirects to contexts path' do
+      post :create, { context: context_params }, user_id: admin_user.id
+
+      expect(response).to have_http_status(302)
+      expect(response).to redirect_to(contexts_path)
+      expect(flash[:success]).to eq flash_message(:create, :success)
+    end
+
+    context 'when Context with given ID already exists' do
+      let!(:context) { create :context, id: context_params[:id] }
+
+      it 'renders error template' do
+        post :create, { context: context_params }, user_id: admin_user.id
+
+        expect(response).to have_http_status(500)
+        expect(response).to render_template 'errors/500'
+      end
+    end
+
+    context 'when no params were sent' do
+      it 'renders error template' do
+        post(
+          :create,
+          {
+            context: { id: nil, label: nil, description: nil }
+          },
+          user_id: admin_user.id
+        )
+
+        expect(response).to have_http_status(:internal_server_error)
+        expect(response).to render_template 'errors/500'
+      end
+    end
+  end
+
   def flash_message(action, type)
     I18n.t type, scope: "flash.actions.#{action}", resource_name: 'Context'
   end

@@ -1,10 +1,18 @@
 :ruby
   _EMPTY_MARKER = '---' # how to represent "no value"
   # locals:
-  move_keys = false unless local_assigns[:move_keys] == true
+  edit = false unless local_assigns[:edit] == true
 
 .page-header
   %h2 MetaKeys in Context
+
+- if edit
+  .row
+    .col-xs-12
+      .btn-group
+        = link_to meta_keys_path(context_id: @context.id), class: 'btn btn-default' do
+          %i.glyphicon.glyphicon-plus
+          Add MetaKey
 
 .row
   .col-xs-12
@@ -40,7 +48,10 @@
                 = link_to edit_context_key_path(ck), class: 'btn btn-info' do
                   %span.glyphicon.glyphicon-edit
                   Edit
-                - if move_keys
+                - if edit
+                  = link_to context_key_path(ck), method: :delete, data: { confirm: 'The MetaKey will be removed. Do you want to proceed?' }, class: "btn btn-danger text-left" do
+                    %span.glyphicon.glyphicon-trash
+                    Remove MetaKey
                   = link_to move_up_context_key_path(ck), method: :patch, class: "btn btn-warning text-left move-up" do
                     %span.glyphicon.glyphicon-chevron-up
                     Move up
