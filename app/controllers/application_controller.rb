@@ -36,11 +36,16 @@ class ApplicationController < ActionController::Base
     validate_services_session_cookie_and_get_user
   end
 
-  def render_error(error)
+  def render_error(error, only_text = false)
     @error = error
     wrapper = ActionDispatch::ExceptionWrapper.new(Rails.env, @error)
     @status_code = wrapper.status_code
-    render "/errors/#{@status_code}", status: @status_code
+    if only_text
+      render text: "Error #{@status_code} - #{@error.message}",
+             status: @status_code
+    else
+      render "/errors/#{@status_code}", status: @status_code
+    end
   end
 
   def error_according_to_login_state
@@ -49,6 +54,8 @@ class ApplicationController < ActionController::Base
     else
       raise Errors::UnauthorizedError, 'Please log in!'
     end
+  rescue => e
+    render_error e, true
   end
 
   def forget_vocabulary_url_params_if_requested
