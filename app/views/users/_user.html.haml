@@ -4,7 +4,7 @@
   %td
     = link_to person_path(user.person) do
       = "#{user.person.first_name} #{user.person.last_name}"
-  %td= user.media_entries.count
+  %td= user.responsible_media_entries.count
   %td{ class: (user.admin? ? 'success' : 'danger') }
     = user.admin? ? 'Yes' : 'No'
   %td.active
