@@ -1,3 +1,9 @@
 = link_to edit_context_path(context), class: 'btn btn-info' do
   %span.glyphicon.glyphicon-edit
   Edit
+= link_to context_path(context),
+          method: :delete,
+          data: { confirm: 'The Context will be deleted. Do you want to proceed?' },
+          class: 'btn btn-danger' do
+  %span.glyphicon.glyphicon-trash
+  Delete

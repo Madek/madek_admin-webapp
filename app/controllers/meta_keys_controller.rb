@@ -48,6 +48,9 @@ class MetaKeysController < ApplicationController
   private
 
   def filter_and_sort
+    if @context.present?
+      filter_not_in_context(@context)
+    end
     if (search_term = params[:search_term]).present?
       filter_by_term(search_term)
     end
@@ -58,6 +61,10 @@ class MetaKeysController < ApplicationController
       filter_by_type(type)
     end
     sort
+  end
+
+  def filter_not_in_context(context)
+    @meta_keys = @meta_keys.not_in_context(context)
   end
 
   def filter_by_term(term)

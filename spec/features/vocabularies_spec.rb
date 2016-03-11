@@ -19,6 +19,7 @@ feature 'Admin Vocabularies' do
 
     fill_in 'vocabulary[label]', with: 'new label'
     fill_in 'vocabulary[description]', with: 'new description'
+    fill_in 'vocabulary[admin_comment]', with: 'new admin comment'
     uncheck 'vocabulary[enabled_for_public_view]'
     uncheck 'vocabulary[enabled_for_public_use]'
 
@@ -27,6 +28,7 @@ feature 'Admin Vocabularies' do
     expect(current_path).to eq vocabulary_path(vocabulary)
     expect(page).to have_content 'Label new label'
     expect(page).to have_content 'Description new description'
+    expect(page).to have_content 'Admin comment new admin comment'
     expect(page).to have_content 'Enabled for public view false'
     expect(page).to have_content 'Enabled for public use false'
   end

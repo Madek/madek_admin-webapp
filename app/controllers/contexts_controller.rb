@@ -34,6 +34,13 @@ class ContextsController < ApplicationController
     end)
   end
 
+  def destroy
+    context = Context.find(params[:id])
+    context.destroy!
+
+    respond_with context
+  end
+
   def add_meta_key
     context = Context.find(params[:id])
     create_context_key_for(context)

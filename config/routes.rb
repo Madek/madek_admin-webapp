@@ -53,7 +53,7 @@ Rails.application.routes.draw do
       patch :move_up, on: :member
       patch :move_down, on: :member
     end
-    resources :contexts, only: [:index, :show, :edit, :update, :new, :create] do
+    resources :contexts do
       patch :add_meta_key, on: :member
     end
     resources :context_keys, only: [:edit, :update, :destroy] do

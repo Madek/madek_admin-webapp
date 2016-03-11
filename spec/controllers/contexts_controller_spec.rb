@@ -141,6 +141,69 @@ describe ContextsController do
     end
   end
 
+  describe '#destroy' do
+    let!(:context) { create :context }
+
+    it 'destroys the context' do
+      expect { delete :destroy, { id: context.id }, user_id: admin_user.id }
+        .to change { Context.count }.by(-1)
+    end
+
+    context 'when delete was successful' do
+      before { delete :destroy, { id: context.id }, user_id: admin_user.id }
+
+      it 'redirects to admin contexts path' do
+        expect(response).to have_http_status(302)
+        expect(response).to redirect_to(contexts_path)
+      end
+
+      it 'sets a correct flash message' do
+        expect(flash[:success]).to eq flash_message(:destroy, :success)
+      end
+    end
+
+    context "when context doesn't exist" do
+      before do
+        delete(
+          :destroy,
+          { id: UUIDTools::UUID.random_create },
+          user_id: admin_user.id
+        )
+      end
+
+      it 'renders error template' do
+        expect(response).to have_http_status(404)
+        expect(response).to render_template 'errors/404'
+      end
+    end
+  end
+
+  describe '#add_meta_key' do
+    let!(:context) { create :context_with_context_keys }
+    let(:meta_key) { create :meta_key_title }
+
+    it 'adds a meta key to a context' do
+      expect do
+        patch(:add_meta_key,
+              { id: context.id, meta_key_id: meta_key.id },
+              user_id: admin_user.id)
+      end.to change { ContextKey.count }.by(1)
+    end
+
+    it 'redirects to edit context path' do
+      patch(:add_meta_key,
+            {
+              id: context.id,
+              meta_key_id: context.context_keys.first.meta_key_id
+            },
+            user_id: admin_user.id)
+
+      expect(response).to have_http_status(302)
+      expect(response).to redirect_to(edit_context_path(context))
+      expect(flash[:success]).not_to be_empty
+    end
+  end
+
   def flash_message(action, type)
     I18n.t type, scope: "flash.actions.#{action}", resource_name: 'Context'
   end

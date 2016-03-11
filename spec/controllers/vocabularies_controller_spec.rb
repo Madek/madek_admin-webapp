@@ -82,6 +82,7 @@ describe VocabulariesController do
         vocabulary: {
           label: 'updated label',
           description: 'updated description',
+          admin_comment: 'updated admin comment',
           enabled_for_public_view: false,
           enabled_for_public_use: false
         }
@@ -93,6 +94,7 @@ describe VocabulariesController do
 
       expect(vocabulary.label).to eq 'updated label'
       expect(vocabulary.description).to eq 'updated description'
+      expect(vocabulary.admin_comment).to eq 'updated admin comment'
       expect(vocabulary.enabled_for_public_view).to be false
       expect(vocabulary.enabled_for_public_use).to be false
       expect(flash[:success]).to eq flash_message(:update, :success)
