@@ -24,7 +24,8 @@ describe MediaFilesController do
 
     context 'when media file has audio/video type' do
       it 'assigns @zencoder_jobs when necessary' do
-        allow_any_instance_of(MediaFile).to receive(:audio_video?).and_return(true)
+        allow_any_instance_of(MediaFile)
+          .to receive(:previews_zencoder?).and_return(true)
 
         get :show, { id: media_file.id }, user_id: admin_user.id
 
