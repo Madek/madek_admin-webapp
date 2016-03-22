@@ -25,6 +25,15 @@ Rails.application.configure do
   # Raise exceptions instead of rendering exception templates.
   config.action_dispatch.show_exceptions = true
 
+  # For testing in CI, use precompiled assets;
+  # it's faster and there is a dedicated test to verify static assets.
+  if ENV['CIDER_CI_TRIAL_ID'].present?
+    config.assets.compile = false
+    config.assets.digest = true
+  else
+    config.assets.compile = true
+  end
+
   # Disable request forgery protection in test environment.
   config.action_controller.allow_forgery_protection = false
 

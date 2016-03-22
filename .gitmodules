@@ -1,3 +1,6 @@
 [submodule "datalayer"]
 	path = datalayer
 	url = https://github.com/Madek/madek-datalayer.git
+[submodule "assets"]
+	path = public/admin/assets
+	url = https://github.com/Madek/madek_admin-webapp_assets.git
