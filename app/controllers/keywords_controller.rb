@@ -3,8 +3,8 @@ class KeywordsController < ApplicationController
     @vocabulary = Vocabulary.find(params[:vocabulary_id])
     @keywords = @vocabulary.keywords.page(params[:page]).per(16)
 
-    @keywords = @keywords.filter_by(params[:search_term],
-                                    params[:meta_key_id])
+    @keywords = @keywords.filter_by(params[:meta_key_id],
+                                    params[:search_term])
   end
 
   def edit

@@ -7,7 +7,11 @@ describe KeywordsController do
   let(:keyword) { create :keyword, meta_key: meta_key }
 
   describe '#index' do
-    before { get :index, { vocabulary_id: vocabulary.id }, user_id: admin_user.id }
+    before do
+      get :index,
+          { vocabulary_id: vocabulary.id },
+          user_id: admin_user.id
+    end
 
     it 'responds with HTTP 200 status code' do
       expect(response).to be_success
