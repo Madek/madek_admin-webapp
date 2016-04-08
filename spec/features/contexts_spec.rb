@@ -3,6 +3,7 @@ require 'spec_helper_feature'
 
 feature 'Admin Contexts' do
   let!(:context) { create :context_with_context_keys }
+  let(:app_settings) { AppSetting.first.presence || create(:app_setting) }
 
   scenario 'Editing a context' do
     visit contexts_path
@@ -65,5 +66,28 @@ feature 'Admin Contexts' do
 
     visit meta_keys_path
     expect(page).not_to have_css '.alert-info'
+  end
+
+  scenario 'Displaying info about context usage in UI' do
+    update_app_settings_with_context
+
+    visit contexts_path
+
+    within "[data-id='#{context.id}'] + tr" do
+      expect(page).to have_content "This context is used as: \
+                                    Context For Show Summary, \
+                                    Contexts For Show Extra, \
+                                    Contexts For List Detail"
+    end
+  end
+
+  def update_app_settings_with_context
+    app_settings.update(
+      { context_for_show_summary: context.id }.tap do |hash|
+        %i(contexts_for_show_extra contexts_for_list_details).each do |attr|
+          hash[attr] = [context.id]
+        end
+      end
+    )
   end
 end

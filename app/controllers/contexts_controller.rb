@@ -1,6 +1,7 @@
 class ContextsController < ApplicationController
   def index
     @contexts = Context.all
+    @app_settings = AppSetting.first
   end
 
   def show

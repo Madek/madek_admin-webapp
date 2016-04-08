@@ -1,4 +1,10 @@
-%tr{'data-id' => context.id}
+:ruby
+  striped = (context_counter % 2 > 0) ? :active : nil
+  used_as = @app_settings.uses_context_as(context.id).map do |item|
+    item.gsub(/s\Z/, '').titleize
+  end
+
+%tr{'data-id' => context.id, class: striped}
   %td
     = link_to context_path(context) do
       = context
@@ -10,3 +16,13 @@
         %i.glyphicon.glyphicon-eye-open
         Details
       = render partial: 'action_buttons', locals: { context: context }
+- if used_as.size > 0
+  %tr.semiborder{class: striped}
+    %td{colspan: 3}
+      %small
+        This context is used as: <strong>#{used_as.join(', ')}</strong>
+    %td
+
+:sass
+  table tr.semiborder td
+    border-top-style: dashed

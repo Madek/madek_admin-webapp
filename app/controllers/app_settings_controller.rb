@@ -18,6 +18,23 @@ class AppSettingsController < ApplicationController
     }
   }.freeze
 
+  CONTEXT_FOR_VIEWS = {
+    context_for_show_summary: {
+      title: 'Summary Context for Detail View',
+      description: "The MetaData in this Context are shown on the \
+                    Detail-View, left to the Media Preview."
+    },
+    contexts_for_show_extra: {
+      title: 'Extra Contexts for Detail View',
+      description: 'Up to 4 Contexts showing more info on \
+                    a MediaEntry page (bottom).'
+    },
+    contexts_for_list_details: {
+      title: 'Contexts for "List" View',
+      description: 'Up to 3 contexts, used in \'list\' mode on index views.'
+    }
+  }.freeze
+
   def index
   end
 
@@ -26,12 +43,7 @@ class AppSettingsController < ApplicationController
   end
 
   def update
-    # all 'json' settings are shown and edited as yaml, transform them here:
-    params.try(:[], :app_setting).each do |attr, value|
-      if ::AppSettings.columns_hash[attr.try(:to_s)].try(:sql_type) == 'jsonb'
-        params[:app_setting][attr] = YAML.safe_load(value)
-      end
-    end
+    prepare_params
 
     @app_settings.assign_attributes(app_setting_params)
     @app_settings.save!
@@ -48,9 +60,26 @@ class AppSettingsController < ApplicationController
   def set_app_settings
     @app_settings = AppSetting.first
     @settings_groups = SETTINGS_GROUPS
+    @context_for_views = CONTEXT_FOR_VIEWS
   end
 
   def app_setting_params
     params.require(:app_setting).permit!
+  end
+
+  def prepare_params
+    # all 'json' settings are shown and edited as yaml, transform them here:
+    params.try(:[], :app_setting).each do |attr, value|
+      if attr_with_type?(attr, 'jsonb')
+        params[:app_setting][attr] = YAML.safe_load(value)
+      elsif attr.to_s.start_with?('contexts_for')
+        params[:app_setting][attr] =
+          params[:app_setting][attr].split(',').map(&:strip)
+      end
+    end
+  end
+
+  def attr_with_type?(attr, type)
+    ::AppSettings.columns_hash[attr.try(:to_s)].try(:sql_type) == type
   end
 end
