@@ -4,7 +4,7 @@ AllCops:
     - 'Rakefile'
     - 'config/**/*'
     - 'db/**/*'
-    - 'engines/**/*'
+    - 'datalayer/**/*'
     - 'tmp/**/*'
     - 'node_modules/**/*'
     - 'bin/*'

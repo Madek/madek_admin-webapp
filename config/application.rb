@@ -1,5 +1,5 @@
 require File.expand_path('../boot', __FILE__)
-$:.push File.expand_path('../../engines/datalayer/lib', __FILE__)
+#$:.push File.expand_path('../../engines/datalayer/lib', __FILE__)
 
 require "rails"
 # Pick the frameworks you want:
@@ -34,15 +34,15 @@ module MadekAdmin
     ]
 
     config.paths["db/migrate"] << \
-      Rails.root.join('engines', 'datalayer', 'db', 'migrate')
+      Rails.root.join('datalayer', 'db', 'migrate')
 
     config.paths['config/initializers'] <<  \
-      Rails.root.join('engines', 'datalayer', 'initializers')
+      Rails.root.join('datalayer', 'initializers')
 
     config.autoload_paths += [
-      Rails.root.join('engines', 'datalayer', 'lib'),
-      Rails.root.join('engines', 'datalayer', 'app', 'models'),
-      Rails.root.join('engines', 'datalayer', 'app', 'lib'),
+      Rails.root.join('datalayer', 'lib'),
+      Rails.root.join('datalayer', 'app', 'models'),
+      Rails.root.join('datalayer', 'app', 'lib'),
     ]
 
     # configure logging
@@ -72,5 +72,3 @@ module MadekAdmin
     config.i18n.default_locale = :en
   end
 end
-
-require 'madek/constants'

@@ -1,4 +1,4 @@
-eval_gemfile 'engines/datalayer/Gemfile'
+eval_gemfile 'datalayer/Gemfile'
 
 gem 'uglifier', '>= 1.3.0'
 gem 'therubyracer', platforms: :ruby
