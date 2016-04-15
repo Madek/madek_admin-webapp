@@ -11,7 +11,6 @@ gem 'responders'
 
 # FRONTEND
 gem 'bootstrap-sass'
-gem 'haml-lint', '~> 0.10.0'
 gem 'haml-rails'
 gem 'sass'
 gem 'sass-rails', '~> 5.0'

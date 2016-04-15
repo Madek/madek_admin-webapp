@@ -117,10 +117,6 @@ GEM
       activesupport (>= 4.1.0)
     haml (4.0.7)
       tilt
-    haml-lint (0.10.0)
-      haml (~> 4.0)
-      rubocop (>= 0.25.0)
-      sysexits (~> 1.1)
     haml-rails (0.9.0)
       actionpack (>= 4.0.1)
       activesupport (>= 4.0.1)
@@ -292,7 +288,6 @@ GEM
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
     strong_password (0.0.4)
-    sysexits (1.2.0)
     therubyracer (0.12.2)
       libv8 (~> 3.16.14.0)
       ref
@@ -338,7 +333,6 @@ DEPENDENCIES
   factory_girl
   faker
   flamegraph
-  haml-lint (~> 0.10.0)
   haml-rails
   inshape (>= 1.0.1, < 2.0)
   jdbc-postgres
