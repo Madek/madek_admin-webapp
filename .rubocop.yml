@@ -8,6 +8,7 @@ AllCops:
     - 'tmp/**/*'
     - 'node_modules/**/*'
     - 'bin/*'
+    - 'vendor/**/*'
   RunRailsCops: true
 
 Lint/AmbiguousOperator:
