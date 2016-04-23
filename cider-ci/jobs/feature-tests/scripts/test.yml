@@ -1,14 +1,12 @@
 test:
-  environment-variables:
-    RBENV_VERSION: jruby-9000
   body: |
+    #!/usr/bin/env bash
     set -eux
-    ruby -v
+    export PATH=$(pwd)/vendor/jruby/bin/:$(ruby -e "puts ENV['PATH'].split(':').reject{|s| s.match(/\.rbenv/)}.join(':')")
     bundle exec rspec $CIDER_CI_TASK_FILE
   start-when: # this must a map, not array, so it can be extended
     create-database:
       script: create-database
     start-vnc:
       script: start-xvnc
-    bundle-jruby:
-      script: bundle-jruby
+

@@ -70,7 +70,6 @@ jobs:
         scripts:
 
           _cider-ci_include:
-            - cider-ci/jobs/feature-tests/scripts/prepare.yml
             - cider-ci/shared/scripts/manage-database.yml
             - cider-ci/shared/scripts/manage-xvnc.yml
             - cider-ci/jobs/feature-tests/scripts/test.yml

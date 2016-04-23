@@ -4,3 +4,6 @@
 [submodule "assets"]
 	path = public/admin/assets
 	url = https://github.com/Madek/madek_admin-webapp_assets.git
+[submodule "vendor"]
+	path = vendor
+	url = https://github.com/Madek/madek_admin-webapp_vendor.git

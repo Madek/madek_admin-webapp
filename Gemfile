@@ -1,4 +1,4 @@
-eval_gemfile 'datalayer/Gemfile'
+eval_gemfile Pathname(File.dirname(File.absolute_path(__FILE__))).join('datalayer', 'Gemfile')
 
 gem 'uglifier', '>= 1.3.0'
 gem 'therubyracer', platforms: :ruby
@@ -21,6 +21,7 @@ gem 'kramdown'
 gem 'jquery-rails'
 
 # rest
+gem 'bcrypt-ruby'
 gem 'pundit'
 gem 'cider_ci-open_session', '>= 1.0.0', '< 2.0.0'
 gem 'kaminari'
