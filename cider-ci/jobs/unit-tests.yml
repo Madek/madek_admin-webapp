@@ -8,7 +8,8 @@ jobs:
 
     run-on:
     - type: branch
-      include-match: ^.*master.*$
+      include-match: ^.+$
+      exclude-match: ^.*no-ci.*$
 
     depends-on:
     - type: job
