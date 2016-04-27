@@ -36,6 +36,8 @@ jobs:
           - cider-ci/shared/attachments.yml
           - cider-ci/shared/environment-variables.yml
 
+        dispatch-storm-delay-duration: 4 Seconds
+
         eager-trials: 1
         max-auto-trials: 2
 
