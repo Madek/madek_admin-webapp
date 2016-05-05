@@ -9,4 +9,3 @@ test:
       script: create-database
     start-vnc:
       script: start-xvnc
-

@@ -23,4 +23,3 @@ jobs:
         all:
           scripts:
             body: echo 'Yay, all dependencies have passed!'
-
