@@ -7,7 +7,7 @@ module VocabularyPermissionPathsHelper
     }
     action_prefix =
       if session[:is_persisted] == 'true'
-        request_params.merge!(id: session[:permission_id])
+        request_params[:id] = session[:permission_id]
         :edit
       else
         :new

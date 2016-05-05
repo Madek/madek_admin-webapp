@@ -1,4 +1,8 @@
+Rails:
+  Enabled: true
+
 AllCops:
+  TargetRubyVersion: 2.3
   Exclude:
     - 'Gemfile'
     - 'Rakefile'
@@ -9,7 +13,6 @@ AllCops:
     - 'node_modules/**/*'
     - 'bin/*'
     - 'vendor/**/*'
-  RunRailsCops: true
 
 Lint/AmbiguousOperator:
   Enabled: false
@@ -176,4 +179,27 @@ Rails/ReadWriteAttribute:
 
 # Configuration parameters: Include.
 Rails/Validation:
+  Enabled: false
+
+# NEW CONFIG SINCE VERSION > 0.29.1
+
+Style/MultilineMethodCallIndentation:
+  Enabled: false
+
+Style/IndentAssignment:
+  Enabled: false
+
+Style/NestedParenthesizedCalls:
+  Exclude:
+    - 'spec/**/*'
+
+Style/Alias:
+  EnforcedStyle: prefer_alias_method
+
+Metrics/ModuleLength:
+  Max: 200
+  CountComments: false
+
+# NOTE: this is a bad joke
+Style/FrozenStringLiteralComment:
   Enabled: false

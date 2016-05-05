@@ -16,7 +16,7 @@ class AppSettingsController < ApplicationController
     'Other' => {
       sitemap: 'Links for footer menu'
     }
-  }
+  }.freeze
 
   def index
   end
