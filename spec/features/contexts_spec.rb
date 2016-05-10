@@ -4,6 +4,12 @@ require 'spec_helper_feature'
 feature 'Admin Contexts' do
   let!(:context) { create :context_with_context_keys }
   let(:app_settings) { AppSetting.first.presence || create(:app_setting) }
+  let(:usage_message) do
+    "This context is used as: \
+     Summary Context for Detail View, \
+     Extra Contexts for Detail View, \
+     Contexts for \"List\" View"
+  end
 
   scenario 'Editing a context' do
     visit contexts_path
@@ -74,11 +80,12 @@ feature 'Admin Contexts' do
     visit contexts_path
 
     within "[data-id='#{context.id}'] + tr" do
-      expect(page).to have_content "This context is used as: \
-                                    Context For Show Summary, \
-                                    Contexts For Show Extra, \
-                                    Contexts For List Detail"
+      expect(page).to have_content usage_message
     end
+
+    visit context_path(context)
+
+    expect(page).to have_content usage_message
   end
 
   def update_app_settings_with_context

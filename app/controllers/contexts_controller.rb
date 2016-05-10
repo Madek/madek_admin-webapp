@@ -5,6 +5,7 @@ class ContextsController < ApplicationController
   end
 
   def show
+    @app_settings = AppSetting.first
     @context = Context.find(params[:id])
   end
 

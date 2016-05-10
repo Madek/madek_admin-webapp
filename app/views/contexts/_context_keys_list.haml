@@ -26,6 +26,7 @@
           %th label
           %th description
           %th hint
+          %th required?
           %th
       %tbody
         -# - fail 1
@@ -43,6 +44,7 @@
               %p= ck.description.presence || _EMPTY_MARKER
             %td
               %p= ck.hint.presence || _EMPTY_MARKER
+            %td= ck.is_required ? 'Yes' : 'No'
             %td.col-xs-2.text-center
               .btn-group-vertical.btn-group-sm
                 = link_to edit_context_key_path(ck), class: 'btn btn-info' do
@@ -73,6 +75,7 @@
             %td
               %small
                 %em= ck.meta_key.hint.presence || _EMPTY_MARKER
+            %td
             %td
 
 :sass

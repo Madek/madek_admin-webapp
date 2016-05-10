@@ -1,7 +1,7 @@
 :ruby
   striped = (context_counter % 2 > 0) ? :active : nil
   used_as = @app_settings.uses_context_as(context.id).map do |item|
-    item.gsub(/s\Z/, '').titleize
+    AppSettingsController::CONTEXT_FOR_VIEWS[item.to_sym][:title]
   end
 
 %tr{'data-id' => context.id, class: striped}

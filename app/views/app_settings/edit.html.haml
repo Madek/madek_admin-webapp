@@ -8,7 +8,7 @@
 
       .form-group
         .col-xs-6
-          - type = ::AppSettings.columns_hash[@field.try(:to_s)].try(:sql_type)
+          - type = ::AppSetting.columns_hash[@field.try(:to_s)].try(:sql_type)
           - markdowned = ['welcome_text']
           - case
           - when type === 'jsonb'
@@ -16,8 +16,11 @@
               rows: 12, class: 'form-control'
           - when markdowned.include?(@field.to_s)
             = f.text_area @field, rows: 12, class: 'form-control'
+          - when ::AppSetting.columns_hash[@field.to_s].array == true
+            = f.text_field @field, value: @app_settings[@field].join(', '),
+                class: 'form-control'
           - else
-            = f.text_field @field, class: 'form-control'
+            = f.text_field @field, value: @app_settings[@field], class: 'form-control'
       .form-group
         .col-xs-offset2.col-xs-4
           = button_tag type: 'submit', class: 'btn btn-success' do

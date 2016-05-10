@@ -26,12 +26,20 @@ class AppSettingsController < ApplicationController
     },
     contexts_for_show_extra: {
       title: 'Extra Contexts for Detail View',
-      description: 'Up to 4 Contexts showing more info on \
-                    a MediaEntry page (bottom).'
+      description: "Up to 4 Contexts showing more info on \
+                    a MediaEntry page (bottom)."
     },
     contexts_for_list_details: {
       title: 'Contexts for "List" View',
       description: 'Up to 3 contexts, used in \'list\' mode on index views.'
+    },
+    contexts_for_validation: {
+      title: 'Contexts for Validation',
+      description: ''
+    },
+    contexts_for_dynamic_filters: {
+      title: 'Contexts for Dynamic Filters',
+      description: ''
     }
   }.freeze
 
@@ -70,7 +78,7 @@ class AppSettingsController < ApplicationController
   def prepare_params
     # all 'json' settings are shown and edited as yaml, transform them here:
     params.try(:[], :app_setting).each do |attr, value|
-      if attr_with_type?(attr, 'jsonb')
+      if attr_of_type?(attr, 'jsonb')
         params[:app_setting][attr] = YAML.safe_load(value)
       elsif attr.to_s.start_with?('contexts_for')
         params[:app_setting][attr] =
@@ -79,7 +87,7 @@ class AppSettingsController < ApplicationController
     end
   end
 
-  def attr_with_type?(attr, type)
+  def attr_of_type?(attr, type)
     ::AppSettings.columns_hash[attr.try(:to_s)].try(:sql_type) == type
   end
 end

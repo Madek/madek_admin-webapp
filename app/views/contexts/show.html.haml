@@ -1,3 +1,8 @@
+:ruby
+  used_as = @app_settings.uses_context_as(@context.id).map do |item|
+    AppSettingsController::CONTEXT_FOR_VIEWS[item.to_sym][:title]
+  end
+
 .page-header
   %h1 Context: #{@context}
 
@@ -18,5 +23,7 @@
             %td
               %strong= attr.first.humanize
             %td= attr.last
+        %tr.info
+          %td{colspan: 2} This context is used as: <strong>#{used_as.join(', ')}</strong>
 
 = render 'context_keys_list'
