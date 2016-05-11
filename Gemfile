@@ -1,8 +1,5 @@
 eval_gemfile Pathname(File.dirname(File.absolute_path(__FILE__))).join('datalayer', 'Gemfile')
 
-gem 'uglifier', '>= 1.3.0'
-gem 'therubyracer', platforms: :ruby
-
 # Webserver
 gem 'puma'
 
@@ -14,10 +11,7 @@ gem 'bootstrap-sass'
 gem 'haml-rails'
 gem 'sass'
 gem 'sass-rails', '~> 5.0'
-gem 'coffee-rails', '~> 4.1.0'
 gem 'kramdown'
-
-# Use jquery as the JavaScript library
 gem 'jquery-rails'
 
 # rest
@@ -42,4 +36,3 @@ gem 'rack-mini-profiler', group: [:development, :production]
 gem 'rest-client', group: [:test, :development, :personas]
 gem 'ruby-prof', group: [:development], platform: :mri
 gem 'selenium-webdriver', group: [:test]
-
