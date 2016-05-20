@@ -136,7 +136,8 @@ describe UsersController do
   end
 
   describe '#reset_usage_terms' do
-    let(:user) { create :user }
+    let(:usage_terms) { create(:usage_terms) }
+    let(:user) { create :user, accepted_usage_terms: usage_terms }
 
     it 'redirects to admin users path' do
       patch :reset_usage_terms, { id: user.id }, user_id: admin_user.id
@@ -147,9 +148,11 @@ describe UsersController do
     end
 
     it 'resets usage terms for the user' do
+      expect(user.accepted_usage_terms_id).to eq usage_terms.id
+
       patch :reset_usage_terms, { id: user.id }, user_id: admin_user.id
 
-      expect(user.reload.accepted_usage_terms).to be_nil
+      expect(user.reload.accepted_usage_terms_id).to be_nil
     end
   end
 

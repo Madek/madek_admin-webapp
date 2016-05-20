@@ -1,0 +1,25 @@
+.page-header
+  %h1
+    %i.icon-media-entry
+    Usage Terms (#{@usage_terms.count})
+
+.row
+  .col-xs-12
+    .btn-group
+      = link_to new_usage_term_path, class: 'btn btn-default' do
+        %i.glyphicon.glyphicon-plus
+        Create Usage Terms
+
+.row
+  .col-xs-12
+    %table.table.table-striped
+      %thead
+        %tr
+          %th ID
+          %th Title
+          %th Version
+          %th Intro
+          %th Body
+          %th
+      %tbody
+        = render @usage_terms

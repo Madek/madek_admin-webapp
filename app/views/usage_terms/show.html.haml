@@ -1,0 +1,25 @@
+.page-header
+  %h1 Usage Term: #{@usage_terms.id}
+
+.row
+  .col-xs-12
+    .panel.panel-default
+      .panel-body
+        .btn-group
+          = render partial: 'action_buttons', locals: { usage_terms: @usage_terms }
+
+.row
+  .col-xs-12
+    %table.table.table-striped
+      %thead
+      %tbody
+        - @usage_terms.attributes.each_pair do |attr, value|
+          - next if attr == 'body'
+          %tr
+            %td.col-xs-2
+              %strong= attr.humanize
+            %td= value
+        %tr
+          %td.col-xs-2
+            %strong Body
+          %td= @usage_terms.body

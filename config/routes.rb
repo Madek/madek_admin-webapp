@@ -64,6 +64,7 @@ Rails.application.routes.draw do
     resources :io_mappings
     resources :io_interfaces, except: [:edit, :update]
     resources :app_settings, only: [:index, :edit, :update]
+    resources :usage_terms, except: :edit
 
     resources :people
 

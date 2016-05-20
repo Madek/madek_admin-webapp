@@ -1,0 +1,12 @@
+%tr{'data-id' => usage_terms.id}
+  %td= usage_terms.id
+  %td= usage_terms.title
+  %td= usage_terms.version
+  %td= usage_terms.intro
+  %td= usage_terms.body
+  %td.active
+    .btn-group.btn-group-vertical.btn-group-sm
+      = link_to usage_term_path(usage_terms), class: 'btn btn-default btn-sm' do
+        %i.glyphicon.glyphicon-eye-open
+        Details
+      = render partial: 'action_buttons', locals: { usage_terms: usage_terms }

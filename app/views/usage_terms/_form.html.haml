@@ -1,0 +1,27 @@
+= form_for @usage_terms, url: usage_terms_path, html: { class: 'form-horizontal', role: 'form' } do |f|
+  .form-group
+    .col-xs-2
+      = f.label :title, class: 'control-label'
+    .col-xs-6
+      = f.text_field :title, class: 'form-control'
+  .form-group
+    .col-xs-2
+      = f.label :version, class: 'control-label'
+    .col-xs-6
+      = f.text_field :version, class: 'form-control'
+  .form-group
+    .col-xs-2
+      = f.label :intro, class: 'control-label'
+    .col-xs-10
+      = f.text_area :intro, class: 'form-control', rows: 5
+  .form-group
+    .col-xs-2
+      = f.label :body, class: 'control-label'
+    .col-xs-10
+      = f.text_area :body, class: 'form-control', rows: 15
+  .form-group
+    .col-xs-offset-2.col-xs-3
+      = button_tag type: 'submit', class: 'btn btn-success' do
+        %span.glyphicon.glyphicon-ok
+        Save
+      = link_to 'Go back', usage_terms_path, class: 'btn btn-link'
