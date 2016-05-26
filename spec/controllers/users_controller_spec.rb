@@ -149,7 +149,7 @@ describe UsersController do
     it 'resets usage terms for the user' do
       patch :reset_usage_terms, { id: user.id }, user_id: admin_user.id
 
-      expect(user.reload.usage_terms_accepted_at).to be_nil
+      expect(user.reload.accepted_usage_terms).to be_nil
     end
   end
 
