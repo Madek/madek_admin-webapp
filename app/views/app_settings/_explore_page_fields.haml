@@ -1,0 +1,6 @@
+- @explore_page_settings.each_key do |attr|
+  .form-group
+    .col-xs-3
+      = f.label attr, attr.to_s.titleize
+    .col-xs-8
+      = f.text_field attr, class: 'form-control'

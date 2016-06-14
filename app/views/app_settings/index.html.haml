@@ -24,3 +24,27 @@
               = link_to edit_app_setting_path(attr), class: 'btn btn-info btn-sm' do
                 %span.glyphicon.glyphicon-edit
                 Edit
+
+.panel.panel-default
+  .panel-heading
+    .panel-title 
+      'Explore' Page
+  .panel-body#explore-page-section
+    %table.table.table-striped
+      %tbody
+        - @explore_page_settings.each_pair do |attr, details|
+          %tr.row{id: attr}
+            %td.col-xs-5
+              = details[:label]
+              %p.help-block= details[:description]
+            %td.col-xs-7
+              - if attr == :catalog_context_keys
+                = context_keys_as_links(@app_settings.send(attr))
+              - elsif attr == :featured_set_id
+                = link_to @app_settings.send(attr), collection_path(@app_settings.send(attr))
+              - else
+                = @app_settings.send(attr)
+            
+    = link_to edit_app_setting_path(:explore_page), class: 'btn btn-info btn-sm' do
+      %span.glyphicon.glyphicon-edit
+      Edit

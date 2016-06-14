@@ -43,6 +43,35 @@ class AppSettingsController < ApplicationController
     }
   }.freeze
 
+  EXPLORE_PAGE_SETTINGS = {
+    catalog_title: {
+      label: 'Catalog: Name',
+      description: ''
+    },
+    catalog_subtitle: {
+      label: 'Catalog: Subtitle',
+      description: ''
+    },
+    catalog_context_keys: {
+      label: 'Catalog: ContextKeys',
+      description: "List of ContextKeys that are displayed as sections of \
+                    the Catalog"
+    },
+    featured_set_title: {
+      label: 'Featured Content: Title',
+      description: ''
+    },
+    featured_set_subtitle: {
+      label: 'Featured Content: Subtitle',
+      description: ''
+    },
+    featured_set_id: {
+      label: 'Featured Content: Set',
+      description: "Contents of this Set will be displayed as \
+                   'Featured Content'"
+    }
+  }.freeze
+
   def index
   end
 
@@ -69,6 +98,7 @@ class AppSettingsController < ApplicationController
     @app_settings = AppSetting.first
     @settings_groups = SETTINGS_GROUPS
     @context_for_views = CONTEXT_FOR_VIEWS
+    @explore_page_settings = EXPLORE_PAGE_SETTINGS
   end
 
   def app_setting_params
@@ -78,16 +108,20 @@ class AppSettingsController < ApplicationController
   def prepare_params
     # all 'json' settings are shown and edited as yaml, transform them here:
     params.try(:[], :app_setting).each do |attr, value|
-      if attr_of_type?(attr, 'jsonb')
+      if attr_with_type?(attr, 'jsonb')
         params[:app_setting][attr] = YAML.safe_load(value)
-      elsif attr.to_s.start_with?('contexts_for')
+      elsif attr.to_s =~ /contexts|_keys/
         params[:app_setting][attr] =
           params[:app_setting][attr].split(',').map(&:strip)
       end
     end
   end
 
-  def attr_of_type?(attr, type)
-    ::AppSettings.columns_hash[attr.try(:to_s)].try(:sql_type) == type
+  def attr_with_type?(column, type)
+    column_info(column).try(:sql_type) == type
+  end
+
+  def column_info(attr)
+    ::AppSetting.columns_hash[attr.to_s]
   end
 end
