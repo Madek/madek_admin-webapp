@@ -14,12 +14,14 @@ gem 'sass-rails', '~> 5.0'
 gem 'kramdown'
 gem 'jquery-rails'
 
+
 # rest
 gem 'bcrypt-ruby'
 gem 'pundit'
 gem 'cider_ci-open_session', '>= 1.0.0', '< 2.0.0'
 gem 'kaminari'
 gem 'inshape', '>= 1.0.1', '< 2.0'
+
 
 ####################################################################
 # TEST or DEVELOPMENT only
@@ -30,6 +32,7 @@ gem 'binding_of_caller', platform: :mri, group: [:development]
 gem 'capybara', '~> 2.4', group: [:test]
 gem 'meta_request', group: [:development]
 gem 'flamegraph', group: [:development], platform: :mri # for mini-profiler
+gem 'ffi', group: [:test, :development], platform: :mri
 gem 'poltergeist', group: [:test, :development, :personas]
 gem 'quiet_assets', group: [:development]
 gem 'rack-mini-profiler', group: [:development, :production]

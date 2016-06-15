@@ -1,0 +1,4 @@
+include:
+  - cider-ci_v4/rspec-tests.yml
+  - path: cider-ci_v4/jobs/code-checks.yml
+    submodule: [datalayer]
