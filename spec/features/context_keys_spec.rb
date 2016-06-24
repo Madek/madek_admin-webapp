@@ -21,8 +21,6 @@ feature 'Admin Context Keys' do
     uncheck 'context_key[is_required]'
     fill_in 'context_key[length_min]', with: 16
     fill_in 'context_key[length_max]', with: 128
-    expect(page).to have_select('context_key[input_type]', selected: [])
-    select 'text_field', from: 'context_key[input_type]'
     fill_in 'context_key[admin_comment]', with: 'new admin comment'
 
     click_button 'Save'
@@ -39,7 +37,6 @@ feature 'Admin Context Keys' do
     expect(page).to have_unchecked_field 'context_key[is_required]'
     expect(page).to have_field 'context_key[length_min]', with: 16
     expect(page).to have_field 'context_key[length_max]', with: 128
-    expect(page).to have_select 'context_key[input_type]', selected: 'text_field'
     expect(page).to have_field('context_key[admin_comment]',
                                with: 'new admin comment')
   end

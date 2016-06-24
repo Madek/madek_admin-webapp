@@ -27,7 +27,7 @@ describe ContextKeysController do
           is_required: true,
           length_min: 0,
           length_max: 254,
-          input_type: 'text_area'
+          text_element: 'textarea'
         }
       }
 
@@ -42,7 +42,7 @@ describe ContextKeysController do
       expect(context_key.is_required).to be true
       expect(context_key.length_min).to be_zero
       expect(context_key.length_max).to eq 254
-      expect(context_key.input_type).to eq 'text_area'
+      expect(context_key.text_element).to eq 'textarea'
       expect(flash[:success]).to eq flash_message(:update, :success)
     end
 
