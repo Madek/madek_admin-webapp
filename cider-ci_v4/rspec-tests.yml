@@ -1,64 +1,51 @@
-jobs:
-  rspec-tests:
+generate_tasks:
+  include_match: spec/.*_spec.rb
 
-    name: RSpec Tests
+tasks: {}
 
-    run_when:
-      the branch does not match no-ci or _wip_:
-        type: branch
-        include_match: ^.+$
-        exclude_match: ^(.*no-ci.*)|([a-z]*_wip_.*)$
+script_defaults:
+  template_environment_variables: true
 
-    context:
+task_defaults:
+  include:
+    - path: cider-ci_v4/task_components/database.yml
+      submodule: [datalayer]
+    - path: cider-ci_v4/task_components/bundle.yml
+      submodule: [datalayer]
 
-      generate_tasks:
-        include_match: spec/.*_spec.rb
+  scripts:
+    test:
+      timeout: 15 Minutes
+      body: |
+        #!/usr/bin/env bash
+        set -eux
+        export PATH=~/.rubies/$RUBY/bin:$PATH
+        mkdir -p log
+        xvfb-run -a -e log/xvfb.log \
+          bundle exec rspec $CIDER_CI_TASK_FILE
 
-      tasks: {}
+  dispatch_storm_delay_duration: 1 seconds
 
-      script_defaults:
-        template_environment_variables: true
+  environment_variables:
+    RAILS_ENV: test
+    LANG: "en_US.UTF-8"
+    DATABASE: madek_admin_webapp_{{CIDER_CI_TRIAL_ID}}
 
-      task_defaults:
-        include:
-          - path: cider-ci_v4/task_components/database.yml
-            submodule: [datalayer]
-          - path: cider-ci_v4/task_components/bundle.yml
-            submodule: [datalayer]
+  git_options:
+    submodules:
+      include_match: ^.*$
 
-        scripts:
-          test:
-            timeout: 15 Minutes
-            body: |
-              #!/usr/bin/env bash
-              set -eux
-              export PATH=~/.rubies/$RUBY/bin:$PATH
-              mkdir -p log
-              xvfb-run -a -e log/xvfb.log \
-                bundle exec rspec $CIDER_CI_TASK_FILE
-
-        dispatch_storm_delay_duration: 1 seconds
-
-        environment_variables:
-          RAILS_ENV: test
-          LANG: "en_US.UTF-8"
-          DATABASE: madek_admin_webapp_{{CIDER_CI_TRIAL_ID}}
-
-        git_options:
-          submodules:
-            include_match: ^.*$
-
-        trial_attachments:
-          screenshots:
-            include_match: 'tmp\/.+\.png$'
-            content_type: image/png
-          logs:
-            include_match: 'logs?\/.+\.log$'
-            exclude_match: 'vendor\/'
-            content_type: text/plain
-          config:
-            include_match: 'config\/.+\.ya?ml$'
-            exclude_match: 'vendor\/'
-            content_type: text/yaml
+  trial_attachments:
+    screenshots:
+      include_match: 'tmp\/.+\.png$'
+      content_type: image/png
+    logs:
+      include_match: 'logs?\/.+\.log$'
+      exclude_match: 'vendor\/'
+      content_type: text/plain
+    config:
+      include_match: 'config\/.+\.ya?ml$'
+      exclude_match: 'vendor\/'
+      content_type: text/yaml
 
 
