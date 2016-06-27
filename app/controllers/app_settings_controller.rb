@@ -82,8 +82,7 @@ class AppSettingsController < ApplicationController
   def update
     prepare_params
 
-    @app_settings.assign_attributes(app_setting_params)
-    @app_settings.save!
+    @app_settings.update!(app_setting_params)
 
     respond_with @app_settings, location: (lambda do
       app_settings_path

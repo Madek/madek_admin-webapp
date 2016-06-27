@@ -4,8 +4,11 @@ require 'spec_helper_feature'
 feature 'Admin App Settings' do
   let(:context) { create :context }
   let(:contexts) { [create(:context), create(:context)] }
-  let(:meta_key_ids) { ['madek_core:keywords', 'madek_core:authors'] }
+  let(:meta_key_ids) do
+    %w(madek_core:keywords madek_core:authors madek_core:invalid)
+  end
   let(:collection) { Collection.first }
+  let(:random_uuid) { SecureRandom.uuid }
 
   scenario 'Updating Summary Context for Detail View' do
     visit app_settings_path
@@ -150,8 +153,27 @@ feature 'Admin App Settings' do
 
       meta_key_ids.each do |mk_id|
         context_key = ContextKey.find_by(context_id: 'upload', meta_key_id: mk_id)
-        expect(page).to have_link(context_key.label, href: meta_key_path(mk_id))
+        if context_key
+          expect(page).to have_link(context_key.label, href: meta_key_path(mk_id))
+        else
+          expect(page).to have_content "#{mk_id} (invalid!)"
+        end
       end
     end
+  end
+
+  scenario "Updating 'Explore Page' Featured Set with invalid ID" do
+    visit app_settings_path
+
+    within '#explore-page-section' do
+      click_link 'Edit'
+    end
+
+    fill_in 'Featured Set', with: random_uuid
+    click_button 'Save'
+
+    expect(page).to have_css '.alert-danger'
+    expect(page).to have_content "The set with a given ID:
+                                  #{random_uuid} doesn't exist!"
   end
 end
