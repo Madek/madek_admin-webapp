@@ -8,9 +8,9 @@ script_defaults:
 
 task_defaults:
   include:
-    - path: cider-ci_v4/task_components/database.yml
+    - path: cider-ci/task_components/database.yml
       submodule: [datalayer]
-    - path: cider-ci_v4/task_components/bundle.yml
+    - path: cider-ci/task_components/bundle.yml
       submodule: [datalayer]
 
   scripts:
