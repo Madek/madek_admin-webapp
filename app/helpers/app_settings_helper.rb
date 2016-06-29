@@ -33,7 +33,7 @@ module AppSettingsHelper
 
   def collection_as_link(collection_id)
     if collection_id.present? &&
-       (collection = Collection.find_by(id: collection_id))
+       (collection = Collection.find_by_id(collection_id))
         link_to collection.id, collection_path(collection.id)
     end
   end
