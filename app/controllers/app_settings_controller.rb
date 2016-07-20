@@ -19,15 +19,24 @@ class AppSettingsController < ApplicationController
   }.freeze
 
   CONTEXT_FOR_VIEWS = {
-    context_for_show_summary: {
-      title: 'Summary Context for Detail View',
+    context_for_entry_summary: {
+      title: 'Summary Context for Entry View',
       description: "The MetaData in this Context are shown on the \
                     Detail-View, left to the Media Preview."
     },
-    contexts_for_show_extra: {
-      title: 'Extra Contexts for Detail View',
+    context_for_collection_summary: {
+      title: 'Summary Context for Collection View',
+      description: "The MetaData in this Context are shown on the \
+                    Detail-View, left to the Media Preview."
+    },
+    contexts_for_entry_extra: {
+      title: 'Extra Contexts for Entry View',
       description: "Up to 4 Contexts showing more info on \
                     a MediaEntry page (bottom)."
+    },
+    contexts_for_resource_edit: {
+      title: 'Contexts for Resource Edit',
+      description: ''
     },
     contexts_for_list_details: {
       title: 'Contexts for "List" View',

@@ -6,9 +6,9 @@ feature 'Admin Contexts' do
   let(:app_settings) { AppSetting.first.presence || create(:app_setting) }
   let(:usage_message) do
     "This context is used as: \
-     Summary Context for Detail View, \
-     Extra Contexts for Detail View, \
-     Contexts for \"List\" View"
+     Extra Contexts for Entry View, \
+     Contexts for \"List\" View, \
+     Summary Context for Entry View"
   end
 
   scenario 'Editing a context' do
@@ -90,8 +90,8 @@ feature 'Admin Contexts' do
 
   def update_app_settings_with_context
     app_settings.update(
-      { context_for_show_summary: context.id }.tap do |hash|
-        %i(contexts_for_show_extra contexts_for_list_details).each do |attr|
+      { context_for_entry_summary: context.id }.tap do |hash|
+        %i(contexts_for_entry_extra contexts_for_list_details).each do |attr|
           hash[attr] = [context.id]
         end
       end
