@@ -3,4 +3,7 @@
     .col-xs-3
       = f.label attr, attr.to_s.titleize
     .col-xs-8
-      = f.text_field attr, class: 'form-control'
+      - if attr.to_s =~ /context_keys/
+        = f.text_field attr, value: @app_settings[attr].join(', '), class: 'form-control'
+      - else
+        = f.text_field attr, class: 'form-control'

@@ -5,8 +5,24 @@ feature 'Admin App Settings' do
   let(:context) { create :context }
   let(:invalid_context) { build :context, id: 'foo' }
   let(:contexts) { [create(:context), create(:context)] }
-  let(:meta_key_ids) do
-    %w(madek_core:keywords madek_core:authors madek_core:invalid)
+  let(:default_catalog_context_key) do
+    ContextKey.find_by(
+      context_id: 'core',
+      meta_key_id: 'madek_core:keywords'
+    )
+  end
+  let(:catalog_context_keys) do
+    [
+      ContextKey.find_by(
+        context_id: 'upload',
+        meta_key_id: 'madek_core:keywords'
+      ).id,
+      ContextKey.find_by(
+        context_id: 'core',
+        meta_key_id: 'madek_core:authors'
+      ).id,
+      'madek_core:invalid_uuid'
+    ]
   end
   let(:collection) { Collection.first }
   let(:random_uuid) { SecureRandom.uuid }
@@ -237,9 +253,15 @@ feature 'Admin App Settings' do
     within '#explore-page-section' do
       click_link 'Edit'
     end
+
+    expect(page).to have_field(
+      'Catalog Context Keys',
+      with: default_catalog_context_key.id
+    )
+
     fill_in 'Catalog Title', with: 'CatalogTitle'
     fill_in 'Catalog Subtitle', with: 'CatalogSubtitle'
-    fill_in 'Catalog Context Keys', with: meta_key_ids.join(', ')
+    fill_in 'Catalog Context Keys', with: catalog_context_keys.join(', ')
     fill_in 'Featured Set Title', with: 'FeaturedSetTitle'
     fill_in 'Featured Set Subtitle', with: 'FeaturedSetSubtitle'
     fill_in 'Featured Set', with: collection.id
@@ -255,12 +277,17 @@ feature 'Admin App Settings' do
       expect(page).to have_content 'Featured Content: Subtitle FeaturedSetSubtitle'
       expect(find('#featured_set_id')).to have_content collection.id
 
-      meta_key_ids.each do |mk_id|
-        context_key = ContextKey.find_by(context_id: 'upload', meta_key_id: mk_id)
-        if context_key
-          expect(page).to have_link(context_key.label, href: meta_key_path(mk_id))
-        else
-          expect(page).to have_content "#{mk_id} (invalid!)"
+      within 'tr#catalog_context_keys' do
+        catalog_context_keys.each do |ck_id|
+          context_key = ContextKey.find_by(id: ck_id)
+          if context_key
+            expect(page).to have_link(
+              "#{context_key.meta_key_id} (#{context_key.context.label})",
+              href: meta_key_path(context_key.meta_key_id)
+            )
+          else
+            expect(page).to have_content "#{ck_id} (invalid!)"
+          end
         end
       end
     end

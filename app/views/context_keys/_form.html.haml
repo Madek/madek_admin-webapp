@@ -2,6 +2,12 @@
   _EMPTY_MARKER = '---'
 
 = form_for @context_key, html: { class: 'form-horizontal', role: 'form' } do |f|
+  - if @context_key.persisted?
+    .form-group
+      .col-xs-3
+        = f.label :id, 'ID', class: 'control-label'
+      .col-xs-6
+        = f.text_field :id, class: 'form-control', disabled: true
   .form-group
     .col-xs-3
       = f.label :meta_key_id, 'MetaKey', class: 'control-label'

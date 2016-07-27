@@ -20,9 +20,10 @@ module AppSettingsHelper
     html = []
     html.concat(
       ids.map do |context_key_id|
-        if (context_key = ContextKey.find_by(context_id: 'upload',
-                                             meta_key_id: context_key_id))
-          link_to(context_key.label, meta_key_path(context_key.meta_key))
+        if context_key = ContextKey.find_by(id: context_key_id)
+          link_to meta_key_path(context_key.meta_key) do
+            "#{context_key.meta_key_id} (#{context_key.context.label})"
+          end
         else
           invalid_reference_tag(context_key_id)
         end

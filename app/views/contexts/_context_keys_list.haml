@@ -20,6 +20,7 @@
       %thead
         %tr
           %th #
+          %th ID
           %th
             MetaKey
             %small (type)
@@ -35,6 +36,7 @@
 
           %tr{class: striped, 'data-id' => ck.id}
             %td= ck.position
+            %td= ck.id
             %td
               %samp= link_to ck.meta_key.id, meta_key_path(ck.meta_key)
               = "(#{ck.meta_key.meta_datum_object_type.demodulize})"
@@ -62,6 +64,7 @@
                     Move down
 
           %tr.semiborder{class: striped}
+            %td
             %td
             %td
               %small
