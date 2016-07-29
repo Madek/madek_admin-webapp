@@ -14,6 +14,12 @@
             {}, class: 'form-control'
 
     .form-group
+      - password_label = f.object.persisted? ? 'New password' : 'Password'
+      = f.label :password, password_label, class: 'control-label col-xs-2'
+      .col-xs-4
+        = f.text_field :password, class: 'form-control'
+
+    .form-group
       = f.label :description, class: 'control-label col-xs-2'
       .col-xs-8
         = f.text_area :description, class: 'form-control', rows: 5

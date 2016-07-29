@@ -19,6 +19,6 @@
       %thead
       %tbody
       - @api_client.attributes.each do |name,value|
-        %tr
+        %tr{'data-attr' => name}
           %td= name.capitalize.split("_").join(" ")
           %td= value
