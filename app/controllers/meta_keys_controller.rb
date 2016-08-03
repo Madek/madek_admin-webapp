@@ -85,7 +85,7 @@ class MetaKeysController < ApplicationController
                                      :label,
                                      :description,
                                      :hint,
-                                     :is_extensible,
+                                     :is_extensible_list,
                                      :keywords_alphabetical_order,
                                      :vocabulary_id,
                                      :is_enabled_for_media_entries,

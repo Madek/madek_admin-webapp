@@ -122,7 +122,7 @@ describe MetaKeysController do
         description: 'NEW_DESCRIPTION',
         hint: 'NEW_HINT',
         meta_datum_object_type: 'MetaDatum::Text',
-        is_extensible: true,
+        is_extensible_list: true,
         is_enabled_for_media_entries: true,
         is_enabled_for_collections: true,
         is_enabled_for_filter_sets: true,
@@ -151,7 +151,7 @@ describe MetaKeysController do
       expect(meta_key.description).to eq 'NEW_DESCRIPTION'
       expect(meta_key.hint).to eq 'NEW_HINT'
       expect(meta_key.meta_datum_object_type).to eq 'MetaDatum::Text'
-      expect(meta_key.is_extensible).to be true
+      expect(meta_key.is_extensible_list).to be true
       expect(meta_key.is_enabled_for_media_entries).to be true
       expect(meta_key.is_enabled_for_collections).to be true
       expect(meta_key.is_enabled_for_filter_sets).to be true
@@ -230,7 +230,7 @@ describe MetaKeysController do
         description: 'NEW_DESCRIPTION',
         hint: 'NEW_HINT',
         vocabulary_id: vocabulary.id,
-        is_extensible: true,
+        is_extensible_list: true,
         is_enabled_for_media_entries: true,
         is_enabled_for_collections: true,
         is_enabled_for_filter_sets: true
@@ -262,7 +262,7 @@ describe MetaKeysController do
 
       meta_key = MetaKey.find(meta_key_params[:id])
 
-      expect(meta_key.is_extensible).to be true
+      expect(meta_key.is_extensible_list).to be true
       expect(meta_key.is_enabled_for_media_entries).to be true
       expect(meta_key.is_enabled_for_collections).to be true
       expect(meta_key.is_enabled_for_filter_sets).to be true
