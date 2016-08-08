@@ -34,8 +34,12 @@ class AppSettingsController < ApplicationController
       description: "Up to 4 Contexts showing more info on \
                     a MediaEntry page (bottom)."
     },
-    contexts_for_resource_edit: {
-      title: 'Contexts for Resource Edit',
+    contexts_for_entry_edit: {
+      title: 'Contexts for MediaEntry Edit',
+      description: ''
+    },
+    contexts_for_collection_edit: {
+      title: 'Contexts for Set Edit',
       description: ''
     },
     contexts_for_list_details: {

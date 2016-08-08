@@ -101,21 +101,43 @@ feature 'Admin App Settings' do
     end
   end
 
-  scenario 'Updating Contexts for Resource Edit' do
+  scenario 'Updating Contexts for Entry Edit' do
     visit app_settings_path
 
-    within '#contexts_for_resource_edit' do
+    within '#contexts_for_entry_edit' do
       click_link 'Edit'
     end
     expect(page).to have_field(
-      'app_setting[contexts_for_resource_edit]',
+      'app_setting[contexts_for_entry_edit]',
       with: 'core, media_content, media_object, copyright, zhdk_bereich'
     )
-    fill_in 'app_setting[contexts_for_resource_edit]', with: contexts.join(', ')
+    fill_in 'app_setting[contexts_for_entry_edit]', with: contexts.join(', ')
     click_button 'Save'
 
     expect(page).to have_css '.alert-success'
-    within '#contexts_for_resource_edit' do
+    within '#contexts_for_entry_edit' do
+      expect(page).to have_content contexts.map(&:label).join(', ').to_s
+      contexts.each do |c|
+        expect(page).to have_link c.label, href: context_path(c)
+      end
+    end
+  end
+
+  scenario 'Updating Contexts for Collection Edit' do
+    visit app_settings_path
+
+    within '#contexts_for_collection_edit' do
+      click_link 'Edit'
+    end
+    expect(page).to have_field(
+      'app_setting[contexts_for_collection_edit]',
+      with: 'core, media_content, media_object, copyright, zhdk_bereich'
+    )
+    fill_in 'app_setting[contexts_for_collection_edit]', with: contexts.join(', ')
+    click_button 'Save'
+
+    expect(page).to have_css '.alert-success'
+    within '#contexts_for_collection_edit' do
       expect(page).to have_content contexts.map(&:label).join(', ').to_s
       contexts.each do |c|
         expect(page).to have_link c.label, href: context_path(c)
