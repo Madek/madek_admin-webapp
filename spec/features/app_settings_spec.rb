@@ -11,16 +11,18 @@ feature 'Admin App Settings' do
       meta_key_id: 'madek_core:keywords'
     )
   end
+  let(:new_context_key) do
+    create(:context_key,
+           meta_key: create(:meta_key_keywords,
+                            id: "test:#{Faker::Lorem.characters(8)}"))
+  end
   let(:catalog_context_keys) do
     [
       ContextKey.find_by(
         context_id: 'upload',
         meta_key_id: 'madek_core:keywords'
       ).id,
-      ContextKey.find_by(
-        context_id: 'core',
-        meta_key_id: 'madek_core:authors'
-      ).id,
+      new_context_key.id,
       'madek_core:invalid_uuid'
     ]
   end
