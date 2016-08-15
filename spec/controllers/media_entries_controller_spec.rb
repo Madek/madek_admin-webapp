@@ -11,7 +11,7 @@ describe MediaEntriesController do
       expect(response).to have_http_status(200)
     end
 
-    it 'loads the first page of users into @users' do
+    it 'loads the first page of media entries into @media_entries' do
       get :index, nil, user_id: admin_user.id
 
       expect(response).to be_success
@@ -39,6 +39,26 @@ describe MediaEntriesController do
 
           expect(assigns[:media_entries]).to eq [media_entry]
           expect(media_entry.title).to eq 'TITLE'
+        end
+      end
+
+      context 'by is_published=false attribute' do
+        it 'returns a media entry' do
+          media_entry = create :media_entry, is_published: false
+
+          get :index, { filter: { is_published: '0' } }, user_id: admin_user.id
+
+          expect(assigns[:media_entries]).to eq [media_entry]
+        end
+      end
+
+      context 'by is_published=true attribute' do
+        it 'returns a media entry' do
+          create :media_entry
+
+          get :index, { filter: { is_published: '1' } }, user_id: admin_user.id
+
+          expect(assigns[:media_entries].map(&:is_published).uniq).to eq [true]
         end
       end
     end

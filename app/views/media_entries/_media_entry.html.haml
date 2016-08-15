@@ -2,9 +2,17 @@
   %td= media_entry.title
   %td= media_entry.responsible_user.person
   %td
-    = link_to media_entry.media_file.id, media_file_path(media_entry.media_file)
+    - if media_entry.media_file.nil?
+      %span.label.label-default No Media File
+    - else
+      = link_to media_entry.media_file.id, media_file_path(media_entry.media_file)
   %td= media_entry.id
   %td= media_entry.created_at
+  %td
+    - if media_entry.is_published
+      %span.label.label-success Yes
+    - else
+      %span.label.label-default No
   %td.active
     .btn-group
       = link_to media_entry_path(media_entry), class: 'btn btn-default btn-sm' do
