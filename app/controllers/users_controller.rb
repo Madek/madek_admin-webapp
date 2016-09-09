@@ -60,7 +60,7 @@ class UsersController < ApplicationController
     reset_session
     destroy_madek_session
     set_madek_session(@user)
-    redirect_to root_url
+    redirect_to '/my'
   end
 
   def grant_admin_role

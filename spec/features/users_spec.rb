@@ -171,6 +171,7 @@ feature 'Admin Users' do
     click_button 'Apply'
     click_link 'Switch to...'
     visit root_path
+
     expect(page).not_to have_content 'Please log in!'
   end
 
@@ -182,6 +183,7 @@ feature 'Admin Users' do
     click_button 'Apply'
     click_link 'Switch to...'
     visit root_path
+
     expect(page).to have_content 'Admin access denied'
   end
 end

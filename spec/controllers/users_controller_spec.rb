@@ -126,10 +126,10 @@ describe UsersController do
   describe '#switch_to' do
     let(:user) { create :user }
 
-    it 'redirects to the root path' do
+    it 'redirects to the /my path' do
       post :switch_to, { id: user.id }, user_id: admin_user.id
 
-      expect(response).to redirect_to(root_path)
+      expect(response).to redirect_to('/my')
       expect(response).to have_http_status(302)
     end
 
