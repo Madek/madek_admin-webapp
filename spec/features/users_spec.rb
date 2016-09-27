@@ -169,7 +169,7 @@ feature 'Admin Users' do
     visit users_path
     fill_in 'search_term', with: user.email
     click_button 'Apply'
-    click_link 'Switch to...'
+    click_button 'Switch to...'
     visit root_path
 
     expect(page).not_to have_content 'Please log in!'
@@ -181,7 +181,7 @@ feature 'Admin Users' do
     visit users_path
     fill_in 'search_term', with: user.email
     click_button 'Apply'
-    click_link 'Switch to...'
+    click_button 'Switch to...'
     visit root_path
 
     expect(page).to have_content 'Admin access denied'
