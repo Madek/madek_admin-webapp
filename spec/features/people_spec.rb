@@ -34,7 +34,8 @@ feature 'Admin People' do
     fill_in 'person[last_name]', with: 'Fischer'
     click_button 'Save'
 
-    expect(page).to have_content 'Fritz Fischer'
+    expect(page).to have_content 'Success! The person has been created.'
+    expect(Person.find_by first_name: 'Fritz', last_name: 'Fischer').to be
   end
 
   scenario 'Deleting a person', browser: :firefox do

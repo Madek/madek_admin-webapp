@@ -62,5 +62,7 @@ class PeopleController < ApplicationController
 
   def person_params
     params.require(:person).permit!
+      .map { |k, v| [k, v.presence] }
+      .to_h
   end
 end

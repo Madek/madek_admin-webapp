@@ -27,9 +27,9 @@
         = f.text_field :date_of_death, type: 'date', class: 'form-control'
 
     .form-group
-      %label.control-label.col-xs-2 Is bunch
+      %label.control-label.col-xs-2 Is PeopleGroup
       .col-xs-1
-        = f.check_box :is_bunch, class: 'form-control'
+        = f.check_box :subtype, { class: 'form-control' }, 'PeopleGroup', 'Person'
     .form-group
       .col-xs-offset-2.col-xs-4
         = button_tag type: 'submit', class: 'btn btn-success' do
