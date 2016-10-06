@@ -35,7 +35,9 @@ Rails.application.routes.draw do
       end
     end
     resources :media_entries, only: [:index, :show]
-    resources :media_files, only: :show
+    resources :media_files, only: :show do
+      post :reencode, on: :member
+    end
     resources :previews, only: [:show, :destroy] do
       get :raw_file
     end

@@ -33,4 +33,20 @@ describe MediaFilesController do
       end
     end
   end
+
+  describe '#reencode' do
+    before do
+      allow_any_instance_of(ZencoderRequester).to receive(:process)
+      post :reencode, { id: media_file.id }, user_id: admin_user.id
+    end
+
+    it 'redirects to media file show page' do
+      expect(response).to redirect_to(media_file_path(media_file))
+      expect(response).to have_http_status(302)
+    end
+
+    it 'sets info flash message' do
+      expect(flash[:info]).not_to be_empty
+    end
+  end
 end

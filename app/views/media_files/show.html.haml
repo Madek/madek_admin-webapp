@@ -2,6 +2,8 @@
   %h1
     %span.glyphicon.glyphicon-file
     Media File: #{@media_file.id}
+  %small
+    = link_to '&larr; Go back to Media Entry'.html_safe, media_entry_path(@media_file.media_entry)
 
 .row
   .col-xs-12

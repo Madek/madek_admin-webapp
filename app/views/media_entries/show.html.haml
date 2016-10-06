@@ -22,4 +22,9 @@
           %tr
             %td
               %strong= attr.first.humanize
-            %td= attr.last
+            %td
+              - if %w(responsible_user_id creator_id).include?(attr.first)
+                - user = User.find(attr.last)
+                = link_to "#{user.person} (#{user.login})", user_path(user)
+              - else
+                = attr.last

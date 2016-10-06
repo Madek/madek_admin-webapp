@@ -6,7 +6,7 @@
     .panel.panel-default
       .panel-body
         .btn-group
-          = link_to 'Reencode', '#', class: 'btn btn-info disabled',
-            data: { confirm: 'Let previes reencode by zencoder.com? This action is liable to pay costs.' }
+          = link_to 'Reencode', reencode_media_file_path(@media_file), method: :post, class: 'btn btn-info',
+            data: { confirm: 'The Media File will be reencoded with Zencoder. All existing previews will be deleted. This action is liable to pay costs. Do you want to proceeed?' }
 
     = render 'zencoder_jobs/zencoder_jobs_table'

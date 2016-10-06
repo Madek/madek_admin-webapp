@@ -3,6 +3,8 @@
 
 .page-header
   %h1 Preview: #{@preview.id}
+  %small
+    = link_to '&larr; Go back to Media File'.html_safe, media_file_path(@preview.media_file)
 
 .row
   .col-xs-12
