@@ -30,9 +30,9 @@ describe UsersController do
     describe 'filtering users' do
       context 'by login' do
         it "returns users containing 'xxx' in login" do
-          user_1 = create :user, login: 'adamxxx'
-          user_2 = create :user, login: 'adamxxx'
-          user_3 = create :user, login: 'adxxxam'
+          user_1 = create :user, login: 'adam1xxx'
+          user_2 = create :user, login: 'adam2xxx'
+          user_3 = create :user, login: 'adxxxam3'
 
           get :index, { search_term: 'xxx' }, user_id: admin_user.id
 
