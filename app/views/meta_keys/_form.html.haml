@@ -18,12 +18,21 @@
       = f.select :meta_datum_object_type,
           options_for_select(['', MetaKey.object_types].flatten, f.object.meta_datum_object_type),
           {}, class: 'form-control'
-  - if @meta_key.persisted? && @meta_key.can_have_keywords?
-    .form-group
-      .col-xs-3
-        = f.label :keywords_alphabetical_order
-      .col-xs-6
-        = f.select :keywords_alphabetical_order, [['Yes', true], ['No', false]], {}, class: 'form-control'
+  - if @meta_key.persisted?
+    - if @meta_key.can_have_keywords?
+      .form-group
+        .col-xs-3
+          = f.label :keywords_alphabetical_order
+        .col-xs-6
+          = f.select :keywords_alphabetical_order, [['Yes', true], ['No', false]], {}, class: 'form-control'
+    - if @meta_key.can_have_people_subtypes?
+      .form-group
+        .col-xs-3
+          = f.label :allowed_people_subtypes
+        .col-xs-6
+          .checkbox.checkbox-collection
+            = f.collection_check_boxes :allowed_people_subtypes, Person.subtypes, :subtype, :subtype do |c|
+              = c.label { c.check_box + c.text }
   .form-group
     .col-xs-3
       = f.label :label, 'Label', class: 'control-label'
@@ -39,12 +48,13 @@
       = f.label :hint, 'Hint', class: 'control-label'
     .col-xs-6
       = f.text_area :hint, class: 'form-control', rows: 4
-  .form-group
-    .col-xs-offset-3.col-sm-4
-      .checkbox
-        %label
-          = f.check_box :is_extensible_list
-          Extensible?
+  - if f.object.can_have_keywords?
+    .form-group
+      .col-xs-offset-3.col-sm-4
+        .checkbox
+          %label
+            = f.check_box :is_extensible_list
+            Extensible?
   - %w(media_entries collections filter_sets).each do |resource_type|
     .form-group
       .col-xs-offset-3.col-sm-4

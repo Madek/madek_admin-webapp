@@ -1,8 +1,18 @@
 require 'spec_helper'
 require 'spec_helper_feature'
 
+def meta_datum_types
+  {
+    'MetaDatum::Text' => :meta_key_text,
+    'MetaDatum::TextDate' => :meta_key_text_date,
+    'MetaDatum::Lincenses' => :meta_key_licenses,
+    'MetaDatum::Keywords' => :meta_key_keywords,
+    'MetaDatum::People' => :meta_key_people
+  }
+end
+
 feature 'Admin Meta Keys' do
-  let(:meta_key_with_keywords) { MetaKey.with_type('MetaDatum::Keywords').first }
+  let(:meta_key_keywords) { create(:meta_key_keywords, is_extensible_list: true) }
   let(:vocabulary) { Vocabulary.find('archhist') }
 
   scenario 'Sorting meta keys by ID by default' do
@@ -22,19 +32,78 @@ feature 'Admin Meta Keys' do
 
   context 'Editing' do
     scenario 'Proper values for selects' do
-      visit edit_meta_key_path(meta_key_with_keywords)
+      visit edit_meta_key_path(meta_key_keywords)
 
       expect(page).to have_select(
         'Vocabulary',
-        selected: meta_key_with_keywords.vocabulary_id)
+        selected: meta_key_keywords.vocabulary_id)
       expect(page).to have_select(
         'Meta datum object type',
-        selected: meta_key_with_keywords.meta_datum_object_type)
+        selected: meta_key_keywords.meta_datum_object_type)
       expect(page).to have_select(
         'Keywords alphabetical order',
         selected: selected_value_from_boolean(
-          meta_key_with_keywords.keywords_alphabetical_order)
+          meta_key_keywords.keywords_alphabetical_order)
       )
+    end
+
+    scenario "Uncheck 'Extensible?' checkbox for MetaDatum::Keywords" do
+      visit edit_meta_key_path(meta_key_keywords)
+
+      expect(page).to have_checked_field 'Extensible?'
+      select 'MetaDatum::Licenses', from: 'Meta datum object type'
+      click_button 'Save'
+
+      expect(page).to have_select('Meta datum object type',
+                                  selected: 'MetaDatum::Licenses')
+      expect(page).not_to have_field 'Extensible?'
+    end
+
+    meta_datum_types.except('MetaDatum::Keywords').each do |type, factory|
+      scenario "Do not display 'Extensible?' checkbox for #{type}" do
+        meta_key = create(factory)
+
+        visit edit_meta_key_path(meta_key)
+
+        expect(page).not_to have_field 'Extensible?'
+      end
+    end
+
+    scenario 'Change Allowed Subtypes for MetaDatum::People' do
+      meta_key = create(:meta_key_people)
+
+      visit edit_meta_key_path(meta_key)
+
+      expect(page).to have_content 'Allowed Subtypes'
+      expect(page).to have_checked_field 'Person'
+      expect(page).to have_checked_field 'PeopleGroup'
+      expect(page).to have_no_checked_field 'PeopleInstitutionalGroup'
+
+      uncheck 'Person'
+      uncheck 'PeopleGroup'
+      check 'PeopleInstitutionalGroup'
+      click_button 'Save'
+
+      expect(page).to have_css '.alert-success'
+      expect(page).to have_no_checked_field 'Person'
+      expect(page).to have_no_checked_field 'PeopleGroup'
+      expect(page).to have_checked_field 'PeopleInstitutionalGroup'
+
+    end
+
+    meta_datum_types.except('MetaDatum::People').each do |type, factory|
+      scenario "Do not display 'Allowed Subtypes' checkboxes for #{type}" do
+        meta_key = create(factory)
+
+        visit edit_meta_key_path(meta_key)
+
+        expect(page).not_to have_content 'Allowed Subtypes'
+        expect(page).not_to have_css(
+          'input[type="checkbox"][name="meta_key[allowed_people_subtypes][]"]')
+        expect(page).not_to have_field 'Person'
+        expect(page).not_to have_field 'PeopleGroup'
+        expect(page).not_to have_field 'PeopleInstitutionalGroup'
+      end
     end
   end
 
@@ -65,6 +134,36 @@ feature 'Admin Meta Keys' do
                     archhist:ca_kontext
                     archhist:ca_thema
                     archhist:ca_ausgangsmaterial)
+  end
+
+  scenario "Show 'Is extensible list' row for MetaDatum::Keywords" do
+    visit meta_key_path(meta_key_keywords)
+
+    expect(page).to have_content 'Is extensible list'
+  end
+
+  scenario "Don't show 'Is extensible list' for non MetaDatum::Keywords" do
+    meta_key = create(:meta_key_text)
+
+    visit meta_key_path(meta_key)
+
+    expect(page).not_to have_content 'Is extensible list'
+  end
+
+  scenario "Show 'Allowed Subtypes' for MetaDatum::People" do
+    meta_key = create(:meta_key_people)
+
+    visit meta_key_path(meta_key)
+
+    expect(page).to have_content 'Allowed Subtypes'
+  end
+
+  scenario "Don't show 'Allowed Subtypes' for non MetaDatum::People" do
+    meta_key = create(:meta_key_text)
+
+    visit meta_key_path(meta_key)
+
+    expect(page).not_to have_content 'Allowed Subtypes'
   end
 
   def expect_order(order, limit = 4)

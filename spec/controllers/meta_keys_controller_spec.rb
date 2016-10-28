@@ -157,6 +157,24 @@ describe MetaKeysController do
       expect(meta_key.is_enabled_for_filter_sets).to be true
       expect(meta_key.keywords_alphabetical_order).to be true
     end
+
+    context 'when type is MetaDatum::People' do
+      it 'sanitizes allowed_people_subtypes' do
+        meta_key = create(:meta_key_people)
+
+        patch(
+          :update,
+          { id: meta_key.id,
+            meta_key: {
+              allowed_people_subtypes: ['', 'Person', '']
+            }
+          },
+          user_id: admin_user.id
+        )
+
+        expect(meta_key.reload.allowed_people_subtypes).to eq(['Person'])
+      end
+    end
   end
 
   describe '#show' do

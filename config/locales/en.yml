@@ -20,4 +20,8 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
+  activerecord:
+    attributes:
+      meta_key:
+        allowed_people_subtypes: Allowed Subtypes
   hello: "Hello world"

@@ -1,5 +1,13 @@
+:ruby
+  conditional_attributes = {
+    is_extensible_list: :can_have_keywords?,
+    allowed_people_subtypes: :can_have_people_subtypes?
+  }.with_indifferent_access
+
 .page-header
   %h1 Meta Key: #{@meta_key.id}
+  %small
+    = link_to '&larr; Go back to Meta Keys list'.html_safe, meta_keys_path
 
 .row
   .col-xs-12
@@ -14,10 +22,14 @@
       %thead
       %tbody
         - @meta_key.attributes.each do |attr|
-          %tr
-            %td
-              %strong= attr.first.humanize
-            %td= attr.last
+          - attr_name = attr.first
+          - if conditional_attributes.has_key?(attr_name) && !@meta_key.send(conditional_attributes[attr_name])
+            - next
+          - else
+            %tr
+              %td
+                %strong= t("activerecord.attributes.meta_key.#{attr_name}", default: attr_name.humanize)
+              %td= attr.last
 
 - if @meta_key.can_have_keywords?
 
