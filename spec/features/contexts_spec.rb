@@ -8,7 +8,8 @@ feature 'Admin Contexts' do
     "This context is used as: \
      Extra Contexts for Entry View, \
      Contexts for \"List\" View, \
-     Summary Context for Entry View"
+     Summary Context for Entry View, \
+     Extra Contexts for Collection View"
   end
 
   scenario 'Editing a context' do
@@ -91,9 +92,11 @@ feature 'Admin Contexts' do
   def update_app_settings_with_context
     app_settings.update(
       { context_for_entry_summary: context.id }.tap do |hash|
-        %i(contexts_for_entry_extra contexts_for_list_details).each do |attr|
-          hash[attr] = [context.id]
-        end
+        %i(
+          contexts_for_entry_extra
+          contexts_for_collection_extra
+          contexts_for_list_details
+        ).each { |attr| hash[attr] = [context.id] }
       end
     )
   end

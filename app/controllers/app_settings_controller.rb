@@ -34,6 +34,10 @@ class AppSettingsController < ApplicationController
       description: "Up to 4 Contexts showing more info on \
                     a MediaEntry page (bottom)."
     },
+    contexts_for_collection_extra: {
+      title: 'Extra Contexts for Collection View',
+      description: 'List of Contexts displayed as tabs on Collection page.'
+    },
     contexts_for_entry_edit: {
       title: 'Contexts for MediaEntry Edit',
       description: ''
@@ -82,6 +86,10 @@ class AppSettingsController < ApplicationController
       label: 'Featured Content: Set',
       description: "Contents of this Set will be displayed as \
                    'Featured Content'"
+    },
+    teaser_set_id: {
+      label: 'Teaser: Set',
+      description: 'Contents of this Set will be displayed as "Teaser" Collages'
     }
   }.freeze
 
