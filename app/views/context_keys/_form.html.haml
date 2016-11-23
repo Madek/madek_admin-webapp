@@ -55,11 +55,6 @@
       = f.number_field :length_max, class: 'form-control'
   .form-group
     .col-xs-3
-      = f.label :text_element, class: 'control-label'
-    .col-xs-3
-      = f.select :text_element, ContextKey.text_elements.keys, { include_blank: true }, class: 'form-control'
-  .form-group
-    .col-xs-3
       = f.label :admin_comment, class: 'control-label'
     .col-xs-6
       = f.text_area :admin_comment, class: 'form-control', rows: 4

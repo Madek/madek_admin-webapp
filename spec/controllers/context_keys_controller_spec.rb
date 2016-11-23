@@ -26,8 +26,7 @@ describe ContextKeysController do
           admin_comment: 'updated admin comment',
           is_required: true,
           length_min: 0,
-          length_max: 254,
-          text_element: 'textarea'
+          length_max: 254
         }
       }
 
@@ -42,7 +41,6 @@ describe ContextKeysController do
       expect(context_key.is_required).to be true
       expect(context_key.length_min).to be_zero
       expect(context_key.length_max).to eq 254
-      expect(context_key.text_element).to eq 'textarea'
       expect(flash[:success]).to eq flash_message(:update, :success)
     end
 

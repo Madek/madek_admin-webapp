@@ -31,6 +31,32 @@ feature 'Admin Meta Keys' do
   end
 
   context 'Editing' do
+
+    scenario 'Editing MetaKey (Text) via Edit button' do
+      meta_key = create(:meta_key_text)
+      visit meta_key_path(meta_key)
+
+      click_link 'Edit'
+
+      expect(current_path).to eq edit_meta_key_path(meta_key)
+
+      fill_in 'meta_key[label]', with: 'new label'
+      fill_in 'meta_key[description]', with: 'newdescription'
+      fill_in 'meta_key[hint]', with: 'new hint'
+      expect(page).to \
+        have_select('meta_key[text_type]', selected: [meta_key.text_type])
+      select 'block', from: 'meta_key[text_type]'
+
+      click_button 'Save'
+      expect(current_path).to eq edit_meta_key_path(meta_key)
+      expect(page).to have_css('.alert-success')
+
+      expect(page).to have_field 'meta_key[label]', with: 'new label'
+      expect(page).to have_field 'meta_key[description]', with: 'newdescription'
+      expect(page).to have_field 'meta_key[hint]', with: 'new hint'
+      expect(page).to have_select 'meta_key[text_type]', selected: 'block'
+    end
+
     scenario 'Proper values for selects' do
       visit edit_meta_key_path(meta_key_keywords)
 

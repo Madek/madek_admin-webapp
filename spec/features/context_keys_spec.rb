@@ -5,7 +5,7 @@ feature 'Admin Context Keys' do
   let(:context) { Context.find('upload') }
   let(:context_key) { context.context_keys.first }
 
-  scenario 'Editing Context via Edit button' do
+  scenario 'Editing ContextKey via Edit button' do
     visit context_path(context)
 
     within "[data-id='#{context_key.id}']" do
@@ -21,8 +21,6 @@ feature 'Admin Context Keys' do
     uncheck 'context_key[is_required]'
     fill_in 'context_key[length_min]', with: 16
     fill_in 'context_key[length_max]', with: 128
-    expect(page).to have_select('context_key[text_element]', selected: [])
-    select 'input', from: 'context_key[text_element]'
     fill_in 'context_key[admin_comment]', with: 'new admin comment'
 
     click_button 'Save'
@@ -39,7 +37,6 @@ feature 'Admin Context Keys' do
     expect(page).to have_unchecked_field 'context_key[is_required]'
     expect(page).to have_field 'context_key[length_min]', with: 16
     expect(page).to have_field 'context_key[length_max]', with: 128
-    expect(page).to have_select 'context_key[text_element]', selected: 'input'
     expect(page).to have_field('context_key[admin_comment]',
                                with: 'new admin comment')
   end

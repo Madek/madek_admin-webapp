@@ -126,7 +126,8 @@ describe MetaKeysController do
         is_enabled_for_media_entries: true,
         is_enabled_for_collections: true,
         is_enabled_for_filter_sets: true,
-        keywords_alphabetical_order: true
+        keywords_alphabetical_order: true,
+        text_type: 'block'
       }
     end
     before do
@@ -156,6 +157,7 @@ describe MetaKeysController do
       expect(meta_key.is_enabled_for_collections).to be true
       expect(meta_key.is_enabled_for_filter_sets).to be true
       expect(meta_key.keywords_alphabetical_order).to be true
+      expect(meta_key.text_type).to eq 'block'
     end
 
     context 'when type is MetaDatum::People' do

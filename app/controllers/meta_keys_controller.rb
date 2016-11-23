@@ -85,6 +85,7 @@ class MetaKeysController < ApplicationController
                                      :label,
                                      :description,
                                      :hint,
+                                     :text_type,
                                      :is_extensible_list,
                                      :keywords_alphabetical_order,
                                      :vocabulary_id,

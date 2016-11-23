@@ -48,6 +48,14 @@
       = f.label :hint, 'Hint', class: 'control-label'
     .col-xs-6
       = f.text_area :hint, class: 'form-control', rows: 4
+
+  - if f.object.meta_datum_object_type == 'MetaDatum::Text'
+    .form-group
+      .col-xs-3
+        = f.label :text_type, class: 'control-label'
+      .col-xs-3
+        = f.select :text_type, MetaKey.text_types.keys, class: 'form-control'
+
   - if f.object.can_have_keywords?
     .form-group
       .col-xs-offset-3.col-sm-4

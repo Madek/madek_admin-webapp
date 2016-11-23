@@ -35,7 +35,6 @@ class ContextKeysController < ApplicationController
                                         :is_required,
                                         :length_min,
                                         :length_max,
-                                        :text_element,
                                         :admin_comment)
   end
 end
