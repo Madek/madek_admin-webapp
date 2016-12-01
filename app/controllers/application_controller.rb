@@ -23,6 +23,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery
 
   helper_method :current_user
+  helper_method :filter_value
 
   def status
     memory_status = InShape::Memory.status
@@ -91,5 +92,9 @@ class ApplicationController < ActionController::Base
         set_madek_session user
       end
     end
+  end
+
+  def filter_value(type, default = '')
+    params.fetch(:filter, {}).fetch(type, default)
   end
 end

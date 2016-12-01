@@ -3,7 +3,9 @@
     %span.glyphicon.glyphicon-file
     Media File: #{@media_file.id}
   %small
-    = link_to '&larr; Go back to Media Entry'.html_safe, media_entry_path(@media_file.media_entry)
+    = link_to "&larr; Go back to Media Files".html_safe, media_files_path
+    %span  / 
+    = link_to "&larr; Go back to Media Entry".html_safe, media_entry_path(@media_entry)
 
 .row
   .col-xs-12
@@ -32,6 +34,7 @@
       %thead
         %tr
           %th Content type
+          %th Audio codec
           %th Thumbnail
           %th Created at
           %th

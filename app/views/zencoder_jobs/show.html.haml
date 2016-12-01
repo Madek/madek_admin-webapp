@@ -1,6 +1,8 @@
 .page-header
   %h1
     ZencoderJob: #{@zencoder_job.id}
+  %small
+    = link_to "&larr; Go back to Media File".html_safe, media_file_path(@zencoder_job.media_file)
 
 .row
   .col-xs-12

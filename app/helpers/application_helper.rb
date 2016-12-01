@@ -16,4 +16,12 @@ module ApplicationHelper
     end
     nil
   end
+
+  def filter_options_for_select(container)
+    options_for_select(container)
+  end
+
+  def default_filter_option
+    content_tag :option, '(all)', value: ''
+  end
 end

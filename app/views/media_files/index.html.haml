@@ -1,0 +1,58 @@
+.page-header
+  %h1
+    %i.icon-media-entry
+    Media Files (#{@media_files.total_count})
+
+.view_media_files_index.row
+  .col-xs-12
+    .panel.panel-default
+      .panel-heading
+        .panel-title Filters
+      .panel-body
+        %form.form-inline
+          %input{:name => "utf8", :type => "hidden", :value => "✓"}/
+          .form-group
+            = text_field_tag 'filter[search_term]', filter_value(:search_term), class: 'form-control', placeholder: 'ID, filename or uploader ID', size: 50, id: 'search_term'
+
+          .form-group
+            %label Media Type
+            = select_tag 'filter[media_type]', options_for_select(['(all)'] + @media_types, filter_value(:media_type, '(all)')), class: 'form-control'
+
+          .form-group
+            %label Extension
+            = select_tag 'filter[extension]', options_for_select(['(all)'] + @extensions, filter_value(:extension, '(all)')), class: 'form-control'
+
+          .form-group
+            %label Status
+            = select_tag 'filter[conversion_status]', options_for_select(['(all)', ['with failed', :failed], ['with missing', :missing]], filter_value(:conversion_status, '(all)')), class: 'form-control'
+
+          .form-group
+            %label Sort by
+            = select_tag 'sort_by', options_for_select(@sorters, params.fetch(:sort_by, 'created_at_asc')), class: 'form-control'
+
+          .form-group
+            %input.btn.btn-primary{:name => "commit", :type => "submit", :value => "Apply"}
+            = link_to 'Reset', media_files_path, class: 'btn btn-default'
+      - if filter_value(:conversion_status) == 'missing' && @media_files.total_count > 0
+        .panel-footer.text-right
+          = form_tag reencode_missing_media_files_path, method: :post do
+            = hidden_field_tag :timestamp, DateTime.now.utc
+            = button_tag 'Re-encode all missing', class: 'btn btn-info', data: { confirm: 'All missing audio Media Files will be reencoded with Zencoder. This action is liable to pay costs. Do you want to proceeed?' }
+
+.row
+  .col-xs-12
+    %table.table.table-striped
+      %thead
+        %tr
+          %th Entry Title
+          %th Filename
+          %th Media Type
+          %th Filesize
+          %th Created at
+          %th Uploader
+          %th Conversion Status
+          %th
+      %tbody
+        = render @media_files
+
+= paginate @media_files
