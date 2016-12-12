@@ -119,6 +119,7 @@ class AppSettingsController < ApplicationController
     @settings_groups = SETTINGS_GROUPS
     @context_for_views = CONTEXT_FOR_VIEWS
     @explore_page_settings = EXPLORE_PAGE_SETTINGS
+    @deploy_config = Settings.marshal_dump.except(:madek_master_secret)
   end
 
   def app_setting_params

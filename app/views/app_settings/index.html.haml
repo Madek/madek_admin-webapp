@@ -48,3 +48,15 @@
     = link_to edit_app_setting_path(:explore_page), class: 'btn btn-info btn-sm' do
       %span.glyphicon.glyphicon-edit
       Edit
+
+.page-header
+  %h2
+    %i.glyphicon.glyphicon-hdd
+    Deploy-Config
+
+%p
+  Configuration per server/instance.
+  %span.text-danger Can only be changed on the server itself!
+
+%pre
+  %code= @deploy_config.as_json.to_yaml
