@@ -24,4 +24,21 @@ module ApplicationHelper
   def default_filter_option
     content_tag :option, '(all)', value: ''
   end
+
+  def self.unwrap_and_hide_secrets(ostruct, blacklist:)
+    ostruct.marshal_dump.map do |key, val|
+      if val.is_a?(OpenStruct) # recurse
+        [key, unwrap_and_hide_secrets(val, blacklist: blacklist)]
+      elsif blacklist.any? { |s| key.to_s.include?(s) }
+        [key, obfuscate_secret(val)]
+      else
+        [key, val]
+      end
+    end.to_h.compact
+  end
+
+  def self.obfuscate_secret(string)
+    Array.new(string.try(:to_s).try(:length) || 3) { '*' }.join
+  end
+
 end

@@ -119,7 +119,8 @@ class AppSettingsController < ApplicationController
     @settings_groups = SETTINGS_GROUPS
     @context_for_views = CONTEXT_FOR_VIEWS
     @explore_page_settings = EXPLORE_PAGE_SETTINGS
-    @deploy_config = unwrap_and_hide_secrets(Settings)
+    @deploy_config = ApplicationHelper.unwrap_and_hide_secrets(
+      Settings, blacklist: %w(secret api_key geheim))
   end
 
   def app_setting_params
@@ -146,20 +147,4 @@ class AppSettingsController < ApplicationController
     ::AppSetting.columns_hash[attr.to_s]
   end
 
-  def unwrap_and_hide_secrets(ostruct)
-    blacklist = %w(secret api_key geheim)
-    ostruct.marshal_dump.map do |key, val|
-      if val.is_a?(OpenStruct) # recurse
-        [key, unwrap_and_hide_secrets(val)]
-      elsif blacklist.any? { |s| key.to_s.include?(s) }
-        [key, obfuscate_secret(val)]
-      else
-        [key, val]
-      end
-    end.to_h.compact
-  end
-
-  def obfuscate_secret(string)
-    Array.new(string.try(:to_s).try(:length) || 3) { '*' }.join
-  end
 end
