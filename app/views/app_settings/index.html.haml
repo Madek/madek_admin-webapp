@@ -56,8 +56,11 @@
 
 %p
   Configuration per server/instance.
-  Values are hidden if key contains "secret", "api_key" or "geheim".
-  %span.text-danger Can only be changed on the server itself!
+%p.text-info
+  Values are hidden with stars (
+  %code<> *
+  ) if their key contains "secret", "password", "api_key" or "geheim".
+%p.text-danger Can only be changed on the server itself!
 
 %pre
   %code= @deploy_config.as_json.to_yaml
