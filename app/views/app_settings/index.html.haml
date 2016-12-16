@@ -27,7 +27,7 @@
 
 .panel.panel-default
   .panel-heading
-    .panel-title 
+    .panel-title
       'Explore' Page
   .panel-body#explore-page-section
     %table.table.table-striped
@@ -44,7 +44,7 @@
                 = collection_as_link(@app_settings.send(attr))
               - else
                 = @app_settings.send(attr)
-            
+
     = link_to edit_app_setting_path(:explore_page), class: 'btn btn-info btn-sm' do
       %span.glyphicon.glyphicon-edit
       Edit
@@ -56,7 +56,11 @@
 
 %p
   Configuration per server/instance.
-  %span.text-danger Can only be changed on the server itself!
+%p.text-info
+  Values are hidden with stars (
+  %code<> *
+  ) if their key contains "secret", "password", "api_key" or "geheim".
+%p.text-danger Can only be changed on the server itself!
 
 %pre
   %code= @deploy_config.as_json.to_yaml

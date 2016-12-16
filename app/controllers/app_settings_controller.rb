@@ -119,7 +119,8 @@ class AppSettingsController < ApplicationController
     @settings_groups = SETTINGS_GROUPS
     @context_for_views = CONTEXT_FOR_VIEWS
     @explore_page_settings = EXPLORE_PAGE_SETTINGS
-    @deploy_config = Settings.marshal_dump.except(:madek_master_secret)
+    @deploy_config = ApplicationHelper.unwrap_and_hide_secrets(
+      Settings, blacklist: %w(secret password api_key geheim))
   end
 
   def app_setting_params
@@ -145,4 +146,5 @@ class AppSettingsController < ApplicationController
   def column_info(attr)
     ::AppSetting.columns_hash[attr.to_s]
   end
+
 end
