@@ -33,7 +33,7 @@
           .form-group
             %input.btn.btn-primary{:name => "commit", :type => "submit", :value => "Apply"}
             = link_to 'Reset', media_files_path, class: 'btn btn-default'
-      - if filter_value(:conversion_status) == 'missing' && @media_files.total_count > 0
+      - if filter_value(:conversion_status) == 'missing' && %w(audio video).include?(filter_value(:media_type)) && @media_files.total_count > 0
         .panel-footer.text-right
           = form_tag reencode_missing_media_files_path, method: :post do
             = hidden_field_tag :timestamp, DateTime.now.utc

@@ -22,36 +22,36 @@ describe MediaFilesController do
 
     context 'filtering' do
       it 'filters correctly by missing conversion status' do
-        allow(Settings).to receive(:zencoder_audio_output_formats_defaults) do
-          [
-            { audio_codec: 'vorbis' },
-            { audio_codec: 'wma' },
-            { audio_codec: 'mp3' }
-          ]
+        allow(Settings).to receive(:zencoder_audio_output_formats) do
+          OpenStruct.new(
+            vorbis: OpenStruct.new(audio_codec: 'vorbis'),
+            wma: OpenStruct.new(audio_codec: 'wma'),
+            mp3: OpenStruct.new(audio_codec: 'mp3')
+          )
         end
         mf1 = create(
           :media_file_for_audio_with_zencoder_jobs,
           filename: 'foo.ogg',
           previews_attrs: [
-            { audio_codec: 'vorbis' },
-            { audio_codec: 'wma' }
+            { conversion_profile: 'vorbis' },
+            { conversion_profile: 'wma' }
           ]
         )
         mf2 = create(
           :media_file_for_audio_with_zencoder_jobs,
           filename: 'foo.ogg',
           previews_attrs: [
-            { audio_codec: 'vorbis' },
-            { audio_codec: 'mp3' }
+            { conversion_profile: 'vorbis' },
+            { conversion_profile: 'mp3' }
           ]
         )
         mf3 = create(
           :media_file_for_audio_with_zencoder_jobs,
           filename: 'foo.ogg',
           previews_attrs: [
-            { audio_codec: 'vorbis' },
-            { audio_codec: 'wma' },
-            { audio_codec: 'wma' }
+            { conversion_profile: 'vorbis' },
+            { conversion_profile: 'wma' },
+            { conversion_profile: 'wma' }
           ]
         )
         # media file with all needed formats
@@ -59,9 +59,9 @@ describe MediaFilesController do
           :media_file_for_audio_with_zencoder_jobs,
           filename: 'foo.ogg',
           previews_attrs: [
-            { audio_codec: 'vorbis' },
-            { audio_codec: 'wma' },
-            { audio_codec: 'mp3' }
+            { conversion_profile: 'vorbis' },
+            { conversion_profile: 'wma' },
+            { conversion_profile: 'mp3' }
           ]
         )
         # media file with submitted zencoder job
@@ -69,7 +69,7 @@ describe MediaFilesController do
           :media_file_for_audio_with_zencoder_jobs,
           filename: 'foo.ogg',
           previews_attrs: [
-            { audio_codec: 'vorbis' }
+            { conversion_profile: 'vorbis' }
           ],
           zencoder_job_attrs: {
             state: 'submitted'

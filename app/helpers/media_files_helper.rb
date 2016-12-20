@@ -10,7 +10,7 @@ module MediaFilesHelper
           [:info, zencoder_job.state]
         elsif zencoder_job.state == 'failed'
           [:danger, '1 failure']
-        elsif (count = media_file.missing_formats.size) > 0
+        elsif (count = media_file.missing_profiles.size) > 0
           [:warning, "#{count} missing #{'format'.pluralize(count)}"]
         else
           ok_label

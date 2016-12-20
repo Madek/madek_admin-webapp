@@ -3,7 +3,7 @@ class MediaFilesController < ApplicationController
     created_at media_type uploader size
   ).freeze
 
-  helper_method :audio_codecs
+  helper_method :conversion_profiles
 
   def index
     @media_types = MediaFile.distinct.pluck(:media_type).sort
@@ -36,8 +36,11 @@ class MediaFilesController < ApplicationController
   def reencode_missing
     limit = Settings.zencoder_test_mode ? 10 : 1000
     @media_files = MediaFile
-                     .with_missing_conversions(audio_codecs)
+                     .with_missing_conversions(conversion_profiles)
                      .where('zencoder_jobs.created_at < ?', params[:timestamp])
+                     .rewhere(
+                       media_files: { media_type: filter_value(:media_type) }
+                     )
                      .limit(limit)
     media_files_count = @media_files.to_a.size
 
@@ -86,7 +89,7 @@ class MediaFilesController < ApplicationController
         flash[:info] =
           "There is already #{in_progress} Zencoder
            #{'Job'.pluralize(in_progress)} in progress."
-        @media_files.with_missing_conversions(audio_codecs)
+        @media_files.with_missing_conversions(conversion_profiles)
       when 'failed'
         @media_files.with_failed_conversions
       else
@@ -126,16 +129,15 @@ class MediaFilesController < ApplicationController
     processed = true
     ActiveRecord::Base.transaction do
       media_file.previews.destroy_all unless only_missing
-      formats = only_missing ? media_file.missing_formats : []
-      processed = ZencoderRequester.new(media_file, formats: formats).process
+      profiles = only_missing ? media_file.missing_profiles : []
+      processed =
+        ZencoderRequester.new(media_file, only_profiles: profiles).process
     end
     processed
   end
 
-  def audio_codecs
-    Settings.zencoder_audio_output_formats_defaults.map do |format|
-      format[:audio_codec]
-    end
+  def conversion_profiles
+    Settings.zencoder_audio_output_formats.to_h.keys
   end
 
   def total_size

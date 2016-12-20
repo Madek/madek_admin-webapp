@@ -1,6 +1,14 @@
+:ruby
+  state_colors = {
+    'finished' => :success,
+    'failed' => :danger,
+    'canceled' => :warning,
+    'submitted' => :info,
+    'initialized' => :default
+  }
+
 %tr
   %td.state
-    - state_colors = { 'finished' => :success, 'failed' => :danger, 'submitted' => :info, 'initialized' => :default }
     %span{class: "label label-#{state_colors[zencoder_job.state]}"}= zencoder_job.state
   %td
     = link_to media_file_path(zencoder_job.media_file) do
