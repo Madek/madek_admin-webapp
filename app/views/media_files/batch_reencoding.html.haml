@@ -120,6 +120,7 @@
 
     VIEW.form.on('submit', function (event) {
       event.preventDefault()
+      lockBrowserTab(true)
 
       setState('formData', VIEW.form.serialize())
 
@@ -147,6 +148,19 @@
     }
 
     function setState (key, value) { STATE[key] = value }
+
+    function lockBrowserTab (locked) {
+      window[locked ? 'addEventListener' : 'removeEventListener'](
+        'beforeunload', browserTabLocker)
+    }
+
+    function browserTabLocker (event) {
+      // cross browser foo:
+      var msg = "REALLY, DON'T CLOSE THIS BROWSER WINDOW!"
+      event.preventDefault()
+      event.returnValue = msg
+      return msg;
+    }
 
     function batchLoop () {
       runRequest(STATE.formData, function (err, res) {
