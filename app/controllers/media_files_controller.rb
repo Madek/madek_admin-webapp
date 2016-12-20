@@ -1,4 +1,6 @@
 class MediaFilesController < ApplicationController
+  include Concerns::BatchReencoding
+
   SORTERS = %i(
     created_at media_type uploader size
   ).freeze
@@ -33,26 +35,6 @@ class MediaFilesController < ApplicationController
     render plain: e.message
   end
 
-  def reencode_missing
-    limit = Settings.zencoder_test_mode ? 10 : 1000
-    @media_files = MediaFile
-                     .with_missing_conversions(audio_codecs)
-                     .where('zencoder_jobs.created_at < ?', params[:timestamp])
-                     .limit(limit)
-    media_files_count = @media_files.to_a.size
-
-    flash[:info] = "Batch re-encoding is in progress: #{media_files_count} \
-                    #{'file'.pluralize(media_files_count)}, (#{total_size} GB)"
-
-    @media_files.each do |mf|
-      unless encode(mf, only_missing: true)
-        flash[:error] = mf.zencoder_jobs.first.try(:error)
-      end
-    end
-
-    redirect_to :back
-  end
-
   private
 
   def filter
@@ -82,10 +64,6 @@ class MediaFilesController < ApplicationController
     @media_files =
       case filter_value(:conversion_status, '')
       when 'missing'
-        in_progress = ZencoderJob.where(state: :submitted).count
-        flash[:info] =
-          "There is already #{in_progress} Zencoder
-           #{'Job'.pluralize(in_progress)} in progress."
         @media_files.with_missing_conversions(audio_codecs)
       when 'failed'
         @media_files.with_failed_conversions

@@ -37,7 +37,8 @@ Rails.application.routes.draw do
     resources :media_entries, only: [:index, :show]
     resources :media_files, only: [:index, :show] do
       post :reencode, on: :member
-      post :reencode_missing, on: :collection
+      get :batch_reencoding, on: :collection
+      post :batch_reencode, on: :collection
     end
     resources :previews, only: [:show, :destroy] do
       get :raw_file

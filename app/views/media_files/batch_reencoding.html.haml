@@ -1,0 +1,197 @@
+
+.page-header
+  %h1
+    %i.icon-media-entry
+    Media Files › Batch Re-Encoding
+
+%noscript
+  .alert.alert-danger.text-center
+    %b This feature only works with enabled Javascript!
+
+#batch_reencoding_loading
+  %p Loading…
+
+= form_tag '', id: 'batch_reencoding_config',
+    class: 'panel panel-default', style: 'display: none', data: {missing: @missing_formats} do
+  .panel-heading
+    .panel-title Configure Batch Job
+  .panel-body
+    .form-group
+      %p.help-block Select missing formats:
+      - @missing_formats.each do |format, count|
+        - label_txt = capture_haml do
+          %samp
+            %strong= format
+          %span.badge= count
+
+        %label.fancy-checkbox
+          = check_box_tag "formats[#{format}]"
+          %span.checked
+            .btn.btn-success.btn-sm.active
+              %i.glyphicon.glyphicon-ok
+              = label_txt
+          %span.unchecked
+            .btn.btn-default.btn-sm
+              %i.glyphicon.glyphicon-remove
+              = label_txt
+
+    .form-group
+      %p.help-block
+        %strong.text-danger
+          All selected missing Media Files will be reencoded with Zencoder. This action is liable to pay costs!
+      %label.fancy-checkbox
+        = check_box_tag 'understood'
+        %span.checked
+          .btn.btn-success.btn-sm.active
+            %i.glyphicon.glyphicon-ok
+            I understand
+        %span.unchecked
+          .btn.btn-default.btn-sm
+            %i.glyphicon.glyphicon-remove
+            I understand
+
+  .panel-footer.text-right
+    = hidden_field_tag :timestamp, DateTime.now.utc
+    = button_tag 'Start', type: 'submit', disabled: true, class: 'btn btn-lg btn-block btn-danger'
+
+#batch_reencoding_status.panel.panel-default{style: 'display: none'}
+  .panel-heading
+    .panel-title Progress
+  .panel-body
+
+    .request_progress
+      .alert.alert-danger.text-center
+        %b DON'T CLOSE THIS BROWSER WINDOW!
+
+      .progress
+        .progress-bar.progress-bar-danger.progress-bar-striped.active{style: 'width: 100%'}
+          %span
+
+    %pre.request_result
+
+
+:sass
+  .fancy-checkbox
+    input[type=checkbox]
+      display: none
+      & + .checked
+        display: none
+    input[type=checkbox]:checked
+      & + .checked
+        display: initial
+      & + .checked + .unchecked
+        display: none
+
+  // #batch_reencoding_config
+
+  #batch_reencoding_status
+    .progress
+      height: 2em
+      .progress-bar
+        min-width: 2em
+        span
+          line-height: 1.67em
+          font-size: 1.34em
+
+:javascript
+  (function() {
+    var API_URL = '#{batch_reencode_media_files_path}'
+
+    var STATE = {
+      formData: '',
+      runs: 0,
+      missing: {},
+      missingCount: 0
+    }
+
+    var VIEW = {
+      loader: $('#batch_reencoding_loading'),
+      form: $('#batch_reencoding_config'),
+      status: $('#batch_reencoding_status')
+    }
+    VIEW.result = VIEW.status.find('.request_result').first()
+    VIEW.progress = VIEW.status.find('.request_progress').first()
+    VIEW.progressBar = VIEW.progress.find('.progress-bar').find('span').first()
+
+    // action handlers
+    VIEW.form.find('input').on('click', function (event) {
+      // debugger
+    })
+
+    VIEW.form.on('submit', function (event) {
+      event.preventDefault()
+
+      setState('formData', VIEW.form.serialize())
+
+      toggleForm(false)
+      VIEW.form.hide()
+
+      VIEW.progressBar.text('Waiting…')
+      VIEW.result.hide()
+      VIEW.progress.show()
+      VIEW.status.show()
+
+      batchLoop()
+    })
+
+    // init UI
+    VIEW.loader.hide()
+    toggleForm(true)
+    VIEW.form.show()
+
+    // dev
+    window.VIEW = VIEW
+
+    function toggleForm (bool) {
+      VIEW.form.find('button[type="submit"]').attr('disabled', !bool)
+    }
+
+    function setState (key, value) { STATE[key] = value }
+
+    function batchLoop () {
+      runRequest(STATE.formData, function (err, res) {
+        setState('runs', STATE.runs + 1)
+
+        if (err || !res) {
+          VIEW.progress.hide()
+          VIEW.result.text(err || 'Unknown Error!').show()
+          return
+        }
+
+        setState('missing', res)
+        setState('missingCount', Object.values(res).reduce(function (m, n) { return (m || 0) + n }))
+
+        if (STATE.missingCount > 0) {
+          // VIEW.progressBar.text('Remaining: ' + STATE.missingCount)
+          VIEW.result.text(buildStatusInfo(STATE)).show()
+          setTimeout(batchLoop, 100)
+        } else {
+          VIEW.progress.hide()
+          VIEW.result.text('ALL DONE!').show()
+        }
+      })
+    }
+
+    function runRequest (data, callback) {
+      $.ajax(API_URL, {
+        method: 'POST',
+        dataType: 'json',
+        data: data,
+        error: function (jqXHR, textStatus, errorThrown) {
+          callback(jqXHR.responseText || errorThrown || textStatus)
+        },
+        success: function (data, textStatus) {
+          callback(null, data)
+        }
+      })
+    }
+
+    function buildStatusInfo (state) {
+      var info = {
+        total_requests: state.runs,
+        remaining_missing_formats: state.missing
+      }
+      return JSON.stringify(info, 0, 2)
+    }
+
+  }())
