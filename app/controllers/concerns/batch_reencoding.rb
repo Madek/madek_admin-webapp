@@ -4,10 +4,10 @@ module Concerns
 
     included do
       def batch_reencoding
-        if (in_progress = ZencoderJob.where(state: :submitted).count)
-          flash[:info] =
-            "There is currently #{in_progress} Zencoder
-             #{'Job'.pluralize(in_progress)} in progress."
+        if ((in_progress = ZencoderJob.where(state: :submitted).count) > 0)
+          level = in_progress > 1000 ? :error : :info
+          flash[level] =  "There is currently #{in_progress} Zencoder
+                          #{'Job'.pluralize(in_progress)} in progress."
         end
 
         @missing_formats = missing_formats
