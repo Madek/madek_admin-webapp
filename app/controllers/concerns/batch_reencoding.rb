@@ -14,17 +14,23 @@ module Concerns
       end
 
       def batch_reencode
-        params = batch_reencode_params
-        limit = params[:limit] || Settings.zencoder_test_mode ? 10 : 1000
-
         respond_to do |format|
           format.json do
+            params = batch_reencode_params
+            limit = params[:limit] || Settings.zencoder_test_mode ? 10 : 1000
+
             # this should directly raise any errors:
             reencode_missing_formats(params[:formats], limit)
 
+            # send a 'wait' command if we hit the rate limit
+            if should_wait_for_zencoder_ratelimit
+              return render(status: 420, json: { err: 'Waiting for Rate Limit' })
             # send updated missing formats + counts so client knows to continue
-            # NOTE: with the mock data the client will just try forever
-            render json: missing_formats, status: 200
+            else
+              # HACK: simulate end after ~10 rounds
+              res = { missing: (rand < 0.01) ? {} : missing_formats }
+              render status: 200, json: res
+            end
           end
         end
       end
@@ -73,5 +79,11 @@ module Concerns
       !only_formats ? missing : missing.select { |k, v| formats.include?(k) }
     end
 
+    # MOCK
+    def should_wait_for_zencoder_ratelimit
+      # should look at the request from the last time and check if we should wait
+      # ZencoderJob.where…
+      rand > 0.3
+    end
   end
 end
