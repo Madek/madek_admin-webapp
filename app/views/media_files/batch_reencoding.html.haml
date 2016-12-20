@@ -9,7 +9,7 @@
     %b This feature only works with enabled Javascript!
 
 #batch_reencoding_loading
-  %p Loading…
+  %p Loading… (If this is taking more than a few seconds, something is broken.)
 
 = form_tag '', id: 'batch_reencoding_config',
     class: 'panel panel-default', style: 'display: none', data: {missing: @missing_formats} do
@@ -60,12 +60,14 @@
   .panel-body
 
     .request_progress
-      .alert.alert-danger.text-center
-        %b DON'T CLOSE THIS BROWSER WINDOW!
-
       .progress
         .progress-bar.progress-bar-danger.progress-bar-striped.active{style: 'width: 100%'}
-          %span
+          %span DON'T CLOSE THIS BROWSER WINDOW!
+
+    .request_restart{style: 'display: none'}
+      %a.btn.btn-primary{href: batch_reencoding_media_files_path}
+        Go back
+
 
     %pre.request_result
 
@@ -92,10 +94,20 @@
         span
           line-height: 1.67em
           font-size: 1.34em
+          text-shadow: 01px 0px 1.5em black
+          font-weight: bold
 
 :javascript
   (function() {
     var API_URL = '#{batch_reencode_media_files_path}'
+
+    var VIEW = {
+      loader: $('#batch_reencoding_loading'),
+      form: $('#batch_reencoding_config'),
+      status: $('#batch_reencoding_status')
+    }
+    VIEW.result = VIEW.status.find('.request_result').first()
+    VIEW.progressBar = VIEW.status.find('.request_progress .progress-bar').first()
 
     var STATE = {
       formData: '',
@@ -105,101 +117,84 @@
       missingCount: 0
     }
 
-    var VIEW = {
-      loader: $('#batch_reencoding_loading'),
-      form: $('#batch_reencoding_config'),
-      status: $('#batch_reencoding_status')
-    }
-    VIEW.result = VIEW.status.find('.request_result').first()
-    VIEW.progress = VIEW.status.find('.request_progress').first()
-    VIEW.progressBar = VIEW.progress.find('.progress-bar').find('span').first()
-    VIEW.updateStatus = function (text) {
-      console.debug(status, text, STATE)
-      VIEW.result.text(text || buildStatusInfo(STATE)).show()
+    function updateStatus (text, level) {
+      if (text) setState('status', text)
+      var info = buildStatusInfo(STATE)
+      updateProgressBar(VIEW.progressBar, info.status, level)
+      VIEW.result.text(JSON.stringify(info.details || {}, 0, 2)).show()
     }
 
     // action handlers
     // VIEW.form.find('input').on('click', function (event) {
-    //   debugger
+    //   NOTE: could da validation here to setFormDisabled
     // })
 
     VIEW.form.on('submit', function (event) {
       event.preventDefault()
-      lockBrowserTab(true)
+      setBrowserTabLock(true)
 
+      var missing = {}
+      var allMissing = VIEW.form.data().missing
+      var missingFormats = Object.keys(allMissing)
       setState('formData', VIEW.form.serialize())
-      VIEW.updateStatus()
+      // format is selected if the checkbox is checked:
+      setState('selectedFormats', missingFormats
+        .filter(function(fmt){ return VIEW.form.find('input[type="checkbox"][name="formats[' + fmt + ']"]:checked')[0] }))
+      STATE.selectedFormats.forEach(function(k){ missing[k] = allMissing[k] })
+      setState('missing', missing)
+      setState('missingCount', sumMissing(STATE.missing))
+      setState('initialMissingCount', STATE.missingCount)
 
-      toggleForm(false)
+      updateStatus('starting…', 'warning')
+
+      setFormDisabled(false)
       VIEW.form.hide()
-
-      VIEW.progress.show()
       VIEW.status.show()
 
       batchLoop()
     })
 
     // init UI
-    setState('missing', VIEW.form.data().missing)
-    setState('missingCount', sumMissing(STATE.missing))
     VIEW.loader.hide()
-    toggleForm(true)
+    setFormDisabled(true)
     VIEW.form.show()
 
-    // dev
-    window.VIEW = VIEW
+    // helpers
 
-    function toggleForm (bool) {
+    function setFormDisabled (bool) {
       VIEW.form.find('button[type="submit"]').attr('disabled', !bool)
     }
 
     function setState (key, value) { STATE[key] = value }
 
-    function lockBrowserTab (locked) {
-      window[locked ? 'addEventListener' : 'removeEventListener'](
-        'beforeunload', browserTabLocker)
-    }
-
-    function browserTabLocker (event) {
-      // cross browser foo:
-      var msg = "REALLY, DON'T CLOSE THIS BROWSER WINDOW!"
-      event.preventDefault()
-      event.returnValue = msg
-      return msg;
-    }
-
     function batchLoop () {
-      setState('status', 'running')
-      VIEW.updateStatus()
+      setState('runs', STATE.runs + 1)
+      updateStatus('Running…', 'warning')
       runRequest(STATE.formData, function (err, res) {
-        setState('runs', STATE.runs + 1)
-        VIEW.updateStatus()
 
         // if we got a 'wait' command, try again after 1 minute
         if (err && err.xhr.status === 420) {
-          setState('status', 'waiting (1 minute because of rate limit)')
-          VIEW.updateStatus()
+          // no need to update any counts because server skipped operation
+          updateStatus('waiting (1 minute because of rate limit)')
           return setTimeout(batchLoop, (1 * 60 * 1000))
         }
 
-        if (err || !res) {
-          setState('status', 'error (' + (err || 'Unknown Error!') + ')')
-          VIEW.progress.hide()
-          VIEW.updateStatus()
-          return
+        // handle errors
+        if (err || !res instanceof Object) {
+          return updateStatus((err || 'Unknown Error!'), 'danger')
         }
 
         setState('missing', res.missing)
-        setState('missingCount', sumMissing(res))
+        setState('missingCount', STATE.missing)
 
+        // handle looping
         if (STATE.missingCount > 0) {
-          VIEW.updateStatus()
-          setTimeout(batchLoop, 100)
+          updateStatus('Waiting', 'warning')
+          setTimeout(batchLoop, 300)
+        // handle end of batching
         } else {
-          setState('status', 'ALL DONE!')
-          VIEW.progress.hide()
-          VIEW.updateStatus()
-          lockBrowserTab(false)
+          updateStatus('ALL DONE!', 'success')
+          setBrowserTabLock(false)
         }
       })
     }
@@ -221,17 +216,44 @@
       })
     }
 
-    function buildStatusInfo (state) {
-      var info = {
-        status: state.status,
-        total_requests: state.runs,
-        remaining_missing_formats: state.missing
+    function setBrowserTabLock (locked) {
+      window[locked ? 'addEventListener' : 'removeEventListener'](
+        'beforeunload', browserTabLocker)
+    }
+
+    function browserTabLocker (event) {
+      // cross browser foo:
+      var msg = "REALLY, DON'T CLOSE THIS BROWSER WINDOW!"
+      event.preventDefault()
+      event.returnValue = msg
+      return msg;
+    }
+
+    function updateProgressBar (bar, text, level) {
+      levels = ['danger', 'warning', 'info', 'success']
+      bsClass = function (l) {return 'progress-bar-' + l }
+      if (level) {
+        if (level.indexOf(level) < 0) throw new ArgumentError
+        bar.removeClass(levels.map(bsClass).join(' ')).addClass(bsClass(level))
+        if (level === 'success') bar.removeClass('active progress-bar-striped')
       }
-      return JSON.stringify(info, 0, 2)
+      bar.find('span').first().text(text ||  '…')
     }
 
     function sumMissing (obj) {
       return Object.values(obj).reduce(function (m, n) { return (m || 0) + n })
+    }
+
+    function buildStatusInfo (state) {
+      return {
+        status: state.status,
+        details: {
+          selected_formats: state.selectedFormats,
+          total_requests: state.runs,
+          remaining_missing: state.missing.length,
+          remaining_missing_formats: state.missing
+        }
+      }
     }
 
   }())

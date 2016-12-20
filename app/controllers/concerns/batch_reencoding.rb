@@ -28,7 +28,7 @@ module Concerns
             # send updated missing formats + counts so client knows to continue
             else
               # HACK: simulate end after ~10 rounds
-              res = { missing: (rand < 0.01) ? {} : missing_formats }
+              res = { missing: (rand < 0.01) ? {} : missing_formats(params[:formats]) }
               render status: 200, json: res
             end
           end
