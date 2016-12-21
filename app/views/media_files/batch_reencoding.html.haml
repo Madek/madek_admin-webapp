@@ -24,31 +24,13 @@
             %strong= format
           %span.badge= count
 
-        %label.fancy-checkbox
-          = check_box_tag "formats[#{format}]"
-          %span.checked
-            .btn.btn-success.btn-sm.active
-              %i.glyphicon.glyphicon-ok
-              = label_txt
-          %span.unchecked
-            .btn.btn-default.btn-sm
-              %i.glyphicon.glyphicon-remove
-              = label_txt
+        = render 'fancy_checkbox', name: "formats[#{format}]", label: label_txt
 
     .form-group
       %p.help-block
         %strong.text-danger
           All selected missing Media Files will be reencoded with Zencoder. This action is liable to pay costs!
-      %label.fancy-checkbox
-        = check_box_tag 'understood'
-        %span.checked
-          .btn.btn-success.btn-sm.active
-            %i.glyphicon.glyphicon-ok
-            I understand
-        %span.unchecked
-          .btn.btn-default.btn-sm
-            %i.glyphicon.glyphicon-remove
-            I understand
+      = render 'fancy_checkbox', name: 'understood', label: 'I understand'
 
   .panel-footer.text-right
     = hidden_field_tag :timestamp, DateTime.now.utc
@@ -72,18 +54,8 @@
     %pre.request_result
 
 
-:sass
-  .fancy-checkbox
-    input[type=checkbox]
-      display: none
-      & + .checked
-        display: none
-    input[type=checkbox]:checked
-      & + .checked
-        display: initial
-      & + .checked + .unchecked
-        display: none
 
+:sass
   // #batch_reencoding_config
 
   #batch_reencoding_status
