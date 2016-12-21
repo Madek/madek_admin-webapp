@@ -46,13 +46,13 @@
         .progress-bar.progress-bar-danger.progress-bar-striped.active{style: 'width: 100%'}
           %span DON'T CLOSE THIS BROWSER WINDOW!
 
-    .request_restart{style: 'display: none'}
-      %a.btn.btn-primary{href: batch_reencoding_media_files_path}
-        Go back
-
+    %p.request_restart.text-center{style: 'display: none'}
+      %a.btn.btn-primary{href: batch_reencoding_media_files_path} Go back
 
     %pre.request_result
 
+    %p.request_abort.text-right{style: 'display: none'}
+      %button.btn.btn-danger Abort
 
 
 :sass
@@ -72,12 +72,16 @@
 :javascript
   (function() {
     var API_URL = '#{batch_reencode_media_files_path}'
+    var TAB_KEY = window.crypto.getRandomValues(new Uint32Array(8))
+      .reduce(function(m, n){ return m + n.toString(36) }, '')
 
     var VIEW = {
       loader: $('#batch_reencoding_loading'),
       form: $('#batch_reencoding_config'),
-      status: $('#batch_reencoding_status')
+      status: $('#batch_reencoding_status'),
     }
+    VIEW.abort = VIEW.status.find('.request_abort')
+    VIEW.restart = VIEW.status.find('.request_restart')
     VIEW.result = VIEW.status.find('.request_result').first()
     VIEW.progressBar = VIEW.status.find('.request_progress .progress-bar').first()
 
@@ -86,7 +90,8 @@
       status: 'waiting',
       runs: 0,
       missing: {},
-      missingCount: 0
+      missingCount: 0,
+      allMissing: VIEW.form.data().missing
     }
 
     function updateStatus (text, level) {
@@ -97,29 +102,43 @@
     }
 
     // action handlers
-    // VIEW.form.find('input').on('click', function (event) {
-    //   NOTE: could da validation here to setFormDisabled
-    // })
+    VIEW.form.find('input').on('click', function (event) {
+      setState('selectedFormats', getSelectedFormats())
+      setFormDisabled(!validateForm())
+    })
+
+    VIEW.restart.find('button').on('click', function (event) {
+      event.preventDefault()
+      window.location.reload()
+    })
+
+    VIEW.abort.find('button').on('click', function (event) {
+      event.preventDefault()
+      VIEW.abort.hide()
+      clearTimeout(STATE.waitingTimeout)
+      // do the full abort if no request is running,
+      // otherwise mark it in state so the response handler will do it
+      if (!STATE.request) {
+        handleAborted()
+      } else {
+        setState('aborting', true)
+        updateStatus('aborting…')
+      }
+    })
 
     VIEW.form.on('submit', function (event) {
       event.preventDefault()
-      setBrowserTabLock(true)
+      setBrowserTabConfirm(true)
 
-      var missing = {}
-      var allMissing = VIEW.form.data().missing
-      var missingFormats = Object.keys(allMissing)
       setState('formData', VIEW.form.serialize())
-      // format is selected if the checkbox is checked:
-      setState('selectedFormats', missingFormats
-        .filter(function(fmt){ return VIEW.form.find('input[type="checkbox"][name="formats[' + fmt + ']"]:checked')[0] }))
-      STATE.selectedFormats.forEach(function(k){ missing[k] = allMissing[k] })
-      setState('missing', missing)
+      var missingObj = {}
+      STATE.selectedFormats.forEach(function(k){ missingObj[k] = STATE.allMissing[k] })
+      setState('missing', missingObj)
       setState('missingCount', sumMissing(STATE.missing))
       setState('initialMissingCount', STATE.missingCount)
 
       updateStatus('starting…', 'warning')
 
-      setFormDisabled(false)
       VIEW.form.hide()
       VIEW.status.show()
 
@@ -128,48 +147,67 @@
 
     // init UI
     VIEW.loader.hide()
-    setFormDisabled(true)
+    setState('selectedFormats', getSelectedFormats())
+    setFormDisabled(!validateForm())
     VIEW.form.show()
 
-    // helpers
-
-    function setFormDisabled (bool) {
-      VIEW.form.find('button[type="submit"]').attr('disabled', !bool)
-    }
-
-    function setState (key, value) { STATE[key] = value }
-
+    // main worker
     function batchLoop () {
       setState('runs', STATE.runs + 1)
       updateStatus('Running…', 'warning')
-      runRequest(STATE.formData, function (err, res) {
+      VIEW.abort.show()
 
-        // if we got a 'wait' command, try again after 1 minute
+      setState('request', runRequest(STATE.formData, function (err, res) {
+
+        // handle 'wait' response, try again after 1 minute
         if (err && err.xhr.status === 420) {
           // no need to update any counts because server skipped operation
           updateStatus('waiting (1 minute because of rate limit)')
-          return setTimeout(batchLoop, (1 * 60 * 1000))
+          STATE.waitingTimeout = setTimeout(batchLoop, (1 * 60 * 1000))
+          return
         }
 
         // handle errors
         if (err || !res instanceof Object) {
-          return updateStatus((err || 'Unknown Error!'), 'danger')
+          setBrowserTabConfirm(false)
+          updateStatus(
+            'Error: ' + (err.message || err || 'Unknown Error!'),
+            'danger')
+          VIEW.abort.hide()
+          VIEW.restart.show()
+          return
         }
 
-        setState('missing', res.missing)
-        setState('missingCount', STATE.missing)
+        setState('missing', res)
+        setState('missingCount', sumMissing(STATE.missing))
 
-        // handle looping
-        if (STATE.missingCount > 0) {
-          updateStatus('Waiting', 'warning')
-          setTimeout(batchLoop, 300)
+        // handle aborting
+        if (STATE.aborting) {
+          return handleAborted()
+        }
+
         // handle end of batching
-        } else {
-          updateStatus('ALL DONE!', 'success')
-          setBrowserTabLock(false)
+        if (STATE.missingCount === 0) {
+          setBrowserTabConfirm(false)
+          updateStatus('ALL DONE!', 'primary')
+          VIEW.abort.hide()
+          VIEW.restart.show()
+          return
         }
-      })
+
+        // still missing, looping
+        updateStatus('Waiting', 'warning')
+        return setTimeout(batchLoop, 300)
+      }))
     }
+
+    // helpers
+
+    function setFormDisabled (bool) {
+      VIEW.form.find('button[type="submit"]').attr('disabled', bool)
+    }
+
+    function setState (key, value) { STATE[key] = value }
 
     function runRequest (data, callback) {
       $.ajax(API_URL, {
@@ -188,32 +226,54 @@
       })
     }
 
-    function setBrowserTabLock (locked) {
-      window[locked ? 'addEventListener' : 'removeEventListener'](
-        'beforeunload', browserTabLocker)
+    function handleAborted () {
+      updateStatus('ABORTED!', 'primary')
+      setBrowserTabConfirm(false)
+      VIEW.restart.show()
     }
 
-    function browserTabLocker (event) {
+    function setBrowserTabConfirm (bool) {
+      window[bool ? 'addEventListener' : 'removeEventListener'](
+        'beforeunload', browserTabConfirmation)
+    }
+
+    function browserTabConfirmation (event) {
       // cross browser foo:
       var msg = "REALLY, DON'T CLOSE THIS BROWSER WINDOW!"
       event.preventDefault()
       event.returnValue = msg
-      return msg;
+      return msg
+    }
+
+    function validateForm() {
+      return VIEW.form.find('input[name="understood"]:checked').length > 0 &&
+        STATE.selectedFormats.length > 0
     }
 
     function updateProgressBar (bar, text, level) {
-      levels = ['danger', 'warning', 'info', 'success']
+      levels = ['danger', 'warning', 'info', 'success', 'primary']
       bsClass = function (l) {return 'progress-bar-' + l }
       if (level) {
         if (level.indexOf(level) < 0) throw new ArgumentError
         bar.removeClass(levels.map(bsClass).join(' ')).addClass(bsClass(level))
-        if (level === 'success') bar.removeClass('active progress-bar-striped')
+        if (['success', 'danger', 'primary'].includes(level)) {
+          bar.removeClass('active progress-bar-striped')
+        }
       }
       bar.find('span').first().text(text ||  '…')
     }
 
+    // format is selected if the checkbox is checked:
+    function getSelectedFormats () {
+      return Object.keys(STATE.allMissing).filter(function(i){
+        return VIEW.form
+          .find('input[type="checkbox"][name="formats[' + i + ']"]:checked')[0]
+      })
+    }
+
     function sumMissing (obj) {
-      return Object.values(obj).reduce(function (m, n) { return (m || 0) + n })
+      return Object.values(obj)
+        .reduce(function (m, n) { return (m || 0) + n }, 0)
     }
 
     function buildStatusInfo (state) {
@@ -222,7 +282,7 @@
         details: {
           selected_formats: state.selectedFormats,
           total_requests: state.runs,
-          remaining_missing: state.missing.length,
+          remaining_missing: state.missingCount,
           remaining_missing_formats: state.missing
         }
       }

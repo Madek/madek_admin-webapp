@@ -30,20 +30,20 @@ module Concerns
             return fail_global_lock unless ensure_global_lock
             set_global_lock
 
+            # NOTE: this shouldn't take too long; and raise errors if any
             reencode_missing_formats(params[:formats], limit)
 
             # send a 'wait' command if we hit the rate limit
             if should_wait_for_zencoder_ratelimit
-              return render(status: 420, json: { err: 'Waiting for Rate Limit' })
-            # send updated missing formats + counts so client knows to continue
-            else
-              # HACK: simulate end after ~10 rounds
-              res = { missing: (rand < 0.01) ? {} : missing_formats(params[:formats]) }
-              render status: 200, json: res
+              return render(status: 420, plain: 'Waiting because of Rate Limit')
             end
+
+            # send updated counts so client knows to continue
+            render status: 200, json: missing_formats(params[:formats])
           end
         end
       end
+
     end
 
     private
@@ -96,20 +96,20 @@ module Concerns
     end
 
     # MOCK
-    def missing_formats(only_formats = nil)
+    def missing_formats(formats = nil)
       missing = {
         mp3: 178,
         mp4_HD: 12345,
         webm_HD: 12345
       }
-      !only_formats ? missing : missing.select { |k, v| formats.include?(k) }
+      !formats ? missing : missing.select { |k, v| formats.include?(k.to_s) }
     end
 
     # MOCK
     def should_wait_for_zencoder_ratelimit
       # should look at the request from the last time and check if we should wait
       # ZencoderJob.where…
-      rand > 0.3
+      true # rand < 0.3
     end
   end
 end
