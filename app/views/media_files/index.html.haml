@@ -3,6 +3,9 @@
     %i.icon-media-entry
     Media Files (#{@media_files.total_count})
 
+    .btn-group.pull-right
+      = link_to 'Batch Re-Encoding', batch_reencoding_media_files_path, class: 'btn btn-default'
+
 .view_media_files_index.row
   .col-xs-12
     .panel.panel-default
@@ -33,11 +36,6 @@
           .form-group
             %input.btn.btn-primary{:name => "commit", :type => "submit", :value => "Apply"}
             = link_to 'Reset', media_files_path, class: 'btn btn-default'
-      - if filter_value(:conversion_status) == 'missing' && %w(audio video).include?(filter_value(:media_type)) && @media_files.total_count > 0
-        .panel-footer.text-right
-          = form_tag reencode_missing_media_files_path, method: :post do
-            = hidden_field_tag :timestamp, DateTime.now.utc
-            = button_tag 'Re-encode all missing', class: 'btn btn-info', data: { confirm: 'All missing audio Media Files will be reencoded with Zencoder. This action is liable to pay costs. Do you want to proceeed?' }
 
 .row
   .col-xs-12

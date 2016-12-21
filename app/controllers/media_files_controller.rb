@@ -1,4 +1,6 @@
 class MediaFilesController < ApplicationController
+  include Concerns::BatchReencoding
+
   SORTERS = %i(
     created_at media_type uploader size
   ).freeze
@@ -33,7 +35,7 @@ class MediaFilesController < ApplicationController
     render plain: e.message
   end
 
-  def reencode_missing
+  def reencode_missing # simple batch request ALL missing
     limit = Settings.zencoder_test_mode ? 10 : 1000
     @media_files = MediaFile
                      .with_missing_conversions(conversion_profiles)
@@ -123,21 +125,6 @@ class MediaFilesController < ApplicationController
 
   def default_sorting
     @media_files = @media_files.order(:created_at)
-  end
-
-  def encode(media_file, only_missing: false)
-    processed = true
-    ActiveRecord::Base.transaction do
-      media_file.previews.destroy_all unless only_missing
-      profiles = only_missing ? media_file.missing_profiles : []
-      processed =
-        ZencoderRequester.new(media_file, only_profiles: profiles).process
-    end
-    processed
-  end
-
-  def conversion_profiles
-    Settings.zencoder_audio_output_formats.to_h.keys
   end
 
   def total_size

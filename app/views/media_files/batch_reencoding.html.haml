@@ -1,0 +1,312 @@
+
+.page-header
+  %h1
+    %i.icon-media-entry
+    Media Files › Batch Re-Encoding
+
+%noscript
+  .alert.alert-danger.text-center
+    %b This feature only works with enabled Javascript!
+
+#batch_reencoding_loading
+  %p Loading… (If this is taking more than a few seconds, something is broken.)
+
+= form_tag '', id: 'batch_reencoding_config',
+    class: 'panel panel-default', style: 'display: none', data: {missing: @missing_formats} do
+  = hidden_field_tag 'start_time', DateTime.current.to_i
+  .panel-heading
+    .panel-title Configure Batch Job
+  .panel-body
+    .form-group
+      %p.help-block Select missing formats:
+      - if @missing_formats.empty?
+        %p No missing formats!
+      - @missing_formats.each do |format, count|
+        - label_txt = capture_haml do
+          %samp
+            %strong= format
+          %span.badge= count
+
+        = render 'fancy_checkbox', name: "formats[#{format}]", label: label_txt
+
+    .form-group
+      %p.help-block
+        %strong.text-danger
+          All selected missing Media Files will be reencoded with Zencoder. This action is liable to pay costs!
+      = render 'fancy_checkbox', name: 'understood', label: 'I understand'
+
+  .panel-footer.text-right
+    = hidden_field_tag :timestamp, DateTime.now.utc
+    = button_tag 'Start', type: 'submit', disabled: true, class: 'btn btn-lg btn-block btn-danger'
+
+#batch_reencoding_status.panel.panel-default{style: 'display: none'}
+  .panel-heading
+    .panel-title Progress
+  .panel-body
+
+    %p
+      Sending Requests to Zencoder…
+
+    .request_progress
+      .progress
+        .progress-bar.progress-bar-danger.progress-bar-striped.active{style: 'width: 100%'}
+          %span DON'T CLOSE THIS BROWSER WINDOW!
+
+    %p.request_restart.text-center{style: 'display: none'}
+      %a.btn.btn-primary{href: batch_reencoding_media_files_path} Go back
+
+    %pre.request_result
+
+    %pre.request_error
+
+    %p.request_abort.text-right{style: 'display: none'}
+      %button.btn.btn-danger Abort
+
+
+:sass
+  // #batch_reencoding_config
+
+  #batch_reencoding_status
+    .progress
+      height: 2em
+      .progress-bar
+        min-width: 2em
+        span
+          line-height: 1.67em
+          font-size: 1.34em
+          text-shadow: 01px 0px 1.5em black
+          font-weight: bold
+
+:javascript
+  (function() {
+    var API_URL = '#{batch_reencode_media_files_path}'
+    var TAB_KEY = window.crypto.getRandomValues(new Uint32Array(8))
+      .reduce(function(m, n){ return m + n.toString(36) }, '')
+
+    var VIEW = {
+      loader: $('#batch_reencoding_loading'),
+      form: $('#batch_reencoding_config'),
+      status: $('#batch_reencoding_status'),
+    }
+    VIEW.abort = VIEW.status.find('.request_abort')
+    VIEW.restart = VIEW.status.find('.request_restart')
+    VIEW.result = VIEW.status.find('.request_result').first()
+    VIEW.error = VIEW.status.find('.request_error').first()
+    VIEW.progressBar = VIEW.status.find('.request_progress .progress-bar').first()
+
+    var STATE = {
+      formData: '',
+      status: 'waiting',
+      runs: 0,
+      missing: {},
+      missingCount: 0,
+      allMissing: VIEW.form.data().missing
+    }
+
+    function updateStatus (text, level) {
+      if (text) setState('status', text)
+      var info = buildStatusInfo(STATE)
+      updateProgressBar(VIEW.progressBar, info.status, level)
+      VIEW.result.text(JSON.stringify(info.details || {}, 0, 2)).show()
+      if (info.error){
+        VIEW.error.text(info.error).show()
+      } else {
+        VIEW.error.hide()
+      }
+    }
+
+    // action handlers
+    VIEW.form.find('input').on('click', function (event) {
+      setState('selectedFormats', getSelectedFormats())
+      setFormDisabled(!validateForm())
+    })
+
+    VIEW.restart.find('button').on('click', function (event) {
+      event.preventDefault()
+      window.location.reload()
+    })
+
+    VIEW.abort.find('button').on('click', function (event) {
+      event.preventDefault()
+      VIEW.abort.hide()
+      clearTimeout(STATE.waitingTimeout)
+      setState('aborting', true)
+      // do the full abort if no request is running.
+      // we've marked it in state so the response handler will also handle it.
+      setState('aborting', true)
+      if (!STATE.request) {
+        handleAborted()
+      } else {
+        updateStatus('aborting…')
+      }
+    })
+
+    VIEW.form.on('submit', function (event) {
+      event.preventDefault()
+      setBrowserTabConfirm(true)
+
+      setState('formData', VIEW.form.serialize())
+      var missingObj = {}
+      STATE.selectedFormats.forEach(function(k){ missingObj[k] = STATE.allMissing[k] })
+      setState('missing', missingObj)
+      setState('missingCount', sumMissing(STATE.missing))
+      setState('initialMissingCount', STATE.missingCount)
+
+      updateStatus('starting…', 'warning')
+
+      VIEW.form.hide()
+      VIEW.status.show()
+
+      batchLoop()
+    })
+
+    // init UI
+    VIEW.loader.hide()
+    setState('selectedFormats', getSelectedFormats())
+    setFormDisabled(!validateForm())
+    VIEW.form.show()
+
+    // main worker
+    function batchLoop () {
+      setState('runs', STATE.runs + 1)
+      updateStatus('Running…', 'warning')
+      VIEW.abort.show()
+
+      setState('request', runRequest(STATE.formData, function (err, res) {
+
+        // update STATE from response
+        if (res && res instanceof Object) {
+          setState('missing', res)
+          setState('missingCount', sumMissing(STATE.missing))
+        }
+
+        // handle aborting
+        if (STATE.aborting) {
+          return handleAborted()
+        }
+
+        // handle errors
+        setState('error', err ? err.message || JSON.stringify(err, 0, 2) : undefined)
+
+        // 'wait' response: try again after 1 minute
+        if (err && err.xhr.status === 420) {
+          // no need to update any counts because server skipped operation
+          updateStatus('waiting (1 minute because of rate limit)')
+          STATE.waitingTimeout = setTimeout(batchLoop, (1 * 60 * 1000))
+          return
+        }
+        // other errors
+        if (err || !res instanceof Object) {
+          setBrowserTabConfirm(false)
+          updateStatus(STATE.error ? 'Error!' : 'Unknown Error!', 'danger')
+          VIEW.abort.hide()
+          VIEW.restart.show()
+          return
+        }
+
+        // handle end of batching
+        if (STATE.missingCount === 0) {
+          setBrowserTabConfirm(false)
+          updateStatus('ALL DONE!', 'primary')
+          VIEW.abort.hide()
+          VIEW.restart.show()
+          return
+        }
+
+        // still missing, looping
+        updateStatus('Waiting', 'warning')
+        return setTimeout(batchLoop, 3 * 1000)
+      }))
+    }
+
+    // helpers
+
+    function setFormDisabled (bool) {
+      VIEW.form.find('button[type="submit"]').attr('disabled', bool)
+    }
+
+    function setState (key, value) { STATE[key] = value }
+
+    function runRequest (data, callback) {
+      $.ajax(API_URL, {
+        method: 'POST',
+        dataType: 'json',
+        data: data,
+        error: function (jqXHR, textStatus, errorThrown) {
+          callback({
+            message: jqXHR.responseText || errorThrown || textStatus,
+            xhr: jqXHR
+          })
+        },
+        success: function (data, textStatus) {
+          callback(null, data)
+        }
+      })
+    }
+
+    function handleAborted () {
+      updateStatus('ABORTED!', 'primary')
+      setBrowserTabConfirm(false)
+      VIEW.abort.hide()
+      VIEW.restart.show()
+    }
+
+    function setBrowserTabConfirm (bool) {
+      window[bool ? 'addEventListener' : 'removeEventListener'](
+        'beforeunload', browserTabConfirmation)
+    }
+
+    function browserTabConfirmation (event) {
+      // cross browser foo:
+      var msg = "REALLY, DON'T CLOSE THIS BROWSER WINDOW!"
+      event.preventDefault()
+      event.returnValue = msg
+      return msg
+    }
+
+    function validateForm() {
+      return VIEW.form.find('input[name="understood"]:checked').length > 0 &&
+        STATE.selectedFormats.length > 0
+    }
+
+    function updateProgressBar (bar, text, level) {
+      levels = ['danger', 'warning', 'info', 'success', 'primary']
+      bsClass = function (l) {return 'progress-bar-' + l }
+      if (level) {
+        if (level.indexOf(level) < 0) throw new ArgumentError
+        bar.removeClass(levels.map(bsClass).join(' ')).addClass(bsClass(level))
+        if (['success', 'danger', 'primary'].includes(level)) {
+          bar.removeClass('active progress-bar-striped')
+        }
+      }
+      bar.find('span').first().text(text ||  '…')
+    }
+
+    // format is selected if the checkbox is checked:
+    function getSelectedFormats () {
+      return Object.keys(STATE.allMissing).filter(function(i){
+        return VIEW.form
+          .find('input[type="checkbox"][name="formats[' + i + ']"]:checked')[0]
+      })
+    }
+
+    function sumMissing (obj) {
+      return Object.values(obj)
+        .reduce(function (m, n) { return (m || 0) + n }, 0)
+    }
+
+    function buildStatusInfo (state) {
+      return {
+        status: state.status,
+        error: state.error,
+        details: {
+          total_requests: state.runs,
+          selected_formats: state.selectedFormats,
+          initial_missing: state.initialMissingCount,
+          remaining_missing: state.missingCount,
+          remaining_missing_formats: state.missing
+        }
+      }
+    }
+
+  }())

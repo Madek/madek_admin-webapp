@@ -1,0 +1,14 @@
+:ruby
+  throw ArgumentError unless name and label
+  checked ||= false
+
+%label.fancy-checkbox
+  = check_box_tag(name, '1', checked)
+  %span.fancy-checkbox-checked
+    .btn.btn-success.btn-sm.active
+      %i.glyphicon.glyphicon-ok
+      = label
+  %span.fancy-checkbox-unchecked
+    .btn.btn-default.btn-sm
+      %i.glyphicon.glyphicon-remove
+      = label
