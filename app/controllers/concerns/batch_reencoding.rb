@@ -2,8 +2,14 @@ module Concerns
   module BatchReencoding
     extend ActiveSupport::Concern
 
+    LOCK_KEY = 'global_lock_for_batch_reencoding'.freeze
+    LOCK_MSG = 'Locked by another user! Wait 5 minutes.'.freeze
+
     included do
+
       def batch_reencoding
+        return fail_global_lock unless ensure_global_lock
+
         if ((in_progress = ZencoderJob.where(state: :submitted).count) > 0)
           level = in_progress > 1000 ? :error : :info
           flash[level] =  "There is currently #{in_progress} Zencoder
@@ -19,7 +25,11 @@ module Concerns
             params = batch_reencode_params
             limit = params[:limit] || Settings.zencoder_test_mode ? 10 : 1000
 
-            # this should directly raise any errors:
+            # fail if already locked for another user,
+            # otherwise lock for the current user
+            return fail_global_lock unless ensure_global_lock
+            set_global_lock
+
             reencode_missing_formats(params[:formats], limit)
 
             # send a 'wait' command if we hit the rate limit
@@ -37,6 +47,22 @@ module Concerns
     end
 
     private
+
+    def set_global_lock
+      cache_store.fetch(LOCK_KEY, expires_in: 5.minutes) { session[:session_id] }
+    end
+
+    def get_global_lock
+      cache_store.fetch(LOCK_KEY)
+    end
+
+    def ensure_global_lock
+      !get_global_lock || get_global_lock == session[:session_id]
+    end
+
+    def fail_global_lock
+      render(status: 423, plain: LOCK_MSG)
+    end
 
     def batch_reencode_params
       p = {
