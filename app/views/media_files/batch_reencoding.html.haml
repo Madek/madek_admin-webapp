@@ -159,6 +159,17 @@
 
       setState('request', runRequest(STATE.formData, function (err, res) {
 
+        // update STATE from response
+        if (res && res instanceof Object) {
+          setState('missing', res)
+          setState('missingCount', sumMissing(STATE.missing))
+        }
+
+        // handle aborting
+        if (STATE.aborting) {
+          return handleAborted()
+        }
+
         // handle 'wait' response, try again after 1 minute
         if (err && err.xhr.status === 420) {
           // no need to update any counts because server skipped operation
@@ -176,14 +187,6 @@
           VIEW.abort.hide()
           VIEW.restart.show()
           return
-        }
-
-        setState('missing', res)
-        setState('missingCount', sumMissing(STATE.missing))
-
-        // handle aborting
-        if (STATE.aborting) {
-          return handleAborted()
         }
 
         // handle end of batching
