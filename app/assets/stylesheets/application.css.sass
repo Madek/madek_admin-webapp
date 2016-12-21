@@ -36,14 +36,19 @@ $grid-float-breakpoint: 0px
       margin-left: 0.5em
       padding-bottom: 1em
 
-// see also views/application partial
+// see also views/application partia
 .fancy-checkbox
   input[type=checkbox]
     display: none
     & + .fancy-checkbox-checked
       display: none
+
   input[type=checkbox]:checked
     & + .fancy-checkbox-checked
       display: initial
     & + .fancy-checkbox-checked + .fancy-checkbox-unchecked
       display: none
+
+  .fancy-checkbox-checked, .fancy-checkbox-unchecked
+    .btn .glyphicon
+      padding-right: 5px
