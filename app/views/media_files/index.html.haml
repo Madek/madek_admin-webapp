@@ -1,10 +1,12 @@
+-# NOTE: see <https://github.com/Madek/madek/issues/20>
+
 .page-header
   %h1
     %i.icon-media-entry
     Media Files (#{@media_files.total_count})
 
-    .btn-group.pull-right
-      = link_to 'Batch Re-Encoding', batch_reencoding_media_files_path, class: 'btn btn-default'
+    -# .btn-group.pull-right
+    -#   = link_to 'Batch Re-Encoding', batch_reencoding_media_files_path, class: 'btn btn-default'
 
 .view_media_files_index.row
   .col-xs-12
@@ -25,9 +27,12 @@
             %label Extension
             = select_tag 'filter[extension]', options_for_select(['(all)'] + @extensions, filter_value(:extension, '(all)')), class: 'form-control'
 
+          -# .form-group
+          -#   %label Status
+          -#   = select_tag 'filter[conversion_status]', options_for_select(['(all)', ['with failed', :failed], ['with missing', :missing]], filter_value(:conversion_status, '(all)')), class: 'form-control'
           .form-group
             %label Status
-            = select_tag 'filter[conversion_status]', options_for_select(['(all)', ['with failed', :failed], ['with missing', :missing]], filter_value(:conversion_status, '(all)')), class: 'form-control'
+            = select_tag 'filter[conversion_status]', options_for_select(['(all)', ['with failed', :failed]], filter_value(:conversion_status, '(all)')), class: 'form-control'
 
           .form-group
             %label Sort by
