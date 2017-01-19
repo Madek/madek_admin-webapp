@@ -25,7 +25,7 @@ feature 'Admin Contexts' do
     fill_in 'context[description]', with: 'new description'
     fill_in 'context[admin_comment]', with: 'new admin comment'
 
-    click_button 'Save'
+    click_button 'Create'
 
     expect(current_path).to eq context_path(context)
     expect(page).to have_content 'Label new label'
@@ -87,6 +87,52 @@ feature 'Admin Contexts' do
     visit context_path(context)
 
     expect(page).to have_content usage_message
+  end
+
+  scenario 'Duplicating Context' do
+    new_label = Faker::Lorem.sentence
+    new_description = Faker::Lorem.sentence
+    visit context_path(context)
+    click_on 'Duplicate Context'
+
+    fill_in 'context[label]', with: new_description
+    fill_in 'context[description]', with: new_label
+
+    click_button 'Create'
+    find('.alert', text: 'Success! Context was successfully created')
+
+    new_context = Context.find \
+      Rails.application.routes.recognize_path(current_path)[:id]
+
+    table_rows = all('.table.edit-context-keys tbody tr')
+
+    new_context.context_keys.each.with_index do |ck, i|
+      row = table_rows[(i * 2)]
+      expect(row).to have_content "#{ck.position} #{ck.id} #{ck.meta_key.id}"
+    end
+  end
+
+  scenario 'Creating Context from Vocabulary' do
+    new_label = Faker::Lorem.sentence
+    new_description = Faker::Lorem.sentence
+    visit vocabulary_path('madek_core')
+    click_on 'Create Context'
+
+    fill_in 'context[label]', with: new_description
+    fill_in 'context[description]', with: new_label
+
+    click_button 'Create'
+    find('.alert', text: 'Success! Context was successfully created')
+
+    new_context = Context.find \
+      Rails.application.routes.recognize_path(current_path)[:id]
+
+    table_rows = all('.table.edit-context-keys tbody tr')
+
+    new_context.context_keys.each.with_index do |ck, i|
+      row = table_rows[(i * 2)]
+      expect(row).to have_content "#{ck.position} #{ck.id} #{ck.meta_key.id}"
+    end
   end
 
   def update_app_settings_with_context

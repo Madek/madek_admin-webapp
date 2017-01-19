@@ -25,15 +25,37 @@ class ContextsController < ApplicationController
   end
 
   def new
-    @context = Context.new
+    @params = new_context_params
+    @duplicated_from = get_duplicated_from(@params)
+
+    if @duplicated_from
+      admin_comment = "Duplicated from #{@duplicated_from.class.name} " \
+        "'#{@duplicated_from.label}' (#{@duplicated_from.id}) " \
+        "at #{Time.now.utc}"
+      if @duplicated_from.admin_comment
+        admin_comment += \
+          ", #{"previous comment was:\n---\n#{@duplicated_from.admin_comment}"}"
+      end
+      prefilled_attrs = {
+        id: @duplicated_from.id + '_copy',
+        label: @duplicated_from.label,
+        description: @duplicated_from.description,
+        admin_comment: admin_comment
+      }
+    end
+
+    @context = Context.new(prefilled_attrs)
   end
 
   def create
-    @context = Context.create!(new_context_params)
-
-    respond_with @context, location: (lambda do
-      contexts_path
-    end)
+    ActiveRecord::Base.transaction do
+      @context = Context.new(create_context_params)
+      if (duplicate_from = get_duplicated_from(new_context_params))
+        duplicate_keys(@context, duplicate_from)
+      end
+      @context.save!
+    end
+    respond_with @context, location: -> { context_path(@context) }
   end
 
   def destroy
@@ -62,10 +84,16 @@ class ContextsController < ApplicationController
   end
 
   def new_context_params
+    params.permit(:from_context, :from_vocabulary)
+  end
+
+  def create_context_params
     params.require(:context).permit(:id,
                                     :label,
                                     :description,
-                                    :admin_comment)
+                                    :admin_comment,
+                                    :from_context,
+                                    :from_vocabulary)
   end
 
   def create_context_key_for(context)
@@ -76,4 +104,28 @@ class ContextsController < ApplicationController
       position: next_position
     )
   end
+
+  def get_duplicated_from(params)
+    if params[:from_context].present?
+      Context.find(params[:from_context])
+    elsif params[:from_vocabulary].present?
+      Vocabulary.find(params[:from_vocabulary])
+    end
+  end
+
+  def duplicate_keys(new_context, duplicate_from)
+    ckeys = if duplicate_from.is_a?(Context)
+              duplicate_from.context_keys.map(&:attributes)
+            else
+              duplicate_from.meta_keys.map do |mk|
+                dont_overide = { label: nil, description: nil, admin_comment: nil }
+                mk.attributes.slice(*ContextKey.attribute_names)
+                  .merge(meta_key_id: mk.id).merge(dont_overide)
+              end
+            end
+    ckeys.each do |attrs|
+      ContextKey.create!(attrs.merge(id: nil, context: new_context))
+    end
+  end
+
 end

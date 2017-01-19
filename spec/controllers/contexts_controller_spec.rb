@@ -106,11 +106,12 @@ describe ContextsController do
       end.to change { Context.count }.by(1)
     end
 
-    it 'redirects to contexts path' do
+    it 'redirects to context path' do
       post :create, { context: context_params }, user_id: admin_user.id
 
       expect(response).to have_http_status(302)
-      expect(response).to redirect_to(contexts_path)
+      expect(response).to \
+        redirect_to(context_path(Context.find(context_params[:id])))
       expect(flash[:success]).to eq flash_message(:create, :success)
     end
 

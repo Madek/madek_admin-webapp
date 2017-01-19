@@ -1,5 +1,17 @@
 .page-header
-  %h1 New Context
+  %h1
+    New Context
+
+- if @duplicated_from
+  .alert.alert-info{role: "alert"}
+    = "Context will be duplicated based on #{@duplicated_from.class.name}"
+    = " '#{@duplicated_from.label}' (id: "
+    %code<>= @duplicated_from.id
+    = ')!'
+    %br
+    = "MetaKeys will be copied from the #{@duplicated_from.class.name}, "
+    = "other settings are prefilled below."
+
 
 .row
   .col-xs-12

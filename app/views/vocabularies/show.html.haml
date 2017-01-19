@@ -5,11 +5,17 @@
   .col-xs-12
     .panel.panel-default
       .panel-body
-        .btn-group
+        .btn-group.pull-left
           = render partial: 'action_buttons', locals: { vocabulary: @vocabulary, size: nil }
-          = link_to "Keyword: #{@vocabulary.keywords.count}",
+          = link_to "Keywords: #{@vocabulary.keywords.count}",
               vocabulary_keywords_path(@vocabulary),
               class: 'btn btn-default'
+
+        .btn-group.pull-right
+          = link_to new_context_path(from_vocabulary: @vocabulary.id), class: 'btn btn-default' do
+            %i.glyphicon.glyphicon-duplicate
+            = 'Create Context'
+
 
 .row
   .col-xs-12

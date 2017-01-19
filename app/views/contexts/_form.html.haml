@@ -1,9 +1,15 @@
 = form_for @context, html: { class: 'form-horizontal', role: 'form' } do |f|
+
+  - [:from_context, :from_vocabulary].each do |pass_parameter|
+    = hidden_field_tag pass_parameter, @params.try(:[], pass_parameter)
+
   .form-group
     .col-xs-1
       = f.label :id, 'ID', class: 'control-label'
     .col-xs-6
       = f.text_field :id, class: 'form-control', disabled: @context.persisted?
+    %span.help-block
+      %span.text-danger Note: can not be changed after creation!
   .form-group
     .col-xs-1
       = f.label :label, 'Label', class: 'control-label'
@@ -23,5 +29,5 @@
     .col-xs-offset-1.col-xs-3
       = button_tag type: 'submit', class: 'btn btn-success' do
         %span.glyphicon.glyphicon-ok
-        Save
+        Create
       = link_to 'Go back', :back, class: 'btn btn-link'

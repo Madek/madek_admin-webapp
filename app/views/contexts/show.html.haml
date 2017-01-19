@@ -10,8 +10,12 @@
   .col-xs-12
     .panel.panel-default
       .panel-body
-        .btn-group
+        .btn-group.pull-left
           = render partial: 'action_buttons', locals: { context: @context }
+        .btn-group.pull-right
+          = link_to new_context_path(from_context: @context.id), class: 'btn btn-default' do
+            %i.glyphicon.glyphicon-duplicate
+            = 'Duplicate Context'
 
 .row
   .col-xs-12
