@@ -1,0 +1,26 @@
+.page-header
+  %h1
+    Keyword: #{@keyword}
+    %small Usage
+  %small
+    = link_to '&larr; Go back to keywords list'.html_safe, keywords_path
+
+.alert.alert-info
+  The <strong>#{@keyword}</strong> keyword is used #{pluralize(@keyword.meta_data.count, 'time')} in the following Media Entries:
+
+.row
+  .col-xs-12
+    %table.table.table-striped
+      %thead
+        %tr
+          %th Title
+          %th Responsible person
+          %th Media File
+          %th ID
+          %th Created at
+          %th Published?
+          %th
+      %tbody
+        = render partial: 'media_entries/media_entry', collection: @media_entries, as: :media_entry
+
+= paginate @media_entries

@@ -1,18 +1,18 @@
-= form_for [@vocabulary, @keyword], as: :keyword, html: { class: 'form-horizontal', role: 'form' } do |f|
+= form_for @keyword, html: { class: 'form-horizontal', role: 'form' } do |f|
   - if @keyword.persisted?
     .form-group
       .col-xs-1
-        = f.label :id, 'ID', class: 'control-label'
+        = f.label :id, class: 'control-label'
       .col-xs-6
         = f.text_field :id, class: 'form-control', disabled: true
   .form-group
     .col-xs-1
-      = f.label :meta_key_id, 'MetaKey', class: 'control-label'
+      = f.label :meta_key_id, class: 'control-label'
     .col-xs-6
-      = f.select :meta_key_id, @vocabulary.meta_keys.all.collect(&:id), {}, class: 'form-control'
+      = f.select :meta_key_id, @vocabulary.meta_keys.where(meta_datum_object_type: 'MetaDatum::Keywords').pluck(:id), {}, class: 'form-control'
   .form-group
     .col-xs-1
-      = f.label :term, 'Term', class: 'control-label'
+      = f.label :term, class: 'control-label'
     .col-xs-6
       = f.text_field :term, class: 'form-control'
   .form-group
@@ -20,4 +20,4 @@
       = button_tag type: 'submit', class: 'btn btn-success' do
         %span.glyphicon.glyphicon-ok
         Save
-      = link_to 'Go back', vocabulary_keywords_path(@vocabulary), class: 'btn btn-link'
+      = link_to 'Go back', :back, class: 'btn btn-link'

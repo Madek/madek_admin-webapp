@@ -1,0 +1,24 @@
+.page-header
+  %h1 Merge <em>#{@keyword}</em> keyword to:
+
+.row
+  .col-xs-12
+    .panel.panel-default
+      .panel-body
+        After merge the keyword will be deleted.
+
+= form_tag merge_to_keyword_path(@keyword, redirect_to: params[:redirect_to]), method: :post, class: 'form-horizontal', role: 'form' do
+
+  .form-group
+    .col-xs-3
+      = label_tag :id_receiver, 'ID of the target keyword:', class: 'control-label'
+    .col-xs-4
+      = text_field_tag :id_receiver, nil, id: 'id_receiver', class: 'form-control'
+
+  .form-group
+    .col-xs-offset-3.col-xs-4
+      = button_tag class: 'btn btn-warning', data: { confirm: 'Do you really want to perform a merge?' } do
+        %span.glyphicon.glyphicon-ok
+        Merge
+      = link_to 'Go back', params[:redirect_to], class: 'btn btn-link'
+

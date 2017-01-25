@@ -12,6 +12,12 @@ class MetaKeysController < ApplicationController
 
   def show
     @meta_key = MetaKey.find(params[:id])
+    unless @meta_key.is_extensible_list
+      @keyword = Keyword.new(
+        meta_key_id: @meta_key.id
+      )
+    end
+    @keywords = @meta_key.keywords.page(params[:page]).per(16)
   end
 
   def new
@@ -35,7 +41,7 @@ class MetaKeysController < ApplicationController
     meta_key.update!(meta_key_params)
 
     respond_with meta_key, location: (lambda do
-      edit_meta_key_path(meta_key)
+      meta_key_path(meta_key)
     end)
   end
 

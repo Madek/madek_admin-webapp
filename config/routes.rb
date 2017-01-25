@@ -3,6 +3,11 @@ Rails.application.routes.draw do
   scope '/admin' do
     get :status, controller: :application, action: :status
 
+    concern :orderable do
+      patch :move_up, on: :member
+      patch :move_down, on: :member
+    end
+
     resources :api_clients
     resources :users do
       member do
@@ -45,30 +50,26 @@ Rails.application.routes.draw do
     end
     resources :zencoder_jobs, only: :show
     resources :filter_sets, only: [:index, :show]
-    resources :vocabularies do
-      resources :keywords
+    resources :vocabularies, concerns: :orderable do
       resources :vocabulary_user_permissions, path: 'user_permissions'
       resources :vocabulary_group_permissions, path: 'group_permissions'
       resources :vocabulary_api_client_permissions, path: 'api_client_permissions'
-      patch :move_up, on: :member
-      patch :move_down, on: :member
     end
-    resources :meta_keys do
-      patch :move_up, on: :member
-      patch :move_down, on: :member
-    end
+    resources :meta_keys, concerns: :orderable
     resources :contexts do
       patch :add_meta_key, on: :member
     end
-    resources :context_keys, only: [:edit, :update, :destroy] do
-      patch :move_up, on: :member
-      patch :move_down, on: :member
-    end
+    resources :context_keys, only: [:edit, :update, :destroy], concerns: :orderable
     resources :meta_datums, only: :index
     resources :io_mappings
     resources :io_interfaces, except: [:edit, :update]
     resources :app_settings, only: [:index, :edit, :update]
     resources :usage_terms, except: :edit
+    resources :keywords, concerns: :orderable do
+      get :usage, on: :member
+      get :form_merge_to, on: :member
+      post :merge_to, on: :member
+    end
 
     resources :people
 

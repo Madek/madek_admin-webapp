@@ -24,4 +24,8 @@ en:
     attributes:
       meta_key:
         allowed_people_subtypes: Allowed Subtypes
+      keyword:
+        id: ID
+        meta_key_id: MetaKey
+        term: Term
   hello: "Hello world"

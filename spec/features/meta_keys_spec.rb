@@ -48,8 +48,10 @@ feature 'Admin Meta Keys' do
       select 'block', from: 'meta_key[text_type]'
 
       click_button 'Save'
-      expect(current_path).to eq edit_meta_key_path(meta_key)
+      expect(current_path).to eq meta_key_path(meta_key)
       expect(page).to have_css('.alert-success')
+
+      visit edit_meta_key_path(meta_key)
 
       expect(page).to have_field 'meta_key[label]', with: 'new label'
       expect(page).to have_field 'meta_key[description]', with: 'newdescription'
@@ -66,11 +68,8 @@ feature 'Admin Meta Keys' do
       expect(page).to have_select(
         'Meta datum object type',
         selected: meta_key_keywords.meta_datum_object_type)
-      expect(page).to have_select(
-        'Keywords alphabetical order',
-        selected: selected_value_from_boolean(
-          meta_key_keywords.keywords_alphabetical_order)
-      )
+      expect(find_field('meta_key[keywords_alphabetical_order]', with: 'true'))
+        .to be_checked
     end
 
     scenario "Uncheck 'Extensible?' checkbox for MetaDatum::Keywords" do
@@ -79,6 +78,8 @@ feature 'Admin Meta Keys' do
       expect(page).to have_checked_field 'Extensible?'
       select 'MetaDatum::Licenses', from: 'Meta datum object type'
       click_button 'Save'
+
+      visit edit_meta_key_path(meta_key_keywords)
 
       expect(page).to have_select('Meta datum object type',
                                   selected: 'MetaDatum::Licenses')
@@ -111,10 +112,12 @@ feature 'Admin Meta Keys' do
       click_button 'Save'
 
       expect(page).to have_css '.alert-success'
+
+      visit edit_meta_key_path(meta_key)
+
       expect(page).to have_no_checked_field 'Person'
       expect(page).to have_no_checked_field 'PeopleGroup'
       expect(page).to have_checked_field 'PeopleInstitutionalGroup'
-
     end
 
     meta_datum_types.except('MetaDatum::People').each do |type, factory|

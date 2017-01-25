@@ -1,6 +1,17 @@
+- if @current_meta_key.nil? || keyword.meta_key_id != @current_meta_key.id
+  - @current_meta_key = keyword.meta_key
+  %tr
+    %td.info(colspan="4")
+      .pull-left
+        %strong MetaKey:
+        %code= @current_meta_key.id
+      .pull-right
+        - unless @current_meta_key.keywords_alphabetical_order
+          = link_to 'Define order of the Keywords', meta_key_path(@current_meta_key), class: 'btn btn-xs btn-warning'
 %tr
   %td= keyword.id
   %td= link_to keyword.meta_key.id, meta_key_path(keyword.meta_key)
   %td= keyword
-  %td.active.col-xs-2
-    = render partial: 'action_buttons', locals: { keyword: keyword, size: 'btn-sm' }
+  %td.active.col-xs-2.text-center
+    .btn-group.btn-group-vertical.btn-group-sm
+      = render partial: 'action_buttons', locals: { keyword: keyword }

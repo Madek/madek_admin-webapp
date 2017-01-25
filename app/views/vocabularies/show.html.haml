@@ -8,7 +8,7 @@
         .btn-group.pull-left
           = render partial: 'action_buttons', locals: { vocabulary: @vocabulary, size: nil }
           = link_to "Keywords: #{@vocabulary.keywords.count}",
-              vocabulary_keywords_path(@vocabulary),
+              keywords_path(filter: { vocabulary_id: @vocabulary.id }),
               class: 'btn btn-default'
 
         .btn-group.pull-right

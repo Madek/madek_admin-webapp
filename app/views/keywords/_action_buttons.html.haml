@@ -1,9 +1,24 @@
-.btn-group
-  = link_to edit_vocabulary_keyword_path(@vocabulary, keyword), class: "btn btn-info #{size}" do
-    %i.glyphicon.glyphicon-edit
-    Edit
-  = link_to vocabulary_keyword_path(@vocabulary, keyword), method: :delete, data: {   |
+- if keyword.not_used?
+  .btn.btn-default.disabled Not used
+- else
+  = link_to "Show usage (#{keyword.usage_count})", usage_keyword_path(keyword), class: 'btn btn-default'
+- if webapp_keyword_path(keyword) && !keyword.not_used?
+  = link_to webapp_keyword_path(keyword), class: 'btn btn-default', target: :_blank do
+    %span.glyphicon.glyphicon-link
+    Show in Webapp
+= link_to form_merge_to_keyword_path(keyword, redirect_to: request.fullpath), data: { confirm: 'Did you either remember or copy ID of the target keyword? You will need it in the next step.' }, class: 'btn btn-warning' do
+  %span.glyphicon.glyphicon-random
+  Merge to
+= link_to edit_keyword_path(keyword), class: 'btn btn-info' do
+  %i.glyphicon.glyphicon-edit
+  Edit
+- if keyword.not_used?
+  = link_to keyword_path(keyword, redirect_to: request.fullpath), method: :delete, data: { |
     confirm: 'The keyword will be deleted. Do you want to proceed?' }, |
-    class: "btn btn-danger #{size}" do
+    class: 'btn btn-danger' do
+    %i.glyphicon.glyphicon-trash
+    Delete
+- else
+  .btn.btn-danger.disabled{ title:'Keyword is used and cannot be deleted.' }
     %i.glyphicon.glyphicon-trash
     Delete

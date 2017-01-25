@@ -26,7 +26,7 @@
                   = link_to move_down_meta_key_path(meta_key), method: :patch, class: "btn btn-warning move-down" do
                     %span.glyphicon.glyphicon-chevron-down
                 - if meta_key.can_have_keywords?
-                  = link_to vocabulary_keywords_path(@vocabulary, meta_key_id: meta_key.id),
+                  = link_to keywords_path(filter: { vocabulary_id: @vocabulary.id }, search_term: meta_key.id),
                     class: 'btn btn-default' do
                     %i.glyphicon.glyphicon-eye-open
                     Show keywords (#{meta_key.keywords_count})

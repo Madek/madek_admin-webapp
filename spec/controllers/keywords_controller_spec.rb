@@ -101,7 +101,7 @@ describe KeywordsController do
 
       expect(response).to have_http_status(302)
       expect(response).to redirect_to(
-        vocabulary_keywords_path(vocabulary)
+        keywords_path(filter: { vocabulary_id: vocabulary })
       )
     end
   end
@@ -144,7 +144,7 @@ describe KeywordsController do
 
       expect(response).to have_http_status(302)
       expect(response).to redirect_to(
-        vocabulary_keywords_path(vocabulary)
+        keywords_path(filter: { vocabulary_id: vocabulary })
       )
       expect(flash[:success]).not_to be_empty
     end
@@ -181,7 +181,7 @@ describe KeywordsController do
       it 'redirects to admin keywords path' do
         expect(response).to have_http_status(302)
         expect(response).to redirect_to(
-          vocabulary_keywords_path(vocabulary)
+          keywords_path(filter: { vocabulary_id: vocabulary })
         )
       end
 
@@ -203,6 +203,69 @@ describe KeywordsController do
 
         expect(response).to have_http_status(:not_found)
         expect(response).to render_template 'errors/404'
+      end
+    end
+  end
+
+  describe '#form_merge_to' do
+    before(:each) do
+      get :form_merge_to, { id: keyword.id }, user_id: admin_user.id
+    end
+
+    it 'assigns variables correctly' do
+      expect(assigns[:keyword]).to eq keyword
+    end
+
+    it 'renders template' do
+      expect(response).to have_http_status(200)
+      expect(response).to render_template :form_merge_to
+    end
+  end
+
+  describe '#merge_to' do
+    let(:receiver) { create :keyword, meta_key: meta_key }
+    before(:each) do
+      allow_any_instance_of(Keyword).to receive(:merge_to)
+    end
+
+    context 'when receiver ID is the same as originator ID' do
+      before(:each) do
+        post(
+          :merge_to,
+          { id: keyword.id, id_receiver: keyword.id },
+          user_id: admin_user.id
+        )
+      end
+
+      it 'redirects back' do
+        expect(response).to have_http_status(302)
+        expect(response).to redirect_to(form_merge_to_keyword_path(keyword))
+      end
+
+      it 'displays error flash' do
+        expect(flash[:error]).to be_present
+      end
+    end
+
+    context 'when receiver ID is not the same as originator ID' do
+      before(:each) do
+        post(
+          :merge_to,
+          { id: keyword.id,
+            id_receiver: receiver.id,
+            redirect_to: '/redirected-to'
+          },
+          user_id: admin_user.id
+        )
+      end
+
+      it 'redirects to path from param' do
+        expect(response).to have_http_status(302)
+        expect(response).to redirect_to('/redirected-to')
+      end
+
+      it 'displays success message' do
+        expect(flash[:success]).to be_present
       end
     end
   end

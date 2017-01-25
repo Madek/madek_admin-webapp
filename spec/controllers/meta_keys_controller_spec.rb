@@ -138,8 +138,8 @@ describe MetaKeysController do
       )
     end
 
-    it 'redirects to edit admin meta key path' do
-      expect(response).to redirect_to edit_meta_key_path(meta_key)
+    it 'redirects to meta key path' do
+      expect(response).to redirect_to meta_key_path(meta_key)
     end
 
     it 'displays success message' do
