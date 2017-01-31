@@ -339,7 +339,7 @@ DEPENDENCIES
   puma
   pundit
   quiet_assets
-  rails (>= 4.2.5, < 5)
+  rails (>= 4.2.7.1, < 5)
   responders
   rest-client
   rspec-rails (~> 3.1)
