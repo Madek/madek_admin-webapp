@@ -77,6 +77,10 @@ Rails.application.routes.draw do
     resources :people
 
     root to: 'dashboard#index'
+
+    resource :assistant, only: [:show] do
+      get 'sql_reports'
+    end
   end
 
 end

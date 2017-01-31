@@ -56,9 +56,22 @@ $grid-float-breakpoint: 0px
 
 // forms
 
-// forms for "new" actions have a yellowish background, 
+// forms for "new" actions have a yellowish background,
 // to better distinguish between create and update
 // (by rails convention their id starts with "new_")
 form[id^="new_"]
   background: lightyellow
   box-shadow: 0px 0px 20px 20px lightyellow
+
+
+// bootstrap recommends but does not ship this table width fix for firefox
+@-moz-document url-prefix()
+  fieldset
+    display: table-cell
+
+// fixes
+.panel-body::before, .panel-body::after
+  white-space: initial
+
+textarea.code
+  @extend samp
