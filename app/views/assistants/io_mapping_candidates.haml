@@ -1,0 +1,15 @@
+%h2 IOMappings Candidates Assistant
+
+:ruby
+  all_embedded_data = MediaEntry.all
+    .map(&:media_file).map(&:meta_data).map(&:to_a).flatten(1)
+
+  io_mapping_candidates = all_embedded_data
+      .group_by(&:first).map { |k, b| [k, b.to_h.values] }
+      .sort_by { |k, v| v.count }
+      .map { |k, v| [k, v.uniq] }
+      .to_h
+
+%pre
+  %code
+    = JSON.pretty_generate(io_mapping_candidates)
