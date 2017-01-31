@@ -27,6 +27,13 @@ module ApplicationHelper
     content_tag :option, '(all)', value: ''
   end
 
+  def icon(name)
+    throw ArgumentError unless name.present?
+    capture_haml do
+      haml_tag('i', class: "glyphicon glyphicon-#{name}", aria: { hidden: true })
+    end
+  end
+
   def static_input_if_persisted(object, text)
     throw ArgumentError unless block_given?
     if object.persisted?

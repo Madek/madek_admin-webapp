@@ -78,22 +78,18 @@ table > tbody > tr.empty-collection > td
   padding-top: 4em
   padding-bottom: 4em
 
-// see also views/application partia
-.fancy-checkbox
-  input[type=checkbox]
-    display: none
-    & + .fancy-checkbox-checked
-      display: none
 
-  input[type=checkbox]:checked
-    & + .fancy-checkbox-checked
-      display: initial
-    & + .fancy-checkbox-checked + .fancy-checkbox-unchecked
-      display: none
+// bootstrap recommends but does not ship this table width fix for firefox
+@-moz-document url-prefix()
+  fieldset
+    display: table-cell
 
-  .fancy-checkbox-checked, .fancy-checkbox-unchecked
-    .btn .glyphicon
-      padding-right: 5px
+// fixes
+.panel-body::before, .panel-body::after
+  white-space: initial
+
+textarea.code
+  @extend samp
 
 
 // forms
@@ -119,3 +115,20 @@ table.table
   &.table-condensed
     samp
       font-size: 12px
+
+// see also views/application partia
+.fancy-checkbox
+  input[type=checkbox]
+    display: none
+    & + .fancy-checkbox-checked
+      display: none
+
+  input[type=checkbox]:checked
+    & + .fancy-checkbox-checked
+      display: initial
+    & + .fancy-checkbox-checked + .fancy-checkbox-unchecked
+      display: none
+
+  .fancy-checkbox-checked, .fancy-checkbox-unchecked
+    .btn .glyphicon
+      padding-right: 5px

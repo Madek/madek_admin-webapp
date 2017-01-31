@@ -1,0 +1,151 @@
+:ruby
+  editing = params[:do] == 'Edit'
+
+  fallback_hint = "Enter a SQL query above and click the button to run it."
+  warning_msg = <<-EOF
+    Alpha Feature, use at your own risk!
+    It should NOT be enabled on productions systems!
+    Queries will be run in a rolled-back transaction, but apart from that there are no security measures preventing misuse!
+  EOF
+
+-# NOTE: uses "base" layout so it can grow larger than the normal container!
+- content_for :main_content do
+  -# form/head: always shown
+  .container
+
+    .alert.alert-danger(role="alert")
+      %b= icon('warning-sign')
+      = ' '
+      %span{style: 'white-space: pre'}
+        = warning_msg
+
+    .page-header
+      %h1
+        = icon('education')
+        = " SQL Reports"
+
+    .row
+      = form_tag(sql_reports_assistant_path, method: :get) do
+        .col-xs-12
+          - if !editing
+            = hidden_field_tag('query', query)
+            %div#sql_reports_query_show{style: 'margin-bottom: 35px'}
+              %p{style: 'padding: 1.5em; margin-bottom: 0; white-space: pre-wrap; border: 1px solid transparent'}<>
+                %samp{style: 'overflow-wrap: break-word'}= preserve(query)
+
+          %p#sql_reports_query_edit
+            = text_area_tag('query',
+                query,
+                class: 'well code',
+                rows: [query.split("\n").length, 3].max,
+                style: 'width:100%;padding: 1.5em;margin-bottom: 20px')
+
+          = submit_tag('Run Query', name: :run, class: 'btn btn-success', data: {disable_with: 'Running…'})
+          = submit_tag('Edit', name: :do, class: 'btn btn-default', id: 'sql_reports_edit_button')
+
+    %hr
+
+  -# empty or result of query:
+
+  - if !query || (!pg_error && !pg_results)
+    .container
+      = fallback_hint
+
+  - elsif !pg_error.nil?
+    :ruby
+      err_name, err_msg = if pg_error.is_a?(StandardError)
+        [pg_error.try(:original_exception).try(:class).try(:name) || pg_error.class.name,
+        pg_error.try(:original_exception).try(:error) || pg_error.message]
+      else
+        ['Unknown Error!!!', pg_error.to_s]
+      end
+    .container
+      .panel.panel-danger
+        .panel-heading
+          %h4
+            = icon('exclamation-sign')
+            %samp{style: 'margin-left: 0.6em'}
+              %b= err_name
+
+        %pre.panel-body{style: 'margin:0 ;border:none; background:transparent'}
+          - if err_msg.starts_with?('ERROR:')
+            - lines = err_msg.strip_heredoc.strip.split("\n")
+            %p{style: 'font-size: 1.34em; font-weight: bold'}<>= lines.first
+            %p<>= preserve(lines.last(lines.length-1).join("\n"))
+          - else
+            = preserve(err_msg)
+
+        .panel-footer
+          %a{href: 'http://stackoverflow.com/search?' + {q: "[postgresql] #{err_msg.sub(/^ERROR:/, '').split("\n").first.strip}"}.to_query, target: '_blank'}
+            = icon('question-sign')
+
+  - else
+    :ruby
+      if pg_results.is_a?(Array)
+        # NOTE: in non-jruby this also works:
+        # keys = pg_results.fields
+        # values = pg_results.values
+        keys = pg_results.first.keys
+        values = pg_results.map(&:values)
+        count = pg_results.length
+      else
+        # NOTE: this is what "fields" would return in this case:
+        keys = ['?column?']
+        values = [[pg_results]]
+        count = pg_results.present? ? 1 : 0
+      end
+
+    .container-fluid
+      .div{style: 'text-align: center'}
+        .panel.panel-info{style: 'text-align: left; display: inline-block; min-width: 320px; max-width: 100%'}
+          .panel-heading
+            %h4{display: 'inline-block'}
+              = icon('ok-sign')
+              %span{style: 'margin-left: 0.6em'}
+                = " Got"
+                %b= "#{count}"
+                = "#{"result".pluralize(count)} in #{query_time} seconds"
+
+          .table-responsive{style: 'text-align: left'}
+            %table.table.table-compact.table-hover.table-bordered{style: 'font-family:monospace'}
+              %thead{style: 'font-weight:bold'}
+                %tr
+                  - keys.map do |f|
+                    %td= f
+              %tbody
+                - values.map do |row|
+                  %tr
+                    - row.map do |val|
+                      %td{style: 'white-space:pre-wrap'}<>= preserve(val)
+
+
+  :javascript
+    var progessiveEnhance = function () {
+      var editing = #{editing}
+      var $btn = $('#sql_reports_edit_button')
+
+      if (editing) {
+        // if already editing, only disable the button
+        $btn.attr('disabled', true)
+
+      } else {
+        // if not editing, hide the form and enable inline editing:
+        // whenever edit button or text itself is clicked, switch to editing mode.
+        $('#sql_reports_query_edit').hide()
+
+        var inlineEditHandler = function (event) {
+          event.preventDefault()
+          $btn.attr('disabled', true)
+          $('#sql_reports_query_show').hide()
+          $('#sql_reports_query_edit').show()
+          $('#query').remove() // hidden field not used anymore, textarea has value
+        }
+
+        $btn.click(inlineEditHandler)
+        $('#sql_reports_query_show').click(inlineEditHandler)
+      }
+    }
+
+    // if used inline like here, just call the function.
+    // otherwise must wait for DOM ready: $(progessiveEnhance)
+    progessiveEnhance()

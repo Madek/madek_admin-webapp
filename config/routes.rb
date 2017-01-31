@@ -78,6 +78,11 @@ Rails.application.routes.draw do
 
     root to: 'dashboard#index'
     post 'dashboard/refresh', to: 'dashboard#refresh'
+
+    resource :assistant, only: [:show] do
+      get 'sql_reports'
+    end
+
   end
 
 end
