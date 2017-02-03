@@ -1,0 +1,29 @@
+%h2 IOMappings Candidates Assistant
+
+-# all_embedded_data = MediaEntry.all
+-#   .map(&:media_file).map(&:meta_data).map(&:to_a).flatten(1)
+-#
+-# io_mapping_candidates = all_embedded_data
+-#     .group_by(&:first).map { |k, b| [k, b.to_h.values] }
+-#     .sort_by { |k, v| v.count }
+-#     .map { |k, v| [k, v.uniq] }
+-#     .to_h
+
+:ruby
+  query = <<-SQL.strip_heredoc
+    SELECT
+      DISTINCT subquery.keys as io_key
+        FROM (
+        SELECT jsonb_object_keys(meta_data) AS keys
+        FROM media_files
+      ) AS subquery
+    ORDER BY io_key ASC
+  SQL
+
+  io_keys = ActiveRecord::Base.connection.execute(query)
+    .map { |row| row['io_key']}
+    .sort
+
+%pre
+  %code
+    = JSON.pretty_generate(io_keys)

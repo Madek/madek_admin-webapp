@@ -76,7 +76,7 @@ Rails.application.routes.draw do
     root to: 'dashboard#index'
 
     resource :assistant, only: [:show] do
-      get 'io_mapping_candidates'
+      get 'media_files_io_mappings'
     end
   end
 
