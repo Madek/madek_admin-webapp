@@ -6,7 +6,7 @@
     = link_to '&larr; Go back to keywords list'.html_safe, keywords_path
 
 .alert.alert-info
-  The <strong>#{@keyword}</strong> keyword is used #{pluralize(@keyword.meta_data.count, 'time')} in the following Media Entries:
+  The <strong>#{@keyword}</strong> keyword is used <strong>#{pluralize(@usage_count, 'time')}</strong> in the following Media Entries:
 
 .row
   .col-xs-12

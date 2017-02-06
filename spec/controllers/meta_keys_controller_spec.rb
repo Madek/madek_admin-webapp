@@ -181,6 +181,7 @@ describe MetaKeysController do
 
   describe '#show' do
     let(:meta_key) { create :meta_key_title }
+    let(:keyword) { create :keyword, meta_key: meta_key }
     before { get :show, { id: meta_key.id }, user_id: admin_user.id }
 
     it 'responds with the success' do
@@ -192,8 +193,10 @@ describe MetaKeysController do
       expect(response).to render_template :show
     end
 
-    it 'assigns @meta_key correctly' do
+    it 'assigns variables correctly' do
       expect(assigns[:meta_key]).to eq meta_key
+      expect(assigns[:keywords]).to eq [keyword]
+      expect(assigns[:usage_counts]).to be_a(Hash)
     end
   end
 

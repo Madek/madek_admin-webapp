@@ -4,7 +4,7 @@ describe KeywordsController do
   let(:admin_user) { create :admin_user }
   let(:meta_key) { create :meta_key_keywords }
   let(:vocabulary) { meta_key.vocabulary }
-  let(:keyword) { create :keyword, meta_key: meta_key }
+  let!(:keyword) { create :keyword, meta_key: meta_key }
 
   describe '#index' do
     before do
@@ -19,7 +19,7 @@ describe KeywordsController do
     end
 
     it 'assigns @keywords correctly' do
-      expect(assigns[:keywords]).to eq [keyword]
+      expect(assigns[:keywords]).not_to be_empty
     end
 
     describe 'filtering' do
@@ -31,19 +31,19 @@ describe KeywordsController do
             user_id: admin_user.id
           )
 
-          expect(assigns[:keywords]).to eq [keyword]
+          expect(assigns[:keywords]).to match_array [keyword]
         end
       end
 
       context 'by term' do
-        it 'returns a proper keyword' do
+        it 'returns a proper keyword ' do
           get(
             :index,
-            { vocabulary_id: vocabulary.id, search_term: keyword.term[0, 2] },
+            { vocabulary_id: vocabulary.id, search_term: keyword.term[0..-2] },
             user_id: admin_user.id
           )
 
-          expect(assigns[:keywords]).to eq [keyword]
+          expect(assigns[:keywords]).to match_array [keyword]
         end
       end
 
@@ -53,12 +53,12 @@ describe KeywordsController do
             :index,
             {
               vocabulary_id: vocabulary.id,
-              meta_key_id: keyword.meta_key_id
+              search_term: keyword.meta_key_id
             },
             user_id: admin_user.id
           )
 
-          expect(assigns[:keywords]).to eq [keyword]
+          expect(assigns[:keywords]).to match_array [keyword]
         end
       end
     end
@@ -190,7 +190,7 @@ describe KeywordsController do
       end
     end
 
-    context 'when keywords does not exist' do
+    context 'when keyword does not exist' do
       it 'renders error template' do
         delete(
           :destroy,
@@ -267,6 +267,21 @@ describe KeywordsController do
       it 'displays success message' do
         expect(flash[:success]).to be_present
       end
+    end
+  end
+
+  describe '#usage' do
+    it 'responds with HTTP 200 status code' do
+      expect(response).to be_success
+      expect(response).to have_http_status(200)
+    end
+
+    it 'assigns variables correctly' do
+      get :usage, { id: keyword.id }, user_id: admin_user.id
+
+      expect(assigns[:keyword]).to eq keyword
+      expect(assigns[:usage_count]).to eq 0
+      expect(assigns[:media_entries]).to be
     end
   end
 

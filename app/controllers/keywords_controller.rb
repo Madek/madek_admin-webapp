@@ -3,12 +3,13 @@ class KeywordsController < ApplicationController
     @vocabularies = Vocabulary.sorted
     if filter_value(:vocabulary_id).present?
       @vocabulary = Vocabulary.find(filter_value(:vocabulary_id))
-      @keywords = @vocabulary.keywords
+      @keywords = Keyword.of_vocabulary(@vocabulary.id)
     else
       @keywords = Keyword.all
     end
     @keywords = @keywords.order(:meta_key_id, :term).page(params[:page]).per(16)
     filter
+    @usage_counts = Keyword.usage_count_for(@keywords)
     @current_meta_key = nil
   end
 
@@ -46,7 +47,12 @@ class KeywordsController < ApplicationController
   def destroy
     @keyword = Keyword.find(params[:id])
     @vocabulary = @keyword.meta_key.vocabulary
-    @keyword.destroy! if @keyword.not_used?
+    if @keyword.not_used?
+      @keyword.destroy!
+    else
+      raise ActiveRecord::ActiveRecordError, 'The keyword is used' \
+                                             'and cannot be deleted.'
+    end
 
     respond_with @keyword, location: (lambda do
       keywords_path(filter: { vocabulary_id: @vocabulary.id })
@@ -57,6 +63,9 @@ class KeywordsController < ApplicationController
 
   def usage
     @keyword = Keyword.find(params[:id])
+    @usage_count = Keyword
+                    .usage_count_for(@keyword)
+                    .fetch(@keyword.id, 0)
     @media_entries =
       MediaEntry
         .unscoped
