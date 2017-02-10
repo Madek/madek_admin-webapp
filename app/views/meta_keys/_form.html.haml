@@ -59,7 +59,7 @@
       .col-xs-3
         = f.label :text_type, class: 'control-label'
       .col-xs-3
-        = f.select :text_type, MetaKey.text_types.keys, class: 'form-control'
+        = f.select :text_type, MetaKey.text_types.keys, {}, class: 'form-control'
 
   - if f.object.can_have_keywords?
     .form-group

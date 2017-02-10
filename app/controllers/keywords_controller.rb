@@ -40,7 +40,8 @@ class KeywordsController < ApplicationController
     @vocabulary = @keyword.meta_key.vocabulary
 
     respond_with @keyword, location: (lambda do
-      keywords_path(filter: { vocabulary_id: @vocabulary.id })
+      params[:redirect_to] ||
+        keywords_path(filter: { vocabulary_id: @vocabulary.id })
     end)
   end
 
@@ -55,7 +56,8 @@ class KeywordsController < ApplicationController
     end
 
     respond_with @keyword, location: (lambda do
-      keywords_path(filter: { vocabulary_id: @vocabulary.id })
+      params[:redirect_to] ||
+        keywords_path(filter: { vocabulary_id: @vocabulary.id })
     end)
   end
 
