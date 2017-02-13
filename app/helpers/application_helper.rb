@@ -31,9 +31,9 @@ module ApplicationHelper
                 .where(id: keyword.meta_key_id)
                 .first
     if meta_key.present?
-      '/vocabulary/meta_key/:meta_key_id/:keyword_term'
-        .gsub(':meta_key_id', meta_key.id)
-        .gsub(':keyword_term', ERB::Util.url_encode(keyword.term))
+      '/vocabulary/$meta_key_id/terms/$keyword_term'
+        .gsub('$meta_key_id', meta_key.id)
+        .gsub('$keyword_term', ERB::Util.url_encode(keyword.term))
     else
       false
     end
