@@ -15,6 +15,7 @@ class VocabulariesController < ApplicationController
   def edit
     @vocabulary = Vocabulary.find(params[:id])
     @meta_keys = load_meta_keys
+    @redirect_to = params[:redirect_to].presence || vocabularies_path
   end
 
   define_update_action_for(Vocabulary)

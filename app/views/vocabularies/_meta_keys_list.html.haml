@@ -11,15 +11,17 @@
       %thead
         %tr
           %th ID
+          %th Label
           %th Meta datum object type
-          %th
+          %th.col-xs-3
       %tbody
         - @meta_keys.each do |meta_key|
           %tr{'data-id' => meta_key.id}
             %td= link_to meta_key.id, meta_key_path(meta_key)
+            %td= meta_key.label
             %td= meta_key.meta_datum_object_type
-            %td.active.col-xs-4
-              .btn-group
+            %td.active
+              .btn-group.btn-group-sm
                 - if move_keys
                   = link_to move_up_meta_key_path(meta_key), method: :patch, class: "btn btn-warning move-up" do
                     %span.glyphicon.glyphicon-chevron-up

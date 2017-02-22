@@ -3,19 +3,19 @@
   %td= vocabulary.label
   %td= vocabulary.description
   %td.active
-    .btn-group.btn-group-vertical
-      = link_to vocabulary_path(vocabulary), class: 'btn btn-default btn-sm' do
+    .btn-group.btn-group-sm.btn-group-vertical
+      = link_to vocabulary_path(vocabulary), class: 'btn btn-default' do
         %i.glyphicon.glyphicon-eye-open
         Details
-      = render partial: 'action_buttons', locals: { vocabulary: vocabulary, size: 'btn-sm' }
+      = render partial: 'action_buttons', locals: { vocabulary: vocabulary }
       = link_to "MetaKeys: #{vocabulary.meta_keys_count}",
           meta_keys_path(vocabulary_id: vocabulary.id),
-          class: 'btn btn-default btn-sm'
+          class: 'btn btn-default'
       = link_to "Keywords: #{vocabulary.keywords.count}", keywords_path(filter: { vocabulary_id: vocabulary.id }),
-          class: 'btn btn-default btn-sm'
-      = link_to move_up_vocabulary_path(vocabulary), method: :patch, class: "btn btn-warning btn-sm" do
+          class: 'btn btn-default'
+      = link_to move_up_vocabulary_path(vocabulary), method: :patch, class: 'btn btn-warning' do
         %span.glyphicon.glyphicon-chevron-up
         Move up
-      = link_to move_down_vocabulary_path(vocabulary), method: :patch, class: "btn btn-warning btn-sm" do
+      = link_to move_down_vocabulary_path(vocabulary), method: :patch, class: 'btn btn-warning' do
         %span.glyphicon.glyphicon-chevron-down
         Move down
