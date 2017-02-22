@@ -97,11 +97,9 @@ class ContextsController < ApplicationController
   end
 
   def create_context_key_for(context)
-    next_position = context.context_keys.last.position + 1 rescue 0
     ContextKey.create!(
       context: context,
-      meta_key: MetaKey.find(params[:meta_key_id]),
-      position: next_position
+      meta_key: MetaKey.find(params[:meta_key_id])
     )
   end
 

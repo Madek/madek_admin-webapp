@@ -29,10 +29,6 @@ describe ContextsController do
     it 'assigns @context correctly' do
       expect(assigns[:context]).to eq context
     end
-
-    it 'assigns @context.context_keys correctly' do
-      expect(assigns[:context].context_keys).to match_array(context.context_keys)
-    end
   end
 
   describe '#edit' do
