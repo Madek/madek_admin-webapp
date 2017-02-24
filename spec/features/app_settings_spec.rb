@@ -207,15 +207,15 @@ feature 'Admin App Settings' do
   scenario 'Updating Contexts for Validation' do
     visit app_settings_path
 
-    within '#contexts_for_validation' do
+    within '#contexts_for_entry_validation' do
       expect(page).to have_content 'Upload'
       click_link 'Edit'
     end
-    fill_in 'app_setting[contexts_for_validation]', with: contexts.join(', ')
+    fill_in 'app_setting[contexts_for_entry_validation]', with: contexts.join(', ')
     click_button 'Save'
 
     expect(page).to have_css '.alert-success'
-    within '#contexts_for_validation' do
+    within '#contexts_for_entry_validation' do
       expect(page).to have_content contexts.map(&:label).join(', ').to_s
       contexts.each do |c|
         expect(page).to have_link c.label, href: context_path(c)

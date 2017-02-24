@@ -50,8 +50,8 @@ class AppSettingsController < ApplicationController
       title: 'Contexts for "List" View',
       description: 'Up to 3 contexts, used in \'list\' mode on index views.'
     },
-    contexts_for_validation: {
-      title: 'Contexts for Validation',
+    contexts_for_entry_validation: {
+      title: 'Contexts for MediaEntry Validation',
       description: ''
     },
     contexts_for_dynamic_filters: {
