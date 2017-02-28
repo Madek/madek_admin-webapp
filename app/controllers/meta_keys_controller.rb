@@ -26,11 +26,18 @@ class MetaKeysController < ApplicationController
   end
 
   def create
-    meta_key = MetaKey.create!(meta_key_params)
+    @meta_key = MetaKey.new(meta_key_params)
 
-    respond_with meta_key, location: (lambda do
-      edit_meta_key_path(meta_key)
-    end)
+    if second_step?(@meta_key)
+      flash[:info] = 'Select at least one Allowed Subtype!'
+      @second_step = true
+      render :new
+    else
+      @meta_key.save!
+      respond_with @meta_key, location: (lambda do
+        edit_meta_key_path(@meta_key)
+      end)
+    end
   end
 
   def edit
@@ -116,5 +123,10 @@ class MetaKeysController < ApplicationController
 
   def get_context_from_session
     Context.find(session[:context_id]) if session[:context_id].present?
+  end
+
+  def second_step?(meta_key)
+    meta_key.meta_datum_object_type == 'MetaDatum::People' &&
+      !params[:meta_key].key?(:allowed_people_subtypes)
   end
 end

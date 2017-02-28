@@ -136,6 +136,33 @@ feature 'Admin Meta Keys' do
     end
   end
 
+  context 'Creating' do
+    scenario 'meta key with MetaDatum::People type', browser: :firefox do
+      visit meta_keys_path
+
+      click_link 'Create Meta Key'
+
+      fill_in 'meta_key[id]', with: 'archhist:foo'
+      fill_in 'meta_key[label]', with: Faker::Lorem.word
+      fill_in 'meta_key[description]', with: Faker::Lorem.sentence
+      fill_in 'meta_key[hint]', with: Faker::Lorem.sentence
+      select 'MetaDatum::People', from: 'meta_key[meta_datum_object_type]'
+
+      expect(page).not_to have_content 'Allowed Subtypes'
+
+      click_button 'Save'
+
+      expect(page).to have_content 'New Meta Key'
+      expect(page).to have_content 'Allowed Subtypes'
+
+      check 'PeopleGroup'
+      click_button 'Save'
+
+      expect(page).to have_css('.alert-success')
+      expect(page).to have_content 'Edit Meta Key'
+    end
+  end
+
   scenario 'Changing position in scope of a vocabulary' do
     visit vocabulary_path(vocabulary)
 

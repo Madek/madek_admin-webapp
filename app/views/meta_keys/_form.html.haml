@@ -30,14 +30,14 @@
           %label.radio-inline
             = f.radio_button :keywords_alphabetical_order, false
             No
-    - if @meta_key.can_have_people_subtypes?
-      .form-group
-        .col-xs-3
-          = f.label :allowed_people_subtypes, class: 'control-label'
-        .col-xs-6
-          .checkbox.checkbox-collection
-            = f.collection_check_boxes :allowed_people_subtypes, Person.subtypes, :subtype, :subtype do |c|
-              = c.label { c.check_box + c.text }
+  - if @meta_key.can_have_people_subtypes?
+    .form-group
+      .col-xs-3
+        = f.label :allowed_people_subtypes, class: "control-label #{'text-info' if @second_step}"
+      .col-xs-6
+        .checkbox.checkbox-collection
+          = f.collection_check_boxes :allowed_people_subtypes, Person.subtypes, :subtype, :subtype do |c|
+            = c.label { c.check_box + c.text }
   .form-group
     .col-xs-3
       = f.label :label, 'Label', class: 'control-label'
