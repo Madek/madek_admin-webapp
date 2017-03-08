@@ -1,19 +1,6 @@
 class MetaKeysController < ApplicationController
-
-  def move_form
-    @meta_key = MetaKey.find(params[:meta_key_id]).id
-  end
-
-  def move
-    old_id = params[:meta_key_id]
-    new_id = params[:new_meta_key_id]
-    new_vocabulary_id = new_id.split(':').first
-    ActiveRecord::Base.transaction do
-      MetaKey.find(old_id).update_attributes!(
-        id: new_id, vocabulary_id: new_vocabulary_id)
-    end
-    redirect_to meta_key_path new_id
-  end
+  include Concerns::MetaKeysCreation
+  include Concerns::MetaKeysMoving
 
   def index
     @meta_keys = MetaKey.with_keywords_count
@@ -35,25 +22,6 @@ class MetaKeysController < ApplicationController
     end
     @keywords = @meta_key.keywords.page(params[:page]).per(16)
     @usage_counts = Keyword.usage_count_for(@keywords)
-  end
-
-  def new
-    @meta_key = MetaKey.new
-  end
-
-  def create
-    @meta_key = MetaKey.new(meta_key_params)
-
-    if second_step?
-      second_step_columns
-      flash[:info] = second_step_flash
-      render :new
-    else
-      @meta_key.save!
-      respond_with @meta_key, location: (lambda do
-        edit_meta_key_path(@meta_key)
-      end)
-    end
   end
 
   def edit
@@ -148,25 +116,4 @@ class MetaKeysController < ApplicationController
     Context.find(session[:context_id]) if session[:context_id].present?
   end
 
-  def second_step?
-    @meta_key.meta_datum_object_type_changed? &&
-      second_step_columns &&
-        second_step_columns.none? do |column|
-          params[:meta_key].key?(column)
-        end
-  end
-
-  def second_step_columns
-    @second_step_columns ||= {
-      'MetaDatum::People' => [:allowed_people_subtypes],
-      'MetaDatum::Keywords' => [:is_extensible_list, :keywords_alphabetical_order],
-      'MetaDatum::Text' => [:text_type]
-    }[@meta_key.meta_datum_object_type]
-  end
-
-  def second_step_flash
-    @second_step_columns.map do |column|
-      I18n.t(column, scope: :second_step_flash)
-    end.join(' ')
-  end
 end
