@@ -55,7 +55,10 @@ Rails.application.routes.draw do
       resources :vocabulary_group_permissions, path: 'group_permissions'
       resources :vocabulary_api_client_permissions, path: 'api_client_permissions'
     end
-    resources :meta_keys, concerns: :orderable
+    resources :meta_keys, concerns: :orderable do
+      get :move, action: :move_form
+      post :move, action: :move
+    end
     resources :contexts do
       patch :add_meta_key, on: :member
     end

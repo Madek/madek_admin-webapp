@@ -1,0 +1,12 @@
+%h1 Move and, or Rename MetaKey "#{@meta_key}"
+
+= form_tag meta_key_move_path(@meta_key), html: { class: 'form-horizontal', role: 'form' }  do
+
+  .form-group
+    = text_field_tag :new_meta_key_id, nil,
+      class: 'form-control', placeholder: 'new-vocabulary-part:new-name-part'
+
+  .form-group
+    = button_tag type: :submit, class: 'btn btn-primary' do
+      %span.glyphicon.glyphicon-move
+      Move
