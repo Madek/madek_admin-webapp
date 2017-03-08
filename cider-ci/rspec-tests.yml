@@ -8,9 +8,9 @@ script_defaults:
 
 task_defaults:
   include:
-    - path: cider-ci/task_components/database.yml
+    - path: cider-ci/task-components/database.yml
       submodule: [datalayer]
-    - path: cider-ci/task_components/bundle.yml
+    - path: cider-ci/task-components/bundle.yml
       submodule: [datalayer]
 
   scripts:
@@ -47,5 +47,3 @@ task_defaults:
       include_match: 'config\/.+\.ya?ml$'
       exclude_match: 'vendor\/'
       content_type: text/yaml
-
-

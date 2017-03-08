@@ -1,0 +1,31 @@
+"Ruby Lint":
+
+  include: cider-ci/context-components/ruby-setup.yml
+  tasks:
+
+    code-complexity-flog:
+      name: "Ruby: Code complexity with flog"
+      scripts:
+        test:
+          body: |
+            set -eux
+            export PATH=~/.rubies/$RUBY/bin:$PATH
+            bundle exec cider-ci_flog -m app/
+
+    code-similarity:
+      name: "Ruby: Code similarity with flay"
+      scripts:
+        test:
+          body: |
+            set -eux
+            export PATH=~/.rubies/$RUBY/bin:$PATH
+            bundle exec cider-ci_flay -m 78 app/
+
+    lint-ruby:
+      name: "Ruby: Lint/Stylecheck with Rubocop"
+      scripts:
+        test:
+          body: |
+            set -eux
+            export PATH=~/.rubies/$RUBY/bin:$PATH
+            bundle exec rubocop
