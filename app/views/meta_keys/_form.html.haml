@@ -18,22 +18,21 @@
       = f.select :meta_datum_object_type,
           options_for_select(['', MetaKey.object_types].flatten, f.object.meta_datum_object_type),
           {}, class: 'form-control'
-  - if @meta_key.persisted?
-    - if @meta_key.can_have_keywords?
-      .form-group
-        .col-xs-3
-          = f.label :keywords_alphabetical_order, class: 'control-label'
-        .col-xs-6
-          %label.radio-inline
-            = f.radio_button :keywords_alphabetical_order, true
-            Yes
-          %label.radio-inline
-            = f.radio_button :keywords_alphabetical_order, false
-            No
+  - if @meta_key.can_have_keywords?
+    .form-group
+      .col-xs-3
+        = second_step_label(:keywords_alphabetical_order, f)
+      .col-xs-6
+        %label.radio-inline
+          = f.radio_button :keywords_alphabetical_order, true
+          Yes
+        %label.radio-inline
+          = f.radio_button :keywords_alphabetical_order, false
+          No
   - if @meta_key.can_have_people_subtypes?
     .form-group
       .col-xs-3
-        = f.label :allowed_people_subtypes, class: "control-label #{'text-info' if @second_step}"
+        = second_step_label(:allowed_people_subtypes, f)
       .col-xs-6
         .checkbox.checkbox-collection
           = f.collection_check_boxes :allowed_people_subtypes, Person.subtypes, :subtype, :subtype do |c|
@@ -54,7 +53,7 @@
     .col-xs-6
       = f.text_area :hint, class: 'form-control', rows: 4
 
-  - if f.object.meta_datum_object_type == 'MetaDatum::Text'
+  - if f.object.can_have_text_type?
     .form-group
       .col-xs-3
         = f.label :text_type, class: 'control-label'
@@ -65,7 +64,7 @@
     .form-group
       .col-xs-offset-3.col-sm-4
         .checkbox
-          %label
+          = second_step_label(:is_extensible_list, f) do
             = f.check_box :is_extensible_list
             Extensible?
   - %w(media_entries collections filter_sets).each do |resource_type|

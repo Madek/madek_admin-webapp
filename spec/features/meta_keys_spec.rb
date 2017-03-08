@@ -39,9 +39,13 @@ feature 'Admin Meta Keys' do
       click_link 'Edit'
 
       expect(current_path).to eq edit_meta_key_path(meta_key)
+      expect(page).not_to have_content 'Allowed Subtypes'
+      expect(page).not_to have_content 'Keywords alphabetical order'
+      expect(page).not_to have_content 'Extensible?'
+      expect(page).to have_content 'Text type'
 
       fill_in 'meta_key[label]', with: 'new label'
-      fill_in 'meta_key[description]', with: 'newdescription'
+      fill_in 'meta_key[description]', with: 'new description'
       fill_in 'meta_key[hint]', with: 'new hint'
       expect(page).to \
         have_select('meta_key[text_type]', selected: [meta_key.text_type])
@@ -54,7 +58,7 @@ feature 'Admin Meta Keys' do
       visit edit_meta_key_path(meta_key)
 
       expect(page).to have_field 'meta_key[label]', with: 'new label'
-      expect(page).to have_field 'meta_key[description]', with: 'newdescription'
+      expect(page).to have_field 'meta_key[description]', with: 'new description'
       expect(page).to have_field 'meta_key[hint]', with: 'new hint'
       expect(page).to have_select 'meta_key[text_type]', selected: 'block'
     end
@@ -78,6 +82,8 @@ feature 'Admin Meta Keys' do
       expect(page).to have_checked_field 'Extensible?'
       select 'MetaDatum::Licenses', from: 'Meta datum object type'
       click_button 'Save'
+
+      expect(page).to have_css('.alert-success')
 
       visit edit_meta_key_path(meta_key_keywords)
 
@@ -137,7 +143,7 @@ feature 'Admin Meta Keys' do
   end
 
   context 'Creating' do
-    scenario 'meta key with MetaDatum::People type', browser: :firefox do
+    scenario 'meta key with MetaDatum::People type' do
       visit meta_keys_path
 
       click_link 'Create Meta Key'
@@ -149,13 +155,92 @@ feature 'Admin Meta Keys' do
       select 'MetaDatum::People', from: 'meta_key[meta_datum_object_type]'
 
       expect(page).not_to have_content 'Allowed Subtypes'
+      expect(page).not_to have_content 'Keywords alphabetical order'
+      expect(page).not_to have_content 'Extensible?'
 
       click_button 'Save'
 
       expect(page).to have_content 'New Meta Key'
       expect(page).to have_content 'Allowed Subtypes'
+      expect(page).not_to have_content 'Keywords alphabetical order'
+      expect(page).not_to have_content 'Extensible?'
+      expect(page).not_to have_content 'Text type'
 
       check 'PeopleGroup'
+      click_button 'Save'
+
+      expect(page).to have_css('.alert-success')
+      expect(page).to have_content 'Edit Meta Key'
+    end
+
+    scenario 'meta key with MetaDatum::Keywords type' do
+      visit meta_keys_path
+
+      click_link 'Create Meta Key'
+
+      fill_in 'meta_key[id]', with: 'archhist:foo'
+      fill_in 'meta_key[label]', with: Faker::Lorem.word
+      fill_in 'meta_key[description]', with: Faker::Lorem.sentence
+      fill_in 'meta_key[hint]', with: Faker::Lorem.sentence
+      select 'MetaDatum::Keywords', from: 'meta_key[meta_datum_object_type]'
+
+      expect(page).not_to have_content 'Allowed Subtypes'
+      expect(page).not_to have_content 'Keywords alphabetical order'
+      expect(page).not_to have_content 'Extensible?'
+
+      click_button 'Save'
+
+      expect(page).to have_css('.alert-info')
+
+      expect(page).to have_content 'New Meta Key'
+      expect(page).to have_content 'Keywords alphabetical order'
+      expect(page).to have_content 'Extensible?'
+      expect(page).not_to have_content 'Allowed Subtypes'
+      expect(page).not_to have_content 'Text type'
+
+      click_button 'Save'
+
+      expect(page).to have_css('.alert-success')
+      expect(page).to have_content 'Edit Meta Key'
+    end
+
+    scenario 'meta key with MetaDatum::Text type' do
+      visit meta_keys_path
+
+      click_link 'Create Meta Key'
+
+      fill_in 'meta_key[id]', with: 'archhist:foo'
+      fill_in 'meta_key[label]', with: Faker::Lorem.word
+      fill_in 'meta_key[description]', with: Faker::Lorem.sentence
+      fill_in 'meta_key[hint]', with: Faker::Lorem.sentence
+      select 'MetaDatum::Text', from: 'meta_key[meta_datum_object_type]'
+      select 'block', from: 'meta_key[text_type]'
+
+      expect(page).not_to have_content 'Allowed Subtypes'
+      expect(page).not_to have_content 'Keywords alphabetical order'
+      expect(page).not_to have_content 'Extensible?'
+
+      click_button 'Save'
+
+      expect(page).to have_css('.alert-success')
+      expect(page).to have_content 'Edit Meta Key'
+    end
+
+    scenario 'meta key with MetaDatum::TextDate type' do
+      visit meta_keys_path
+
+      click_link 'Create Meta Key'
+
+      fill_in 'meta_key[id]', with: 'archhist:foo'
+      fill_in 'meta_key[label]', with: Faker::Lorem.word
+      fill_in 'meta_key[description]', with: Faker::Lorem.sentence
+      fill_in 'meta_key[hint]', with: Faker::Lorem.sentence
+      select 'MetaDatum::TextDate', from: 'meta_key[meta_datum_object_type]'
+
+      expect(page).not_to have_content 'Allowed Subtypes'
+      expect(page).not_to have_content 'Keywords alphabetical order'
+      expect(page).not_to have_content 'Extensible?'
+
       click_button 'Save'
 
       expect(page).to have_css('.alert-success')

@@ -28,4 +28,9 @@ en:
         id: ID
         meta_key_id: MetaKey
         term: Term
-  hello: "Hello world"
+  second_step_flash:
+    allowed_people_subtypes: Select at least one Allowed Subtype!
+    is_extensible_list: Decide if keywords should be an extensible list.
+    keywords_alphabetical_order: Choose if keywords should be alphabetically ordered.
+    text_type: Choose text type.
+
