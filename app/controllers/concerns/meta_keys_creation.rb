@@ -7,7 +7,14 @@ module Concerns
     end
 
     def create
-      @meta_key = MetaKey.new(meta_key_params)
+      attr = meta_key_params.deep_symbolize_keys
+
+      # if vocabulary prefix wasn't given, we can just infer it:
+      unless attr[:id].include?(':')
+        attr[:id] = "#{attr[:vocabulary_id]}:#{attr[:id]}"
+      end
+
+      @meta_key = MetaKey.new(attr)
 
       if second_step?
         second_step_columns
