@@ -52,3 +52,13 @@ $grid-float-breakpoint: 0px
   .fancy-checkbox-checked, .fancy-checkbox-unchecked
     .btn .glyphicon
       padding-right: 5px
+
+
+// forms
+
+// forms for "new" actions have a yellowish background, 
+// to better distinguish between create and update
+// (by rails convention their id starts with "new_")
+form[id^="new_"]
+  background: lightyellow
+  box-shadow: 0px 0px 20px 20px lightyellow
