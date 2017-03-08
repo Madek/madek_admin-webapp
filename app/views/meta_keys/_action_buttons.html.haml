@@ -1,9 +1,6 @@
 = link_to edit_meta_key_path(meta_key), class: "btn btn-info #{size}" do
   %span.glyphicon.glyphicon-edit
   Edit
-= link_to meta_key_move_path(meta_key), class: "btn btn-warning #{size}" do
-  %i.glyphicon.glyphicon-move
-  Move
 = link_to meta_key_path(meta_key), method: :delete,
     data: { confirm: 'The meta key will be deleted. Do you want to proceed?' },
     class: "btn btn-danger #{size}" do
@@ -12,4 +9,3 @@
 - if meta_key.vocabulary
   = link_to 'Vocabulary', vocabulary_path(meta_key.vocabulary),
       class: "btn btn-default #{size}"
-

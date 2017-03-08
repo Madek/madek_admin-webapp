@@ -15,6 +15,10 @@
       .panel-body
         .btn-group
           = render partial: 'action_buttons', locals: { meta_key: @meta_key, size: nil }
+        .btn-group.pull-right
+          = link_to meta_key_move_path(@meta_key), class: "btn btn-default" do
+            %i.glyphicon.glyphicon-move
+            Move/Rename
 
 .row
   .col-xs-12

@@ -1,23 +1,31 @@
+- is_used = @meta_key.meta_data.any?
+
 = form_for @meta_key, html: { class: 'form-horizontal', role: 'form' } do |f|
   .form-group
     .col-xs-3
       = f.label :id, 'ID', class: 'control-label'
     .col-xs-6
-      = f.text_field :id, class: 'form-control', disabled: @meta_key.persisted?
+      - static_input_if_persisted(f.object, f.object.id) do
+        = f.text_field :id, class: 'form-control'
   .form-group
     .col-xs-3
       = f.label :vocabulary_id, class: 'control-label'
     .col-xs-6
-      = f.select :vocabulary_id,
-          options_from_collection_for_select(Vocabulary.sorted, :id, :id, f.object.vocabulary_id),
-          {}, class: 'form-control'
+      - static_input_if_persisted(f.object, f.object.vocabulary_id) do
+        = f.select :vocabulary_id,
+            options_from_collection_for_select(Vocabulary.sorted, :id, :id, f.object.vocabulary_id),
+            {}, class: 'form-control'
   .form-group
     .col-xs-3
       = f.label :meta_datum_object_type, class: 'control-label'
     .col-xs-6
       = f.select :meta_datum_object_type,
           options_for_select(['', MetaKey.object_types].flatten, f.object.meta_datum_object_type),
-          {}, class: 'form-control'
+          {},
+          class: 'form-control',
+          disabled: is_used,
+          title: "This Metakey is #{is_used ? '' : 'NOT '}used!"
+
   - if @meta_key.can_have_keywords?
     .form-group
       .col-xs-3

@@ -67,13 +67,28 @@ feature 'Admin Meta Keys' do
       visit edit_meta_key_path(meta_key_keywords)
 
       expect(page).to have_select(
-        'Vocabulary',
-        selected: meta_key_keywords.vocabulary_id)
-      expect(page).to have_select(
         'Meta datum object type',
         selected: meta_key_keywords.meta_datum_object_type)
       expect(find_field('meta_key[keywords_alphabetical_order]', with: 'true'))
         .to be_checked
+    end
+
+    scenario 'No changing Vocabulary when editing' do
+      visit edit_meta_key_path(meta_key_keywords)
+
+      expect(page).not_to have_select('Vocabulary')
+      expect(page).to have_selector(
+        '.form-control-static samp', text: meta_key_keywords.vocabulary_id)
+    end
+
+    scenario 'No changing type when used in MetaData' do
+      visit edit_meta_key_path(meta_key_keywords)
+      expect(page).to have_select('Meta datum object type', disabled: false)
+
+      create(:meta_datum_keywords, meta_key: meta_key_keywords)
+
+      visit edit_meta_key_path(meta_key_keywords)
+      expect(page).to have_select('Meta datum object type', disabled: true)
     end
 
     scenario "Uncheck 'Extensible?' checkbox for MetaDatum::Keywords" do

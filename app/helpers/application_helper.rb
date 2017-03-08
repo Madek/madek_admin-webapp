@@ -25,6 +25,15 @@ module ApplicationHelper
     content_tag :option, '(all)', value: ''
   end
 
+  def static_input_if_persisted(object, text)
+    throw ArgumentError unless block_given?
+    if object.persisted?
+      haml_tag('p.form-control-static') { haml_tag('samp') { haml_concat text } }
+    else
+      yield
+    end
+  end
+
   def webapp_keyword_path(keyword)
     meta_key = MetaKey
                 .viewable_by_user_or_public(current_user)

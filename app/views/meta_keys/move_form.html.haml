@@ -1,12 +1,25 @@
-%h1 Move and, or Rename MetaKey "#{@meta_key}"
+.page-header
+  %h1
+    Move and/or Rename MetaKey ID
 
 = form_tag meta_key_move_path(@meta_key), html: { class: 'form-horizontal', role: 'form' }  do
 
-  .form-group
-    = text_field_tag :new_meta_key_id, nil,
-      class: 'form-control', placeholder: 'new-vocabulary-part:new-name-part'
+  .form-group.row
+    .col-xs-3
+      %label.control-label Current ID
+    .col-xs-6
+      %p.form-control-static
+        %samp= @meta_key
 
-  .form-group
-    = button_tag type: :submit, class: 'btn btn-primary' do
-      %span.glyphicon.glyphicon-move
-      Move
+  .form-group.row
+    .col-xs-3
+      %label.control-label New ID
+    .col-xs-6
+      = text_field_tag :new_meta_key_id, nil,
+        class: 'form-control', placeholder: 'new-vocabulary-part:new-name-part'
+
+  .form-group.row
+    .col-xs-offset-3.col-xs-3
+      = button_tag type: :submit, class: 'btn btn-danger' do
+        Move!
+      = link_to 'Go back', meta_key_path(@meta_key), class: 'btn btn-link'

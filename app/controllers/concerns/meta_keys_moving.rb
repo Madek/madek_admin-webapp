@@ -3,8 +3,13 @@ module Concerns
     extend ActiveSupport::Concern
 
     # edits the id, even allowing change of vocabulary(!)
+    WARNING = <<-END.strip_heredoc
+      This should only be used very rarely (or during initial setup).
+      The ID is normally expected to not change, e.g. API clients might break.
+    END
 
     def move_form
+      flash.now[:warning] = WARNING
       @meta_key = MetaKey.find(params[:meta_key_id]).id
     end
 
