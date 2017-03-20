@@ -1,0 +1,70 @@
+%head
+  %title= 'Madek Admin'
+  = stylesheet_link_tag 'application'
+  = javascript_include_tag 'application'
+  = csrf_meta_tag
+
+%body
+
+  .navbar.navbar-default.navbar-static-top
+    .container-fluid
+      .navbar-header
+        .navbar-brand
+          Madek Admin
+      %ul.nav.navbar-nav.navbar-right
+        = navbar_item 'Dashboard', root_path
+        = navbar_item 'Settings', app_settings_path
+        %li.dropdown
+          %a.dropdown-toggle{href: '#', data: { toggle: 'dropdown' }}
+            Media
+            %b.caret
+          %ul.dropdown-menu
+            = navbar_item 'Media Entries', media_entries_path
+            = navbar_item 'Media Files', media_files_path
+            = navbar_item 'Sets', collections_path
+            = navbar_item 'Filter Sets', filter_sets_path
+
+        %li.dropdown
+          %a.dropdown-toggle{href: '#', data: { toggle: 'dropdown' }}
+            Entities
+            %b.caret
+          %ul.dropdown-menu
+            = navbar_item 'Users', users_path
+            = navbar_item 'Groups', groups_path
+            = navbar_item 'API Clients', api_clients_path
+            %li.divider{role: :separator}
+            = navbar_item 'People (public)', people_path
+
+        %li.dropdown
+          %a.dropdown-toggle{href: '#', data: { toggle: 'dropdown' }}
+            Meta
+            %b.caret
+          %ul.dropdown-menu
+            = navbar_item 'Vocabularies', vocabularies_path
+            = navbar_item 'Contexts', contexts_path
+            = navbar_item 'Meta Keys', meta_keys_path
+            = navbar_item 'Keywords', keywords_path
+            = navbar_item 'Meta Data', meta_datums_path
+            = navbar_item 'Usage Terms', usage_terms_path
+            %li.divider{role: :separator}
+            = navbar_item 'IO Interfaces', io_interfaces_path
+            = navbar_item 'IO Mappings', io_mappings_path
+        %li.dropdown
+          %a.dropdown-toggle{href: '#', data: { toggle: 'dropdown' }}
+            %i.glyphicon.glyphicon-user
+            User
+            %b.caret
+          %ul.dropdown-menu
+            %li
+              = link_to '/my' do
+                %i.glyphicon.glyphicon-file
+                Home/My
+
+  #messages.container
+    = alerts do |message_type, message, alert_type|
+      .alert.alert-dismissible{ class: "alert-#{alert_type}" }
+        = button_tag '&times;'.html_safe, class: 'close', data: { dismiss: 'alert' }
+        %strong #{message_type.capitalize}!
+        = message
+
+  = yield :main_content
