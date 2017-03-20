@@ -45,7 +45,7 @@ module MadekAdmin
       Rails.root.join('datalayer', 'app', 'lib'),
     ]
 
-    config.logger = ActiveSupport::Logger.new(STDOUT)
+    config.logger = ActiveSupport::Logger.new(STDOUT) unless Rails.env.development?
 
     # configure logging
     if ENV['RAILS_LOG_LEVEL'].present?
