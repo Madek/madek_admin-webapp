@@ -13,23 +13,26 @@ class AssistantsController < ApplicationController
     query = params.permit(:query).fetch(:query, 'SELECT 1').strip.presence
     if query && params[:do] != 'Edit'
       start_time = Time.now.utc
-      pg_results = execute_sql_sandboxed(query)
+      err, res = execute_sql_sandboxed(query)
       query_time = Time.now.utc - start_time
     end
-    render locals: { query: query, pg_results: pg_results, query_time: query_time }
+    render locals: {
+      query: query, pg_error: err, pg_results: res, query_time: query_time
+    }
   end
 
   def execute_sql_sandboxed(query)
-    pg_results = nil
+    pg_err = nil
+    pg_res = nil
     begin
-    ActiveRecord::Base.transaction do
-      pg_results = ActiveRecord::Base.connection.execute(query)
-      raise ActiveRecord::Rollback
-    end
+      ActiveRecord::Base.transaction do
+        pg_res = ActiveRecord::Base.connection.execute(query)
+        raise ActiveRecord::Rollback
+      end
     rescue => e
-      pg_results = e
+      pg_err = e
     end
-    pg_results.as_json
+    [pg_err, pg_res.as_json]
   end
 
   private

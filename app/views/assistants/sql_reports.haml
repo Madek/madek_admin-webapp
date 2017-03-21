@@ -47,13 +47,18 @@
 
   -# empty or result of query:
 
-  - if !query || !pg_results
+  - if !query || (!pg_error && !pg_results)
     .container
       = fallback_hint
 
-  - elsif pg_results.is_a?(StandardError)
-    - err_name = pg_results.try(:original_exception).try(:class).try(:name) || pg_results.class.name
-    - err_msg = pg_results.try(:original_exception).try(:error) || pg_results.message
+  - elsif !pg_error.nil?
+    :ruby
+      err_name, err_msg = if pg_error.is_a?(StandardError)
+        [pg_error.try(:original_exception).try(:class).try(:name) || pg_error.class.name,
+        pg_error.try(:original_exception).try(:error) || pg_error.message]
+      else
+        ['Unknown Error!!!', pg_error.to_s]
+      end
     .container
       .panel.panel-danger
         .panel-heading
@@ -75,12 +80,20 @@
             = icon('question-sign')
 
   - else
-    -# keys = pg_results.fields
-    - keys = pg_results.first.keys
-    -# values = pg_results.values
-    - values = pg_results.map(&:values)
-    - count = pg_results.length
-    -# binding.pry
+    :ruby
+      if pg_results.is_a?(Array)
+        # NOTE: in non-jruby this also works:
+        # keys = pg_results.fields
+        # values = pg_results.values
+        keys = pg_results.first.keys
+        values = pg_results.map(&:values)
+        count = pg_results.length
+      else
+        # NOTE: this is what "fields" would return in this case:
+        keys = ['?column?']
+        values = [[pg_results]]
+        count = pg_results.present? ? 1 : 0
+      end
 
     .container-fluid
       .div{style: 'text-align: center'}
