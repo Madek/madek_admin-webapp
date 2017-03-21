@@ -322,6 +322,30 @@ feature 'Admin Meta Keys' do
     expect(page).not_to have_content 'Allowed Subtypes'
   end
 
+  scenario 'view/index: show contexts which meta key is used in' do
+    meta_key = create(:meta_key_text)
+    create(:context_key, meta_key: meta_key, context: create(:context, id: 'foo'))
+    create(:context_key, meta_key: meta_key, context: create(:context, id: 'bar'))
+
+    visit meta_keys_path(search_term: meta_key.id)
+
+    expect(page).to have_content ': bar, foo'
+    expect(page).to have_link 'bar', href: context_path('bar')
+    expect(page).to have_link 'foo', href: context_path('foo')
+  end
+
+  scenario 'view/show: show contexts which meta key is used in' do
+    meta_key = create(:meta_key_text)
+    create(:context_key, meta_key: meta_key, context: create(:context, id: 'foo'))
+    create(:context_key, meta_key: meta_key, context: create(:context, id: 'bar'))
+
+    visit meta_key_path(meta_key)
+
+    expect(page).to have_content ': bar, foo'
+    expect(page).to have_link 'bar', href: context_path('bar')
+    expect(page).to have_link 'foo', href: context_path('foo')
+  end
+
   def expect_order(order, limit = 4)
     expect(
       all('table tr[data-id]').map { |tr| tr['data-id'] }[0, limit]

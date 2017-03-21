@@ -3,6 +3,7 @@
     is_extensible_list: :can_have_keywords?,
     allowed_people_subtypes: :can_have_people_subtypes?
   }.with_indifferent_access
+  used_as = context_links(@meta_key.context_keys.pluck(:context_id))
 
 .page-header
   %h1 Meta Key: #{@meta_key.id}
@@ -31,9 +32,13 @@
             - next
           - else
             %tr
-              %td
+              %td.col-xs-5
                 %strong= t("activerecord.attributes.meta_key.#{attr_name}", default: attr_name.humanize)
-              %td= attr.last
+              %td.col-xs-7= attr.last
+        %tr.info
+          %td.col-xs-5
+            %strong This meta key is used in the following contexts:
+          %td.col-xs-7= used_as
 
 - if @meta_key.can_have_keywords?
 

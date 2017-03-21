@@ -1,4 +1,8 @@
-%tr
+:ruby
+  striped = (meta_key_counter % 2 > 0) ? :active : nil
+  used_as = context_links(meta_key.context_keys.pluck(:context_id))
+
+%tr{'data-id' => meta_key.id, class: striped}
   %td= meta_key.id
   %td= meta_key.label
   %td
@@ -15,3 +19,8 @@
         = link_to meta_key_path(meta_key), class: 'btn btn-default btn-sm' do
           %span.glyphicon.glyphicon-eye-open
         = render partial: 'action_buttons', locals: { meta_key: meta_key, size: 'btn-sm' }
+- if used_as.size > 0
+  %tr.semiborder{class: striped}
+    %td{colspan: 4}
+      %small This meta key is used in the following contexts: #{used_as}
+    %td

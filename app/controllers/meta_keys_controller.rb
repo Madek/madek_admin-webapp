@@ -4,6 +4,7 @@ class MetaKeysController < ApplicationController
 
   def index
     @meta_keys = MetaKey.with_keywords_count
+                        .includes(:context_keys)
                         .page(params[:page])
                         .per(16)
 
@@ -14,7 +15,8 @@ class MetaKeysController < ApplicationController
   end
 
   def show
-    @meta_key = MetaKey.find(params[:id])
+    @meta_key = MetaKey.includes(:context_keys)
+                       .find(params[:id])
     unless @meta_key.is_extensible_list
       @keyword = Keyword.new(
         meta_key_id: @meta_key.id
