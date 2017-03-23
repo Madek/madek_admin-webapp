@@ -18,8 +18,12 @@ module Concerns
       new_id = params[:new_meta_key_id]
       new_vocabulary_id = new_id.split(':').first
       ActiveRecord::Base.transaction do
-        MetaKey.find(old_id).update_attributes!(
-          id: new_id, vocabulary_id: new_vocabulary_id)
+        mk = MetaKey.find(old_id)
+        mk.update_attributes!(
+          id: new_id, vocabulary_id: new_vocabulary_id,
+          admin_comment: (mk.admin_comment || '') +
+            "\n[LOG: was renamed from `#{old_id}` on #{Time.now.utc.to_json}]"
+        )
       end
       redirect_to meta_key_path new_id
     end
