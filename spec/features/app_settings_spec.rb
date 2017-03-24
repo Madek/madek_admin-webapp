@@ -347,4 +347,23 @@ feature 'Admin App Settings' do
     expect(page).to have_content "The set with a given ID:
                                   #{random_uuid} doesn't exist!"
   end
+
+  scenario 'Updating Support URL' do
+    new_url = Faker::Internet.url('wiki.zhdk.ch')
+
+    visit app_settings_path
+
+    within '#support_url' do
+      expect(page).not_to have_content(new_url)
+      click_link 'Edit'
+    end
+
+    fill_in 'app_setting[support_url]', with: new_url
+    click_button 'Save'
+
+    expect(page).to have_css '.alert-success'
+    within '#support_url' do
+      expect(page).to have_content new_url
+    end
+  end
 end

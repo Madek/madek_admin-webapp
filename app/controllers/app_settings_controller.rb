@@ -14,7 +14,8 @@ class AppSettingsController < ApplicationController
       welcome_text: 'Markdown text of welcome box'
     },
     'Other' => {
-      sitemap: 'Links for footer menu'
+      sitemap: 'Links for footer menu',
+      support_url: 'Link for support tab'
     }
   }.freeze
 
