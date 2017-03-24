@@ -37,10 +37,11 @@
 
           = submit_tag 'Apply', class: 'btn btn-primary'
           = link_to 'Reset', meta_keys_path, class: 'btn btn-default'
-    .btn-group
-      = link_to new_meta_key_path, class: 'btn btn-default' do
-        %i.glyphicon.glyphicon-plus
-        Create Meta Key
+      .panel-footer
+        .btn-group
+        = link_to new_meta_key_path, class: 'btn btn-default' do
+          %i.glyphicon.glyphicon-plus
+          Create Meta Key
 
 .row
   .col-xs-12

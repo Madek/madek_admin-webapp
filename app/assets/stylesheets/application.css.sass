@@ -6,14 +6,30 @@ $grid-float-breakpoint: 0px
 .container
   width: 1000px
 
-.btn-group
+.btn-group.btn-group-vertical
+  > .btn + form,
+  > form + .btn
+    margin-top: -1px
+  > .btn + form
+    .btn
+      border-radius: 0
+  > .btn:first-child
+    border-top-right-radius: $border-radius-base !important
+  > form
+    .btn
+      width: 100%
+      max-width: 100%
+  &.btn-group-sm > form > .btn
+    @extend .btn-sm
+
+.btn-group:not(.btn-group-vertical)
   form:first-child
     .btn
-      border-bottom-left-radius: 4px
-      border-top-left-radius: 4px
+      border-bottom-left-radius: $border-radius-base
+      border-top-left-radius: $border-radius-base
     .btn-sm
-      border-bottom-left-radius: 3px
-      border-top-left-radius: 3px
+      border-bottom-left-radius: $border-radius-small
+      border-top-left-radius: $border-radius-small
 
   form
     float: left

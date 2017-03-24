@@ -8,7 +8,7 @@ feature 'Admin Users' do
     visit users_path
     fill_in 'search_term', with: 'nor'
     click_button 'Apply'
-    all('table tbody tr').each do |tr|
+    user_rows.each do |tr|
       expect(tr).to have_content 'nor'
     end
     expect(find_field('search_term')[:value]).to eq 'nor'
@@ -30,7 +30,7 @@ feature 'Admin Users' do
 
     expect(find_field('sort_by')[:value]).to eq('login')
 
-    logins = all('table tbody tr').map do |tr|
+    logins = user_rows.map do |tr|
       tr.find('td:first').text
     end
 
@@ -44,7 +44,7 @@ feature 'Admin Users' do
     click_button 'Apply'
     expect(find_field('sort_by')[:value]).to eq('email')
 
-    emails = all('table tbody tr').map do |tr|
+    emails = user_rows.map do |tr|
       tr.all('td')[1].text
     end
 
@@ -58,7 +58,7 @@ feature 'Admin Users' do
     click_button 'Apply'
     expect(find_field('sort_by')[:value]).to eq('first_name_last_name')
 
-    names = all('table tbody tr').map do |tr|
+    names = user_rows.map do |tr|
       tr.all('td')[2].text
     end
 
@@ -175,7 +175,7 @@ feature 'Admin Users' do
     expect(page).not_to have_content 'Please log in!'
   end
 
-  scenario 'Switching to an ordinary user', browser: :firefox do
+  scenario 'Switching to an ordinary user' do
     user = create :user
 
     visit users_path
@@ -185,5 +185,22 @@ feature 'Admin Users' do
     visit root_path
 
     expect(page).to have_content 'Admin access denied'
+  end
+
+  scenario 'view/show: show groups which user belongs to' do
+    user = create :user
+    group_1 = create(:group, name: 'foo')
+    group_2 = create(:group, name: 'bar')
+    user.groups << [group_1, group_2]
+
+    visit user_path(user)
+
+    expect(page).to have_content ': bar, foo'
+    expect(page).to have_link 'bar', href: group_path(group_2)
+    expect(page).to have_link 'foo', href: group_path(group_1)
+  end
+
+  def user_rows
+    all('table tbody tr[data-id]')
   end
 end

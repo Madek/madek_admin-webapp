@@ -24,17 +24,18 @@
     
           = submit_tag 'Apply', class: 'btn btn-primary'
           = link_to 'Reset', users_path, class: 'btn btn-default'
-    .btn-group
-      = link_to new_with_person_users_path, class: 'btn btn-default' do
-        %span.glyphicon.glyphicon-plus
-        Create user with person
-      = link_to new_user_path, class: 'btn btn-default' do
-        %span.glyphicon.glyphicon-plus
-        Create user for existing person
+      .panel-footer
+        .btn-group
+          = link_to new_with_person_users_path, class: 'btn btn-default' do
+            %span.glyphicon.glyphicon-plus
+            Create user with person
+          = link_to new_user_path, class: 'btn btn-default' do
+            %span.glyphicon.glyphicon-plus
+            Create user for existing person
 
 .row
   .col-xs-12
-    %table.table.table-striped
+    %table.table
       %thead
         %tr
           %th Login

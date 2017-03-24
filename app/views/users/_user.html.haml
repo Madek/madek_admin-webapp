@@ -1,4 +1,4 @@
-%tr{ class: ('success' if user.admin?) }
+%tr{'data-id' => user.id, class: ('success' if user.admin?)}
   %td= user.login
   %td= user.email
   %td
@@ -7,16 +7,16 @@
   %td= user.responsible_media_entries.count
   %td{ class: (user.admin? ? 'success' : 'danger') }
     = user.admin? ? 'Yes' : 'No'
-  %td.active
-    .btn-group
+  %td.active.text-center
+    .btn-group.btn-group-sm.btn-group-vertical
       - if session[:vocabulary_id].present?
-        = link_to path_to_vocabulary_permission_form(user), class: 'btn btn-success btn-sm' do
+        = link_to path_to_vocabulary_permission_form(user), class: 'btn btn-success' do
           Grant Vocabulary Permission
         = link_to users_path(reset_vocabulary_params: true),
-                  class: 'btn btn-default btn-sm' do
+                  class: 'btn btn-default' do
           Cancel
       - else
         = link_to user_path(user),
-          class: 'btn btn-default btn-sm', title: 'Details' do
+          class: 'btn btn-default', title: 'Details' do
           %i.glyphicon.glyphicon-eye-open
-        = render partial: 'action_buttons', locals: { user: user, size: 'btn-sm', editable: false, deletable: false }
+        = render partial: 'action_buttons', locals: { user: user, editable: false, deletable: false }
