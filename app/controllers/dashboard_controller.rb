@@ -9,39 +9,47 @@ class DashboardController < ApplicationController
   # rubocop:disable Metrics/MethodLength
   def prepare_data
     [
-      {
-        title: 'drafts',
-        model: MediaEntry,
-        scope: -> { MediaEntry.unscoped.not_published },
-        path: media_entries_url(filter: { is_published: 0 })
-      },
-      {
-        title: 'entries',
-        model: MediaEntry
-      },
-      {
-        title: 'sets',
-        model: Collection
-      },
-      FilterSet,
-      MediaFile,
-      {
-        title: 'metadata',
-        model: MetaDatum,
-        path: meta_datums_url
-      },
-      Keyword,
-      Person,
-      Vocabulary,
-      MetaKey,
-      Context,
-      User,
-      Group,
-      {
-        title: 'api-clients',
-        model: ApiClient
-      }
-    ].map { |item| data_item(item) }
+      [
+        {
+          title: 'drafts',
+          model: MediaEntry,
+          scope: -> { MediaEntry.unscoped.not_published },
+          path: media_entries_url(filter: { is_published: 0 })
+        },
+        {
+          title: 'entries',
+          model: MediaEntry
+        },
+        {
+          title: 'sets',
+          model: Collection
+        },
+        FilterSet
+      ],
+      [
+        Vocabulary,
+        MetaKey,
+        Context
+      ],
+      [
+        MediaFile,
+        {
+          title: 'metadata',
+          model: MetaDatum,
+          path: meta_datums_url
+        },
+        Keyword,
+        Person
+      ],
+      [
+        User,
+        Group,
+        {
+          title: 'api-clients',
+          model: ApiClient
+        }
+      ]
+    ].map { |row| row.map(&method(:data_item)) }
   end
   # rubocop:enable Metrics/MethodLength
 
