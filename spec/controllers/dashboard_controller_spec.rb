@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe DashboardController do
+  let(:admin_user) { create :admin_user }
 
   context 'authorization' do
     context "when user isn't authorized" do
@@ -32,6 +33,24 @@ describe DashboardController do
         expect(response).to be_success
         expect(response.body).to render_template 'dashboard/index'
       end
+    end
+  end
+
+  describe '#index' do
+    before { get :index, nil, user_id: admin_user.id }
+
+    it 'responds with status code 200' do
+      expect(response).to be_success
+      expect(response).to have_http_status(200)
+    end
+
+    it 'renders template' do
+      expect(response).to render_template 'dashboard/index'
+    end
+
+    it 'assigns @data with array' do
+      expect(assigns[:data]).to be_an Array
+      expect(assigns[:data]).not_to be_empty
     end
   end
 end
