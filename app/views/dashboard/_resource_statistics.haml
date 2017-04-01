@@ -1,0 +1,8 @@
+.statistics
+  - @data[:resources].each do |part|
+    .row
+      - part.each do |item|
+        %a{href: item[:path], class: "col-sm-#{(part.length % 4).zero? ? 3 : (12 / part.length)} text-center"}
+          .number= item[:counter]
+          .title= item[:title]
+    %hr

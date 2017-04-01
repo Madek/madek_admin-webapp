@@ -1,0 +1,75 @@
+{
+  "madek": {
+    "base_url": "http://test.madek.zhdk.ch",
+    "site_title": "Medienarchiv der Künste",
+    "zencoder": "TEST MODE!",
+    "zhdk_integration": true
+  },
+  "ruby": {
+    "version": "2.3.1",
+    "platform": "java"
+  },
+  "rails": "4.2.7.1",
+  "postgres": {
+    "version": "PostgreSQL 9.5.6 on x86_64-pc-linux-gnu, compiled by gcc (Debian 4.9.2-10) 4.9.2, 64-bit"
+  },
+  "system": {
+    "os": {
+      "Name": "Linux",
+      "Version": "#1 SMP Debian 3.16.39-1+deb8u2 (2017-03-07)",
+      "Architecture": "x86_64"
+    },
+    "host": {
+      "hostname": "madek-test",
+      "fqdn": "test.madek.zhdk.ch",
+      "cpu": {
+        "processor": "1",
+        "vendor_id": "GenuineIntel",
+        "cpu family": "6",
+        "model": "62",
+        "model name": "Intel(R) Xeon(R) CPU E5-2697 v2 @ 2.70GHz",
+        "stepping": "4",
+        "microcode": "0x428",
+        "cpu MHz": "2700.000",
+        "cache size": "30720 KB",
+        "physical id": "0",
+        "siblings": "2",
+        "core id": "1",
+        "cpu cores": "2",
+        "apicid": "1",
+        "initial apicid": "1",
+        "fpu": "yes",
+        "fpu_exception": "yes",
+        "cpuid level": "13",
+        "wp": "yes",
+        "flags": "fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts mmx fxsr sse sse2 ss ht syscall nx rdtscp lm constant_tsc arch_perfmon pebs bts nopl xtopology tsc_reliable nonstop_tsc aperfmperf pni pclmulqdq ssse3 cx16 pcid sse4_1 sse4_2 x2apic popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm ida arat epb pln pts dtherm fsgsbase tsc_adjust smep",
+        "bogomips": "5400.00",
+        "clflush size": "64",
+        "cache_alignment": "64",
+        "address sizes": "42 bits physical, 48 bits virtual",
+        "power management:": ""
+      },
+      "memory": {
+        "MemTotal:        4047212 kB": "",
+        "MemFree:          128628 kB": "",
+        "MemAvailable:    2422224 kB": ""
+      },
+      "filesystems": {
+        "/": {
+          "Filesystem": "/dev/sda1",
+          "Size": "20509308",
+          "Used": "5433160",
+          "Available": "14011292",
+          "Capacity": "28%"
+        },
+        "/opt/madekdata": {
+          "Filesystem": "10.10.10.10:/DATA_NFS/madek",
+          "Size": "13770738912",
+          "Used": "11969618336",
+          "Available": "1801120576",
+          "Capacity": "87%"
+        }
+      }
+    }
+  }
+}

@@ -77,6 +77,7 @@ Rails.application.routes.draw do
     resources :people
 
     root to: 'dashboard#index'
+    post 'dashboard/refresh', to: 'dashboard#refresh'
   end
 
 end

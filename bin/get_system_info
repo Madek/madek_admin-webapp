@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+
+# for usage outside rails
+
+require_relative '../lib/get_system_info.rb'
+
+puts(JSON.generate(get_system_info()))

@@ -49,8 +49,8 @@ describe DashboardController do
     end
 
     it 'assigns @data with array' do
-      expect(assigns[:data]).to be_an Array
-      expect(assigns[:data]).not_to be_empty
+      expect(assigns[:data][:resources]).to be_an Array
+      expect(assigns[:data][:resources]).not_to be_empty
     end
   end
 end

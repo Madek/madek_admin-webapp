@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'spec_helper_feature'
 
 feature 'Admin Dashboard' do
-  scenario 'Statistics' do
+  scenario 'Resource Statistics' do
     visit root_path
 
     expect(page).to have_css '.statistics a'

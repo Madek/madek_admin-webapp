@@ -1,8 +1,9 @@
-.statistics
-  - @data.each do |part|
-    .row
-      - part.each do |item|
-        %a{href: item[:path], class: "col-sm-#{(part.length % 4).zero? ? 3 : (12 / part.length)} text-center"}
-          .number= item[:counter]
-          .title= item[:title]
-    %hr
+-# %h2= @data[:environment][:madek][:site_title]
+
+%h3 Resources
+
+= render partial: 'resource_statistics'
+
+%h3 System
+
+= render partial: 'system_info'

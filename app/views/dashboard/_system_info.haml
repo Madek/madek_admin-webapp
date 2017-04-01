@@ -1,0 +1,35 @@
+:ruby
+  table_data = begin
+    env = @data[:environment].deep_symbolize_keys
+    !env.present? ? {null:{}} : {
+      App: env[:madek].compact,
+      Environment: {
+        ruby: env[:ruby].values.join(' '),
+        rails: env[:rails],
+        postgres: env[:postgres].try(:[], :version),
+      },
+      Server: {
+        hostname: "#{env[:system].try(:[], :host).try(:[], :fqdn)}",
+        os: env[:system].try(:[], :os).try(:values).try(:join, ' '),
+      }
+    }
+  rescue => e
+    Rails.logger.warn 'Dashboard sysinfo error: ' + e
+    nil
+  end
+
+
+
+= data_table(table_data, class: 'code-table') if table_data
+
+#allDataContent.collapse{"aria-labelledby" => "showAllData", :role => "tabpanel"}
+  %pre= JSON.pretty_generate(@data[:environment] || {})
+
+.row
+  .btn-group
+    %a{"aria-controls" => "showAllData", "aria-expanded" => "false", "data-parent" => "#dataAccordion", "data-toggle" => "collapse",
+      :href => "#allDataContent", :role => "button",
+      class: 'btn btn-link'}
+      Show All Data
+
+    = button_to "Refresh", dashboard_refresh_path, class: 'btn btn-link'

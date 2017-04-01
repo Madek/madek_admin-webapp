@@ -1,13 +1,37 @@
 class DashboardController < ApplicationController
 
+  include Concerns::AppEnvironmentInfo
+
   def index
-    @data = prepare_data
+    env = Rails.cache.fetch('app_environment_info', expires_in: 10.minutes) do
+      environment_info
+    end
+
+    @data = {
+      resources: app_resources_info,
+      environment: env
+    }
+  end
+
+  def refresh
+    Rails.cache.delete 'app_environment_info'
+    redirect_to root_path
   end
 
   private
 
+  def environment_info
+    {
+      madek: get_madek_base_info,
+      ruby: { version: RUBY_VERSION, platform: RUBY_PLATFORM },
+      rails: Rails.version,
+      postgres: get_pg_version,
+      system: read_system_info_for_rails
+    }
+  end
+
   # rubocop:disable Metrics/MethodLength
-  def prepare_data
+  def app_resources_info
     [
       [
         {
@@ -49,11 +73,11 @@ class DashboardController < ApplicationController
           model: ApiClient
         }
       ]
-    ].map { |row| row.map(&method(:data_item)) }
+    ].map { |row| row.map(&method(:app_resource_data_item)) }
   end
   # rubocop:enable Metrics/MethodLength
 
-  def data_item(item)
+  def app_resource_data_item(item)
     if item.is_a?(Hash)
       item[:counter] =
         if item.key?(:scope)
