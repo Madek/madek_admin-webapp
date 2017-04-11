@@ -99,6 +99,7 @@ class MetaKeysController < ApplicationController
                                      :is_enabled_for_media_entries,
                                      :is_enabled_for_collections,
                                      :is_enabled_for_filter_sets,
+                                     :allowed_rdf_class,
                                      allowed_people_subtypes: [])
   end
 

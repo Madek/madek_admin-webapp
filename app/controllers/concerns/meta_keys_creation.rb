@@ -42,7 +42,7 @@ module Concerns
       @second_step_columns ||= {
         'MetaDatum::People' => [:allowed_people_subtypes],
         'MetaDatum::Keywords' => [
-          :is_extensible_list, :keywords_alphabetical_order
+          :allowed_rdf_class, :is_extensible_list, :keywords_alphabetical_order
         ],
         'MetaDatum::Text' => [:text_type]
       }[@meta_key.meta_datum_object_type]

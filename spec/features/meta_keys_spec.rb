@@ -5,7 +5,6 @@ def meta_datum_types
   {
     'MetaDatum::Text' => :meta_key_text,
     'MetaDatum::TextDate' => :meta_key_text_date,
-    'MetaDatum::Lincenses' => :meta_key_licenses,
     'MetaDatum::Keywords' => :meta_key_keywords,
     'MetaDatum::People' => :meta_key_people
   }
@@ -95,7 +94,7 @@ feature 'Admin Meta Keys' do
       visit edit_meta_key_path(meta_key_keywords)
 
       expect(page).to have_checked_field 'Extensible?'
-      select 'MetaDatum::Licenses', from: 'Meta datum object type'
+      select 'MetaDatum::TextDate', from: 'Meta datum object type'
       click_button 'Save'
 
       expect(page).to have_css('.alert-success')
@@ -103,7 +102,7 @@ feature 'Admin Meta Keys' do
       visit edit_meta_key_path(meta_key_keywords)
 
       expect(page).to have_select('Meta datum object type',
-                                  selected: 'MetaDatum::Licenses')
+                                  selected: 'MetaDatum::TextDate')
       expect(page).not_to have_field 'Extensible?'
     end
 
