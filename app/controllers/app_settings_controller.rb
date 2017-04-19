@@ -16,6 +16,13 @@ class AppSettingsController < ApplicationController
     'Other' => {
       sitemap: 'Links for footer menu',
       support_url: 'Link for support tab'
+    },
+    'Copyright/License Defaults' => {
+      media_entry_default_license_meta_key: 'MetaKey ID MediaEntry Licenses',
+      media_entry_default_license_id: 'Keyword UUID for License set on upload',
+      media_entry_default_license_usage_meta_key: \
+        'MetaKey ID for MediaEntry Usage Text',
+      media_entry_default_license_usage_text: 'Usage Text set on upload'
     }
   }.freeze
 
