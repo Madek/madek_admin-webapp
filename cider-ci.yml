@@ -49,11 +49,11 @@ jobs:
     priority: 999 # "empty" job = high priority
     context:
       task: "echo '✔︎ All dependencies have passed' ; exit 0"
-    run_when: *DEFAULT_TRIGGERS
-    depends_on:
+    depends_on: &ALL_TEST_DEPENDS
       rspec-tests: {job_key: rspec-tests, type: job, states: [passed]}
       lint: {job_key: lint, type: job, states: [passed]}
       all-tests of the datalayer: {job_key: all-tests, type: job, submodule: [datalayer], states: [passed]}
+    run_when: *ALL_TEST_DEPENDS
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # GITHUB BRANCH PROTECTION                                                        #
