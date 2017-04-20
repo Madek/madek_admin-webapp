@@ -1,13 +1,20 @@
-= form_for @group, html: { class: 'form-horizontal', role: 'form' } do |f| 
+:ruby
+  form_url =
+    if @group.new_record?
+      groups_path
+    else
+      group_path(@group)
+    end
+
+= form_for @group, as: :group, url: form_url, html: { class: 'form-horizontal', role: 'form' } do |f| 
   .form-group
     .col-xs-1
       = f.label :name, 'Name', class: 'control-label'
-    .col-xs-4
+    .col-xs-7
       = f.text_field :name, class: 'form-control'
   .form-group
-    .col-xs-offset-1.col-xs-2
+    .col-xs-offset-1.col-xs-3
       = button_tag type: 'submit', class: 'btn btn-success' do
         %span.glyphicon.glyphicon-ok
         Save
-
-    = link_to 'Go back', @group.persisted? ? group_path(@group) : groups_path, class: 'btn btn-link'
+      = link_to 'Go back', @group.persisted? ? group_path(@group) : groups_path, class: 'btn btn-link'

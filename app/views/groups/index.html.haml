@@ -15,14 +15,14 @@
               class: 'form-control', placeholder: 'Search term'
 
           .form-group
-            = label_tag :sort_by, 'Sort (and search) by:'
+            = label_tag :sort_by, 'Sort (and search) by'
             = select_tag :sort_by, options_for_select([['Name', :name],
               ['Text search ranking', :text_rank],
               ['Trigram search ranking', :trgm_rank]],
             params[:sort_by]), {class: 'form-control'}
       
           .form-group
-            = label_tag :type, 'Type of'
+            = label_tag :type, 'Type'
             = select_tag :type,
                 options_for_select(['', Group.types].flatten, params[:type]),
                 class: 'form-control'
@@ -30,9 +30,11 @@
           .form-group
             = submit_tag 'Apply', class: 'btn btn-primary'
             = link_to 'Reset', groups_path, class: 'btn btn-default'
-    = link_to new_group_path, class: 'btn btn-default' do
-      %i.glyphicon.glyphicon-plus
-      New group
+      .panel-footer
+        = link_to new_group_path, class: 'btn btn-default' do
+          %i.glyphicon.glyphicon-plus
+          Create group
+
 .row
   .col-xs-12
     %table.table.table-striped

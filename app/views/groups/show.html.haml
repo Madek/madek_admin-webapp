@@ -2,21 +2,25 @@
   %h1
     %i.icon-user 
     #{@group.name}
+    %small= @group.type
+  %small
+    = link_to '&larr; Go back to groups list'.html_safe, groups_path
 
 .row
   .col-xs-12
     .panel.panel-default
       .panel-body
         .btn-group
-          = link_to form_add_user_group_path(@group), class: 'btn btn-default' do
-            %i.glyphicon.glyphicon-plus
-            Add user
+          - if policy(@group).form_add_user?
+            = link_to form_add_user_group_path(@group), class: 'btn btn-default' do
+              %i.glyphicon.glyphicon-plus
+              Add user
 
           - if @group.type == 'InstitutionalGroup'
             = link_to form_merge_to_group_path(@group), class: 'btn btn-default' do
               %i.glyphicon.glyphicon-random
               Merge to
-          = render partial: 'action_buttons', locals: {group: @group, size: nil}
+          = render partial: 'action_buttons', locals: { group: @group }
 
 .row
   .col-xs-12
@@ -33,29 +37,28 @@
 
 .row
   .col-xs-4
-    %h3
-      %i.glyphicon.glyphicon-filter
-      Filters
+    .page-header
+      %h3 Filters
   
     = form_tag group_path(@group), method: 'GET', class: 'form-inline' do
-  
       .form-group
-        = text_field nil, :fuzzy_search, class: "search-query", value: params[:fuzzy_search]
+        = text_field_tag 'user[search_term]', params.fetch(:user, {}).fetch(:search_term, nil), class: 'form-control', size: 28
       .form-group 
-        = button_tag type: 'submit', class: 'btn btn-sm' do
+        = button_tag type: 'submit', class: 'btn btn-primary' do
           Filter
 
   .col-xs-8
-    %h2.text-center
-      Users 
+    .page-header
+      %h3 Users (#{@users.count})
     %table#group-users.table.table-striped
       %thead
         %tr
           %th Login
           %th E-mail
           %th Id
+          %th
       %tbody
-        = render partial: 'groups/user', collection: @users 
+        = render(partial: 'groups/user', collection: @users) || empty_collection(4, 'users')
     
 = paginate @users
 

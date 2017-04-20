@@ -3,10 +3,11 @@ module Concerns
     extend ActiveSupport::Concern
 
     module ClassMethods
-      def define_update_action_for(model)
+      def define_update_action_for(model, perform_authorization = false)
         model_underscored = model.to_s.underscore
         define_method :update do
           @instance = model.find(params[:id])
+          authorize(@instance) if perform_authorization
           @instance.update!(send("update_#{model_underscored}_params"))
 
           respond_with @instance, location: (lambda do

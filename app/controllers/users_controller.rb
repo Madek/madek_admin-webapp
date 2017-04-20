@@ -81,6 +81,7 @@ class UsersController < ApplicationController
 
   def remove_user_from_group
     group = Group.find params[:group_id]
+    authorize group
     group.users.delete(User.find(params[:user_id]))
 
     respond_with group,

@@ -17,10 +17,10 @@
     
           = submit_tag 'Apply', class: 'btn btn-primary'
           = link_to 'Reset', people_path, class: 'btn btn-default'
-    .btn-group
-      = link_to new_person_path, class: 'btn btn-default' do
-        %span.glyphicon.glyphicon-plus
-        Create person
+      .panel-footer
+        = link_to new_person_path, class: 'btn btn-default' do
+          %span.glyphicon.glyphicon-plus
+          Create person
 
 .row
   .col-xs-12

@@ -78,7 +78,7 @@ describe GroupsController do
 
           get(
             :index,
-            { search_terms: 'test', sort_by: 'trgm_rank' },
+            { search_terms: 'test', sort_by: 'trgm_rank', type: 'Group' },
             user_id: admin_user.id
           )
 
@@ -117,41 +117,103 @@ describe GroupsController do
     end
   end
 
+  describe '#new' do
+    it 'renders template' do
+      get :new, nil, user_id: admin_user.id
+
+      expect(response).to render_template :new
+    end
+  end
+
   describe '#update' do
-    let!(:group) { create :group }
+    context 'Group' do
+      let!(:group) { create :group }
 
-    it 'redirects to group#show after successful update' do
-      patch(
-        :update,
-        { id: group.id, group: { name: 'NEW NAME' } },
-        user_id: admin_user.id
-      )
-
-      expect(response).to have_http_status(302)
-      expect(response).to redirect_to group_path(assigns(:instance))
-    end
-
-    it 'updates the group' do
-      patch(
-        :update,
-        { id: group.id, group: { name: 'NEW NAME' } },
-        user_id: admin_user.id
-      )
-
-      expect(flash[:success]).to eq flash_message(:update, :success)
-      expect(group.reload.name).to eq 'NEW NAME'
-    end
-
-    context 'failed validations' do
-      it 'displays error messages and redirects' do
+      it 'redirects to group#show after successful update' do
         patch(
           :update,
-          { id: group.id, group: { name: '' } },
+          { id: group.id, group: { name: 'NEW NAME' } },
           user_id: admin_user.id
         )
 
-        expect(response).to have_http_status(:unprocessable_entity)
-        expect(response).to render_template 'errors/422'
+        expect(response).to have_http_status(302)
+        expect(response).to redirect_to group_path(assigns(:instance))
+      end
+
+      it 'updates the group' do
+        patch(
+          :update,
+          { id: group.id, group: { name: 'NEW NAME' } },
+          user_id: admin_user.id
+        )
+
+        expect(flash[:success]).to eq flash_message(:update, :success)
+        expect(group.reload.name).to eq 'NEW NAME'
+      end
+
+      context 'failed validations' do
+        it 'displays error messages and redirects' do
+          patch(
+            :update,
+            { id: group.id, group: { name: '' } },
+            user_id: admin_user.id
+          )
+
+          expect(response).to have_http_status(:unprocessable_entity)
+          expect(response).to render_template 'errors/422'
+        end
+      end
+    end
+
+    context 'InstitutionalGroup' do
+      let!(:group) { create :institutional_group }
+
+      it 'redirects to group#show after successful update' do
+        patch(
+          :update,
+          { id: group.id, group: { name: 'NEW NAME' } },
+          user_id: admin_user.id
+        )
+
+        expect(response).to have_http_status(302)
+        expect(response).to redirect_to group_path(assigns(:instance))
+      end
+
+      it 'updates the group' do
+        patch(
+          :update,
+          { id: group.id, group: { name: 'NEW NAME' } },
+          user_id: admin_user.id
+        )
+
+        expect(flash[:success]).to eq(
+          flash_message(:update, :success, 'Institutional group')
+        )
+        expect(group.reload.name).to eq 'NEW NAME'
+      end
+    end
+
+    context 'AuthenticationGroup' do
+      let!(:group) { create :authentication_group }
+
+      before do
+        patch(
+          :update,
+          { id: group.id, group: { name: 'NEW NAME' } },
+          user_id: admin_user.id
+        )
+      end
+
+      it 'redirects to group#show after successful update' do
+        expect(response).to have_http_status(302)
+        expect(response).to redirect_to group_path(assigns(:instance))
+      end
+
+      it 'updates the group' do
+        expect(flash[:success]).to eq(
+          flash_message(:update, :success, 'Authentication group')
+        )
+        expect(group.reload.name).to eq 'NEW NAME'
       end
     end
   end
@@ -181,35 +243,84 @@ describe GroupsController do
   end
 
   describe '#destroy' do
-    let!(:group) { create :group }
+    context 'Group' do
+      let!(:group) { create :group }
 
-    context 'when group does not have any users' do
-      it 'redirects to admin groups path after a successful destroy' do
-        delete :destroy, { id: group.id }, user_id: admin_user.id
+      context 'when group does not have any users' do
+        it 'redirects to admin groups path after a successful destroy' do
+          delete :destroy, { id: group.id }, user_id: admin_user.id
 
-        expect(response).to redirect_to(groups_path)
-        expect(flash[:success]).to eq flash_message(:destroy, :success)
+          expect(response).to redirect_to(groups_path)
+          expect(flash[:success]).to eq flash_message(:destroy, :success)
+        end
+
+        it 'destroys the group' do
+          expect do
+            delete :destroy, { id: group.id }, user_id: admin_user.id
+          end.to change { Group.count }.by(-1)
+        end
       end
 
-      it 'destroys the group' do
-        expect do
-          delete :destroy, { id: group.id }, user_id: admin_user.id
-        end.to change { Group.count }.by(-1)
+      context 'when group has some users' do
+        before { group.users << [create(:user), create(:user)] }
+
+        it 'redirects to a correct path depending on referrer param' do
+          delete(
+            :destroy,
+            { id: group.id, redirect_path: group_path(group) },
+            user_id: admin_user.id
+          )
+
+          expect(response).to have_http_status(302)
+          expect(response).to redirect_to group_path(group)
+        end
       end
     end
 
-    context 'when group has some users' do
-      before { group.users << [create(:user), create(:user)] }
+    context 'InstitutionalGroup' do
+      let!(:group) { create :institutional_group }
 
-      it 'redirects to a correct path depending on referrer param' do
-        delete(
-          :destroy,
-          { id: group.id, redirect_path: group_path(group) },
-          user_id: admin_user.id
-        )
+      context 'when group does not have any users' do
+        it 'redirects to admin groups path after a successful destroy' do
+          delete :destroy, { id: group.id }, user_id: admin_user.id
 
-        expect(response).to have_http_status(302)
-        expect(response).to redirect_to group_path(group)
+          expect(response).to redirect_to(groups_path)
+          expect(flash[:success]).to eq(
+            flash_message(:destroy, :success, 'Institutional group')
+          )
+        end
+
+        it 'destroys the group' do
+          expect do
+            delete :destroy, { id: group.id }, user_id: admin_user.id
+          end.to change { Group.count }.by(-1)
+        end
+      end
+
+      context 'when group has some users' do
+        before { group.users << [create(:user), create(:user)] }
+
+        it 'redirects to a correct path depending on referrer param' do
+          delete(
+            :destroy,
+            { id: group.id, redirect_path: group_path(group) },
+            user_id: admin_user.id
+          )
+
+          expect(response).to have_http_status(302)
+          expect(response).to redirect_to group_path(group)
+        end
+      end
+    end
+
+    context 'AuthenticationGroup' do
+      let!(:group) { create :authentication_group }
+
+      it 'renders forbidden message' do
+        delete(:destroy, { id: group.id }, user_id: admin_user.id)
+
+        expect(response).to have_http_status :forbidden
+        expect(response.body).to end_with 'Access denied!'
       end
     end
   end
@@ -245,6 +356,28 @@ describe GroupsController do
 
       expect(response).to have_http_status(404)
       expect(response).to render_template 'errors/404'
+    end
+
+    context 'AuthenticationGroup' do
+      let!(:group) { create :authentication_group }
+
+      it 'renders forbidden message' do
+        post :add_user, { id: group.id, user_id: user.id }, user_id: admin_user.id
+
+        expect(response).to have_http_status :forbidden
+        expect(response.body).to end_with 'Access denied!'
+      end
+    end
+  end
+
+  describe '#form_merge_to' do
+    let(:group) { create :institutional_group }
+
+    it 'renders template' do
+      get :form_merge_to, { id: group.id }, user_id: admin_user.id
+
+      expect(response).to be_success
+      expect(response).to render_template :form_merge_to
     end
   end
 
@@ -283,7 +416,7 @@ describe GroupsController do
     end
   end
 
-  def flash_message(action, type)
-    I18n.t type, scope: "flash.actions.#{action}", resource_name: 'Group'
+  def flash_message(action, type, resource_name = 'Group')
+    I18n.t type, scope: "flash.actions.#{action}", resource_name: resource_name
   end
 end

@@ -1,19 +1,19 @@
-%tr.group{id: group.id}
+%tr.group{'data-id' => group.id}
   %td.col-xs-3= group.name
   %td= group.institutional_group_name
   %td= group.type
 
   %td.col-xs-2.search-rank= group.respond_to?(:search_rank) ? group.search_rank : ''
 
-  %td.active.col-xs-3
-    .btn-group
+  %td.active.col-xs-3.text-center
+    .btn-group.btn-group-sm
       - if session[:vocabulary_id].present?
-        = link_to path_to_vocabulary_permission_form(group), class: 'btn btn-success btn-sm' do
+        = link_to path_to_vocabulary_permission_form(group), class: 'btn btn-success' do
           Grant Vocabulary Permission
         = link_to groups_path(reset_vocabulary_params: true),
-                  class: 'btn btn-default btn-sm' do
+                  class: 'btn btn-default' do
           Cancel
       - else
-        = link_to group_path(group), class: "btn btn-default btn-sm" do
+        = link_to group_path(group), class: 'btn btn-default' do
           %i.glyphicon.glyphicon-eye-open
-        = render partial: 'action_buttons', locals: {group: group, size: 'btn-sm' }
+        = render partial: 'action_buttons', locals: { group: group }

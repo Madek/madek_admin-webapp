@@ -50,8 +50,8 @@ feature 'Admin Groups' do
   end
 
   scenario 'Editing a group' do
-    @group = create :group
-    visit group_path(@group)
+    group = create :group
+    visit group_path(group)
     click_link('Edit')
     fill_in 'group[name]', with: 'AWESOME GROUP'
     click_button 'Save'
@@ -59,12 +59,11 @@ feature 'Admin Groups' do
     expect(page).to have_content('AWESOME GROUP')
   end
 
-  scenario 'Creating a new group', browser: :firefox do
+  scenario 'Creating a new group' do
     visit groups_path
-    click_link('New group')
+    click_link 'Create group'
     fill_in 'group[name]', with: ''
     click_button 'Save'
-    sleep 10
     expect(page).to have_content 'An error occured'
     expect(page).to have_content 'code: 422'
     click_link 'Go back'
@@ -74,16 +73,72 @@ feature 'Admin Groups' do
     expect(page).to have_content('NEW AWESOME GROUP')
   end
 
+  scenario 'Editing a group' do
+    group = create :group
+
+    visit groups_path
+    filter_group group
+
+    within "[data-id='#{group.id}']" do
+      click_link 'Edit'
+    end
+    expect(current_path).to eq edit_group_path(group)
+
+    fill_in 'Name', with: 'New group name'
+    click_button 'Save'
+    expect(page).to have_css '.alert-success'
+    expect(current_path).to eq group_path(group)
+    expect(page).to have_content 'Name New group name'
+  end
+
+  scenario 'Editing an Institutional Group' do
+    group = create :institutional_group
+
+    visit groups_path
+    filter_group group
+
+    within "[data-id='#{group.id}']" do
+      expect(page).to have_content 'InstitutionalGroup'
+      click_link 'Edit'
+    end
+    expect(current_path).to eq edit_group_path(group)
+
+    fill_in 'Name', with: 'New institutional group name'
+    click_button 'Save'
+    expect(page).to have_css '.alert-success'
+    expect(current_path).to eq group_path(group)
+    expect(page).to have_content 'Name New institutional group name'
+  end
+
+  scenario 'Editing an Authentication Group' do
+    group = create :authentication_group
+
+    visit groups_path
+    filter_group group
+
+    within "[data-id='#{group.id}']" do
+      expect(page).to have_content 'AuthenticationGroup'
+      click_link 'Edit'
+    end
+    expect(current_path).to eq edit_group_path(group)
+
+    fill_in 'Name', with: 'New authentication group name'
+    click_button 'Save'
+    expect(page).to have_css '.alert-success'
+    expect(current_path).to eq group_path(group)
+    expect(page).to have_content 'Name New authentication group name'
+  end
+
   scenario 'Deleting a group with users' do
-    @group = create :group, :with_user
-    visit group_path(@group)
+    group = create :group, :with_user
+    visit group_path(group)
     click_link 'Delete'
     expect(page).to have_css('.alert-danger')
   end
 
   scenario 'Deleting a group without users' do
-    @group = create :group
-    visit group_path(@group)
+    group = create :group
+    visit group_path(group)
     click_link 'Delete'
     expect(page).to have_css('.alert-success')
   end
@@ -97,8 +152,8 @@ feature 'Admin Groups' do
   end
 
   scenario 'Adding a user to a group' do
-    @group = create :group
-    visit group_path(@group)
+    group = create :group
+    visit group_path(group)
     expect(page).to have_no_content('adam')
     click_link 'Add user'
     select 'Admin, Adam [adam]', from: 'user_id'
@@ -109,8 +164,8 @@ feature 'Admin Groups' do
   end
 
   scenario 'Removing a user from a group' do
-    @group = create :group, :with_user
-    visit group_path(@group)
+    group = create :group, :with_user
+    visit group_path(group)
     expect(group_user_count).to eq 1
     click_link 'Remove from group'
     expect(page).to have_css('.alert-success')
@@ -118,44 +173,91 @@ feature 'Admin Groups' do
   end
 
   scenario 'Filtering users belonging to a group' do
-    @group = create :group, :with_user
-    @group.users << create(:user, login: 'test')
-    visit group_path(@group)
+    group = create :group, :with_user
+    group.users << create(:user, login: 'test')
+    visit group_path(group)
     expect(group_user_count).to eq 2
-    fill_in '_fuzzy_search', with: 'test'
+    fill_in 'user[search_term]', with: 'test'
     click_button 'Filter'
     expect(group_user_count).to eq 1
-    expect(find('table#group-users')).to have_content('test')
+    within 'table#group-users' do
+      expect(page).to have_content 'test'
+    end
   end
 
   scenario 'Merging institutional group to regular group' do
-    @merge_to = create :group
-    @to_merge = Group.departments.first
-    visit group_path(@to_merge)
+    merge_to = create :group
+    to_merge = Group.departments.first
+    visit group_path(to_merge)
     click_link 'Merge to'
-    fill_in 'id_receiver', with: @merge_to.id
+    fill_in 'id_receiver', with: merge_to.id
     click_button 'Merge'
     expect(page).to have_content 'An error occured'
     expect(page).to have_content 'code: 404'
   end
 
   scenario 'Merging institutional groups' do
-    @merge_to = Group.departments.last
-    @to_merge = Group.departments.first
-    @to_merge.users << create(:user)
-    visit group_path(@merge_to)
+    merge_to = Group.departments.last
+    to_merge = Group.departments.first
+    to_merge.users << create(:user)
+    visit group_path(merge_to)
     expect(group_user_count).to eq 0
-    visit group_path(@to_merge)
+    visit group_path(to_merge)
     expect(group_user_count).to eq 1
     click_link 'Merge to'
-    fill_in 'id_receiver', with: @merge_to.id
+    fill_in 'id_receiver', with: merge_to.id
     click_button 'Merge'
     expect(page).to have_css('.alert-success')
-    visit group_path(@merge_to)
+    visit group_path(merge_to)
     expect(group_user_count).to eq 1
   end
 
+  scenario 'Authentication Group cannot be deleted' do
+    group = create :authentication_group
+
+    visit groups_path
+    filter_group group
+    within "[data-id='#{group.id}']" do
+      expect(page).not_to have_link 'Delete'
+    end
+
+    visit group_path(group)
+    expect(page).not_to have_link 'Delete'
+  end
+
+  scenario 'Admin is not able to add members to Authentication Group' do
+    group = create :authentication_group
+
+    visit group_path(group)
+
+    expect(page).not_to have_link 'Add user'
+  end
+
+  scenario 'Admin is not able to remove members from Authentication Group' do
+    group = create :authentication_group, :with_user
+
+    visit group_path(group)
+
+    expect(page).not_to have_link 'Remove from group'
+  end
+
+  scenario 'Group without users has proper text in table' do
+    group = create :group
+
+    visit group_path(group)
+
+    within '#group-users' do
+      expect(page).to have_content 'No users'
+    end
+  end
+
   def group_user_count
-    all('table#group-users tbody tr').count
+    all('table#group-users tbody tr:not(.empty-collection)').count
+  end
+
+  def filter_group(group)
+    fill_in :search_terms, with: group.name
+    select 'Name', from: :sort_by
+    click_button 'Apply'
   end
 end

@@ -12,7 +12,7 @@ class GroupsController < ApplicationController
     @group = Group.new params[:group]
   end
 
-  define_update_action_for(Group)
+  define_update_action_for(Group, true)
 
   def create
     @group = Group.create!(group_params)
@@ -24,8 +24,8 @@ class GroupsController < ApplicationController
     @group = Group.find params[:id]
     @users = @group.users
 
-    unless params[:fuzzy_search].blank?
-      @users = @users.fuzzy_search(params[:fuzzy_search])
+    if params.fetch(:user, {}).fetch(:search_term, nil).present?
+      @users = @users.filter_by(params[:user][:search_term])
     end
 
     @users = @users.page(params[:page])
@@ -37,6 +37,7 @@ class GroupsController < ApplicationController
 
   def destroy
     @group = Group.find(params[:id])
+    authorize @group
 
     if @group.users.empty?
       @group.destroy!
@@ -50,11 +51,13 @@ class GroupsController < ApplicationController
 
   def form_add_user
     @group = Group.find params[:id]
+    authorize @group
   end
 
   def add_user
     @group = Group.find params[:id]
-    @user  = User.find params[:user_id]
+    authorize @group
+    @user = User.find params[:user_id]
     if @group.users.include?(@user)
       flash = { error: "The user <b>#{@user.login}</b> "\
                        'already belongs to this group.'.html_safe }
@@ -69,10 +72,12 @@ class GroupsController < ApplicationController
 
   def form_merge_to
     @group = Group.departments.find(params[:id])
+    authorize @group
   end
 
   def merge_to
     originator = Group.departments.find(params[:id])
+    authorize originator
     receiver = Group.departments.find(params[:id_receiver].strip)
 
     originator.merge_to(receiver)

@@ -64,4 +64,13 @@ module ApplicationHelper
     Array.new(string.try(:to_s).try(:length) || 3) { '*' }.join
   end
 
+  def empty_collection(colspan, collection_name)
+    content_tag :tr, class: 'empty-collection' do
+      content_tag(:td,
+                  "No #{collection_name}",
+                  colspan: colspan,
+                  class: 'text-center')
+    end
+  end
+
 end

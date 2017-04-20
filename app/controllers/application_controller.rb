@@ -49,9 +49,9 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def error_according_to_login_state
+  def error_according_to_login_state(exception)
     if current_user
-      raise Errors::ForbiddenError, 'Admin access denied!'
+      raise Errors::ForbiddenError, forbidden_error_message(exception)
     else
       raise Errors::UnauthorizedError, 'Please log in!'
     end
@@ -96,5 +96,13 @@ class ApplicationController < ActionController::Base
 
   def filter_value(type, default = '')
     params.fetch(:filter, {}).fetch(type, default)
+  end
+
+  def forbidden_error_message(exception)
+    if exception.policy.is_a?(GroupPolicy)
+      'Access denied!'
+    else
+      'Admin access denied!'
+    end
   end
 end

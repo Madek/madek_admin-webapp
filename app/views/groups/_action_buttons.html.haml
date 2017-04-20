@@ -1,8 +1,9 @@
-= link_to edit_group_path(group), class: "btn btn-info #{size} #{group.readonly? ? 'disabled' : ''}" do
+= link_to edit_group_path(group), class: "btn btn-info #{group.readonly? ? 'disabled' : ''}" do
   %i.glyphicon.glyphicon-edit
   Edit
-= link_to group_path(group, redirect_path: request.original_url), method: :delete,
-    data: { confirm: 'Do you really want to delete this group?' },
-    class: "btn btn-danger #{size} #{group.readonly? ? 'disabled' : ''}" do
-  %i.glyphicon.glyphicon-trash
-  Delete
+- if policy(group).destroy?
+  = link_to group_path(group, redirect_path: request.original_url), method: :delete,
+      data: { confirm: 'Do you really want to delete this group?' },
+      class: "btn btn-danger #{group.readonly? ? 'disabled' : ''}" do
+    %i.glyphicon.glyphicon-trash
+    Delete

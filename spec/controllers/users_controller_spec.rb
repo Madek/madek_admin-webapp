@@ -371,6 +371,71 @@ describe UsersController do
     end
   end
 
+  describe '#remove_user_from_group' do
+    context 'Group' do
+      let!(:group) { create :group }
+      let!(:user) { create :user }
+
+      it 'removes user from the group' do
+        group.users << user
+
+        expect(group.users).to include user
+
+        delete(
+          :remove_user_from_group,
+          { group_id: group.id, user_id: user.id },
+          user_id: admin_user.id
+        )
+
+        expect(response).to have_http_status 302
+        expect(response).to redirect_to group_path(group)
+        expect(group.users.reload).not_to include user
+      end
+    end
+
+    context 'InstitutionalGroup' do
+      let!(:group) { create :institutional_group }
+      let!(:user) { create :user }
+
+      it 'removes user from the group' do
+        group.users << user
+
+        expect(group.users).to include user
+
+        delete(
+          :remove_user_from_group,
+          { group_id: group.id, user_id: user.id },
+          user_id: admin_user.id
+        )
+
+        expect(response).to have_http_status 302
+        expect(response).to redirect_to group_path(group)
+        expect(group.users.reload).not_to include user
+      end
+    end
+
+    context 'AuthenticationGroup' do
+      let!(:group) { create :authentication_group }
+      let!(:user) { create :user }
+
+      it 'render forbidden message' do
+        group.users << user
+
+        expect(group.users).to include user
+
+        delete(
+          :remove_user_from_group,
+          { group_id: group.id, user_id: user.id },
+          user_id: admin_user.id
+        )
+
+        expect(response).to have_http_status :forbidden
+        expect(response.body).to end_with 'Access denied!'
+        expect(group.users.reload).to include user
+      end
+    end
+  end
+
   def flash_message(action, type)
     I18n.t type, scope: "flash.actions.#{action}", resource_name: 'User'
   end
