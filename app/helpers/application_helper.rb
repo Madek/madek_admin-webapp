@@ -1,4 +1,6 @@
 module ApplicationHelper
+  include UiHelper
+
   def markdown(source)
     Kramdown::Document.new(source).to_html.html_safe
   end
@@ -11,7 +13,7 @@ module ApplicationHelper
 
   def alerts
     flash.each do |level, message|
-      bootstrap_level = (level.to_sym == :error) ? :danger : level
+      bootstrap_level = level.to_sym == :error ? :danger : level
       yield level, message, bootstrap_level if message
     end
     nil

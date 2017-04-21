@@ -58,11 +58,11 @@ table tr.semiborder td
 .statistics .row
   padding-top: 1.25em
   margin-top: 1.25em
-  
+
   a
     &:hover
       text-decoration: none
-  
+
   .number
     font-weight: 500
     font-size: 2.2em
@@ -98,9 +98,19 @@ table > tbody > tr.empty-collection > td
 
 // forms
 
-// forms for "new" actions have a yellowish background, 
+// forms for "new" actions have a yellowish background,
 // to better distinguish between create and update
 // (by rails convention their id starts with "new_")
 form[id^="new_"]
   background: lightyellow
   box-shadow: 0px 0px 20px 20px lightyellow
+
+
+// data tables (see UiHelper)
+table.table
+  tbody + thead tr th
+    padding-top: 1em
+
+  &.table-condensed
+    samp
+      font-size: 12px
