@@ -6,12 +6,12 @@ feature 'Admin People' do
 
   scenario 'Filtering persons by search term' do
     visit people_path
-    fill_in 'search_term', with: 'nor'
+    fill_in 'filter[search_term]', with: 'nor'
     click_button 'Apply'
     all('table tbody tr').each do |tr|
       expect(tr).to have_content 'nor'
     end
-    expect(find_field('search_term')[:value]).to eq 'nor'
+    expect(find_field('filter[search_term]')[:value]).to eq 'nor'
   end
 
   scenario 'Filtering admin persons' do
@@ -22,6 +22,22 @@ feature 'Admin People' do
     within 'table tbody' do
       expect(page).to have_content admin_user.person
       expect(page).to have_content admin_user.login
+    end
+  end
+
+  %w(PeopleGroup PeopleInstitutionalGroup Person).each do |subtype|
+    scenario "Filtering people by #{subtype} subtype", browser: :firefox do
+      visit people_path
+
+      select subtype, from: 'filter[subtype]'
+      click_button 'Apply'
+
+      sleep 10
+
+      all('table tbody tr').each do |row|
+        expect(row).to have_content subtype
+      end
+      expect(page).to have_select('Subtype', selected: subtype)
     end
   end
 

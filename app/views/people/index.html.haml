@@ -9,7 +9,13 @@
       .panel-body
         = form_tag people_path, method: :get, class: 'form-inline' do
           .form-group
-            = text_field_tag :search_term, params[:search_term], class: 'form-control', placeholder: 'Search term'
+            = text_field_tag 'filter[search_term]', filter_value(:search_term), class: 'form-control', placeholder: 'Search term', size: 32
+          .form-group
+            = label_tag 'filter[subtype]', 'Subtype'
+            = select_tag 'filter[subtype]',
+                options_from_collection_for_select(Person.subtypes, :subtype, :subtype, filter_value(:subtype)),
+                prompt: '-- all --',
+                class: 'form-control'
           .checkbox
             %label
               = check_box_tag :with_user, '1', params[:with_user].present?
@@ -30,6 +36,7 @@
           %th Full name
           %th User
           %th Pseudonym
+          %th Subtype
           %th Actions
       %tbody
         = render @people

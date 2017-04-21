@@ -2,17 +2,18 @@ require 'spec_helper'
 
 describe PeopleController do
   let!(:admin_user) { create :admin_user }
+  let(:session) { { user_id: admin_user.id } }
 
   describe '#index' do
     it 'responds with HTTP 200 status code' do
-      get :index, nil, user_id: admin_user.id
+      get :index, nil, session
 
       expect(response).to be_success
       expect(response).to have_http_status(200)
     end
 
     it 'loads the first page of people into @people' do
-      get :index, nil, user_id: admin_user.id
+      get :index, nil, session
 
       expect(response).to be_success
       expect(assigns(:people)).to eq Person.first(16)
@@ -25,7 +26,7 @@ describe PeopleController do
           person_2 = create :person, first_name: 'test2xxx'
           person_3 = create :person, first_name: 'test3xxx'
 
-          get :index, { search_term: 'xxx' }, user_id: admin_user.id
+          get :index, { filter: { search_term: 'xxx' } }, session
 
           expect(response).to be_success
           expect(assigns(:people)).to match_array [person_1, person_2, person_3]
@@ -34,10 +35,47 @@ describe PeopleController do
 
       context 'with user' do
         it 'returns only people with user' do
-          get :index, { with_user: 1 }, user_id: admin_user.id
+          get :index, { with_user: 1 }, session
 
           expect(response).to be_success
           expect(assigns(:people)).to match_array Person.with_user
+        end
+      end
+
+      context 'by subtype' do
+        let!(:person) { create :person, first_name: 'Foo' }
+        let!(:people_group) { create :people_group, first_name: 'Foo' }
+        let!(:people_instgroup) { create :people_instgroup, first_name: 'Foo' }
+
+        it 'returns only people with "Person" subtype' do
+          get :index, filter_params('Person'), session
+
+          expect(response).to be_success
+          expect(assigns[:people]).to include person
+          expect(assigns[:people]).not_to include people_group
+          expect(assigns[:people]).not_to include people_instgroup
+        end
+
+        it 'returns only people with "PeopleGroup" subtype' do
+          get :index, filter_params('PeopleGroup'), session
+
+          expect(response).to be_success
+          expect(assigns[:people]).to include people_group
+          expect(assigns[:people]).not_to include person
+          expect(assigns[:people]).not_to include people_instgroup
+        end
+
+        it 'returns only people with "PeopleInstitutionalGroup" subtype' do
+          get :index, filter_params('PeopleInstitutionalGroup'), session
+
+          expect(response).to be_success
+          expect(assigns[:people]).to include people_instgroup
+          expect(assigns[:people]).not_to include person
+          expect(assigns[:people]).not_to include people_group
+        end
+
+        def filter_params(subtype)
+          { filter: { search_term: 'Foo', subtype: subtype } }
         end
       end
     end
@@ -49,20 +87,20 @@ describe PeopleController do
     end
 
     it 'responds with HTTP 200 status code' do
-      get :show, { id: @person.id }, user_id: admin_user.id
+      get :show, { id: @person.id }, session
 
       expect(response).to be_success
       expect(response).to have_http_status(200)
     end
 
     it 'renders the show template' do
-      get :show, { id: @person.id }, user_id: admin_user.id
+      get :show, { id: @person.id }, session
 
       expect(response).to render_template(:show)
     end
 
     it 'loads the proper person into @person' do
-      get :show, { id: @person.id }, user_id: admin_user.id
+      get :show, { id: @person.id }, session
 
       expect(assigns[:person]).to eq @person
     end
@@ -74,14 +112,14 @@ describe PeopleController do
     end
 
     it 'responds with HTTP 200 status code' do
-      get :edit, { id: @person.id }, user_id: admin_user.id
+      get :edit, { id: @person.id }, session
 
       expect(response).to be_success
       expect(response).to have_http_status(200)
     end
 
     it 'render the edit template and assigns the person to @person' do
-      get :edit, { id: @person.id }, user_id: admin_user.id
+      get :edit, { id: @person.id }, session
 
       expect(response).to render_template(:edit)
       expect(assigns[:person]).to eq @person
@@ -97,7 +135,7 @@ describe PeopleController do
       patch(
         :update,
         { id: @person.id, person: { first_name: 'test' } },
-        user_id: admin_user.id
+        session
       )
 
       expect(response).to have_http_status(302)
@@ -108,7 +146,7 @@ describe PeopleController do
       patch(
         :update,
         { id: @person.id, person: { first_name: 'test' } },
-        user_id: admin_user.id
+        session
       )
 
       expect(flash[:success]).to eq 'The person has been updated.'
@@ -116,7 +154,7 @@ describe PeopleController do
     end
 
     it 'displays error message when something went wrong' do
-      patch :update, { id: @person.id }, user_id: admin_user.id
+      patch :update, { id: @person.id }, session
 
       expect(response).to have_http_status(302)
       expect(response).to redirect_to(edit_person_path(@person))
@@ -126,7 +164,7 @@ describe PeopleController do
 
   describe '#create' do
     it 'redirects to admin people path after successfuly created person' do
-      post :create, { person: attributes_for(:person) }, user_id: admin_user.id
+      post :create, { person: attributes_for(:person) }, session
 
       expect(response).to have_http_status(302)
       expect(response).to redirect_to(people_path)
@@ -136,13 +174,13 @@ describe PeopleController do
 
     it 'creates a person' do
       expect do
-        post :create, { person: attributes_for(:person) }, user_id: admin_user.id
+        post :create, { person: attributes_for(:person) }, session
       end.to change { Person.count }.by(1)
     end
 
     context 'when validation failed' do
       it "renders 'new' template" do
-        post :create, nil, user_id: admin_user.id
+        post :create, nil, session
 
         expect(response).to be_success
         expect(response).to have_http_status(200)
@@ -152,7 +190,7 @@ describe PeopleController do
 
       it 'assigns @person with previously given values' do
         attributes = { first_name: 'example_name' }
-        post :create, { person: attributes }, user_id: admin_user.id
+        post :create, { person: attributes }, session
 
         expect(assigns[:person].first_name).to eq 'example_name'
       end
@@ -163,7 +201,7 @@ describe PeopleController do
     let!(:person) { create :person }
 
     it 'redirects to admin people path after succesful destroy' do
-      delete :destroy, { id: person.id }, user_id: admin_user.id
+      delete :destroy, { id: person.id }, session
 
       expect(response).to redirect_to(people_path)
       expect(flash[:success]).to eq 'The person has been deleted.'
@@ -171,7 +209,7 @@ describe PeopleController do
 
     it 'destroys the person' do
       expect do
-        delete :destroy, { id: person.id }, user_id: admin_user.id
+        delete :destroy, { id: person.id }, session
       end.to change { Person.count }.by(-1)
     end
   end

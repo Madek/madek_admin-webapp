@@ -5,9 +5,10 @@
       = link_to user_path(person.user) do
         = person.user.login
   %td= person.pseudonym
-  %td.active.col-xs-3
-    .btn-group
+  %td= person.subtype
+  %td.active.col-xs-3.text-center
+    .btn-group.btn-group-sm
       = link_to person_path(person),
-        class: 'btn btn-default btn-sm', title: 'Details' do
+        class: 'btn btn-default', title: 'Details' do
         %i.glyphicon.glyphicon-eye-open
-      = render partial: 'action_buttons', locals: { person: person, size: 'btn-sm', user: false}
+      = render partial: 'action_buttons', locals: { person: person, user: false}

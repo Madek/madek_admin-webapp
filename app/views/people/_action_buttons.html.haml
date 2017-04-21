@@ -1,11 +1,11 @@
 - if user
-  = link_to user_path(person.user), class: "btn btn-default #{size}" do
+  = link_to user_path(person.user), class: 'btn btn-default' do
     %span.glyphicon.glyphicon-user
     = person.user.login
-= link_to edit_person_path(person), class: "btn btn-info #{size}" do
+= link_to edit_person_path(person), class: 'btn btn-info' do
   %span.glyphicon.glyphicon-edit
   Edit
 = link_to person_path(person), method: :delete, data: { confirm: 'The person will be deleted. Do you want to proceed?' },
-    class: "btn btn-danger #{size}" do
+    class: 'btn btn-danger' do
   %span.glyphicon.glyphicon-trash
   Delete

@@ -1,10 +1,12 @@
 class PeopleController < ApplicationController
+  include Concerns::Filters
+
   def index
     @people = Person.page(params[:page]).per(16)
-
-    if params[:search_term].present?
-      @people = @people.search_by_term(params[:search_term])
-    end
+    filter_with(
+      { search_term: :search_by_term },
+      :subtype
+    )
     @people = @people.with_user if params[:with_user] == '1'
   end
 
