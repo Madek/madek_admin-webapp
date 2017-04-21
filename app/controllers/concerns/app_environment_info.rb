@@ -60,13 +60,16 @@ module Concerns
       rescue => err; err; end
 
       mountpoints = begin
-        Sys::Filesystem.mounts.group_by(&:mount_point)
+        ignored_paths = ['/dev', '/proc', '/sys']
+        ignored_types = %w(devfs debugfs tmpfs)
+        Sys::Filesystem.mounts.reject do |m|
+          ignored_paths.any? { |path| m.mount_point.starts_with?(path) } \
+            || ignored_types.any? { |type| m.mount_type == type }
+        end.group_by(&:mount_point)
       rescue => err; err; end
 
       {
-        stores: stores,
-        mounts_by_path: mounts,
-        stats_by_mount: stats,
+        stores: stores, mounts_by_path: mounts, stats_by_mount: stats,
         mountpoints: mountpoints
       }.as_json
     end

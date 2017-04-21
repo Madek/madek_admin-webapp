@@ -3,8 +3,14 @@
 
   storage_info = begin
     env[:storage][:stats_by_mount].map do |mount, s|
+      mountpoint = env[:storage][:mountpoints][s[:path].to_sym].first
+      options = mountpoint[:options]
       {
         mount: mount,
+        name: mountpoint[:name],
+        type: mountpoint[:mount_type],
+        options: options,
+        read_only: options.split(',').map(&:strip).include?('ro'),
         size: s[:blocks].to_i * s[:block_size],
         available: s[:blocks_available].to_i * s[:block_size],
         available_pct: (s[:blocks_available].to_f / s[:blocks].to_f * 100).to_i,
@@ -25,7 +31,12 @@
     .h5
       Disk
       %b
-        %kbd= s[:mount]
+        .label.label-default{style: 'background-color: #111'}= s[:mount]
+        .label.label-default= s[:name]
+        .label.label-default= s[:type].upcase
+
+      - if s[:read_only]
+        .label.label-danger= 'READ-ONLY!'
 
     %b
       = number_to_human_size s[:size]
@@ -44,7 +55,7 @@
 
 :ruby
   info_table_data = begin
-    !env.present? ? {null:{}} : {
+    !env.present? ? nil : {
       App: env[:madek].compact,
       Storage: {
         '': disks_list ? disks_list : 'No Data available!'
