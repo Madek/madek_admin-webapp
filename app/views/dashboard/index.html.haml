@@ -1,9 +1,9 @@
 -# %h2= @data[:environment][:madek][:site_title]
 
-%h3 Resources
+%section{style: 'margin: 3rem 0 5rem'}
+  %h2.h3 Resources
+  = render partial: 'resource_statistics'
 
-= render partial: 'resource_statistics'
-
-%h3 System
-
-= render partial: 'system_info'
+%section
+  %h2.h3 System
+  = render partial: 'system_info'

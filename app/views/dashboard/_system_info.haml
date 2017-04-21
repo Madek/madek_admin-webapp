@@ -1,8 +1,54 @@
 :ruby
-  table_data = begin
-    env = @data[:environment].deep_symbolize_keys
+  env = @data[:environment].deep_symbolize_keys
+
+  storage_info = begin
+    env[:storage][:stats_by_mount].map do |mount, s|
+      {
+        mount: mount,
+        size: s[:blocks].to_i * s[:block_size],
+        available: s[:blocks_available].to_i * s[:block_size],
+        available_pct: (s[:blocks_available].to_f / s[:blocks].to_f * 100).to_i,
+        used: (s[:blocks].to_i - s[:blocks_free]) * s[:block_size],
+        used_pct: ((s[:blocks].to_i - s[:blocks_free])/ s[:blocks].to_f * 100).to_i,
+        stores_on_mount: env[:storage][:mounts_by_path]
+          .select { |k, v| v == s[:path] }.keys
+          .map {|p| [p, env[:storage][:stores].select{|k,v| v == p.to_s}.keys]}.to_h
+      }
+    end
+  rescue => e
+    Rails.logger.warn 'Dashboard sysinfo fs error: ' + e.to_s
+    nil
+  end
+
+- disks_list = capture_haml do
+  - storage_info.try(:each) do |s|
+    .h5
+      Disk
+      %b
+        %kbd= s[:mount]
+
+    %b
+      = number_to_human_size s[:size]
+    = "| available #{number_to_human_size s[:available]} (#{s[:available_pct]}%)"
+    = "| used #{number_to_human_size s[:used]} (#{s[:used_pct]}%)"
+    %ul
+    - s[:stores_on_mount].each do |k, v|
+      %li
+        = "#{v.join(', ')} |"
+        %code= k
+    %hr
+  %span
+    (see
+    %a{:href => app_settings_path + '#' + 'deploy-config'} Deploy-Config)
+
+
+:ruby
+  info_table_data = begin
     !env.present? ? {null:{}} : {
       App: env[:madek].compact,
+      Storage: {
+        '': disks_list ? disks_list : 'No Data available!'
+      },
       Environment: {
         ruby: env[:ruby].values.join(' '),
         rails: env[:rails],
@@ -14,22 +60,25 @@
       }
     }
   rescue => e
-    Rails.logger.warn 'Dashboard sysinfo error: ' + e
+    Rails.logger.warn 'Dashboard sysinfo error: ' + e.to_s
     nil
   end
 
+-# main:
 
-
-= data_table(table_data, class: 'code-table') if table_data
+- if info_table_data
+  = data_table(info_table_data, class: 'code-table')
+- else
+  No Data available!
 
 #allDataContent.collapse{"aria-labelledby" => "showAllData", :role => "tabpanel"}
   %pre= JSON.pretty_generate(@data[:environment] || {})
 
 .row
-  .btn-group
+  .btn-group.btn-group-xs
     %a{"aria-controls" => "showAllData", "aria-expanded" => "false", "data-parent" => "#dataAccordion", "data-toggle" => "collapse",
       :href => "#allDataContent", :role => "button",
-      class: 'btn btn-link'}
+      class: 'btn btn-xs btn-link'}
       Show All Data
 
-    = button_to "Refresh", dashboard_refresh_path, class: 'btn btn-link'
+    = button_to "Refresh", dashboard_refresh_path, class: 'btn btn-xs btn-link'

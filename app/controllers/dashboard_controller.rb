@@ -3,13 +3,13 @@ class DashboardController < ApplicationController
   include Concerns::AppEnvironmentInfo
 
   def index
-    env = Rails.cache.fetch('app_environment_info', expires_in: 10.minutes) do
-      environment_info
+    env_info = Rails.cache.fetch('app_environment_info', expires_in: 10.minutes) do
+      app_environment_info
     end
 
     @data = {
       resources: app_resources_info,
-      environment: env
+      environment: env_info
     }
   end
 
@@ -19,16 +19,6 @@ class DashboardController < ApplicationController
   end
 
   private
-
-  def environment_info
-    {
-      madek: get_madek_base_info,
-      ruby: { version: RUBY_VERSION, platform: RUBY_PLATFORM },
-      rails: Rails.version,
-      postgres: get_pg_version,
-      system: read_system_info_for_rails
-    }
-  end
 
   # rubocop:disable Metrics/MethodLength
   def app_resources_info

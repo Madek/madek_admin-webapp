@@ -7,7 +7,7 @@ module UiHelper
       haml_tag 'table.table.table-condensed', *args do
         data.each do |title, hash|
           haml_tag('thead') do
-            haml_tag('th') { haml_concat title }
+            haml_tag('th') { haml_tag('.h5') { haml_concat title } }
             haml_tag('th')
           end
           haml_tag 'tbody' do
