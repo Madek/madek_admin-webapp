@@ -13,8 +13,7 @@
       %span.label.label-success Yes
     - else
       %span.label.label-default No
-  %td.active
-    .btn-group
-      = link_to media_entry_path(media_entry), class: 'btn btn-default btn-sm' do
+  %td.active.text-center
+    .btn-group.btn-group-sm
+      = link_to media_entry_path(media_entry), class: 'btn btn-default' do
         %i.glyphicon.glyphicon-eye-open
-      / # = render partial: 'action_buttons', locals: {group: group, size: 'btn-sm' }

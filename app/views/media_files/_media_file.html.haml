@@ -13,7 +13,7 @@
     = link_to media_file.uploader.person.to_s, user_path(media_file.uploader)
   %td
     = conversion_status_label(media_file)
-  %td.active
-    .btn-group
-      = link_to media_file_path(media_file), class: 'btn btn-default btn-sm' do
+  %td.active.text-center
+    .btn-group.btn-group-sm
+      = link_to media_file_path(media_file), class: 'btn btn-default' do
         %i.glyphicon.glyphicon-eye-open

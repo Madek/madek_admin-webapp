@@ -7,14 +7,14 @@
         = api_client.user.person
   %td= api_client.description
 
-  %td.active.col-xs-3
-    .btn-group
-      = link_to api_client_path(api_client), class: "btn btn-default btn-sm" do
+  %td.active.col-xs-3.text-center
+    .btn-group.btn-group-sm
+      = link_to api_client_path(api_client), class: 'btn btn-default' do
         %i.glyphicon.glyphicon-eye-open
-      = render partial: 'action_buttons', locals: {api_client: api_client, size: 'btn-sm' }
+      = render partial: 'action_buttons', locals: {api_client: api_client }
       - if session[:vocabulary_id].present?
-        = link_to path_to_vocabulary_permission_form(api_client), class: 'btn btn-success btn-sm' do
+        = link_to path_to_vocabulary_permission_form(api_client), class: 'btn btn-success' do
           Grant Vocabulary Permission
         = link_to api_clients_path(reset_vocabulary_params: true),
-                  class: 'btn btn-default btn-sm' do
+                  class: 'btn btn-default' do
           Cancel

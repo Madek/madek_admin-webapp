@@ -7,16 +7,16 @@
   .form-group.row
     .col-xs-3
       %label.control-label Current ID
-    .col-xs-6
+    .col-xs-8
       %p.form-control-static
         %samp= @meta_key
 
   .form-group.row
     .col-xs-3
       %label.control-label New ID
-    .col-xs-6
+    .col-xs-8
       = text_field_tag :new_meta_key_id, nil,
-        class: 'form-control', placeholder: 'new-vocabulary-part:new-name-part'
+        class: 'form-control technical-input', placeholder: 'new-vocabulary-part:new-name-part'
 
   .form-group.row
     .col-xs-offset-3.col-xs-3

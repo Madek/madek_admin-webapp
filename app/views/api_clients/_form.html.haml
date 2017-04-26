@@ -1,14 +1,14 @@
-= form_for @api_client, html: { class: 'form-horizontal', role: 'form' } do |f|
+= form_for @api_client, html: { class: 'form-horizontal', role: 'form' }, builder: AdminFormBuilder do |f|
 
   %fieldset
     .form-group
       = f.label :login, class: 'control-label col-xs-2'
-      .col-xs-4
-        = f.text_field :login, class: 'form-control'
+      .col-xs-8
+        = f.technical_field :login, rows: 1
 
     .form-group
       = f.label :user_id, 'User', class: 'control-label col-xs-2'
-      .col-xs-4
+      .col-xs-8
         = f.select :user_id,
             options_for_select(User.all.collect { |u| ["#{u.person} [#{u.login}]", u.id]}, f.object.user_id),
             {}, class: 'form-control'
@@ -16,7 +16,7 @@
     .form-group
       - password_label = f.object.persisted? ? 'New password' : 'Password'
       = f.label :password, password_label, class: 'control-label col-xs-2'
-      .col-xs-4
+      .col-xs-8
         = f.text_field :password, class: 'form-control'
 
     .form-group

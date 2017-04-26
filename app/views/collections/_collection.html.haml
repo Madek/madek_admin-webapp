@@ -4,8 +4,8 @@
     = link_to user_path(collection.responsible_user) do
       = collection.responsible_user.person
 
-  %td.active.col-xs-4
-    .btn-group
-      = link_to collection_path(collection), class: 'btn btn-default btn-sm' do
+  %td.active.col-xs-4.text-center
+    .btn-group.btn-group-sm
+      = link_to collection_path(collection), class: 'btn btn-default' do
         %i.glyphicon.glyphicon-eye-open
-      = render partial: 'action_buttons', locals: { collection: collection, size: 'btn-sm' }
+      = render partial: 'action_buttons', locals: { collection: collection }

@@ -1,29 +1,29 @@
-= form_for @user, html: { class: 'form-horizontal', role: 'form' } do |f|
+= form_for @user, html: { class: 'form-horizontal', role: 'form' }, builder: AdminFormBuilder do |f|
 
   %fieldset
     .form-group
       %label.control-label.col-xs-2 Login
-      .col-xs-4
+      .col-xs-9
         = f.text_field :login, class: 'form-control'
 
     .form-group
       %label.control-label.col-xs-2 E-mail
-      .col-xs-4
+      .col-xs-9
         = f.text_field :email, type: 'email', class: 'form-control'
 
     .form-group
       %label.control-label.col-xs-2 Person ID
-      .col-xs-4
-        = f.text_field :person_id, class: 'form-control'
+      .col-xs-9
+        = f.technical_field :person_id, rows: 1
 
     .form-group
       %label.control-label.col-xs-2 Password
-      .col-xs-4
+      .col-xs-9
         = f.text_field :password, class: 'form-control'
 
     .form-group
       %label.control-label.col-xs-2 Notes
-      .col-xs-4
+      .col-xs-9
         = f.text_area :notes, class: 'form-control'
 
     .form-group

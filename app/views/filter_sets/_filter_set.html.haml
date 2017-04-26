@@ -4,7 +4,7 @@
     = link_to user_path(filter_set.responsible_user) do
       = filter_set.responsible_user.person
 
-  %td.active
-    .btn-group
-      = link_to filter_set_path(filter_set), class: 'btn btn-default btn-sm' do
+  %td.col-xs-1.active.text-center
+    .btn-group.btn-group-sm
+      = link_to filter_set_path(filter_set), class: 'btn btn-default' do
         %i.glyphicon.glyphicon-eye-open

@@ -1,13 +1,13 @@
-= form_for @io_interface, html: { class: 'form-horizontal', role: 'form' } do |f|
+= form_for @io_interface, html: { class: 'form-horizontal', role: 'form' }, builder: AdminFormBuilder do |f|
   .form-group
     .col-xs-3
       = f.label :id, 'ID'
-    .col-xs-6
-      = f.text_field :id, class: 'form-control'
+    .col-xs-8
+      = f.technical_field :id, rows: 1
   .form-group
     .col-xs-3
       = f.label :description
-    .col-xs-6
+    .col-xs-8
       = f.text_field :description, class: 'form-control'
   .form-group
     .col-xs-offset-3.col-xs-3

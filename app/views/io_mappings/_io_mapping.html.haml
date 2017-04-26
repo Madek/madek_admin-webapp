@@ -3,15 +3,15 @@
   %td= io_mapping.meta_key_id
   %td= io_mapping.key_map
   %td= io_mapping.key_map_type
-  %td.active.col-xs-4
-    .btn-group
-      = link_to io_mapping_path(io_mapping), class: 'btn btn-default btn-sm' do
+  %td.active.col-xs-3.text-center
+    .btn-group.btn-group-sm
+      = link_to io_mapping_path(io_mapping), class: 'btn btn-default' do
         %span.glyphicon.glyphicon-eye-open
-      = link_to edit_io_mapping_path(io_mapping), class: "btn btn-info btn-sm" do
+      = link_to edit_io_mapping_path(io_mapping), class: 'btn btn-info' do
         %span.glyphicon.glyphicon-edit
         Edit
       = link_to io_mapping_path(io_mapping), method: :delete,
           data: { confirm: 'The IO mapping will be deleted. Do you want to proceed?' },
-          class: "btn btn-danger btn-sm" do
+          class: 'btn btn-danger' do
         %i.glyphicon.glyphicon-trash
         Delete

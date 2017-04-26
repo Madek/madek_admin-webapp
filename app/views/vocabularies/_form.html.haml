@@ -1,23 +1,23 @@
-= form_for @vocabulary, html: { class: 'form-horizontal', role: 'form' } do |f| 
+= form_for @vocabulary, html: { class: 'form-horizontal', role: 'form' }, builder: AdminFormBuilder do |f| 
   .form-group
     .col-xs-2
       = f.label :id, 'ID', class: 'control-label'
-    .col-xs-6
-      = f.text_field :id, class: 'form-control', disabled: @vocabulary.persisted?
+    .col-xs-8
+      = f.technical_field :id, rows: 1, disabled: @vocabulary.persisted?
   .form-group
     .col-xs-2
       = f.label :label, class: 'control-label'
-    .col-xs-6
+    .col-xs-8
       = f.text_field :label, class: 'form-control'
   .form-group
     .col-xs-2
       = f.label :description, class: 'control-label'
-    .col-xs-6
+    .col-xs-8
       = f.text_area :description, class: 'form-control', rows: 4
   .form-group
     .col-xs-2
       = f.label :admin_comment, class: 'control-label'
-    .col-xs-6
+    .col-xs-8
       = f.text_area :admin_comment, class: 'form-control', rows: 4
   .form-group
     .col-xs-offset-2.col-xs-3
@@ -36,4 +36,4 @@
       = button_tag type: 'submit', class: 'btn btn-success' do
         %span.glyphicon.glyphicon-ok
         Save
-      = link_to 'Go back', @redirect_to, class: 'btn btn-link'
+      = link_to 'Go back', @redirect_to || vocabularies_path, class: 'btn btn-link'

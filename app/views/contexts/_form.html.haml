@@ -1,4 +1,4 @@
-= form_for @context, html: { class: 'form-horizontal', role: 'form' } do |f|
+= form_for @context, html: { class: 'form-horizontal', role: 'form' }, builder: AdminFormBuilder do |f|
 
   - [:from_context, :from_vocabulary].each do |pass_parameter|
     = hidden_field_tag pass_parameter, @params.try(:[], pass_parameter)
@@ -7,7 +7,7 @@
     .col-xs-1
       = f.label :id, 'ID', class: 'control-label'
     .col-xs-6
-      = f.text_field :id, class: 'form-control', disabled: @context.persisted?
+      = f.technical_field :id, rows: 1, disabled: @context.persisted?
     %span.help-block
       %span.text-danger Note: can not be changed after creation!
   .form-group

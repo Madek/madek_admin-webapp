@@ -9,7 +9,7 @@
     - if meta_key.vocabulary
       = link_to meta_key.vocabulary.id, vocabulary_path(meta_key.vocabulary)
   %td= meta_key.meta_datum_object_type
-  %td.active.col-xs-4.text-center
+  %td.active.col-xs-2.text-center
     .btn-group.btn-group-vertical
       - if session[:context_id].present?
         = link_to add_meta_key_context_path(session[:context_id], meta_key_id: meta_key.id), method: :patch, class: 'btn btn-success btn-sm' do
