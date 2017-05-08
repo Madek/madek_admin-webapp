@@ -1,12 +1,14 @@
 require 'spec_helper'
 require 'spec_helper_feature'
+require_relative 'shared/admin_comments'
 
 feature 'Admin Context Keys' do
   let(:context) { Context.find('upload') }
   let(:context_key) { context.context_keys.first }
+  let(:collection_path) { context_path(context) }
 
   scenario 'Editing ContextKey via Edit button' do
-    visit context_path(context)
+    visit collection_path
 
     within "[data-id='#{context_key.id}']" do
       click_link 'Edit'
@@ -24,7 +26,7 @@ feature 'Admin Context Keys' do
     fill_in 'context_key[admin_comment]', with: 'new admin comment'
 
     click_button 'Save'
-    expect(current_path).to eq context_path(context)
+    expect(current_path).to eq collection_path
     expect(page).to have_css('.alert-success')
 
     within "[data-id='#{context_key.id}']" do
@@ -67,6 +69,8 @@ feature 'Admin Context Keys' do
                     madek_core:authors
                     madek_core:keywords)
   end
+
+  include_examples 'display admin comments on overview page'
 
   def expect_order(order, limit = 4)
     expect(

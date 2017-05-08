@@ -1,4 +1,7 @@
-%tr{'data-id' => vocabulary.id}
+:ruby
+  striped = (vocabulary_counter % 2 > 0) ? nil : :striped
+
+%tr{'data-id' => vocabulary.id, class: striped}
   %td= vocabulary
   %td= vocabulary.label
   %td= vocabulary.description
@@ -19,3 +22,4 @@
       = link_to move_down_vocabulary_path(vocabulary), method: :patch, class: 'btn btn-warning' do
         %span.glyphicon.glyphicon-chevron-down
         Move down
+= admin_comment_row(vocabulary, colspan: 4, striped: striped)

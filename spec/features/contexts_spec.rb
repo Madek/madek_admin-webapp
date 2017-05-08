@@ -1,5 +1,6 @@
 require 'spec_helper'
 require 'spec_helper_feature'
+require_relative 'shared/admin_comments'
 
 feature 'Admin Contexts' do
   let!(:context) { create :context_with_context_keys }
@@ -11,9 +12,10 @@ feature 'Admin Contexts' do
      Summary Context for Entry View, \
      Extra Contexts for Collection View"
   end
+  let(:collection_path) { contexts_path }
 
   scenario 'Editing a context' do
-    visit contexts_path
+    visit collection_path
 
     within "[data-id='#{context.id}']" do
       click_link 'Edit'
@@ -43,7 +45,7 @@ feature 'Admin Contexts' do
   end
 
   scenario 'Deleting a context' do
-    visit contexts_path
+    visit collection_path
 
     all('tr[data-id]').each do |row|
       expect(row).to have_link 'Delete'
@@ -78,9 +80,9 @@ feature 'Admin Contexts' do
   scenario 'Displaying info about context usage in UI' do
     update_app_settings_with_context
 
-    visit contexts_path
+    visit collection_path
 
-    within "[data-id='#{context.id}'] + tr" do
+    within "[data-id='#{context.id}'] + tr + tr" do
       expect(page).to have_content usage_message
     end
 
@@ -107,7 +109,7 @@ feature 'Admin Contexts' do
     table_rows = all('.table.edit-context-keys tbody tr')
 
     new_context.context_keys.each.with_index do |ck, i|
-      row = table_rows[(i * 2)]
+      row = table_rows[(i * 3)]
       expect(row).to have_content "#{ck.position} #{ck.id} #{ck.meta_key.id}"
     end
   end
@@ -130,10 +132,12 @@ feature 'Admin Contexts' do
     table_rows = all('.table.edit-context-keys tbody tr')
 
     new_context.context_keys.each.with_index do |ck, i|
-      row = table_rows[(i * 2)]
+      row = table_rows[(i * 3)]
       expect(row).to have_content "#{ck.position} #{ck.id} #{ck.meta_key.id}"
     end
   end
+
+  include_examples 'display admin comments on overview page'
 
   def update_app_settings_with_context
     app_settings.update(

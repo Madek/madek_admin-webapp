@@ -1,11 +1,13 @@
 require 'spec_helper'
 require 'spec_helper_feature'
+require_relative 'shared/admin_comments'
 
 feature 'Admin Vocabularies' do
   let(:vocabulary) { create :vocabulary }
+  let(:collection_path) { vocabularies_path }
 
   scenario 'Editing a vocabulary' do
-    visit vocabularies_path
+    visit collection_path
 
     filter(vocabulary.id)
 
@@ -34,7 +36,7 @@ feature 'Admin Vocabularies' do
   end
 
   scenario 'Changing position' do
-    visit vocabularies_path
+    visit collection_path
 
     expect_order %w(archhist forschung_zhdk landschaftsvisualisierung
                     performance_artefakte)
@@ -53,6 +55,8 @@ feature 'Admin Vocabularies' do
     expect_order %w(landschaftsvisualisierung archhist forschung_zhdk
                     performance_artefakte)
   end
+
+  include_examples 'display admin comments on overview page'
 
   def expect_order(order, limit = 4)
     expect(

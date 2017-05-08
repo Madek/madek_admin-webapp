@@ -1,5 +1,5 @@
 :ruby
-  striped = (context_counter % 2 > 0) ? :active : nil
+  striped = (context_counter % 2 > 0) ? nil : :striped
   used_as = @app_settings.uses_context_as(context.id).map do |item|
     AppSettingsController::CONTEXT_FOR_VIEWS[item.to_sym][:title]
   end
@@ -16,6 +16,7 @@
         %i.glyphicon.glyphicon-eye-open
         Details
       = render partial: 'action_buttons', locals: { context: context }
+= admin_comment_row(context, colspan: 4, striped: striped)
 - if used_as.size > 0
   %tr.semiborder{class: striped}
     %td{colspan: 3}

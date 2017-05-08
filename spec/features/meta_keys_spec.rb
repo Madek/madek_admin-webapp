@@ -1,5 +1,6 @@
 require 'spec_helper'
 require 'spec_helper_feature'
+require_relative 'shared/admin_comments'
 
 def meta_datum_types
   {
@@ -13,15 +14,16 @@ end
 feature 'Admin Meta Keys' do
   let(:meta_key_keywords) { create(:meta_key_keywords, is_extensible_list: true) }
   let(:vocabulary) { Vocabulary.find('archhist') }
+  let(:collection_path) { meta_keys_path }
 
   scenario 'Sorting meta keys by ID by default' do
-    visit meta_keys_path
+    visit collection_path
 
     expect(find_field('sort_by')[:value]).to eq 'id'
   end
 
   scenario 'Sorting meta keys by Name part' do
-    visit meta_keys_path
+    visit collection_path
 
     select 'Name part', from: 'Sort by'
     click_button 'Apply'
@@ -158,7 +160,7 @@ feature 'Admin Meta Keys' do
 
   context 'Creating' do
     scenario 'meta key with MetaDatum::People type' do
-      visit meta_keys_path
+      visit collection_path
 
       click_link 'Create Meta Key'
 
@@ -188,7 +190,7 @@ feature 'Admin Meta Keys' do
     end
 
     scenario 'meta key with MetaDatum::Keywords type' do
-      visit meta_keys_path
+      visit collection_path
 
       click_link 'Create Meta Key'
 
@@ -219,7 +221,7 @@ feature 'Admin Meta Keys' do
     end
 
     scenario 'meta key with MetaDatum::Text type' do
-      visit meta_keys_path
+      visit collection_path
 
       click_link 'Create Meta Key'
 
@@ -241,7 +243,7 @@ feature 'Admin Meta Keys' do
     end
 
     scenario 'meta key with MetaDatum::TextDate type' do
-      visit meta_keys_path
+      visit collection_path
 
       click_link 'Create Meta Key'
 
@@ -377,6 +379,8 @@ feature 'Admin Meta Keys' do
       end
     end
   end
+
+  include_examples 'display admin comments on overview page'
 
   def expect_order(order, limit = 4)
     expect(

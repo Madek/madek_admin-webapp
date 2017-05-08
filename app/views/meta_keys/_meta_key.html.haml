@@ -1,5 +1,5 @@
 :ruby
-  striped = (meta_key_counter % 2 > 0) ? :active : nil
+  striped = (meta_key_counter % 2 > 0) ? nil : :striped
   used_as = context_links(meta_key.context_keys.pluck(:context_id))
 
 %tr{'data-id' => meta_key.id, class: striped}
@@ -10,15 +10,16 @@
       = link_to meta_key.vocabulary.id, vocabulary_path(meta_key.vocabulary)
   %td= meta_key.meta_datum_object_type
   %td.active.col-xs-2.text-center
-    .btn-group.btn-group-vertical
+    .btn-group.btn-group-sm.btn-group-vertical
       - if session[:context_id].present?
-        = link_to add_meta_key_context_path(session[:context_id], meta_key_id: meta_key.id), method: :patch, class: 'btn btn-success btn-sm' do
+        = link_to add_meta_key_context_path(session[:context_id], meta_key_id: meta_key.id), method: :patch, class: 'btn btn-success' do
           %span.glyphicon.glyphicon-plus
           Add to the Context
       - else
-        = link_to meta_key_path(meta_key), class: 'btn btn-default btn-sm' do
+        = link_to meta_key_path(meta_key), class: 'btn btn-default' do
           %span.glyphicon.glyphicon-eye-open
-        = render partial: 'action_buttons', locals: { meta_key: meta_key, size: 'btn-sm' }
+        = render partial: 'action_buttons', locals: { meta_key: meta_key }
+= admin_comment_row(meta_key, colspan: 5, striped: striped)
 - if used_as.size > 0
   %tr.semiborder{class: striped}
     %td{colspan: 4}

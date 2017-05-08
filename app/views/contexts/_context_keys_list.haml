@@ -32,7 +32,7 @@
       %tbody
         -# - fail 1
         - @context.context_keys.each_with_index  do |ck, index|
-          - striped = (index % 2 > 0) ? :active : nil
+          - striped = (index % 2 > 0) ? nil : :active
 
           %tr{class: striped, 'data-id' => ck.id}
             %td= ck.position
@@ -62,7 +62,7 @@
                   = link_to move_down_context_key_path(ck), method: :patch, class: "btn btn-warning text-left move-down" do
                     %span.glyphicon.glyphicon-chevron-down
                     Move down
-
+          = admin_comment_row(ck, colspan: 8, striped: striped)
           %tr.semiborder{class: striped}
             %td
             %td
@@ -80,7 +80,3 @@
                 %em= ck.meta_key.hint.presence || _EMPTY_MARKER
             %td
             %td
-
-:sass
-  table tr.semiborder td
-    border-top-style: dashed
