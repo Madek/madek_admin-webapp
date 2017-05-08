@@ -17,7 +17,7 @@ class VocabularyApiClientPermissionsController < ApplicationController
     @vocabulary.api_client_permissions.destroy(params[:id])
 
     redirect_to(
-      vocabulary_vocabulary_api_client_permissions_url,
+      vocabulary_vocabulary_api_client_permissions_path,
       flash: {
         success: 'The Vocabulary API Client Permission has been deleted.' }
     )

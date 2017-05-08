@@ -82,7 +82,7 @@ class GroupsController < ApplicationController
 
     originator.merge_to(receiver)
 
-    redirect_to group_url(receiver), flash: { success: 'The group '\
+    redirect_to group_path(receiver), flash: { success: 'The group '\
                                                              'has been merged.' }
   end
 

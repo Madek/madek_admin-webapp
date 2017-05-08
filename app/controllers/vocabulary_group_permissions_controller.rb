@@ -14,7 +14,7 @@ class VocabularyGroupPermissionsController < ApplicationController
   def destroy
     @vocabulary.group_permissions.destroy(params[:id])
 
-    redirect_to vocabulary_vocabulary_group_permissions_url,
+    redirect_to vocabulary_vocabulary_group_permissions_path,
                 flash: {
                   success: 'The Vocabulary Group Permission has been deleted.' }
   end

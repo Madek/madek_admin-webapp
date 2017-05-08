@@ -28,7 +28,7 @@ class DashboardController < ApplicationController
           title: 'drafts',
           model: MediaEntry,
           scope: -> { MediaEntry.unscoped.not_published },
-          path: media_entries_url(filter: { is_published: 0 })
+          path: media_entries_path(filter: { is_published: 0 })
         },
         {
           title: 'entries',
@@ -50,7 +50,7 @@ class DashboardController < ApplicationController
         {
           title: 'metadata',
           model: MetaDatum,
-          path: meta_datums_url
+          path: meta_datums_path
         },
         Keyword,
         Person
@@ -76,15 +76,19 @@ class DashboardController < ApplicationController
           item[:model].count
         end
       item[:title] ||= title(item[:model])
-      item[:path]  ||= url_for(item[:model])
+      item[:path]  ||= app_resource_path(item[:model])
       item.except(:model, :scope)
     elsif item.is_a?(Class)
       {
         title: title(item),
         counter: item.count,
-        path: url_for(item)
+        path: app_resource_path(item)
       }
     end
+  end
+
+  def app_resource_path(model)
+    url_for(controller: model.name.tableize, action: :index, only_path: true)
   end
 
   def title(model_name)

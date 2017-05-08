@@ -67,7 +67,7 @@ module Concerns
     end
 
     def redirect_path(association)
-      "vocabulary_vocabulary_#{association}_url"
+      "vocabulary_vocabulary_#{association}_path"
     end
 
     def success_message(association)

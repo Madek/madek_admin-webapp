@@ -14,7 +14,7 @@ class VocabularyUserPermissionsController < ApplicationController
   def destroy
     @vocabulary.user_permissions.destroy(params[:id])
 
-    redirect_to vocabulary_vocabulary_user_permissions_url,
+    redirect_to vocabulary_vocabulary_user_permissions_path,
                 flash: {
                   success: 'The Vocabulary User Permission has been deleted.' }
   end
