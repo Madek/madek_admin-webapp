@@ -46,6 +46,7 @@ GEM
     ast (2.3.0)
     autoprefixer-rails (6.4.0.1)
       execjs
+    base32-crockford (0.1.0)
     bcrypt (3.1.11)
     bcrypt (3.1.11-java)
     bcrypt-ruby (3.1.5)
@@ -312,6 +313,7 @@ PLATFORMS
 
 DEPENDENCIES
   activerecord-jdbcpostgresql-adapter
+  base32-crockford
   bcrypt
   bcrypt-ruby
   better_errors
