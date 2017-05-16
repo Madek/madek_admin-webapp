@@ -24,7 +24,14 @@
         = icon('education')
         = " SQL Reports"
 
+    #snippets.hidden
+      - sql_snippets.each do |snippet|
+        = text_area_tag 'sql_snippet', snippet.last, data: { id: snippet.first }
+
     .row
+      .col-xs-12
+        = select_tag('snippet', options_for_select(sql_snippets.map(&:first)), prompt: '-- Choose SQL Snippet:', class: 'form-control', style: 'margin-bottom: 20px')
+
       = form_tag(sql_reports_assistant_path, method: :get) do
         .col-xs-12
           - if !editing
@@ -81,7 +88,7 @@
 
   - else
     :ruby
-      if pg_results.is_a?(Array)
+      if pg_results.is_a?(Array) && !pg_results.empty?
         # NOTE: in non-jruby this also works:
         # keys = pg_results.fields
         # values = pg_results.values
@@ -120,6 +127,9 @@
 
 
   :javascript
+    var $snippets = $('#snippets')
+    var $snippetSelect = $('#snippet')
+
     var progessiveEnhance = function () {
       var editing = #{editing}
       var $btn = $('#sql_reports_edit_button')
@@ -138,7 +148,7 @@
           $btn.attr('disabled', true)
           $('#sql_reports_query_show').hide()
           $('#sql_reports_query_edit').show()
-          $('#query').remove() // hidden field not used anymore, textarea has value
+          $('input[name="query"]').remove() // hidden field not used anymore, textarea has value
         }
 
         $btn.click(inlineEditHandler)
@@ -149,3 +159,15 @@
     // if used inline like here, just call the function.
     // otherwise must wait for DOM ready: $(progessiveEnhance)
     progessiveEnhance()
+
+    $snippetSelect.on('change', function(event) {
+      var el = $(event.currentTarget)
+      var snippet = $snippets.find('[data-id="' + el.val() + '"]')
+      var query = $('textarea[name="query"]')
+
+      $('#sql_reports_query_show').trigger('click')
+      if(snippet.val() !== undefined) {
+        query.val(snippet.val())
+        query.attr('rows', snippet.val().split('\n').length)
+      }
+    })

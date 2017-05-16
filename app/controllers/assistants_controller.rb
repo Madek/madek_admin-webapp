@@ -17,7 +17,8 @@ class AssistantsController < ApplicationController
       query_time = Time.now.utc - start_time
     end
     render locals: {
-      query: query, pg_error: err, pg_results: res, query_time: query_time
+      query: query, pg_error: err, pg_results: res, query_time: query_time,
+      sql_snippets: sql_snippets
     }
   end
 
@@ -39,6 +40,17 @@ class AssistantsController < ApplicationController
 
   def feature_toggle_sql_reports
     Settings.feature_toggles.admin_sql_reports == 'on my own risk'
+  end
+
+  def sql_snippets
+    @sql_snippets ||= YAML.load_file(
+      Rails.root.join('config', 'sql_snippets.yml')
+    )['sql_snippets'].map do |snippet|
+      [
+        snippet['title'],
+        [snippet['description'], snippet['query']].join("\n\n")
+      ]
+    end
   end
 
 end

@@ -1,0 +1,40 @@
+sql_snippets:
+  -
+    title: Find Invalid Entries
+    description: -- get all entries that are published but don't have all mandatory fields
+    query: |
+      SELECT
+        'https://medienarchiv.zhdk.ch/id/'  ||  id AS entry_url,
+        responsible_user_id, created_at meta_data_updated_at
+      FROM media_entries
+      WHERE is_published = TRUE
+      AND NOT EXISTS (
+        SELECT 1
+        FROM meta_data
+        WHERE meta_data.media_entry_id = media_entries.id
+        AND meta_data.meta_key_id IN (
+          SELECT meta_key_id
+          FROM context_keys
+          WHERE context_id IN (
+            SELECT unnest(contexts_for_entry_validation) FROM app_settings ORDER BY app_settings.id ASC LIMIT 1)
+          AND is_required = true
+        )
+      )
+      
+      ORDER BY responsible_user_id
+  -
+    title: Find MediaFiles without MediaEntry
+    description: -- get all media files that do not have corresponding media entry
+    query: |
+      SELECT
+        filename, media_type
+      FROM media_files
+      LEFT JOIN media_entries
+      ON media_files.media_entry_id = media_entries.id
+      WHERE NOT EXISTS (
+        SELECT 1
+        FROM media_entries
+        WHERE media_entries.id = media_files.media_entry_id
+      )
+      
+      ORDER BY filename
