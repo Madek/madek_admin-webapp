@@ -42,6 +42,32 @@ describe ApiClientsController do
     end
   end
 
+  describe '#new' do
+    let(:user) { create :user }
+    let(:new_api_client_params) do
+      {
+        login: 'new_login',
+        description: Faker::Lorem.words(10).join(' '),
+        user_id: user.id
+      }
+    end
+
+    context 'when attributes in params are available' do
+      it 'assigns @api_client correctly' do
+        get(
+          :new,
+          { new_api_client: new_api_client_params },
+          user_id: admin_user.id
+        )
+
+        expect(assigns[:api_client].login).to eq new_api_client_params[:login]
+        expect(assigns[:api_client].description).to eq(
+          new_api_client_params[:description])
+        expect(assigns[:api_client].user).to eq user
+      end
+    end
+  end
+
   describe '#edit' do
     let(:api_client) { create :api_client }
 
@@ -84,6 +110,31 @@ describe ApiClientsController do
       expect(flash[:success]).to eq flash_message(:update, :success)
       expect(api_client.reload.description).to eq 'test description'
     end
+
+    context 'when params include change_user param' do
+      let(:user) { create :user }
+      let(:api_client_params) do
+        {
+          id: api_client.id,
+          login: Faker::Lorem.words(2).join('_').slice(0, 20),
+          description: Faker::Lorem.words(10).join(' '),
+          user_id: user.id
+        }
+      end
+
+      it 'redirects to users listing with proper url params' do
+        patch(
+          :update,
+          { id: api_client.id, api_client: api_client_params, change_user: '' },
+          user_id: admin_user.id
+        )
+
+        expect(response).to have_http_status(302)
+        expect(response).to redirect_to(
+          users_path(edited_api_client: api_client_params)
+        )
+      end
+    end
   end
 
   describe '#create' do
@@ -108,6 +159,18 @@ describe ApiClientsController do
       expect do
         post :create, { api_client: api_client_params }, user_id: admin_user.id
       end.to change { ApiClient.count }.by(1)
+    end
+
+    context 'when user is missing' do
+      it 'redirects to users listing with proper url params' do
+        api_client_params[:user_id] = nil
+        post :create, { api_client: api_client_params }, user_id: admin_user.id
+
+        expect(response).to have_http_status(302)
+        expect(response).to redirect_to(
+          users_path(new_api_client: api_client_params)
+        )
+      end
     end
   end
 

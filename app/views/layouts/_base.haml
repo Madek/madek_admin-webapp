@@ -64,6 +64,6 @@
       .alert.alert-dismissible{ class: "alert-#{alert_type}" }
         = button_tag '&times;'.html_safe, class: 'close', data: { dismiss: 'alert' }
         %strong #{message_type.capitalize}!
-        = message
+        = message.html_safe
 
   = yield :main_content

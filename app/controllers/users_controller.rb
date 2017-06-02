@@ -14,6 +14,8 @@ class UsersController < ApplicationController
     @users = @users.sort_by(params[:sort_by]) if params[:sort_by].present?
 
     remember_vocabulary_url_params
+    get_api_client_params
+    get_group_from_params
   end
 
   def reset_usage_terms
@@ -105,5 +107,17 @@ class UsersController < ApplicationController
 
   def user_params
     params.require(:user).permit!
+  end
+
+  def get_api_client_params
+    @api_client_params = params[(
+      %i(new_api_client edited_api_client).detect do |group|
+        params[group].present?
+      end
+    )]
+  end
+
+  def get_group_from_params
+    @group = Group.find_by(id: params[:add_to_group_id])
   end
 end

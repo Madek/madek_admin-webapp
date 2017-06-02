@@ -151,16 +151,55 @@ feature 'Admin Groups' do
     expect(page).to have_css('.alert-danger')
   end
 
-  scenario 'Adding a user to a group' do
-    group = create :group
-    visit group_path(group)
-    expect(page).to have_no_content('adam')
-    click_link 'Add user'
-    select 'Admin, Adam [adam]', from: 'user_id'
-    click_button 'Add user'
-    expect(page).to have_css('.alert-success')
-    expect(page).to have_content('adam')
-    expect(group_user_count).to eq 1
+  describe 'Adding an user to a group' do
+    let(:group) { create :group }
+    let(:user) { create :user }
+
+    scenario 'when group already includes the user' do
+      group.users << user
+
+      visit group_path(group)
+      within '#group-users' do
+        expect(page).to have_content user.login
+      end
+
+      click_link 'Add user'
+      expect(current_path).to eq users_path
+      expect(page).to have_css '.alert-info'
+
+      fill_in 'search_term', with: user.login
+      click_button 'Apply'
+      within "[data-id='#{user.id}']" do
+        click_link 'Add to the Group'
+      end
+
+      expect(current_path).to eq group_path(group)
+      within '.alert-danger' do
+        expect(page).to have_content 'already belongs to this group'
+      end
+    end
+
+    scenario 'when group does not include the user' do
+      visit group_path(group)
+      within '#group-users' do
+        expect(page).not_to have_content user.login
+      end
+
+      click_link 'Add user'
+      expect(current_path).to eq users_path
+      expect(page).to have_css '.alert-info'
+
+      fill_in 'search_term', with: user.login
+      click_button 'Apply'
+      within "[data-id='#{user.id}']" do
+        click_link 'Add to the Group'
+      end
+
+      expect(current_path).to eq group_path(group)
+      within '.alert-success' do
+        expect(page).to have_content "The user #{user.login} has been added."
+      end
+    end
   end
 
   scenario 'Removing a user from a group' do

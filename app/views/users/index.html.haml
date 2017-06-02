@@ -1,6 +1,9 @@
 .page-header
   %h1
     Users (#{User.count})
+
+= render 'alerts'
+
 .row
   .col-xs-12
     .panel.panel-default
@@ -8,6 +11,11 @@
         .panel-title Filters
       .panel-body
         = form_tag users_path, method: :get, class: 'form-inline' do
+          - params[:new_api_client] and params[:new_api_client].each do |key, value|
+            = unescaped_hidden_field_tag "new_api_client[#{key}]", value
+          - params[:edited_api_client] and params[:edited_api_client].each do |key, value|
+            = unescaped_hidden_field_tag "edited_api_client[#{key}]", value
+          = hidden_field_tag :add_to_group_id, @group.id if @group
           .form-group
             = text_field_tag :search_term, params[:search_term], class: 'form-control', placeholder: 'Search term'
           .form-group

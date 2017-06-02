@@ -325,6 +325,17 @@ describe GroupsController do
     end
   end
 
+  describe '#form_add_user' do
+    let(:group) { create :group }
+
+    it 'redirects to users listing with proper url param' do
+      get :form_add_user, { id: group.id }, user_id: admin_user.id
+
+      expect(response).to have_http_status 302
+      expect(response).to redirect_to users_path(add_to_group_id: group.id)
+    end
+  end
+
   describe '#add_user' do
     let!(:group) { create :group }
     let!(:user)  { create :user  }
@@ -334,7 +345,7 @@ describe GroupsController do
 
       expect(response).to redirect_to(group_path(group))
       expect(flash[:success]).to eq(
-        "The user <b>#{user.login}</b> has been added.")
+        "The user <strong>#{user.login}</strong> has been added.")
     end
 
     it 'adds user to selected group' do
@@ -348,7 +359,7 @@ describe GroupsController do
       post :add_user, { id: group.id, user_id: user.id }, user_id: admin_user.id
       expect(response).to redirect_to(group_path(group))
       expect(flash[:error]).to eq(
-        "The user <b>#{user.login}</b> already belongs to this group.")
+        "The user <strong>#{user.login}</strong> already belongs to this group.")
     end
 
     it 'displays error template if something goes wrong' do

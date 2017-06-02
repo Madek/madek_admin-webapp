@@ -1,3 +1,13 @@
+:ruby
+  api_client_assign_path = if @api_client_params.is_a?(Hash)
+    @api_client_params.merge!(user_id: user.id)
+    if @api_client_params.key?(:id)
+      edit_api_client_path(@api_client_params[:id], edited_api_client: @api_client_params)
+    else
+      new_api_client_path(new_api_client: @api_client_params)
+    end
+  end
+
 %tr{'data-id' => user.id, class: ('success' if user.admin?)}
   %td= user.login
   %td= user.email
@@ -9,7 +19,15 @@
     = user.admin? ? 'Yes' : 'No'
   %td.active.text-center
     .btn-group.btn-group-sm.btn-group-vertical
-      - if session[:vocabulary_id].present?
+      - if @group.present?
+        = link_to add_user_group_path(@group, user_id: user.id), method: :patch, class: 'btn btn-success' do
+          %span.glyphicon.glyphicon-plus
+          Add to the Group
+      - elsif @api_client_params.present?
+        = link_to api_client_assign_path, class: 'btn btn-success' do
+          %span.glyphicon.glyphicon-plus
+          Assign to the API Client
+      - elsif session[:vocabulary_id].present?
         = link_to path_to_vocabulary_permission_form(user), class: 'btn btn-success' do
           Grant Vocabulary Permission
         = link_to users_path(reset_vocabulary_params: true),

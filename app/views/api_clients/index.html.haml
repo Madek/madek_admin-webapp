@@ -3,12 +3,11 @@
     %i.glyphicon.glyphicon-filter
     API Clients (#{@api_clients.total_count})
 
-.row
-  .col-xs-12
-    .btn-group
-      = link_to new_api_client_path, class: 'btn btn-default' do
-        %span.glyphicon.glyphicon-plus
-        Create API Client
+.panel.panel-default
+  .panel-body
+    = link_to new_api_client_path, class: 'btn btn-default' do
+      %span.glyphicon.glyphicon-plus
+      Create API Client
 
 .row
   .col-xs-12

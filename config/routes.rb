@@ -22,10 +22,10 @@ Rails.application.routes.draw do
     end
     resources :groups do
       member do
-        get 'form_add_user'
-        post 'add_user'
-        get 'form_merge_to'
-        post 'merge_to'
+        get :form_merge_to
+        post :merge_to
+        get :form_add_user
+        patch :add_user
       end
       resources :users, only: '' do
         delete :remove_user_from_group

@@ -1,0 +1,25 @@
+:ruby
+  api_client_anchor_text, api_client_return_path = if @api_client_params.present? && @api_client_params.key?(:id)
+    [
+      'cancel and go back to the API Client edit form',
+      edit_api_client_path(@api_client_params[:id])
+    ]
+  else
+    [
+      'cancel and go back to the API Clients listing',
+      api_clients_path
+    ]
+  end
+
+- if @group.present?
+  .row
+    .col-xs-12
+      .alert.alert-info{role: 'alert'}
+        Choose an User to be added to the Group <strong>#{@group.name}</strong> or #{link_to 'cancel and go back to the group', group_path(@group)}.
+
+- if @api_client_params.present?
+  .row
+    .col-xs-12
+      .alert.alert-info{role: 'alert'}
+        Choose an User to be assigned to the API Client <strong>#{@api_client_params[:login]}</strong> as a responsible user or
+        #{link_to api_client_anchor_text, api_client_return_path}.

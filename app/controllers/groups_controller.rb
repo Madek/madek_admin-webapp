@@ -50,20 +50,21 @@ class GroupsController < ApplicationController
   end
 
   def form_add_user
-    @group = Group.find params[:id]
-    authorize @group
+    group = Group.find(params[:id])
+
+    redirect_to users_path(add_to_group_id: group.id)
   end
 
   def add_user
-    @group = Group.find params[:id]
+    @group = Group.find(params[:id])
     authorize @group
-    @user = User.find params[:user_id]
+    @user = User.find(params[:user_id])
     if @group.users.include?(@user)
-      flash = { error: "The user <b>#{@user.login}</b> "\
+      flash = { error: "The user <strong>#{@user.login}</strong> " \
                        'already belongs to this group.'.html_safe }
     else
       @group.users << @user
-      flash = { success: "The user <b>#{@user.login}</b> "\
+      flash = { success: "The user <strong>#{@user.login}</strong> " \
                          'has been added.'.html_safe }
     end
 

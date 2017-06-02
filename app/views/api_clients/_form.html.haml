@@ -1,17 +1,20 @@
 = form_for @api_client, html: { class: 'form-horizontal', role: 'form' }, builder: AdminFormBuilder do |f|
-
+  - user_button_text = f.object.user ? 'Change user' : 'Choose user'
+  - user_button_name = f.object.user ? :change_user  : :choose_user
   %fieldset
     .form-group
       = f.label :login, class: 'control-label col-xs-2'
       .col-xs-8
         = f.technical_field :login, rows: 1
-
     .form-group
       = f.label :user_id, 'User', class: 'control-label col-xs-2'
       .col-xs-8
-        = f.select :user_id,
-            options_for_select(User.all.collect { |u| ["#{u.person} [#{u.login}]", u.id]}, f.object.user_id),
-            {}, class: 'form-control'
+        - if f.object.user
+          %span.text-info= "#{f.object.user.person} [#{f.object.user.login}]"
+        - else
+          %span.text-danger You must choose an user
+        = f.hidden_field :user_id if f.object.user
+        = button_tag user_button_text, type: :submit, name: user_button_name, class: 'btn btn-default'
 
     .form-group
       - password_label = f.object.persisted? ? 'New password' : 'Password'
