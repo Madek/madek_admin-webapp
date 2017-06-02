@@ -62,7 +62,10 @@ Rails.application.routes.draw do
     resources :contexts do
       patch :add_meta_key, on: :member
     end
-    resources :context_keys, only: [:edit, :update, :destroy], concerns: :orderable
+    resources :context_keys, only: [:edit, :update, :destroy], concerns: :orderable do
+      patch :move_to_top, on: :member
+      patch :move_to_bottom, on: :member
+    end
     resources :meta_datums, only: :index
     resources :io_mappings
     resources :io_interfaces, except: [:edit, :update]

@@ -53,15 +53,21 @@
                   %span.glyphicon.glyphicon-edit
                   Edit
                 - if edit
-                  = link_to context_key_path(ck), method: :delete, data: { confirm: 'The MetaKey will be removed. Do you want to proceed?' }, class: "btn btn-danger text-left" do
+                  = link_to context_key_path(ck), method: :delete, data: { confirm: 'The MetaKey will be removed. Do you want to proceed?' }, class: 'btn btn-danger text-left' do
                     %span.glyphicon.glyphicon-trash
                     Remove MetaKey
-                  = link_to move_up_context_key_path(ck), method: :patch, class: "btn btn-warning text-left move-up" do
+                  = link_to move_to_top_context_key_path(ck), method: :patch, class: 'btn btn-warning text-left move-to-top' do
+                    %span.glyphicon.glyphicon-arrow-up
+                    Move to top
+                  = link_to move_up_context_key_path(ck), method: :patch, class: 'btn btn-warning text-left move-up' do
                     %span.glyphicon.glyphicon-chevron-up
                     Move up
-                  = link_to move_down_context_key_path(ck), method: :patch, class: "btn btn-warning text-left move-down" do
+                  = link_to move_down_context_key_path(ck), method: :patch, class: 'btn btn-warning text-left move-down' do
                     %span.glyphicon.glyphicon-chevron-down
                     Move down
+                  = link_to move_to_bottom_context_key_path(ck), method: :patch, class: 'btn btn-warning text-left move-to-bottom' do
+                    %span.glyphicon.glyphicon-arrow-down
+                    Move to bottom
           = admin_comment_row(ck, colspan: 8, striped: striped)
           %tr.semiborder{class: striped}
             %td

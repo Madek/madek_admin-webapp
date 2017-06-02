@@ -27,13 +27,14 @@ module Concerns
         end
       end
 
-      def define_move_actions_for(model, &block)
-        %i(up down).each do |direction|
+      def define_move_actions_for(model, directions: %i(up down), &block)
+        directions.each do |direction|
           define_method "move_#{direction}" do
             resource = model.find(params[:id])
             resource.send "move_#{direction}"
             success_path = instance_exec(resource, &block)
             model_name = model.to_s.humanize.capitalize
+            direction = direction.to_s.split('_').join(' ')
 
             redirect_to success_path, flash: {
               success: "The #{model_name} was successfully moved #{direction}."
