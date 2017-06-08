@@ -77,11 +77,32 @@ feature 'Admin Context Keys' do
                     madek_core:title
                     madek_core:keywords)
 
+    within('table tr:contains("madek_core:authors")') do
+      find('.move-to-top').click
+    end
+    expect(page).to have_css('.alert-success')
+    expect_order %w(madek_core:authors
+                    madek_core:portrayed_object_date
+                    madek_core:title
+                    madek_core:keywords)
+
     within('table tr:contains("madek_core:portrayed_object_date")') do
       find('.move-to-bottom').click
     end
     expect(page).to have_css('.alert-success')
+    expect_order %w(madek_core:authors
+                    madek_core:title
+                    madek_core:keywords
+                    madek_core:copyright_notice
+                    copyright:license
+                    copyright:copyright_usage
+                    copyright:copyright_url
+                    madek_core:portrayed_object_date), 8
 
+    within('table tr:contains("madek_core:portrayed_object_date")') do
+      find('.move-to-bottom').click
+    end
+    expect(page).to have_css('.alert-success')
     expect_order %w(madek_core:authors
                     madek_core:title
                     madek_core:keywords

@@ -34,10 +34,11 @@ module Concerns
             resource.send "move_#{direction}"
             success_path = instance_exec(resource, &block)
             model_name = model.to_s.humanize.capitalize
-            direction = direction.to_s.split('_').join(' ')
+            direction_name = direction.to_s.split('_').join(' ')
 
             redirect_to success_path, flash: {
-              success: "The #{model_name} was successfully moved #{direction}."
+              success: "The #{model_name} was successfully moved
+                       #{direction_name}."
             }
           end
         end
