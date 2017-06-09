@@ -23,15 +23,10 @@
       %h1
         = icon('education')
         = " SQL Reports"
-
-    #snippets.hidden
-      - sql_snippets.each do |snippet|
-        = text_area_tag 'sql_snippet', snippet.last, data: { id: snippet.first }
+      %small
+        = link_to "&larr; Go back to Assistant page".html_safe, assistant_path
 
     .row
-      .col-xs-12
-        = select_tag('snippet', options_for_select(sql_snippets.map(&:first)), prompt: '-- Choose SQL Snippet:', class: 'form-control', style: 'margin-bottom: 20px')
-
       = form_tag(sql_reports_assistant_path, method: :get) do
         .col-xs-12
           - if !editing
@@ -42,7 +37,7 @@
 
           %p#sql_reports_query_edit
             = text_area_tag('query',
-                query,
+                strip_tags(query),
                 class: 'well code',
                 rows: [query.split("\n").length, 3].max,
                 style: 'width:100%;padding: 1.5em;margin-bottom: 20px')
@@ -127,9 +122,6 @@
 
 
   :javascript
-    var $snippets = $('#snippets')
-    var $snippetSelect = $('#snippet')
-
     var progessiveEnhance = function () {
       var editing = #{editing}
       var $btn = $('#sql_reports_edit_button')
@@ -159,15 +151,3 @@
     // if used inline like here, just call the function.
     // otherwise must wait for DOM ready: $(progessiveEnhance)
     progessiveEnhance()
-
-    $snippetSelect.on('change', function(event) {
-      var el = $(event.currentTarget)
-      var snippet = $snippets.find('[data-id="' + el.val() + '"]')
-      var query = $('textarea[name="query"]')
-
-      $('#sql_reports_query_show').trigger('click')
-      if(snippet.val() !== undefined) {
-        query.val(snippet.val())
-        query.attr('rows', snippet.val().split('\n').length)
-      }
-    })

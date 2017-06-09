@@ -4,8 +4,6 @@
     Media File: #{@media_file.id}
   %small
     = link_to "&larr; Go back to Media Files".html_safe, media_files_path
-    %span  / 
-    = link_to "&larr; Go back to Media Entry".html_safe, media_entry_path(@media_entry)
 
 .row
   .col-xs-12
@@ -16,7 +14,14 @@
           %tr
             %td.col-xs-2
               %strong= attr.first.humanize
-            %td= attr.last
+            %td
+              - if attr.first == 'media_entry_id'
+                = link_to attr.last, media_entry_path(attr.last)
+              - elsif attr.first == 'uploader_id'
+                = link_to attr.last, user_path(attr.last)
+                [#{@media_file.uploader.login}]
+              - else
+                = attr.last
 
 = render 'zencoder_jobs' if @zencoder_jobs
 

@@ -38,3 +38,12 @@ sql_snippets:
       )
       
       ORDER BY filename
+  -
+    title: Find videos with incomplete previews
+    description: -- get all video media files that have incomplete previews
+    query: |
+      SELECT
+        id, filename, media_type
+      FROM media_files
+      WHERE media_files.media_type = 'video'
+      AND (:preview_types:)

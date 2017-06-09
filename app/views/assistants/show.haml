@@ -1,5 +1,17 @@
-%h2 Assistant
+.page-header
+  %h2 Assistant
 
 - if sections.include?(:sql_reports)
   %h3
     %a{href: sql_reports_assistant_path} SQL Reports
+
+- if @sql_snippets
+  .page-header
+    %h2 Queries
+
+  - @sql_snippets.each_with_index do |snippet, index|
+    %h3
+      #{index+1}. 
+      = snippet.first
+      %small= link_to "Run the query &rarr;".html_safe, sql_reports_assistant_path(query: snippet.last, do: 'Edit')
+    %pre= truncate_query(snippet.last)
