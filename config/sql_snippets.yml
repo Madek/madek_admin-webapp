@@ -1,8 +1,9 @@
 sql_snippets:
   -
     title: Find Invalid Entries
-    description: -- get all entries that are published but don't have all mandatory fields
     query: |
+      -- get all entries that are published but don't have all mandatory fields
+
       SELECT
         'https://medienarchiv.zhdk.ch/id/'  ||  id AS entry_url,
         responsible_user_id, created_at meta_data_updated_at
@@ -20,12 +21,13 @@ sql_snippets:
           AND is_required = true
         )
       )
-      
+
       ORDER BY responsible_user_id
   -
     title: Find MediaFiles without MediaEntry
-    description: -- get all media files that do not have corresponding media entry
     query: |
+      -- get all media files that do not have corresponding media entry
+
       SELECT
         filename, media_type
       FROM media_files
@@ -36,12 +38,13 @@ sql_snippets:
         FROM media_entries
         WHERE media_entries.id = media_files.media_entry_id
       )
-      
+
       ORDER BY filename
   -
     title: Find videos with incomplete previews
-    description: -- get all video media files that have incomplete previews
     query: |
+      -- get all video media files that have incomplete previews
+
       SELECT
         id, filename, media_type
       FROM media_files

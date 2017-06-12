@@ -45,80 +45,81 @@
           = submit_tag('Run Query', name: :run, class: 'btn btn-success', data: {disable_with: 'Running…'})
           = submit_tag('Edit', name: :do, class: 'btn btn-default', id: 'sql_reports_edit_button')
 
-    %hr
+    %hr{style: 'margin-top: 30px;'}
 
   -# empty or result of query:
+  #result{style: 'min-height: 1500px'}
 
-  - if !query || (!pg_error && !pg_results)
-    .container
-      = fallback_hint
+    - if !query || (!pg_error && !pg_results)
+      .container
+        = fallback_hint
 
-  - elsif !pg_error.nil?
-    :ruby
-      err_name, err_msg = if pg_error.is_a?(StandardError)
-        [pg_error.try(:original_exception).try(:class).try(:name) || pg_error.class.name,
-        pg_error.try(:original_exception).try(:error) || pg_error.message]
-      else
-        ['Unknown Error!!!', pg_error.to_s]
-      end
-    .container
-      .panel.panel-danger
-        .panel-heading
-          %h4
-            = icon('exclamation-sign')
-            %samp{style: 'margin-left: 0.6em'}
-              %b= err_name
-
-        %pre.panel-body{style: 'margin:0 ;border:none; background:transparent'}
-          - if err_msg.starts_with?('ERROR:')
-            - lines = err_msg.strip_heredoc.strip.split("\n")
-            %p{style: 'font-size: 1.34em; font-weight: bold'}<>= lines.first
-            %p<>= preserve(lines.last(lines.length-1).join("\n"))
-          - else
-            = preserve(err_msg)
-
-        .panel-footer
-          %a{href: 'http://stackoverflow.com/search?' + {q: "[postgresql] #{err_msg.sub(/^ERROR:/, '').split("\n").first.strip}"}.to_query, target: '_blank'}
-            = icon('question-sign')
-
-  - else
-    :ruby
-      if pg_results.is_a?(Array) && !pg_results.empty?
-        # NOTE: in non-jruby this also works:
-        # keys = pg_results.fields
-        # values = pg_results.values
-        keys = pg_results.first.keys
-        values = pg_results.map(&:values)
-        count = pg_results.length
-      else
-        # NOTE: this is what "fields" would return in this case:
-        keys = ['?column?']
-        values = [[pg_results]]
-        count = pg_results.present? ? 1 : 0
-      end
-
-    .container-fluid
-      .div{style: 'text-align: center'}
-        .panel.panel-info{style: 'text-align: left; display: inline-block; min-width: 320px; max-width: 100%'}
+    - elsif !pg_error.nil?
+      :ruby
+        err_name, err_msg = if pg_error.is_a?(StandardError)
+          [pg_error.try(:original_exception).try(:class).try(:name) || pg_error.class.name,
+          pg_error.try(:original_exception).try(:error) || pg_error.message]
+        else
+          ['Unknown Error!!!', pg_error.to_s]
+        end
+      .container
+        .panel.panel-danger
           .panel-heading
-            %h4{display: 'inline-block'}
-              = icon('ok-sign')
-              %span{style: 'margin-left: 0.6em'}
-                = " Got"
-                %b= "#{count}"
-                = "#{"result".pluralize(count)} in #{query_time} seconds"
+            %h4
+              = icon('exclamation-sign')
+              %samp{style: 'margin-left: 0.6em'}
+                %b= err_name
 
-          .table-responsive{style: 'text-align: left'}
-            %table.table.table-compact.table-hover.table-bordered{style: 'font-family:monospace'}
-              %thead{style: 'font-weight:bold'}
-                %tr
-                  - keys.map do |f|
-                    %td= f
-              %tbody
-                - values.map do |row|
+          %pre.panel-body{style: 'margin:0 ;border:none; background:transparent'}
+            - if err_msg.starts_with?('ERROR:')
+              - lines = err_msg.strip_heredoc.strip.split("\n")
+              %p{style: 'font-size: 1.34em; font-weight: bold'}<>= lines.first
+              %p<>= preserve(lines.last(lines.length-1).join("\n"))
+            - else
+              = preserve(err_msg)
+
+          .panel-footer
+            %a{href: 'http://stackoverflow.com/search?' + {q: "[postgresql] #{err_msg.sub(/^ERROR:/, '').split("\n").first.strip}"}.to_query, target: '_blank'}
+              = icon('question-sign')
+
+    - else
+      :ruby
+        if pg_results.is_a?(Array) && !pg_results.empty?
+          # NOTE: in non-jruby this also works:
+          # keys = pg_results.fields
+          # values = pg_results.values
+          keys = pg_results.first.keys
+          values = pg_results.map(&:values)
+          count = pg_results.length
+        else
+          # NOTE: this is what "fields" would return in this case:
+          keys = ['?column?']
+          values = [[pg_results]]
+          count = pg_results.present? ? 1 : 0
+        end
+
+      .container-fluid{style: 'padding-top: 10px; min-height: 1500px'}
+        .div{style: 'text-align: center'}
+          .panel.panel-info{style: 'text-align: left; display: inline-block; min-width: 320px; max-width: 100%'}
+            .panel-heading
+              %h4{display: 'inline-block'}
+                = icon('ok-sign')
+                %span{style: 'margin-left: 0.6em'}
+                  = " Got"
+                  %b= "#{count}"
+                  = "#{"result".pluralize(count)} in #{query_time} seconds"
+
+            .table-responsive{style: 'text-align: left'}
+              %table.table.table-compact.table-hover.table-bordered{style: 'font-family:monospace'}
+                %thead{style: 'font-weight:bold'}
                   %tr
-                    - row.map do |val|
-                      %td{style: 'white-space:pre-wrap'}<>= preserve(val)
+                    - keys.map do |f|
+                      %td= f
+                %tbody
+                  - values.map do |row|
+                    %tr
+                      - row.map do |val|
+                        %td{style: 'white-space:pre-wrap'}<>= preserve(val)
 
 
   :javascript

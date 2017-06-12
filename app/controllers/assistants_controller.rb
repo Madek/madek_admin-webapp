@@ -49,11 +49,13 @@ class AssistantsController < ApplicationController
     )['sql_snippets'].map do |snippet|
       [
         snippet['title'],
-        [snippet['description'], prepare_query(snippet['query'])].join("\n\n")
+        prepare_query(snippet['query'])
       ]
     end
   end
 
+  # FIXME: when preparing for non-alpha feature release,
+  #        move all templating/logic this to embedded ruby (`sql_snippets.yml.erb`)
   def prepare_query(query)
     query.gsub(/(:[a-z_]+:)/) do |match|
       send(match.delete(':'))

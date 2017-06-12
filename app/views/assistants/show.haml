@@ -11,7 +11,8 @@
 
   - @sql_snippets.each_with_index do |snippet, index|
     %h3
-      #{index+1}. 
+      #{index+1}.
       = snippet.first
-      %small= link_to "Run the query &rarr;".html_safe, sql_reports_assistant_path(query: snippet.last, do: 'Edit')
+      %small= link_to "Run the query &rarr;".html_safe,
+                      (sql_reports_assistant_path(query: snippet.last, do: 'Run Query') + '#result')
     %pre= truncate_query(snippet.last)
