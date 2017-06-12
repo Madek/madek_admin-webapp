@@ -36,7 +36,6 @@ Rails.application.routes.draw do
       member do
         get :media_entries
         get :collections
-        get :filter_sets
       end
     end
     resources :media_entries, only: [:index, :show]
@@ -49,7 +48,6 @@ Rails.application.routes.draw do
       get :raw_file
     end
     resources :zencoder_jobs, only: :show
-    resources :filter_sets, only: [:index, :show]
     resources :vocabularies, concerns: :orderable do
       resources :vocabulary_user_permissions, path: 'user_permissions'
       resources :vocabulary_group_permissions, path: 'group_permissions'

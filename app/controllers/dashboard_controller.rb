@@ -37,8 +37,7 @@ class DashboardController < ApplicationController
         {
           title: 'sets',
           model: Collection
-        },
-        FilterSet
+        }
       ],
       [
         Vocabulary,

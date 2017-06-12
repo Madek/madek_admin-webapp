@@ -18,10 +18,6 @@ class CollectionsController < ApplicationController
     @collections = @collection.collections.page(params[:page]).per(16)
   end
 
-  def filter_sets
-    @filter_sets = @collection.filter_sets.page(params[:page]).per(16)
-  end
-
   private
 
   def find_collection

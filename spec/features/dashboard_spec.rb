@@ -12,7 +12,6 @@ feature 'Admin Dashboard' do
                   media_entries_path(filter: { is_published: 0 })
       expect_link "#{MediaEntry.count} entries", media_entries_path
       expect_link "#{Collection.count} sets", collections_path
-      expect_link "#{FilterSet.count} filtersets", filter_sets_path
       expect_link "#{MediaFile.count} mediafiles", media_files_path
       expect_link "#{MetaDatum.count} metadata", meta_datums_path
       expect_link "#{Keyword.count} keywords", keywords_path

@@ -353,29 +353,22 @@ feature 'Admin Meta Keys' do
                                         is_enabled_for_media_entries: false)
     meta_key_3 = create(:meta_key_text, id: 'archhist:disabled_for_collections',
                                         is_enabled_for_collections: false)
-    meta_key_4 = create(:meta_key_text, id: 'archhist:disabled_for_filter_sets',
-                                        is_enabled_for_filter_sets: false)
     visit vocabulary_path(vocabulary)
 
     expect(page).to have_content 'Enabled for'
 
     within '#meta_keys_list' do
       within "[data-id='#{meta_key_1.id}']" do
-        expect(page).to have_content 'Entries, Sets, Filtersets'
+        expect(page).to have_content 'Entries, Sets'
       end
 
       within "[data-id='#{meta_key_2.id}']" do
-        expect(page).to have_content 'Sets, Filtersets'
+        expect(page).to have_content 'Sets'
         expect(page).not_to have_content 'Entries, '
       end
 
       within "[data-id='#{meta_key_3.id}']" do
-        expect(page).to have_content 'Entries, Filtersets'
-      end
-
-      within "[data-id='#{meta_key_4.id}']" do
-        expect(page).to have_content 'Entries, Sets'
-        expect(page).not_to have_content ', Filtersets'
+        expect(page).to have_content 'Entries'
       end
     end
   end

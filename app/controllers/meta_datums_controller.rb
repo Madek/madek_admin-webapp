@@ -15,8 +15,7 @@ class MetaDatumsController < ApplicationController
         id: :with_id,
         string: :with_string,
         media_entry_id: :of_media_entry,
-        collection_id: :of_collection,
-        filter_set_id: :of_filter_set
+        collection_id: :of_collection
       }[params[:search_by].to_sym]
 
       @meta_datums = @meta_datums.send(filter_method, search_term)

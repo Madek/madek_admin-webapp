@@ -125,7 +125,6 @@ describe MetaKeysController do
         is_extensible_list: true,
         is_enabled_for_media_entries: true,
         is_enabled_for_collections: true,
-        is_enabled_for_filter_sets: true,
         keywords_alphabetical_order: true,
         text_type: 'block'
       }
@@ -155,7 +154,6 @@ describe MetaKeysController do
       expect(meta_key.is_extensible_list).to be true
       expect(meta_key.is_enabled_for_media_entries).to be true
       expect(meta_key.is_enabled_for_collections).to be true
-      expect(meta_key.is_enabled_for_filter_sets).to be true
       expect(meta_key.keywords_alphabetical_order).to be true
       expect(meta_key.text_type).to eq 'block'
     end
@@ -255,8 +253,7 @@ describe MetaKeysController do
         vocabulary_id: vocabulary.id,
         is_extensible_list: true,
         is_enabled_for_media_entries: true,
-        is_enabled_for_collections: true,
-        is_enabled_for_filter_sets: true
+        is_enabled_for_collections: true
       }
     end
 
@@ -288,7 +285,6 @@ describe MetaKeysController do
       expect(meta_key.is_extensible_list).to be true
       expect(meta_key.is_enabled_for_media_entries).to be true
       expect(meta_key.is_enabled_for_collections).to be true
-      expect(meta_key.is_enabled_for_filter_sets).to be true
       expect(meta_key.keywords_alphabetical_order).to be true
     end
   end

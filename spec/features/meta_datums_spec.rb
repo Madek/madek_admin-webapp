@@ -105,19 +105,6 @@ feature 'Admin Meta Datums' do
     expect(page).to have_content meta_datum.collection.title
   end
 
-  scenario 'linking to a Filter Set' do
-    meta_datum = create :meta_datum_title_with_filter_set
-
-    visit meta_datums_path
-
-    fill_in 'search_term', with: meta_datum.id
-    click_button 'Apply'
-    click_link 'Filter Set'
-
-    expect(current_path).to eq filter_set_path(meta_datum.filter_set.id)
-    expect(page).to have_content meta_datum.filter_set.id
-  end
-
   def id_from_path(anchor)
     anchor[:href].split('/').last
   end
