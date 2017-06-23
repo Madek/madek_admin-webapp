@@ -25,6 +25,24 @@ feature 'Admin Dashboard' do
     end
   end
 
+  scenario 'Showing link to Assistant section' do
+    allow(Settings)
+      .to receive_message_chain('feature_toggles.admin_sql_reports')
+      .and_return('on my own risk')
+
+    visit root_path
+
+    expect(page).to have_link 'Go to the section', href: assistant_path
+
+    allow(Settings)
+      .to receive_message_chain('feature_toggles.admin_sql_reports')
+      .and_return('')
+
+    visit root_path
+
+    expect(page).not_to have_link 'Go to the section', href: assistant_path
+  end
+
   def drafts_count
     MediaEntry.unscoped.not_published.count
   end

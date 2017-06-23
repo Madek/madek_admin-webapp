@@ -24,6 +24,7 @@ class ApplicationController < ActionController::Base
 
   helper_method :current_user
   helper_method :filter_value
+  helper_method :feature_toggle_sql_reports
 
   def status
     memory_status = InShape::Memory.status
@@ -104,5 +105,9 @@ class ApplicationController < ActionController::Base
     else
       'Admin access denied!'
     end
+  end
+
+  def feature_toggle_sql_reports
+    Settings.feature_toggles.try(:admin_sql_reports) == 'on my own risk'
   end
 end

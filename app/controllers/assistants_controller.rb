@@ -39,10 +39,6 @@ class AssistantsController < ApplicationController
 
   private
 
-  def feature_toggle_sql_reports
-    Settings.feature_toggles.admin_sql_reports == 'on my own risk'
-  end
-
   def sql_snippets
     @sql_snippets ||= YAML.load_file(
       Rails.root.join('config', 'sql_snippets.yml')

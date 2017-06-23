@@ -32,8 +32,6 @@ feature 'Admin People' do
       select subtype, from: 'filter[subtype]'
       click_button 'Apply'
 
-      sleep 10
-
       all('table tbody tr').each do |row|
         expect(row).to have_content subtype
       end

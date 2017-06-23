@@ -84,8 +84,6 @@ feature 'Admin API Clients' do
     fill_in 'api_client[description]', with: 'new description'
     click_button 'Change user'
 
-    sleep 15
-
     expect(page).to have_css '.alert-info'
 
     fill_in 'search_term', with: user.login
