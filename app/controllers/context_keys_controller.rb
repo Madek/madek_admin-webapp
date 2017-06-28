@@ -13,10 +13,9 @@ class ContextKeysController < ApplicationController
     end)
   end
 
-  define_move_actions_for(
-    ContextKey,
-    directions: %i(up down to_top to_bottom)
-  ) { |context_key| edit_context_path(context_key.context) }
+  define_move_actions_for(ContextKey) do |context_key|
+    edit_context_path(context_key.context)
+  end
 
   def destroy
     @context_key = ContextKey.find(params[:id])

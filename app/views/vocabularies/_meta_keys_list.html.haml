@@ -25,10 +25,7 @@
             %td.active.text-center
               .btn-group.btn-group-sm
                 - if move_keys
-                  = link_to move_up_meta_key_path(meta_key), method: :patch, class: "btn btn-warning move-up" do
-                    %span.glyphicon.glyphicon-chevron-up
-                  = link_to move_down_meta_key_path(meta_key), method: :patch, class: "btn btn-warning move-down" do
-                    %span.glyphicon.glyphicon-chevron-down
+                  = move_buttons(meta_key, labels: false)
                 - if meta_key.can_have_keywords?
                   = link_to keywords_path(filter: { vocabulary_id: @vocabulary.id }, search_term: meta_key.id),
                     class: 'btn btn-default' do

@@ -123,8 +123,82 @@ feature 'Keywords' do
     end
   end
 
+  scenario 'Changing position in scope of a meta key' do
+    keyword_1
+    keyword_2
+    keyword_3
+
+    visit meta_key_path(meta_key)
+
+    expect_order ['Zett 1-2011',
+                  'Zett 1-2012',
+                  'Zett 1-2013']
+
+    within('#keywords tr:contains("Zett 1-2012")') do
+      find('.move-down').click
+    end
+    expect_order ['Zett 1-2011',
+                  'Zett 1-2013',
+                  'Zett 1-2012']
+
+    within('#keywords tr:contains("Zett 1-2012")') do
+      find('.move-down').click
+    end
+    expect_order ['Zett 1-2011',
+                  'Zett 1-2013',
+                  'Zett 1-2012']
+
+    within('#keywords tr:contains("Zett 1-2011")') do
+      find('.move-up').click
+    end
+    expect_order ['Zett 1-2011',
+                  'Zett 1-2013',
+                  'Zett 1-2012']
+
+    within('#keywords tr:contains("Zett 1-2013")') do
+      find('.move-up').click
+    end
+    expect_order ['Zett 1-2013',
+                  'Zett 1-2011',
+                  'Zett 1-2012']
+
+    within('#keywords tr:contains("Zett 1-2013")') do
+      find('.move-to-top').click
+    end
+    expect_order ['Zett 1-2013',
+                  'Zett 1-2011',
+                  'Zett 1-2012']
+
+    within('#keywords tr:contains("Zett 1-2012")') do
+      find('.move-to-top').click
+    end
+    expect_order ['Zett 1-2012',
+                  'Zett 1-2013',
+                  'Zett 1-2011']
+
+    within('#keywords tr:contains("Zett 1-2011")') do
+      find('.move-to-bottom').click
+    end
+    expect_order ['Zett 1-2012',
+                  'Zett 1-2013',
+                  'Zett 1-2011']
+
+    within('#keywords tr:contains("Zett 1-2012")') do
+      find('.move-to-bottom').click
+    end
+    expect_order ['Zett 1-2013',
+                  'Zett 1-2011',
+                  'Zett 1-2012']
+  end
+
   def collect_keyword_terms
     all('#keywords tbody tr td:nth-child(2)').map(&:text)
+  end
+
+  def expect_order(order, limit = 3)
+    expect(
+      all('#keywords tr[data-id] td:nth(2)').map(&:text)[0, limit]
+    ).to eq(order)
   end
 
   def toggle_alphabetical_ordering(target_state)

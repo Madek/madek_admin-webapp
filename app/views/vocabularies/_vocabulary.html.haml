@@ -16,10 +16,5 @@
           class: 'btn btn-default'
       = link_to "Keywords: #{vocabulary.keywords.count}", keywords_path(filter: { vocabulary_id: vocabulary.id }),
           class: 'btn btn-default'
-      = link_to move_up_vocabulary_path(vocabulary), method: :patch, class: 'btn btn-warning' do
-        %span.glyphicon.glyphicon-chevron-up
-        Move up
-      = link_to move_down_vocabulary_path(vocabulary), method: :patch, class: 'btn btn-warning' do
-        %span.glyphicon.glyphicon-chevron-down
-        Move down
+      = move_buttons(vocabulary)
 = admin_comment_row(vocabulary, colspan: 4, striped: striped)

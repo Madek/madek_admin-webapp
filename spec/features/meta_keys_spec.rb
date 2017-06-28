@@ -272,7 +272,23 @@ feature 'Admin Meta Keys' do
     expect_order %w(archhist:ca_thema
                     archhist:ca_zweck
                     archhist:ca_kontext
-                    archhist:ca_ausgangsmaterial)
+                    archhist:ca_ausgangsmaterial
+                    archhist:ca_informationstechnologie
+                    archhist:ca_daten
+                    archhist:ca_sinnstiftung
+                    archhist:ca_konzept)
+
+    within find('table tr[data-id="archhist:ca_konzept"]') do
+      find('.move-down').click
+    end
+    expect_order %w(archhist:ca_thema
+                    archhist:ca_zweck
+                    archhist:ca_kontext
+                    archhist:ca_ausgangsmaterial
+                    archhist:ca_informationstechnologie
+                    archhist:ca_daten
+                    archhist:ca_sinnstiftung
+                    archhist:ca_konzept)
 
     within find('table tr[data-id="archhist:ca_thema"]') do
       find('.move-down').click
@@ -281,7 +297,24 @@ feature 'Admin Meta Keys' do
     expect_order %w(archhist:ca_zweck
                     archhist:ca_thema
                     archhist:ca_kontext
-                    archhist:ca_ausgangsmaterial)
+                    archhist:ca_ausgangsmaterial
+                    archhist:ca_informationstechnologie
+                    archhist:ca_daten
+                    archhist:ca_sinnstiftung
+                    archhist:ca_konzept)
+
+    within find('table tr[data-id="archhist:ca_zweck"]') do
+      find('.move-up').click
+    end
+    expect(page).to have_css('.alert-success')
+    expect_order %w(archhist:ca_zweck
+                    archhist:ca_thema
+                    archhist:ca_kontext
+                    archhist:ca_ausgangsmaterial
+                    archhist:ca_informationstechnologie
+                    archhist:ca_daten
+                    archhist:ca_sinnstiftung
+                    archhist:ca_konzept)
 
     within find('table tbody tr[data-id="archhist:ca_kontext"]') do
       find('.move-up').click
@@ -290,7 +323,63 @@ feature 'Admin Meta Keys' do
     expect_order %w(archhist:ca_zweck
                     archhist:ca_kontext
                     archhist:ca_thema
-                    archhist:ca_ausgangsmaterial)
+                    archhist:ca_ausgangsmaterial
+                    archhist:ca_informationstechnologie
+                    archhist:ca_daten
+                    archhist:ca_sinnstiftung
+                    archhist:ca_konzept)
+
+    within find('table tbody tr[data-id="archhist:ca_zweck"]') do
+      find('.move-to-top').click
+    end
+    expect(page).to have_css('.alert-success')
+    expect_order %w(archhist:ca_zweck
+                    archhist:ca_kontext
+                    archhist:ca_thema
+                    archhist:ca_ausgangsmaterial
+                    archhist:ca_informationstechnologie
+                    archhist:ca_daten
+                    archhist:ca_sinnstiftung
+                    archhist:ca_konzept)
+
+    within find('table tbody tr[data-id="archhist:ca_ausgangsmaterial"]') do
+      find('.move-to-top').click
+    end
+    expect(page).to have_css('.alert-success')
+    expect_order %w(archhist:ca_ausgangsmaterial
+                    archhist:ca_zweck
+                    archhist:ca_kontext
+                    archhist:ca_thema
+                    archhist:ca_informationstechnologie
+                    archhist:ca_daten
+                    archhist:ca_sinnstiftung
+                    archhist:ca_konzept)
+
+    within find('table tbody tr[data-id="archhist:ca_daten"]') do
+      find('.move-to-bottom').click
+    end
+    expect(page).to have_css('.alert-success')
+    expect_order %w(archhist:ca_ausgangsmaterial
+                    archhist:ca_zweck
+                    archhist:ca_kontext
+                    archhist:ca_thema
+                    archhist:ca_informationstechnologie
+                    archhist:ca_sinnstiftung
+                    archhist:ca_konzept
+                    archhist:ca_daten)
+
+    within find('table tbody tr[data-id="archhist:ca_daten"]') do
+      find('.move-to-bottom').click
+    end
+    expect(page).to have_css('.alert-success')
+    expect_order %w(archhist:ca_ausgangsmaterial
+                    archhist:ca_zweck
+                    archhist:ca_kontext
+                    archhist:ca_thema
+                    archhist:ca_informationstechnologie
+                    archhist:ca_sinnstiftung
+                    archhist:ca_konzept
+                    archhist:ca_daten)
   end
 
   scenario "Show 'Is extensible list' row for MetaDatum::Keywords" do
@@ -375,9 +464,9 @@ feature 'Admin Meta Keys' do
 
   include_examples 'display admin comments on overview page'
 
-  def expect_order(order, limit = 4)
+  def expect_order(order)
     expect(
-      all('table tr[data-id]').map { |tr| tr['data-id'] }[0, limit]
+      all('table tr[data-id]').map { |tr| tr['data-id'] }
     ).to eq(order)
   end
 

@@ -38,34 +38,194 @@ feature 'Admin Vocabularies' do
   scenario 'Changing position' do
     visit collection_path
 
-    expect_order %w(archhist forschung_zhdk landschaftsvisualisierung
-                    performance_artefakte)
+    expect_order %w(archhist
+                    forschung_zhdk
+                    landschaftsvisualisierung
+                    performance_artefakte
+                    supplylines
+                    columns
+                    toni
+                    vfo
+                    zett
+                    zhdk_bereich
+                    media_content
+                    nutzung
+                    copyright
+                    media_object
+                    core
+                    media_set)
 
     within find('table tr[data-id="forschung_zhdk"]') do
       click_link 'Move down'
     end
     expect(page).to have_css('.alert-success')
-    expect_order %w(archhist landschaftsvisualisierung forschung_zhdk
-                    performance_artefakte)
+    expect_order %w(archhist
+                    landschaftsvisualisierung
+                    forschung_zhdk
+                    performance_artefakte
+                    supplylines
+                    columns
+                    toni
+                    vfo
+                    zett
+                    zhdk_bereich
+                    media_content
+                    nutzung
+                    copyright
+                    media_object
+                    core
+                    media_set)
 
-    within find('table tbody tr[data-id="landschaftsvisualisierung"]') do
+    paginate_to 2
+    expect_order %w(madek_core)
+
+    within find('table tr[data-id="madek_core"]') do
+      click_link 'Move down'
+    end
+    expect(page).to have_css('.alert-success')
+    paginate_to 2
+    expect_order %w(madek_core)
+
+    paginate_to 1
+
+    within find('table tr[data-id="archhist"]') do
       click_link 'Move up'
     end
     expect(page).to have_css('.alert-success')
-    expect_order %w(landschaftsvisualisierung archhist forschung_zhdk
-                    performance_artefakte)
+    expect_order %w(archhist
+                    landschaftsvisualisierung
+                    forschung_zhdk
+                    performance_artefakte
+                    supplylines
+                    columns
+                    toni
+                    vfo
+                    zett
+                    zhdk_bereich
+                    media_content
+                    nutzung
+                    copyright
+                    media_object
+                    core
+                    media_set)
+
+    within find('table tr[data-id="forschung_zhdk"]') do
+      click_link 'Move up'
+    end
+    expect(page).to have_css('.alert-success')
+    expect_order %w(archhist
+                    forschung_zhdk
+                    landschaftsvisualisierung
+                    performance_artefakte
+                    supplylines
+                    columns
+                    toni
+                    vfo
+                    zett
+                    zhdk_bereich
+                    media_content
+                    nutzung
+                    copyright
+                    media_object
+                    core
+                    media_set)
+
+    within find('table tr[data-id="archhist"]') do
+      click_link 'Move to top'
+    end
+    expect(page).to have_css('.alert-success')
+    expect_order %w(archhist
+                    forschung_zhdk
+                    landschaftsvisualisierung
+                    performance_artefakte
+                    supplylines
+                    columns
+                    toni
+                    vfo
+                    zett
+                    zhdk_bereich
+                    media_content
+                    nutzung
+                    copyright
+                    media_object
+                    core
+                    media_set)
+
+    paginate_to 2
+
+    within find('table tr[data-id="madek_core"]') do
+      click_link 'Move to top'
+    end
+    expect(page).to have_css('.alert-success')
+    expect_order %w(madek_core
+                    archhist
+                    forschung_zhdk
+                    landschaftsvisualisierung
+                    performance_artefakte
+                    supplylines
+                    columns
+                    toni
+                    vfo
+                    zett
+                    zhdk_bereich
+                    media_content
+                    nutzung
+                    copyright
+                    media_object
+                    core)
+
+    paginate_to 2
+
+    within find('table tr[data-id="media_set"]') do
+      click_link 'Move to bottom'
+    end
+    expect(page).to have_css('.alert-success')
+    paginate_to 2
+    expect_order %w(media_set)
+
+    paginate_to 1
+
+    within find('table tr[data-id="toni"]') do
+      click_link 'Move to bottom'
+    end
+    expect(page).to have_css('.alert-success')
+    expect_order %w(madek_core
+                    archhist
+                    forschung_zhdk
+                    landschaftsvisualisierung
+                    performance_artefakte
+                    supplylines
+                    columns
+                    vfo
+                    zett
+                    zhdk_bereich
+                    media_content
+                    nutzung
+                    copyright
+                    media_object
+                    core
+                    media_set)
+
+    paginate_to 2
+    expect_order %w(toni)
   end
 
   include_examples 'display admin comments on overview page'
 
-  def expect_order(order, limit = 4)
+  def expect_order(order)
     expect(
-      all('table tr[data-id]').map { |tr| tr['data-id'] }[0, limit]
+      all('table tr[data-id]').map { |tr| tr['data-id'] }
     ).to eq(order)
   end
 
   def filter(search_term)
     fill_in 'search_term', with: search_term
     click_button 'Apply'
+  end
+
+  def paginate_to(page)
+    within '.pagination' do
+      click_link page
+    end
   end
 end

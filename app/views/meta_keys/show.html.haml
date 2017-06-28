@@ -71,18 +71,13 @@
             %th.col-xs-2
         %tbody
           - @keywords.each do |keyword|
-            %tr
+            %tr{'data-id' => keyword.id}
               %td= keyword.id
               %td= keyword
               %td.active.text-center
                 .btn-group.btn-group-sm.btn-group-vertical
                   - unless @meta_key.keywords_alphabetical_order
-                    = link_to move_up_keyword_path(keyword), method: :patch, class: 'btn btn-warning' do
-                      %span.glyphicon.glyphicon-chevron-up
-                      Move up
-                    = link_to move_down_keyword_path(keyword), method: :patch, class: 'btn btn-warning' do
-                      %span.glyphicon.glyphicon-chevron-down
-                      Move down
+                    = move_buttons(keyword)
                   = render partial: 'keywords/action_buttons', locals: { keyword: keyword }
 
   = paginate @keywords

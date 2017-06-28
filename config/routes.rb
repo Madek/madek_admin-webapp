@@ -4,8 +4,10 @@ Rails.application.routes.draw do
     get :status, controller: :application, action: :status
 
     concern :orderable do
+      patch :move_to_top, on: :member
       patch :move_up, on: :member
       patch :move_down, on: :member
+      patch :move_to_bottom, on: :member
     end
 
     resources :api_clients
@@ -60,10 +62,7 @@ Rails.application.routes.draw do
     resources :contexts do
       patch :add_meta_key, on: :member
     end
-    resources :context_keys, only: [:edit, :update, :destroy], concerns: :orderable do
-      patch :move_to_top, on: :member
-      patch :move_to_bottom, on: :member
-    end
+    resources :context_keys, only: [:edit, :update, :destroy], concerns: :orderable
     resources :meta_datums, only: :index
     resources :io_mappings
     resources :io_interfaces, except: [:edit, :update]
