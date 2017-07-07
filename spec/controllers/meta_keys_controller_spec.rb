@@ -112,6 +112,17 @@ describe MetaKeysController do
     it 'assigns @meta_key correctly' do
       expect(assigns[:meta_key]).to eq meta_key
     end
+
+    context 'when meta key belongs to madek_core Vocabulary' do
+      let(:meta_key) do
+        MetaKey.find_by(id: 'madek_core:title') || create(:meta_key_core_title)
+      end
+
+      it 'renders forbidden notice' do
+        expect(response).to have_http_status(:forbidden)
+        expect(response.body).to eq 'Error 403 - Admin access denied!'
+      end
+    end
   end
 
   describe '#update' do
@@ -175,6 +186,17 @@ describe MetaKeysController do
         expect(meta_key.reload.allowed_people_subtypes).to eq(['Person'])
       end
     end
+
+    context 'when meta key belongs to madek_core Vocabulary' do
+      let(:meta_key) do
+        MetaKey.find_by(id: 'madek_core:title') || create(:meta_key_core_title)
+      end
+
+      it 'renders forbidden notice' do
+        expect(response).to have_http_status(:forbidden)
+        expect(response.body).to eq 'Error 403 - Admin access denied!'
+      end
+    end
   end
 
   describe '#show' do
@@ -226,6 +248,19 @@ describe MetaKeysController do
 
         expect(response).to have_http_status(404)
         expect(response).to render_template 'errors/404'
+      end
+    end
+
+    context 'when meta key belongs to madek_core Vocabulary' do
+      let(:meta_key) do
+        MetaKey.find_by(id: 'madek_core:title') || create(:meta_key_core_title)
+      end
+
+      it 'renders forbidden notice' do
+        delete :destroy, { id: meta_key.id }, user_id: admin_user.id
+
+        expect(response).to have_http_status(:forbidden)
+        expect(response.body).to eq 'Error 403 - Admin access denied!'
       end
     end
   end
@@ -289,52 +324,41 @@ describe MetaKeysController do
     end
   end
 
-  describe '#move_up' do
-    let(:meta_key) { create :meta_key_text }
-    before { patch :move_up, { id: meta_key.id }, user_id: admin_user.id }
-
-    it 'it redirects to admin vocabulary path' do
-      expect(response).to have_http_status(302)
-      expect(response).to redirect_to(
-        edit_vocabulary_path(meta_key.vocabulary))
-    end
-
-    it 'sets a success flash message' do
-      expect(flash[:success]).to be_present
-    end
-
-    context 'when MetaKey does not exist' do
-      it 'renders error template' do
-        patch :move_up,
-              { id: UUIDTools::UUID.random_create },
-              user_id: admin_user.id
-
-        expect(response).to have_http_status(404)
-        expect(response).to render_template 'errors/404'
+  %i(to_top up down to_bottom).each do |direction|
+    describe "#move_#{direction}" do
+      let(:meta_key) { create :meta_key_text }
+      before do
+        patch "move_#{direction}", { id: meta_key.id }, user_id: admin_user.id
       end
-    end
-  end
 
-  describe '#move_down' do
-    let(:meta_key) { create :meta_key_text }
-    before { patch :move_down, { id: meta_key.id }, user_id: admin_user.id }
+      it 'it redirects to admin vocabulary path' do
+        expect(response).to have_http_status(302)
+        expect(response).to redirect_to(
+          edit_vocabulary_path(meta_key.vocabulary))
+      end
 
-    it 'it redirects to admin vocabulary path' do
-      expect(response).to have_http_status(302)
-      expect(response).to redirect_to(
-        edit_vocabulary_path(meta_key.vocabulary))
-    end
+      it 'sets a success flash message' do
+        expect(flash[:success]).to be_present
+      end
 
-    it 'sets a success flash message' do
-      expect(flash[:success]).to be_present
-    end
+      context 'when ID is missing' do
+        it 'renders error template' do
+          patch "move_#{direction}", { id: '' }, user_id: admin_user.id
 
-    context 'when ID is missing' do
-      it 'renders error template' do
-        patch :move_down, { id: '' }, user_id: admin_user.id
+          expect(response).to have_http_status(404)
+          expect(response).to render_template 'errors/404'
+        end
+      end
 
-        expect(response).to have_http_status(404)
-        expect(response).to render_template 'errors/404'
+      context 'when meta key belongs to madek_core Vocabulary' do
+        let(:meta_key) do
+          MetaKey.find_by(id: 'madek_core:title') || create(:meta_key_core_title)
+        end
+
+        it 'renders forbidden notice' do
+          expect(response).to have_http_status(:forbidden)
+          expect(response.body).to eq 'Error 403 - Admin access denied!'
+        end
       end
     end
   end

@@ -464,6 +464,63 @@ feature 'Admin Meta Keys' do
 
   include_examples 'display admin comments on overview page'
 
+  context 'when meta key belongs to madek_core Vocabulary' do
+    let(:meta_key) do
+      MetaKey.find_by(id: 'madek_core:title') || create(:meta_key_core_title)
+    end
+
+    context 'index page' do
+      scenario 'it cannot be edited' do
+        visit meta_keys_path
+
+        select 'madek_core', from: 'vocabulary_id'
+        click_button 'Apply'
+
+        within "[data-id='#{meta_key.id}']" do
+          expect(page).not_to have_link 'Edit'
+        end
+      end
+
+      scenario 'it cannot be deleted' do
+        visit meta_keys_path
+
+        select 'madek_core', from: 'vocabulary_id'
+        click_button 'Apply'
+
+        within "[data-id='#{meta_key.id}']" do
+          expect(page).not_to have_link 'Delete'
+        end
+      end
+    end
+
+    context 'show page' do
+      scenario 'it cannot be edited' do
+        visit meta_key_path(meta_key)
+
+        expect(page).not_to have_link 'Edit'
+      end
+
+      scenario 'it cannot be deleted' do
+        visit meta_key_path(meta_key)
+
+        expect(page).not_to have_link 'Delete'
+      end
+    end
+
+    context 'vocabulary edit page' do
+      scenario 'it cannot be reordered' do
+        visit edit_vocabulary_path(meta_key.vocabulary)
+
+        within '#meta_keys_list' do
+          expect(page).not_to have_css 'a.move-to-top'
+          expect(page).not_to have_css 'a.move-up'
+          expect(page).not_to have_css 'a.move-down'
+          expect(page).not_to have_css 'a.move-to-bottom'
+        end
+      end
+    end
+  end
+
   def expect_order(order)
     expect(
       all('table tr[data-id]').map { |tr| tr['data-id'] }

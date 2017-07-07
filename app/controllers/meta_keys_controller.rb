@@ -28,10 +28,12 @@ class MetaKeysController < ApplicationController
 
   def edit
     @meta_key = MetaKey.find(params[:id])
+    authorize @meta_key
   end
 
   def update
     @meta_key = MetaKey.find(params[:id])
+    authorize @meta_key
     @meta_key.assign_attributes(meta_key_params)
 
     if second_step?
@@ -46,9 +48,9 @@ class MetaKeysController < ApplicationController
     end
   end
 
-  define_destroy_action_for(MetaKey)
+  define_destroy_action_for(MetaKey, true)
 
-  define_move_actions_for(MetaKey) do |meta_key|
+  define_move_actions_for(MetaKey, true) do |meta_key|
     edit_vocabulary_path(meta_key.vocabulary)
   end
 

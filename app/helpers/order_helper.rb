@@ -1,7 +1,8 @@
 module OrderHelper
   def move_buttons(object, labels: true)
     directions = %i(to_top up down to_bottom).select do |direction|
-      object.respond_to?("move_#{direction}")
+      object.respond_to?("move_#{direction}") \
+        && check_policy?(object, "move_#{direction}?")
     end
     directions.each do |direction|
       concat move_button(object, direction, labels)
@@ -29,5 +30,13 @@ module OrderHelper
            css_class: css_class,
            icon: icon,
            title: title)
+  end
+
+  def check_policy?(object, action)
+    if Pundit.policy(current_user, object)
+      policy(object).send(action)
+    else
+      true
+    end
   end
 end

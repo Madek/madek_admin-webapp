@@ -16,9 +16,10 @@ module Concerns
         end
       end
 
-      def define_destroy_action_for(model)
+      def define_destroy_action_for(model, perform_authorization = false)
         define_method :destroy do
           @instance = model.find(params[:id])
+          authorize(@instance) if perform_authorization
           @instance.destroy!
 
           respond_with @instance, location: (lambda do
@@ -27,17 +28,17 @@ module Concerns
         end
       end
 
-      def define_move_actions_for(model, &block)
+      def define_move_actions_for(model, perform_authorization = false, &block)
         %i(to_top up down to_bottom).each do |direction|
           define_method "move_#{direction}" do
             resource = model.find(params[:id])
+            authorize(resource) if perform_authorization
             resource.send "move_#{direction}"
             success_path = instance_exec(resource, &block)
-            model_name = model.to_s.humanize.capitalize
             direction_name = direction.to_s.split('_').join(' ')
 
             redirect_to success_path, flash: {
-              success: "The #{model_name} was successfully moved
+              success: "The #{model.model_name.name} was successfully moved
                        #{direction_name}."
             }
           end

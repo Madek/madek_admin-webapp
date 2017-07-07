@@ -1,11 +1,13 @@
-= link_to edit_meta_key_path(meta_key), class: 'btn btn-info' do
-  %span.glyphicon.glyphicon-edit
-  Edit
-= link_to meta_key_path(meta_key), method: :delete,
-    data: { confirm: 'The meta key will be deleted. Do you want to proceed?' },
-    class: 'btn btn-danger' do
-  %i.glyphicon.glyphicon-trash
-  Delete
+- if policy(meta_key).edit?
+  = link_to edit_meta_key_path(meta_key), class: 'btn btn-info' do
+    %span.glyphicon.glyphicon-edit
+    Edit
+- if policy(meta_key).destroy?
+  = link_to meta_key_path(meta_key), method: :delete,
+      data: { confirm: 'The meta key will be deleted. Do you want to proceed?' },
+      class: 'btn btn-danger' do
+    %i.glyphicon.glyphicon-trash
+    Delete
 - if meta_key.vocabulary
   = link_to 'Vocabulary', vocabulary_path(meta_key.vocabulary),
       class: 'btn btn-default'
