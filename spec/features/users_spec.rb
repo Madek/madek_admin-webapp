@@ -98,7 +98,7 @@ feature 'Admin Users' do
     expect { User.find_by!(login: 'fritzli') }.not_to raise_error
   end
 
-  scenario 'Deleting a user', browser: :firefox do
+  scenario 'Deleting an user', browser: :firefox do
     user = create :user
 
     visit user_path(user)
@@ -108,6 +108,19 @@ feature 'Admin Users' do
 
     expect(current_path).to eq users_path
     expect { user.reload }.to raise_error(ActiveRecord::RecordNotFound)
+  end
+
+  scenario 'Deleting an user who cannot be deleted' do
+    user = create :user
+    create(:collection, creator_id: user.id)
+
+    visit user_path(user)
+    click_link 'Delete user'
+
+    expect(page).to have_content 'An error occured code: 500'
+    expect(page).to have_content 'The user cannot be deleted.'
+    expect(page).to have_content 'However you can mark it as deactivated.'
+    expect(page).to have_link 'Click here to do that', href: edit_user_path(user)
   end
 
   scenario 'Editing a user' do
@@ -198,6 +211,21 @@ feature 'Admin Users' do
     expect(page).to have_content ': bar foo'
     expect(page).to have_link 'bar', href: group_path(group_2)
     expect(page).to have_link 'foo', href: group_path(group_1)
+  end
+
+  scenario 'Setting user as deactivated' do
+    user = create :user
+
+    visit user_path(user)
+
+    expect(page).to have_content 'Is deactivated false'
+
+    click_link 'Edit'
+
+    check 'Is deactivated?'
+    click_button 'Save'
+
+    expect(page).to have_content 'Is deactivated true'
   end
 
   def user_rows

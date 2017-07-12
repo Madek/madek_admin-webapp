@@ -4,4 +4,8 @@
     %small code: #{@status_code}
   %h3 Message:
   %p= @error.message
+  - if @extra_error_message.present?
+    .alert.alert-danger
+      %span.glyphicon.glyphicon-exclamation-sign
+      = @extra_error_message.html_safe
   %p= link_to 'Go back', :back, class: 'btn btn-primary btn-lg', role: :button

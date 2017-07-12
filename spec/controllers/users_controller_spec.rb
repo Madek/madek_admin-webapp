@@ -369,6 +369,20 @@ describe UsersController do
         delete :destroy, { id: user.id }, user_id: admin_user.id
       end.to change { User.count }.by(-1)
     end
+
+    context 'when user cannot be deleted because of foreign key constraints' do
+      let!(:collection) { create(:collection, creator_id: user.id) }
+
+      it 'renders error template with extra message' do
+        delete :destroy,
+               { id: user.id },
+               user_id: admin_user.id
+
+        expect(response).to have_http_status 500
+        expect(response).to render_template 'errors/500'
+        expect(assigns[:extra_error_message]).to be_present
+      end
+    end
   end
 
   describe '#remove_user_from_group' do

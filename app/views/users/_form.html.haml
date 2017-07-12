@@ -28,6 +28,13 @@
 
     .form-group
       .col-xs-offset-2.col-xs-4
+        .checkbox
+          = f.label :is_deactivated do
+            = f.check_box :is_deactivated
+            Is deactivated?
+
+    .form-group
+      .col-xs-offset-2.col-xs-4
         = button_tag type: 'submit', class: 'btn btn-success' do
           %span.glyphicon.glyphicon-ok
           Save
