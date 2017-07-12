@@ -53,9 +53,15 @@ class UsersController < ApplicationController
   end
 
   def destroy
-    @user.destroy
+    @user.destroy!
 
     respond_with @user, location: -> { users_path }
+  rescue => e
+    @extra_error_message = [
+      'The user cannot be deleted. However you can mark it as deactivated.',
+      view_context.link_to('Click here to do that', edit_user_path(@user))
+    ].join(' ')
+    render_error(e) and return
   end
 
   def switch_to
