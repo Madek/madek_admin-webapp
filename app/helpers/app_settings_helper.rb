@@ -39,6 +39,24 @@ module AppSettingsHelper
     end
   end
 
+  def meta_key_ids_as_links(ids)
+    return unless ids.present?
+    html = []
+    html.concat(
+      ids.split(',').map(&:strip).map do |meta_key_id|
+        meta_key = MetaKey
+                    .with_type('MetaDatum::Keywords')
+                    .find_by(id: meta_key_id)
+        if meta_key
+          link_to meta_key.id, meta_key_path(meta_key)
+        else
+          invalid_reference_tag(meta_key_id)
+        end
+      end
+    )
+    html.join(', ').html_safe
+  end
+
   def invalid_reference_tag(id)
     content_tag(:span, "#{id} (invalid!)", class: 'text-danger')
   end

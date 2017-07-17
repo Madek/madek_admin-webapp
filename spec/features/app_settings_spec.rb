@@ -366,4 +366,35 @@ feature 'Admin App Settings' do
       expect(page).to have_content new_url
     end
   end
+
+  scenario 'Updating Ignored keyword keys for browsing' do
+    valid_meta_key   = create :meta_key_keywords
+    invalid_meta_key = create :meta_key_title
+
+    visit app_settings_path
+
+    within '#ignored_keyword_keys_for_browsing' do
+      click_link 'Edit'
+    end
+
+    fill_in 'app_setting[ignored_keyword_keys_for_browsing]', with: \
+      "#{valid_meta_key.id}, #{invalid_meta_key.id}"
+    click_button 'Save'
+
+    expect(page).to have_css '.alert-success'
+    within '#ignored_keyword_keys_for_browsing' do
+      expect(page).to have_content(
+        "#{valid_meta_key.id}, #{invalid_meta_key.id} (invalid!)"
+      )
+    end
+
+    within '#ignored_keyword_keys_for_browsing' do
+      click_link 'Edit'
+    end
+
+    expect(page).to have_field(
+      'app_setting[ignored_keyword_keys_for_browsing]',
+      with: "#{valid_meta_key.id}, #{invalid_meta_key.id}"
+    )
+  end
 end

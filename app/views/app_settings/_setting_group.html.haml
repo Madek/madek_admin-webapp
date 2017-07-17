@@ -13,11 +13,14 @@
             %td.col-xs-7
               - type = AppSetting.columns_hash[attr.try(:to_s)].try(:sql_type)
               - markdowned = ['welcome_text']
+              - meta_key_ids = ['ignored_keyword_keys_for_browsing']
               - case
               - when type === 'jsonb'
                 %pre.col-xs-9= @app_settings.send(attr).to_yaml
               - when markdowned.include?(attr.to_s)
                 = markdown(@app_settings.send(attr))
+              - when meta_key_ids.include?(attr.to_s)
+                = meta_key_ids_as_links(@app_settings[:ignored_keyword_keys_for_browsing])
               - else
                 = @app_settings.send(attr)
 

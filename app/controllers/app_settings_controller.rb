@@ -15,7 +15,9 @@ class AppSettingsController < ApplicationController
     },
     'Other' => {
       sitemap: 'Links for footer menu',
-      support_url: 'Link for support tab'
+      support_url: 'Link for support tab',
+      ignored_keyword_keys_for_browsing: 'MetaKeys of type Keyword that are ' \
+        'ignored for the feature "Browse similar entries (Stöbern)"'
     },
     'Copyright/License Defaults' => {
       media_entry_default_license_meta_key: 'MetaKey ID MediaEntry Licenses',
@@ -140,7 +142,7 @@ class AppSettingsController < ApplicationController
     params.try(:[], :app_setting).each do |attr, value|
       if attr_with_type?(attr, 'jsonb')
         params[:app_setting][attr] = YAML.safe_load(value)
-      elsif attr.to_s =~ /contexts|_keys/
+      elsif attr.to_s =~ /contexts|_keys$/
         params[:app_setting][attr] =
           params[:app_setting][attr].split(',').map(&:strip)
       end
@@ -148,11 +150,7 @@ class AppSettingsController < ApplicationController
   end
 
   def attr_with_type?(column, type)
-    column_info(column).try(:sql_type) == type
-  end
-
-  def column_info(attr)
-    ::AppSetting.columns_hash[attr.to_s]
+    ::AppSetting.columns_hash[column.to_s].try(:sql_type) == type
   end
 
 end
