@@ -73,7 +73,7 @@ describe GroupsController do
       context 'by trigram search ranking' do
         it "returns groups found by trigram search ranking with 'test'" do
           group1 = create :group, name: 'test1'
-          group2 = create :group, name: 'test2'
+          group2 = create :group, institutional_name: 'test2'
           group3 = create :group, name: 'test3'
 
           get(
