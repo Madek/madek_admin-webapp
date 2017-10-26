@@ -8,6 +8,11 @@ class PeopleController < ApplicationController
       :subtype
     )
     @people = @people.with_user if params[:with_user] == '1'
+    if (merge_originator_id = params[:merge_originator_id]).presence
+      @merge_originator = Person.find(merge_originator_id)
+      @people = @people.where.not(id: @merge_originator.id)
+    end
+    @people = @people.admin_with_usage_count
   end
 
   def show
@@ -54,6 +59,17 @@ class PeopleController < ApplicationController
     }
   rescue => e
     redirect_to person_path(@person), flash: { error: e.to_s }
+  end
+
+  def merge_to
+    find_person
+    originator = Person.find(params[:originator_id])
+    originator.merge_to(@person, current_user)
+    flash[:success] = 'The person has been merged.'
+  rescue => e
+    flash[:error] = e.to_s
+  ensure
+    redirect_to people_path
   end
 
   private

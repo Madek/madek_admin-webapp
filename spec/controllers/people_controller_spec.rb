@@ -79,6 +79,17 @@ describe PeopleController do
         end
       end
     end
+
+    describe 'merging' do
+      let(:originator) { create :person }
+      let(:receiver)   { create :person }
+
+      it 'assigns @merge_originator if given' do
+        get :index, { merge_originator_id: originator.id }, session
+
+        expect(assigns[:merge_originator]).to eq originator
+      end
+    end
   end
 
   describe '#show' do
@@ -211,6 +222,30 @@ describe PeopleController do
       expect do
         delete :destroy, { id: person.id }, session
       end.to change { Person.count }.by(-1)
+    end
+  end
+
+  describe '#merge_to' do
+    let(:originator) { create :person }
+    let(:receiver)   { create :person }
+
+    it 'redirects to /people with success message' do
+      post :merge_to, { id: receiver.id, originator_id: originator.id }, session
+
+      expect(response).to redirect_to people_path
+      expect(flash[:success]).not_to be_empty
+    end
+
+    context 'when an error occures' do
+      it 'redirects to /people with error message' do
+        allow_any_instance_of(Person).to receive(:merge_to)
+                                           .and_raise(ActiveRecord::RecordNotFound)
+
+        post :merge_to, { id: receiver.id, originator_id: originator.id }, session
+
+        expect(response).to redirect_to people_path
+        expect(flash[:error]).not_to be_empty
+      end
     end
   end
 end

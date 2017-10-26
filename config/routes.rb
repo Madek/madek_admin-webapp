@@ -74,7 +74,9 @@ Rails.application.routes.draw do
       post :merge_to, on: :member
     end
 
-    resources :people
+    resources :people do
+      post :merge_to, on: :member
+    end
 
     root to: 'dashboard#index'
     post 'dashboard/refresh', to: 'dashboard#refresh'
@@ -83,6 +85,10 @@ Rails.application.routes.draw do
       get 'sql_reports'
     end
 
+  end
+
+  scope '/' do
+    get 'people/:id' => redirect("/people/%{id}"), as: :ui_person
   end
 
 end

@@ -3,6 +3,8 @@
     %i.glyphicon.glyphicon-person
     = @person
     %small= @person.subtype
+  %small
+    = link_to "&larr; Go back to People".html_safe, people_path
 
 .panel.panel-default
   .panel-body

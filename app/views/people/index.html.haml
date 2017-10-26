@@ -1,6 +1,25 @@
+:ruby
+  reset_form_path = if @merge_originator
+    people_path(merge_originator_id: @merge_originator.id)
+  else
+    people_path
+  end
+
 .page-header
   %h1
     People (#{@people.total_count})
+
+- if @merge_originator
+  .row
+    .col-xs-12
+      .panel.panel-info#merge-info
+        .panel-body
+          %span.glyphicon.glyphicon-exclamation-sign(aria-hidden="true")
+          You are about to merge <strong>#{@merge_originator}</strong> to an other person.
+          Choose the target person from the list below.
+          .pull-right
+            = link_to 'Abort', people_path, class: 'btn btn-danger btn-xs'
+
 .row
   .col-xs-12
     .panel.panel-default
@@ -8,6 +27,8 @@
         .panel-title Filters
       .panel-body
         = form_tag people_path, method: :get, class: 'form-inline' do
+          - if @merge_originator
+            = hidden_field_tag 'merge_originator_id', @merge_originator.id
           .form-group
             = text_field_tag 'filter[search_term]', filter_value(:search_term), class: 'form-control', placeholder: 'Search term', size: 32
           .form-group
@@ -22,7 +43,7 @@
               Show only with user
     
           = submit_tag 'Apply', class: 'btn btn-primary'
-          = link_to 'Reset', people_path, class: 'btn btn-default'
+          = link_to 'Reset', reset_form_path, class: 'btn btn-default'
       .panel-footer
         = link_to new_person_path, class: 'btn btn-default' do
           %span.glyphicon.glyphicon-plus
@@ -37,6 +58,7 @@
           %th User
           %th Pseudonym
           %th Subtype
+          %th Usage
           %th Actions
       %tbody
         = render @people

@@ -78,4 +78,91 @@ feature 'Admin People' do
     expect(person.first_name).to eq 'Fritz'
     expect(person.last_name).to eq 'Fischer'
   end
+
+  scenario 'Merging' do
+    create :person, first_name: 'foo_1'
+    create :person, first_name: 'foo_2'
+
+    visit people_path
+
+    filter_for 'foo_'
+
+    within 'table' do
+      expect(page).to have_text 'foo_', count: 2
+    end
+    expect(page).not_to have_css '#merge-info'
+
+    within 'table tbody tr:first-of-type' do
+      click_link 'Merge'
+    end
+
+    expect(current_path).to eq people_path
+    within '#merge-info' do
+      expect(page).to have_text 'foo_'
+    end
+
+    filter_for 'foo_'
+
+    within 'table' do
+      expect(page).to have_text 'foo_', count: 1
+    end
+
+    click_link 'Merge to'
+
+    expect(page).to have_css '.alert-success'
+
+    filter_for 'foo_'
+
+    expect(page).to have_text 'foo_', count: 1
+    expect(page).not_to have_css '#merge-info'
+  end
+
+  scenario 'Aborting merge' do
+    create :person, last_name: 'bar_1'
+    create :person, last_name: 'bar_2'
+
+    visit people_path
+
+    filter_for 'bar_'
+
+    within 'table tbody tr:last-of-type' do
+      click_link 'Merge'
+    end
+
+    within '#merge-info' do
+      click_link 'Abort'
+    end
+
+    expect(current_path).to eq people_path
+    expect(page).not_to have_css '#merge-info'
+
+    filter_for 'bar_'
+
+    expect(page).to have_text 'bar_', count: 2
+  end
+
+  scenario 'Reseting search form during merge' do
+    person = create :person
+
+    visit people_path
+
+    within 'table tbody tr:first-of-type' do
+      click_link 'Merge'
+    end
+
+    filter_for person.first_name
+
+    expect(page).to have_css '#merge-info'
+
+    within 'form' do
+      click_link 'Reset'
+    end
+
+    expect(page).to have_css '#merge-info'
+  end
+
+  def filter_for(term)
+    fill_in 'filter[search_term]', with: term
+    click_button 'Apply'
+  end
 end

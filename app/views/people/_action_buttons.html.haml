@@ -2,6 +2,9 @@
   = link_to user_path(person.user), class: 'btn btn-default' do
     %span.glyphicon.glyphicon-user
     = person.user.login
+= link_to people_path(merge_originator_id: person.id), class: 'btn btn-warning' do
+  %span.glyphicon.glyphicon-random
+  Merge
 = link_to edit_person_path(person), class: 'btn btn-info' do
   %span.glyphicon.glyphicon-edit
   Edit
