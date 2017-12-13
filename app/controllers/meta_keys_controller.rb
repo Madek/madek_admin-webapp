@@ -1,6 +1,7 @@
 class MetaKeysController < ApplicationController
   include Concerns::MetaKeysCreation
   include Concerns::MetaKeysMoving
+  include Concerns::LocalizedFieldParams
 
   def index
     @meta_keys = MetaKey.with_keywords_count
@@ -89,19 +90,22 @@ class MetaKeysController < ApplicationController
   end
 
   def meta_key_params
-    params.require(:meta_key).permit(:id,
-                                     :meta_datum_object_type,
-                                     :label,
-                                     :description,
-                                     :hint,
-                                     :text_type,
-                                     :is_extensible_list,
-                                     :keywords_alphabetical_order,
-                                     :vocabulary_id,
-                                     :is_enabled_for_media_entries,
-                                     :is_enabled_for_collections,
-                                     :allowed_rdf_class,
-                                     allowed_people_subtypes: [])
+    params
+      .require(:meta_key)
+      .permit(
+        :id,
+        :meta_datum_object_type,
+        :text_type,
+        :is_extensible_list,
+        :keywords_alphabetical_order,
+        :vocabulary_id,
+        :is_enabled_for_media_entries,
+        :is_enabled_for_collections,
+        :allowed_rdf_class,
+        {
+          allowed_people_subtypes: []
+        }.merge(localized_field_params_for(MetaKey))
+      )
   end
 
   def sort

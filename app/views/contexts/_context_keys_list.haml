@@ -41,11 +41,11 @@
               %samp= link_to ck.meta_key.id, meta_key_path(ck.meta_key)
               = "(#{ck.meta_key.meta_datum_object_type.demodulize})"
             %td
-              %p= ck.label.presence || _EMPTY_MARKER
+              %p= ck.label || _EMPTY_MARKER
             %td
-              %p= ck.description.presence || _EMPTY_MARKER
+              %p= ck.description || _EMPTY_MARKER
             %td
-              %p= ck.hint.presence || _EMPTY_MARKER
+              %p= ck.hint || _EMPTY_MARKER
             %td= ck.is_required ? 'Yes' : 'No'
             %td.col-xs-2.text-center
               .btn-group-vertical.btn-group-sm
@@ -66,12 +66,12 @@
                 %em from MetaKey:
             %td
               %small
-                %em= ck.meta_key.label.presence || _EMPTY_MARKER
+                %em= ck.meta_key.label || _EMPTY_MARKER
             %td
               %small
-                %em= ck.meta_key.description.presence || _EMPTY_MARKER
+                %em= ck.meta_key.description || _EMPTY_MARKER
             %td
               %small
-                %em= ck.meta_key.hint.presence || _EMPTY_MARKER
+                %em= ck.meta_key.hint || _EMPTY_MARKER
             %td
             %td

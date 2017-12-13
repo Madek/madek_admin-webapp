@@ -20,9 +20,9 @@ describe ContextKeysController do
       params = {
         id: context_key.id,
         context_key: {
-          label: 'updated label',
-          description: 'updated description',
-          hint: 'updated hint',
+          labels: { de: 'label DE', en: 'label EN' },
+          descriptions: { de: 'description DE', en: 'description EN' },
+          hints: { de: 'hint DE', en: 'hint EN' },
           admin_comment: 'updated admin comment',
           is_required: true,
           length_min: 0,
@@ -34,9 +34,11 @@ describe ContextKeysController do
 
       context_key.reload
 
-      expect(context_key.label).to eq 'updated label'
-      expect(context_key.description).to eq 'updated description'
-      expect(context_key.hint).to eq 'updated hint'
+      expect(context_key.label).to eq 'label DE'
+      expect(context_key.label(:en)).to eq 'label EN'
+      expect(context_key.description).to eq 'description DE'
+      expect(context_key.description(:en)).to eq 'description EN'
+      expect(context_key.hint).to eq 'hint DE'
       expect(context_key.admin_comment).to eq 'updated admin comment'
       expect(context_key.is_required).to be true
       expect(context_key.length_min).to be_zero

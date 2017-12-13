@@ -54,22 +54,27 @@
       .col-xs-6
         = f.collection_radio_buttons :allowed_rdf_class, RdfClass.all, :id, :id do |c|
           = c.label(class: 'radio-inline') { c.radio_button(disabled: is_used) + c.text }
-
-  .form-group
-    .col-xs-3
-      = f.label :label, 'Label', class: 'control-label'
-    .col-xs-6
-      = f.text_field :label, class: 'form-control'
-  .form-group
-    .col-xs-3
-      = f.label :description, 'Description', class: 'control-label'
-    .col-xs-6
-      = f.text_area :description, class: 'form-control', rows: 4
-  .form-group
-    .col-xs-3
-      = f.label :hint, 'Hint', class: 'control-label'
-    .col-xs-6
-      = f.text_area :hint, class: 'form-control', rows: 4
+  = f.fields_for :labels, OpenStruct.new(f.object.labels) do |lf|
+    - I18n.available_locales.each do |locale|
+      .form-group
+        .col-xs-3
+          = lf.label locale, "Label [#{locale}]", class: 'control-label'
+        .col-xs-6
+          = lf.text_field locale, class: 'form-control'
+  = f.fields_for :descriptions, OpenStruct.new(f.object.descriptions) do |lf|
+    - I18n.available_locales.each do |locale|
+      .form-group
+        .col-xs-3
+          = lf.label locale, "Description [#{locale}]", class: 'control-label'
+        .col-xs-6
+          = lf.text_area locale, class: 'form-control', rows: 4
+  = f.fields_for :hints, OpenStruct.new(f.object.hints) do |lf|
+    - I18n.available_locales.each do |locale|
+      .form-group
+        .col-xs-3
+          = lf.label locale, "Hint [#{locale}]", class: 'control-label'
+        .col-xs-6
+          = lf.text_area locale, class: 'form-control', rows: 4
 
   - if f.object.can_have_text_type?
     .form-group
