@@ -16,9 +16,12 @@ feature 'Admin Context Keys' do
 
     expect(current_path).to eq edit_context_key_path(context_key)
 
-    fill_in 'context_key[label]', with: 'new label'
-    fill_in 'context_key[description]', with: 'newdescription'
-    fill_in 'context_key[hint]', with: 'new hint'
+    fill_in 'context_key[labels][de]', with: 'new label DE'
+    fill_in 'context_key[labels][en]', with: 'new label EN'
+    fill_in 'context_key[descriptions][de]', with: 'new desc DE'
+    fill_in 'context_key[descriptions][en]', with: 'new desc EN'
+    fill_in 'context_key[hints][de]', with: 'new hint DE'
+    fill_in 'context_key[hints][en]', with: 'new hint EN'
     expect(page).to have_checked_field 'context_key[is_required]'
     uncheck 'context_key[is_required]'
     fill_in 'context_key[length_min]', with: 16
@@ -33,9 +36,12 @@ feature 'Admin Context Keys' do
       click_link 'Edit'
     end
 
-    expect(page).to have_field 'context_key[label]', with: 'new label'
-    expect(page).to have_field 'context_key[description]', with: 'newdescription'
-    expect(page).to have_field 'context_key[hint]', with: 'new hint'
+    expect(page).to have_field 'context_key[labels][de]', with: 'new label DE'
+    expect(page).to have_field 'context_key[labels][en]', with: 'new label EN'
+    expect(page).to have_field 'context_key[descriptions][de]', with: 'new desc DE'
+    expect(page).to have_field 'context_key[descriptions][en]', with: 'new desc EN'
+    expect(page).to have_field 'context_key[hints][de]', with: 'new hint DE'
+    expect(page).to have_field 'context_key[hints][en]', with: 'new hint EN'
     expect(page).to have_unchecked_field 'context_key[is_required]'
     expect(page).to have_field 'context_key[length_min]', with: 16
     expect(page).to have_field 'context_key[length_max]', with: 128

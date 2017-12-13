@@ -129,9 +129,9 @@ describe MetaKeysController do
     let(:meta_key) { create :meta_key_title }
     let(:meta_key_params) do
       {
-        label: 'NEW_LABEL',
-        description: 'NEW_DESCRIPTION',
-        hint: 'NEW_HINT',
+        labels: { de: 'label DE', en: 'label EN' },
+        descriptions: { de: 'description DE', en: 'description EN' },
+        hints: { de: 'hint DE', en: 'hint EN' },
         meta_datum_object_type: 'MetaDatum::Text',
         is_extensible_list: true,
         is_enabled_for_media_entries: true,
@@ -158,9 +158,18 @@ describe MetaKeysController do
 
     it 'updates the meta key' do
       meta_key.reload
-      expect(meta_key.label).to eq 'NEW_LABEL'
-      expect(meta_key.description).to eq 'NEW_DESCRIPTION'
-      expect(meta_key.hint).to eq 'NEW_HINT'
+      expect(meta_key[:label]).to eq 'label DE'
+      expect(meta_key.label).to eq 'label DE'
+      expect(meta_key.label(:de)).to eq 'label DE'
+      expect(meta_key.label(:en)).to eq 'label EN'
+      expect(meta_key[:description]).to eq 'description DE'
+      expect(meta_key.description).to eq 'description DE'
+      expect(meta_key.description(:de)).to eq 'description DE'
+      expect(meta_key.description(:en)).to eq 'description EN'
+      expect(meta_key[:hint]).to eq 'hint DE'
+      expect(meta_key.hint).to eq 'hint DE'
+      expect(meta_key.hint(:de)).to eq 'hint DE'
+      expect(meta_key.hint(:en)).to eq 'hint EN'
       expect(meta_key.meta_datum_object_type).to eq 'MetaDatum::Text'
       expect(meta_key.is_extensible_list).to be true
       expect(meta_key.is_enabled_for_media_entries).to be true
@@ -282,9 +291,9 @@ describe MetaKeysController do
     let(:meta_key_params) do
       {
         id: "#{vocabulary}:test",
-        label: 'NEW_LABEL',
-        description: 'NEW_DESCRIPTION',
-        hint: 'NEW_HINT',
+        labels: { de: 'label DE', en: 'label EN' },
+        descriptions: { de: 'description DE', en: 'description EN' },
+        hints: { de: 'hint DE', en: 'hint EN' },
         vocabulary_id: vocabulary.id,
         is_extensible_list: true,
         is_enabled_for_media_entries: true,
@@ -301,7 +310,7 @@ describe MetaKeysController do
     it 'redirects to edit admin meta key path' do
       post :create, { meta_key: meta_key_params }, user_id: admin_user.id
 
-      meta_key = MetaKey.find_by(meta_key_params)
+      meta_key = MetaKey.find(meta_key_params[:id])
 
       expect(response).to redirect_to edit_meta_key_path(meta_key)
     end
@@ -321,6 +330,25 @@ describe MetaKeysController do
       expect(meta_key.is_enabled_for_media_entries).to be true
       expect(meta_key.is_enabled_for_collections).to be true
       expect(meta_key.keywords_alphabetical_order).to be true
+    end
+
+    it 'sets localized fields correctly' do
+      post :create, { meta_key: meta_key_params }, user_id: admin_user.id
+
+      meta_key = MetaKey.find(meta_key_params[:id])
+
+      expect(meta_key[:label]).to eq 'label DE'
+      expect(meta_key.label).to eq 'label DE'
+      expect(meta_key.label(:de)).to eq 'label DE'
+      expect(meta_key.label(:en)).to eq 'label EN'
+      expect(meta_key[:description]).to eq 'description DE'
+      expect(meta_key.description).to eq 'description DE'
+      expect(meta_key.description(:de)).to eq 'description DE'
+      expect(meta_key.description(:en)).to eq 'description EN'
+      expect(meta_key[:hint]).to eq 'hint DE'
+      expect(meta_key.hint).to eq 'hint DE'
+      expect(meta_key.hint(:de)).to eq 'hint DE'
+      expect(meta_key.hint(:en)).to eq 'hint EN'
     end
   end
 

@@ -1,4 +1,5 @@
 class ContextKeysController < ApplicationController
+  include Concerns::LocalizedFieldParams
 
   def edit
     @context_key = ContextKey.find(params[:id])
@@ -6,7 +7,8 @@ class ContextKeysController < ApplicationController
 
   def update
     @context_key = ContextKey.find(params[:id])
-    @context_key.update!(context_key_params)
+    @context_key.assign_attributes(context_key_params)
+    @context_key.save!
 
     respond_with @context_key, location: (lambda do
       context_path(@context_key.context)
@@ -29,12 +31,12 @@ class ContextKeysController < ApplicationController
   private
 
   def context_key_params
-    params.require(:context_key).permit(:label,
-                                        :description,
-                                        :hint,
-                                        :is_required,
-                                        :length_min,
-                                        :length_max,
-                                        :admin_comment)
+    params
+      .require(:context_key)
+      .permit(:is_required,
+              :length_min,
+              :length_max,
+              :admin_comment,
+              localized_field_params_for(ContextKey))
   end
 end

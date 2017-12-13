@@ -45,9 +45,12 @@ feature 'Admin Meta Keys' do
       expect(page).not_to have_content 'Extensible?'
       expect(page).to have_content 'Text type'
 
-      fill_in 'meta_key[label]', with: 'new label'
-      fill_in 'meta_key[description]', with: 'new description'
-      fill_in 'meta_key[hint]', with: 'new hint'
+      fill_in 'meta_key[labels][de]', with: 'new label DE'
+      fill_in 'meta_key[labels][en]', with: 'new label EN'
+      fill_in 'meta_key[descriptions][de]', with: 'new desc DE'
+      fill_in 'meta_key[descriptions][en]', with: 'new desc EN'
+      fill_in 'meta_key[hints][de]', with: 'new hint DE'
+      fill_in 'meta_key[hints][en]', with: 'new hint EN'
       expect(page).to \
         have_select('meta_key[text_type]', selected: [meta_key.text_type])
       select 'block', from: 'meta_key[text_type]'
@@ -58,9 +61,12 @@ feature 'Admin Meta Keys' do
 
       visit edit_meta_key_path(meta_key)
 
-      expect(page).to have_field 'meta_key[label]', with: 'new label'
-      expect(page).to have_field 'meta_key[description]', with: 'new description'
-      expect(page).to have_field 'meta_key[hint]', with: 'new hint'
+      expect(page).to have_field 'meta_key[labels][de]', with: 'new label DE'
+      expect(page).to have_field 'meta_key[labels][en]', with: 'new label EN'
+      expect(page).to have_field 'meta_key[descriptions][de]', with: 'new desc DE'
+      expect(page).to have_field 'meta_key[descriptions][en]', with: 'new desc EN'
+      expect(page).to have_field 'meta_key[hints][de]', with: 'new hint DE'
+      expect(page).to have_field 'meta_key[hints][en]', with: 'new hint EN'
       expect(page).to have_select 'meta_key[text_type]', selected: 'block'
     end
 
@@ -165,9 +171,9 @@ feature 'Admin Meta Keys' do
       click_link 'Create Meta Key'
 
       fill_in 'meta_key[id]', with: 'archhist:foo'
-      fill_in 'meta_key[label]', with: Faker::Lorem.word
-      fill_in 'meta_key[description]', with: Faker::Lorem.sentence
-      fill_in 'meta_key[hint]', with: Faker::Lorem.sentence
+      fill_in 'meta_key[labels][de]', with: Faker::Lorem.word
+      fill_in 'meta_key[descriptions][de]', with: Faker::Lorem.sentence
+      fill_in 'meta_key[hints][de]', with: Faker::Lorem.sentence
       select 'MetaDatum::People', from: 'meta_key[meta_datum_object_type]'
 
       expect(page).not_to have_content 'Allowed Subtypes'
@@ -195,9 +201,9 @@ feature 'Admin Meta Keys' do
       click_link 'Create Meta Key'
 
       fill_in 'meta_key[id]', with: 'archhist:foo'
-      fill_in 'meta_key[label]', with: Faker::Lorem.word
-      fill_in 'meta_key[description]', with: Faker::Lorem.sentence
-      fill_in 'meta_key[hint]', with: Faker::Lorem.sentence
+      fill_in 'meta_key[labels][de]', with: Faker::Lorem.word
+      fill_in 'meta_key[descriptions][de]', with: Faker::Lorem.sentence
+      fill_in 'meta_key[hints][de]', with: Faker::Lorem.sentence
       select 'MetaDatum::Keywords', from: 'meta_key[meta_datum_object_type]'
 
       expect(page).not_to have_content 'Allowed Subtypes'
@@ -226,9 +232,9 @@ feature 'Admin Meta Keys' do
       click_link 'Create Meta Key'
 
       fill_in 'meta_key[id]', with: 'archhist:foo'
-      fill_in 'meta_key[label]', with: Faker::Lorem.word
-      fill_in 'meta_key[description]', with: Faker::Lorem.sentence
-      fill_in 'meta_key[hint]', with: Faker::Lorem.sentence
+      fill_in 'meta_key[labels][de]', with: Faker::Lorem.word
+      fill_in 'meta_key[descriptions][de]', with: Faker::Lorem.sentence
+      fill_in 'meta_key[hints][de]', with: Faker::Lorem.sentence
       select 'MetaDatum::Text', from: 'meta_key[meta_datum_object_type]'
       select 'block', from: 'meta_key[text_type]'
 
@@ -248,9 +254,9 @@ feature 'Admin Meta Keys' do
       click_link 'Create Meta Key'
 
       fill_in 'meta_key[id]', with: 'archhist:foo'
-      fill_in 'meta_key[label]', with: Faker::Lorem.word
-      fill_in 'meta_key[description]', with: Faker::Lorem.sentence
-      fill_in 'meta_key[hint]', with: Faker::Lorem.sentence
+      fill_in 'meta_key[labels][de]', with: Faker::Lorem.word
+      fill_in 'meta_key[descriptions][de]', with: Faker::Lorem.sentence
+      fill_in 'meta_key[hints][de]', with: Faker::Lorem.sentence
       select 'MetaDatum::TextDate', from: 'meta_key[meta_datum_object_type]'
 
       expect(page).not_to have_content 'Allowed Subtypes'

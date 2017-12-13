@@ -13,30 +13,36 @@
       = f.label :meta_key_id, 'MetaKey', class: 'control-label'
     .col-xs-6
       = f.text_field :meta_key_id, class: 'form-control', disabled: @context_key.persisted?
-  .form-group
-    .col-xs-3
-      = f.label :label, 'Label', class: 'control-label'
-    .col-xs-6
-      = f.text_field :label, class: 'form-control'
-      %span.help-block
-        %small
-          %em from MetaKey: #{@context_key.meta_key.label || _EMPTY_MARKER}
-  .form-group
-    .col-xs-3
-      = f.label :description, 'Description', class: 'control-label'
-    .col-xs-6
-      = f.text_area :description, class: 'form-control', rows: 4
-      %span.help-block
-        %small
-          %em from MetaKey: #{@context_key.meta_key.description || _EMPTY_MARKER }
-  .form-group
-    .col-xs-3
-      = f.label :hint, 'Hint', class: 'control-label'
-    .col-xs-6
-      = f.text_area :hint, class: 'form-control', rows: 4
-      %span.help-block
-        %small
-          %em from MetaKey: #{@context_key.meta_key.hint || _EMPTY_MARKER }
+  = f.fields_for :labels, OpenStruct.new(f.object.labels) do |lf|
+    - I18n.available_locales.each do |locale|
+      .form-group
+        .col-xs-3
+          = lf.label locale, "Label [#{locale}]", class: 'control-label'
+        .col-xs-6
+          = lf.text_field locale, class: 'form-control'
+          %span.help-block
+            %small
+              %em from MetaKey: #{@context_key.meta_key.labels[locale] || _EMPTY_MARKER}
+  = f.fields_for :descriptions, OpenStruct.new(f.object.descriptions) do |lf|
+    - I18n.available_locales.each do |locale|
+      .form-group
+        .col-xs-3
+          = lf.label locale, "Description [#{locale}]", class: 'control-label'
+        .col-xs-6
+          = lf.text_area locale, class: 'form-control', rows: 4
+          %span.help-block
+            %small
+              %em from MetaKey: #{@context_key.meta_key.descriptions[locale] || _EMPTY_MARKER }
+  = f.fields_for :hints, OpenStruct.new(f.object.hints) do |lf|
+    - I18n.available_locales.each do |locale|
+      .form-group
+        .col-xs-3
+          = lf.label locale, "Hint [#{locale}]", class: 'control-label'
+        .col-xs-6
+          = lf.text_area locale, class: 'form-control', rows: 4
+          %span.help-block
+            %small
+              %em from MetaKey: #{@context_key.meta_key.hints[locale] || _EMPTY_MARKER }
   .form-group
     .col-xs-offset-3.col-sm-4
       .checkbox
