@@ -333,21 +333,6 @@ feature 'Admin App Settings' do
                                   #{random_uuid} doesn't exist!"
   end
 
-  scenario "Updating 'Explore Page' Teaser Set with invalid ID" do
-    visit app_settings_path
-
-    within '#explore-page-section' do
-      click_link 'Edit'
-    end
-
-    fill_in 'Teaser Set', with: random_uuid
-    click_button 'Save'
-
-    expect(page).to have_css '.alert-danger'
-    expect(page).to have_content "The set with a given ID:
-                                  #{random_uuid} doesn't exist!"
-  end
-
   scenario 'Updating Support URL' do
     new_url = Faker::Internet.url('wiki.zhdk.ch')
 

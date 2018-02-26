@@ -40,7 +40,7 @@
             %td.col-xs-7
               - if attr == :catalog_context_keys
                 = context_keys_as_links(@app_settings.send(attr))
-              - elsif %i(featured_set_id teaser_set_id).include?(attr)
+              - elsif attr == :featured_set_id
                 = collection_as_link(@app_settings.send(attr))
               - else
                 = @app_settings.send(attr)

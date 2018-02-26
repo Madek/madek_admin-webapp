@@ -96,10 +96,6 @@ class AppSettingsController < ApplicationController
       label: 'Featured Content: Set',
       description: "Contents of this Set will be displayed as \
                    'Featured Content'"
-    },
-    teaser_set_id: {
-      label: 'Teaser: Set',
-      description: 'Contents of this Set will be displayed as "Teaser" Collages'
     }
   }.freeze
 
