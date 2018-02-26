@@ -1,7 +1,11 @@
 .page-header
   %h2 Assistant
 
+%h3
+  %a{href: batch_translate_assistant_path} Batch Translate
+
 - if sections.include?(:sql_reports)
+  %hr
   %h3
     %a{href: sql_reports_assistant_path} SQL Reports
 

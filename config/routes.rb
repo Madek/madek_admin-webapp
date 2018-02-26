@@ -83,6 +83,8 @@ Rails.application.routes.draw do
 
     resource :assistant, only: [:show] do
       get 'sql_reports'
+      get 'batch_translate'
+      post 'batch_translate', action:'batch_translate_update'
     end
 
   end

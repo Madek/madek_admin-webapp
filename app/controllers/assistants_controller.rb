@@ -1,12 +1,58 @@
+# rubocop:disable Metrics/MethodLength
 class AssistantsController < ApplicationController
 
-  layout '_base', only: [:sql_reports]
+  layout '_base', only: %i(sql_reports translate_keys)
 
   def show
     sql_snippets if feature_toggle_sql_reports
     render locals: { sections: [
       (:sql_reports if feature_toggle_sql_reports)
     ].compact }
+  end
+
+  def batch_translate
+    @langs = Settings.madek_available_locales
+    @meta_keys = MetaKey.all.reorder(:id)
+    @context_keys = ContextKey.all
+    @post_path = batch_translate_assistant_path
+  end
+
+  def batch_translate_update
+    langs = Settings.madek_available_locales
+    fields = %i(label description hint).map(&:to_s).map(&:pluralize)
+                                       .map { |f| { f => langs } }
+    permitted_fields = [:id, { _original: fields }].concat(fields)
+    num_updated = { meta_keys: 0, context_keys: 0 }
+    err = nil
+
+    # NOTE: params only work wrapped as JSON! (problem between apache and Rack)
+    #       for relative simplicity, the form-encoded data is left as a string
+    posted = ActionController::Parameters.new(
+      Rack::Utils.parse_nested_query(params['formString']))
+
+    ActiveRecord::Base.transaction do
+      begin
+        [MetaKey, ContextKey].each do |klass|
+          type = klass.name.underscore.pluralize.to_sym
+          rows = posted.permit(type => permitted_fields).fetch(type, [])
+          rows.each do |row|
+            if _has_changes = row[:_original].any? { |k, v| v != row[k] }
+              klass.find(row[:id]).update!(row.except('_original'))
+              num_updated[type] += 1
+            end
+          end
+        end
+      rescue => e
+        err = e # dont swallow errors, re-raise later!
+        raise ActiveRecord::Rollback
+      end
+    end
+    raise err if err
+
+    flash[:success] = "Updated #{num_updated[:meta_keys]} MetaKey(s) " \
+                      "and #{num_updated[:context_keys]} ContextKey(s)"
+    flash.keep
+    render json: {}, status: 200
   end
 
   def sql_reports
@@ -81,3 +127,4 @@ class AssistantsController < ApplicationController
   end
 
 end
+# rubocop:enable Metrics/MethodLength

@@ -1,0 +1,128 @@
+:ruby
+  langs = @langs
+  meta_keys = @meta_keys
+  post_path = @post_path
+  num_cols = 4
+
+:javascript
+  var afterAjaxSuccess = function (event, data, status, xhr) {
+    window.scrollTo(0, 0)
+    window.location.reload()
+  }
+
+  var afterAjaxError = function (event, xhr, status, error) {
+    window.alert('Error! ' + error)
+  }
+
+  $(document).ready(() =>
+    $('form')
+      .on('ajax:before', function (event, xhr, settings) {
+        // NOTE: we need to post manually as JSON – otherwise its broken :(
+        $.ajax("#{post_path}", {
+          method: 'POST',
+          contentType: 'application/json',
+          dataType: 'json',
+          processData: false,
+          data: JSON.stringify({ formString: $(this).serialize() }),
+          success: afterAjaxSuccess,
+          error: afterAjaxError
+        })
+        return false
+      })
+      .on('ajax:success', afterAjaxSuccess)
+      .on('ajax:error', afterAjaxError)
+  )
+
+-# NOTE: uses "base" layout so it can grow larger than the normal container!
+- content_for :main_content do
+  .container-fluid
+    .page-header
+      %h1
+        %small
+        = "Batch Translate"
+        %small
+          = "#{meta_keys.length} MetaKeys | #{ContextKey.count} ContextKeys | #{langs.length} languages"
+          .label.label-warning BETA!
+
+    = form_tag(post_path, id: 'batch_translate', remote: true) do
+
+      .form-group
+        = submit_tag "Save All", class: 'btn btn-primary', 'data-disable-with': "Saving..."
+      .form-group
+        %label
+          %input{type: :checkbox, name: 'accept_batch', required: true}
+          = "I understand that this BETA and will batch-update EVERYTHING!"
+
+      %hr
+
+      - meta_keys.group_by(&:vocabulary).each do |vocab, meta_keys|
+
+        %h3.page-header
+          = "Vocabulary: "
+          %a{href: vocabulary_path(vocab), target: '_blank'}
+            = vocab.label
+            %small
+              %samp= "(#{vocab.id})"
+
+        - meta_keys.each do |mk|
+          - not_editable = mk.vocabulary_id === 'madek_core'
+          = hidden_field_tag 'meta_keys[][id]', mk.id unless not_editable
+
+          %h4
+            = "MetaKey: "
+            %a{href: meta_key_path(mk), target: '_blank'}
+              %samp= mk.id
+
+          - if mk.admin_comment
+            %p
+              = 'Admin-Comment: '
+              = mk.admin_comment
+
+          %table.table.table-bordered.Xtable-striped.table-condensed
+            %thead
+              %tr
+                %td= 'lang'
+                %td= 'label'
+                %td= 'description'
+                %td= 'hint'
+            %tbody
+              - langs.each_with_index do |lang, index|
+                %tr
+                  %td
+                    %p
+                      %samp= lang
+                  - [:label, :description, :hint].each do |field|
+                    - val = mk.send(field, lang)
+                    - unless not_editable
+                      = hidden_field_tag "meta_keys[][_original][#{field.to_s.pluralize}][#{lang}]", val
+                    %td
+                      - if not_editable
+                        %samp= val
+                      - else
+                        %input.form-control{value: val,
+                            name: "meta_keys[][#{field.to_s.pluralize}][#{lang}]",
+                            placeholder: '(not translated)'}
+
+              - mk.context_keys.each do |ck|
+                = hidden_field_tag 'context_keys[][id]', ck.id
+                %tr
+                  %td{colspan: num_cols}
+                    = "In Context:"
+                    %a{href: context_path(ck.context_id), target: '_blank'}
+                      %samp= ck.context_id
+
+                - langs.each_with_index do |lang, index|
+                  %tr
+                    %td
+                      %samp= lang
+                    - [:label, :description, :hint].each do |field|
+                      - val = ck.send(field, lang)
+                      = hidden_field_tag "context_keys[][_original][#{field.to_s.pluralize}][#{lang}]", val
+                      %td
+                        %input.form-control{value: val,
+                            name: "context_keys[][#{field.to_s.pluralize}][#{lang}]",
+                            placeholder: '(not translated)'}
+
+          %hr
+
+      = submit_tag "Save All", class: 'btn btn-primary', 'data-disable-with': "Saving..."
