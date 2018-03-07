@@ -17,6 +17,16 @@
         = f.text_field :pseudonym, class: 'form-control'
 
     .form-group
+      %label.control-label.col-xs-2 Description
+      .col-xs-8
+        = f.text_field :description, class: 'form-control'
+
+    .form-group
+      %label.control-label.col-xs-2 External URI
+      .col-xs-8
+        = f.text_field :external_uri, class: 'form-control'
+
+    .form-group
       %label.control-label.col-xs-2 Is PeopleGroup
       .col-xs-1
         = f.check_box :subtype, { class: 'form-control' }, 'PeopleGroup', 'Person'
