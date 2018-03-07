@@ -50,3 +50,78 @@ sql_snippets:
       FROM media_files
       WHERE media_files.media_type = 'video'
       AND (:preview_types:)
+
+  -
+    title: Find people with same first and last name
+    query: |
+      -- get all people with same first and last name
+
+      SELECT p1.*
+      FROM people p1
+      WHERE EXISTS
+          ( SELECT 1
+           FROM people p2
+           WHERE btrim(p1.first_name) = btrim(p2.first_name)
+             AND btrim(p1.last_name) = btrim(p2.last_name)
+             AND p1.id <> p2.id )
+      ORDER BY btrim(first_name) ASC, btrim(last_name) ASC;
+
+  -
+    title: Find people with same display name
+    query: |
+      -- get all people with same display name
+
+      CREATE OR REPLACE FUNCTION pg_temp.display_name(first_name varchar, last_name varchar, pseudonym varchar) RETURNS varchar AS $$
+        BEGIN
+          RETURN (
+            CASE
+            WHEN ((first_name <> '' OR last_name <> '') AND pseudonym <> '')
+              THEN btrim(first_name || ' ' || last_name || ' ' || '(' || pseudonym || ')')
+            WHEN (first_name <> '' OR last_name <> '')
+              THEN btrim(first_name || ' ' || last_name)
+            ELSE btrim(pseudonym)
+            END
+            );
+        END;
+      $$ LANGUAGE plpgsql;
+
+      WITH people_with_display_name AS (
+        SELECT *, pg_temp.display_name(coalesce(first_name, ''), coalesce(last_name, ''), coalesce(pseudonym, '')) AS display_name
+        FROM people
+      )
+      SELECT *
+      FROM people_with_display_name AS p1, people_with_display_name AS p2
+      WHERE p1.display_name = p2.display_name
+        AND p1.id <> p2.id
+      ORDER BY p1.display_name ASC;
+
+  -
+    title: Find people with small differences in names (might be the same ones)
+    query: |
+      -- see the comments in the query to see where and how you can tweak the speed and the result size
+
+      SET search_path = pg_temp, public;
+
+      CREATE EXTENSION IF NOT EXISTS fuzzystrmatch;
+
+      WITH people_tmp AS
+        (SELECT *,
+                btrim(coalesce(first_name, '')) || btrim(coalesce(last_name, '')) AS name
+         FROM people
+         WHERE first_name IS NOT NULL
+           AND last_name IS NOT NULL)
+
+      SELECT DISTINCT(p1.*), lower(p1.name)
+      FROM
+        (SELECT *
+         FROM people_tmp
+         ORDER BY name ASC
+         OFFSET 0                       -- increase by 1 to get to the second page
+         LIMIT 500                      -- increase or decrease to adjust the result size and speed of execution
+        ) p1,
+        (SELECT *
+         FROM people_tmp) p2
+      WHERE p1.id <> p2.id
+        AND p1.name <> p2.name
+        AND pg_temp.levenshtein(p1.name, p2.name) = 1           -- adjust the number of differences in names
+      ORDER BY lower(p1.name);
