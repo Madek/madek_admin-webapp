@@ -33,11 +33,11 @@
             = hidden_field_tag('query', query)
             %div#sql_reports_query_show{style: 'margin-bottom: 35px'}
               %p{style: 'padding: 1.5em; margin-bottom: 0; white-space: pre-wrap; border: 1px solid transparent'}<>
-                %samp{style: 'overflow-wrap: break-word'}= preserve(query)
+                %samp{style: 'overflow-wrap: break-word'}= preserve(html_escape(query))
 
           %p#sql_reports_query_edit
             = text_area_tag('query',
-                strip_tags(query),
+                preserve(html_escape(query)),
                 class: 'well code',
                 rows: [query.split("\n").length, 3].max,
                 style: 'width:100%;padding: 1.5em;margin-bottom: 20px')
