@@ -26,21 +26,25 @@ feature 'Admin Dashboard' do
   end
 
   scenario 'Showing link to Assistant section' do
+    # ON
     allow(Settings)
       .to receive_message_chain('feature_toggles.admin_sql_reports')
       .and_return('on my own risk')
 
     visit root_path
-
     expect(page).to have_link 'Go to the section', href: assistant_path
+    click_on 'Go to the section'
+    expect(page).to have_link 'SQL Reports', href: sql_reports_assistant_path
 
+    # OFF
     allow(Settings)
       .to receive_message_chain('feature_toggles.admin_sql_reports')
       .and_return('')
 
     visit root_path
-
-    expect(page).not_to have_link 'Go to the section', href: assistant_path
+    expect(page).to have_link 'Go to the section', href: assistant_path
+    click_on 'Go to the section'
+    expect(page).not_to have_link 'SQL Reports', href: sql_reports_assistant_path
   end
 
   def drafts_count

@@ -1,7 +1,7 @@
 # rubocop:disable Metrics/MethodLength
 class AssistantsController < ApplicationController
 
-  layout '_base', only: %i(sql_reports translate_keys)
+  layout '_base', only: %i(sql_reports)
 
   def show
     sql_snippets if feature_toggle_sql_reports

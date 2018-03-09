@@ -4,34 +4,33 @@
   post_path = @post_path
   num_cols = 4
 
-:javascript
-  var afterAjaxSuccess = function (event, data, status, xhr) {
-    window.scrollTo(0, 0)
-    window.location.reload()
+:css
+  summary {
+    display: list-item;
+    list-style-position: outside;
+    margin-left: 1rem;
+    cursor: grab;
+    cursor: s-resize;
+  }
+  details[open] summary {
+    cursor: n-resize;
   }
 
-  var afterAjaxError = function (event, xhr, status, error) {
-    window.alert('Error! ' + error)
-  }
+- save_btn = capture_haml do
+  = submit_tag "Save All", class: 'btn btn-primary', 'data-disable-with': "Saving..."
 
-  $(document).ready(() =>
-    $('form')
-      .on('ajax:before', function (event, xhr, settings) {
-        // NOTE: we need to post manually as JSON – otherwise its broken :(
-        $.ajax("#{post_path}", {
-          method: 'POST',
-          contentType: 'application/json',
-          dataType: 'json',
-          processData: false,
-          data: JSON.stringify({ formString: $(this).serialize() }),
-          success: afterAjaxSuccess,
-          error: afterAjaxError
-        })
-        return false
-      })
-      .on('ajax:success', afterAjaxSuccess)
-      .on('ajax:error', afterAjaxError)
-  )
+- fold_btns = capture_haml do
+  Vocabularies:
+  .btn-group.btn-group-xs
+    %button.btn.btn-default{type: :button, 'data-hook': 'close-all'}
+      %span{style:'display: list-item; list-style: disclosure-closed inside;'}
+        %span{style: 'margin-left: -0.5rem;'}
+          = 'Fold all'
+    %button.btn.btn-default{type: :button, 'data-hook': 'open-all'}
+      %span{style:'display: list-item; list-style: disclosure-open inside;'}
+        %span{style: 'margin-left: -0.5rem;'}
+          = 'Unfold all'
+
 
 -# NOTE: uses "base" layout so it can grow larger than the normal container!
 - content_for :main_content do
@@ -47,82 +46,133 @@
     = form_tag(post_path, id: 'batch_translate', remote: true) do
 
       .form-group
-        = submit_tag "Save All", class: 'btn btn-primary', 'data-disable-with': "Saving..."
+        = save_btn
       .form-group
         %label
           %input{type: :checkbox, name: 'accept_batch', required: true}
           = "I understand that this BETA and will batch-update EVERYTHING!"
 
       %hr
+      = fold_btns
+      %hr
 
-      - meta_keys.group_by(&:vocabulary).each do |vocab, meta_keys|
+      - meta_keys.group_by(&:vocabulary).sort_by {|v, m| v.position}.each do |vocab, meta_keys|
 
-        %h3.page-header
-          = "Vocabulary: "
-          %a{href: vocabulary_path(vocab), target: '_blank'}
-            = vocab.label
-            %small
-              %samp= "(#{vocab.id})"
+        %details{'data-hook': 'vocab-section'}
+          %summary
+            %h3.page-header
+              = "Vocabulary: "
+              %a{href: vocabulary_path(vocab), target: '_blank'}
+                = vocab.label
+                %small
+                  %samp= "(#{vocab.id})"
 
-        - meta_keys.each do |mk|
-          - not_editable = mk.vocabulary_id === 'madek_core'
-          = hidden_field_tag 'meta_keys[][id]', mk.id unless not_editable
+          %div
+            - meta_keys.sort_by(&:position).each do |mk|
+              - not_editable = mk.vocabulary_id === 'madek_core'
+              = hidden_field_tag 'meta_keys[][id]', mk.id unless not_editable
 
-          %h4
-            = "MetaKey: "
-            %a{href: meta_key_path(mk), target: '_blank'}
-              %samp= mk.id
+              %h4
+                = "MetaKey: "
+                %a{href: meta_key_path(mk), target: '_blank'}
+                  %samp= mk.id
 
-          - if mk.admin_comment
-            %p
-              = 'Admin-Comment: '
-              = mk.admin_comment
+              - if mk.admin_comment
+                %p
+                  = 'Admin-Comment: '
+                  = mk.admin_comment
 
-          %table.table.table-bordered.Xtable-striped.table-condensed
-            %thead
-              %tr
-                %td= 'lang'
-                %td= 'label'
-                %td= 'description'
-                %td= 'hint'
-            %tbody
-              - langs.each_with_index do |lang, index|
-                %tr
-                  %td
-                    %p
-                      %samp= lang
-                  - [:label, :description, :hint].each do |field|
-                    - val = mk.send(field, lang)
-                    - unless not_editable
-                      = hidden_field_tag "meta_keys[][_original][#{field.to_s.pluralize}][#{lang}]", val
-                    %td
-                      - if not_editable
-                        %samp= val
-                      - else
-                        %input.form-control{value: val,
-                            name: "meta_keys[][#{field.to_s.pluralize}][#{lang}]",
-                            placeholder: '(not translated)'}
-
-              - mk.context_keys.each do |ck|
-                = hidden_field_tag 'context_keys[][id]', ck.id
-                %tr
-                  %td{colspan: num_cols}
-                    = "In Context:"
-                    %a{href: context_path(ck.context_id), target: '_blank'}
-                      %samp= ck.context_id
-
-                - langs.each_with_index do |lang, index|
+              %table.table.table-bordered.Xtable-striped.table-condensed
+                %thead
                   %tr
-                    %td
-                      %samp= lang
-                    - [:label, :description, :hint].each do |field|
-                      - val = ck.send(field, lang)
-                      = hidden_field_tag "context_keys[][_original][#{field.to_s.pluralize}][#{lang}]", val
+                    %td= 'lang'
+                    %td= 'label'
+                    %td= 'description'
+                    %td= 'hint'
+                %tbody
+                  - langs.each_with_index do |lang, index|
+                    %tr
                       %td
-                        %input.form-control{value: val,
-                            name: "context_keys[][#{field.to_s.pluralize}][#{lang}]",
-                            placeholder: '(not translated)'}
+                        %p
+                          %samp= lang
+                      - [:label, :description, :hint].each do |field|
+                        - val = mk.send(field, lang)
+                        - unless not_editable
+                          = hidden_field_tag "meta_keys[][_original][#{field.to_s.pluralize}][#{lang}]", val
+                        %td
+                          - if not_editable
+                            %samp= val
+                          - else
+                            %input.form-control{value: val,
+                                name: "meta_keys[][#{field.to_s.pluralize}][#{lang}]",
+                                placeholder: '(not translated)'}
+
+                  - mk.context_keys.sort_by { |ck| ck.context.id }.each do |ck|
+                    = hidden_field_tag 'context_keys[][id]', ck.id
+                    %tr
+                      %td{colspan: num_cols}
+                        = "In Context:"
+                        %a{href: context_path(ck.context_id), target: '_blank'}
+                          %samp= ck.context_id
+
+                    - langs.each_with_index do |lang, index|
+                      %tr
+                        %td
+                          %samp= lang
+                        - [:label, :description, :hint].each do |field|
+                          - val = ck.send(field, lang)
+                          = hidden_field_tag "context_keys[][_original][#{field.to_s.pluralize}][#{lang}]", val
+                          %td
+                            %input.form-control{value: val,
+                                name: "context_keys[][#{field.to_s.pluralize}][#{lang}]",
+                                placeholder: '(not translated)'}
 
           %hr
 
-      = submit_tag "Save All", class: 'btn btn-primary', 'data-disable-with': "Saving..."
+      = save_btn
+
+
+:javascript
+  // section folding handling
+  var $btnOpenAll = $('button[data-hook="open-all"]')
+  var $btnCloseAll = $('button[data-hook="close-all"]')
+
+  $btnOpenAll.on('click', function () { $('details').attr('open', true) })
+  $btnCloseAll.on('click', function () { $('details').attr('open', false) })
+
+  var $vocabs = $('details[data-hook="vocab-section"]')
+  var setButtonStates = function () {
+    var anyOpen = $vocabs.get().some(function (i) { return $(i).attr('open') })
+    var anyClosed = $vocabs.get().some(function (i) { return !$(i).attr('open') })
+    $btnOpenAll.attr('disabled', !anyClosed)
+    $btnCloseAll.attr('disabled', !anyOpen)
+  }
+  $vocabs.on('toggle', setButtonStates)
+  setButtonStates()
+
+  // form handling – must be AJAX bc of problems with form POST
+  var afterAjaxSuccess = function (event, data, status, xhr) {
+    window.scrollTo(0, 0)
+    window.location.reload()
+  }
+
+  var afterAjaxError = function (event, xhr, status, error) {
+    window.alert('Error! ' + error)
+  }
+
+  $('form')
+    .on('ajax:before', function (event, xhr, settings) {
+      // NOTE: we need to post manually as JSON – otherwise its broken :(
+      $.ajax("#{post_path}", {
+        method: 'POST',
+        contentType: 'application/json',
+        dataType: 'json',
+        processData: false,
+        data: JSON.stringify({ formString: $(this).serialize() }),
+        success: afterAjaxSuccess,
+        error: afterAjaxError
+      })
+      return false
+    })
+    .on('ajax:success', afterAjaxSuccess)
+    .on('ajax:error', afterAjaxError)

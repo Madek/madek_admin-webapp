@@ -4,10 +4,9 @@
   %h2.h3 Resources
   = render partial: 'resource_statistics'
 
-- if feature_toggle_sql_reports
-  %section{style: 'margin-bottom: 5rem'}
-    %h2.h3 Assistant
-    = link_to 'Go to the section &rarr;'.html_safe, assistant_path
+%section{style: 'margin-bottom: 5rem'}
+  %h2.h3 Assistant
+  = link_to 'Go to the section &rarr;'.html_safe, assistant_path
 
 %section
   %h2.h3 System
