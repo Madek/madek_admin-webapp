@@ -56,10 +56,20 @@ describe UsersController do
 
       context 'by admin role' do
         it 'returns only admin users' do
-          get :index, { admins_only: 1 }, user_id: admin_user.id
+          get :index, { admins: 1 }, user_id: admin_user.id
 
           expect(response).to be_success
-          expect(assigns(:users)).to match_array User.admin_users
+          expect(assigns(:users)).to match_array User.admins
+        end
+      end
+
+      context 'by deactivated person_attributes' do
+        it 'returns only deactivated users' do
+          deactivated_user = create :user, is_deactivated: true
+
+          get :index, { deactivated: 1 }, user_id: admin_user.id
+
+          expect(assigns(:users)).to eq [deactivated_user]
         end
       end
     end

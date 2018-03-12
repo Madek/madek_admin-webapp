@@ -27,9 +27,12 @@
               params[:sort_by]), { class: 'form-control' }
           .checkbox
             %label
-              = check_box_tag :admins_only, '1', params[:admins_only].present?
+              = check_box_tag :admins, '1', params[:admins].present?
               Show admins only
-    
+          .checkbox
+            %label
+              = check_box_tag :deactivated, '1', params[:deactivated].present?
+              Only deactivated
           = submit_tag 'Apply', class: 'btn btn-primary'
           = link_to 'Reset', users_path, class: 'btn btn-default'
       .panel-footer

@@ -6,11 +6,7 @@ class UsersController < ApplicationController
 
   def index
     @users = User.page(params[:page]).per(16)
-
-    if params[:search_term].present?
-      @users = @users.filter_by(params[:search_term])
-    end
-    @users = @users.admin_users if params[:admins_only] == '1'
+    @users = filter(@users)
     @users = @users.sort_by(params[:sort_by]) if params[:sort_by].present?
 
     remember_vocabulary_url_params
@@ -125,5 +121,15 @@ class UsersController < ApplicationController
 
   def get_group_from_params
     @group = Group.find_by(id: params[:add_to_group_id])
+  end
+
+  def filter(relation)
+    if params[:search_term].present?
+      relation = relation.filter_by(params[:search_term], false, true)
+    end
+    [:admins, :deactivated].each do |filter_scope|
+      relation = relation.send(filter_scope) if params[filter_scope] == '1'
+    end
+    relation
   end
 end
