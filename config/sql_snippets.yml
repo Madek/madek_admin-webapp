@@ -71,22 +71,8 @@ sql_snippets:
     query: |
       -- get all people with same display name
 
-      CREATE OR REPLACE FUNCTION pg_temp.display_name(first_name varchar, last_name varchar, pseudonym varchar) RETURNS varchar AS $$
-        BEGIN
-          RETURN (
-            CASE
-            WHEN ((first_name <> '' OR last_name <> '') AND pseudonym <> '')
-              THEN btrim(first_name || ' ' || last_name || ' ' || '(' || pseudonym || ')')
-            WHEN (first_name <> '' OR last_name <> '')
-              THEN btrim(first_name || ' ' || last_name)
-            ELSE btrim(pseudonym)
-            END
-            );
-        END;
-      $$ LANGUAGE plpgsql;
-
       WITH people_with_display_name AS (
-        SELECT *, pg_temp.display_name(coalesce(first_name, ''), coalesce(last_name, ''), coalesce(pseudonym, '')) AS display_name
+        SELECT *, person_display_name(coalesce(first_name, ''), coalesce(last_name, ''), coalesce(pseudonym, '')) AS display_name
         FROM people
       )
       SELECT *
@@ -99,10 +85,6 @@ sql_snippets:
     title: Find people with small differences in names (might be the same ones)
     query: |
       -- see the comments in the query to see where and how you can tweak the speed and the result size
-
-      SET search_path = pg_temp, public;
-
-      CREATE EXTENSION IF NOT EXISTS fuzzystrmatch;
 
       WITH people_tmp AS
         (SELECT *,
@@ -123,5 +105,5 @@ sql_snippets:
          FROM people_tmp) p2
       WHERE p1.id <> p2.id
         AND p1.name <> p2.name
-        AND pg_temp.levenshtein(p1.name, p2.name) = 1           -- adjust the number of differences in names
+        AND levenshtein(p1.name, p2.name) = 1           -- adjust the number of differences in names
       ORDER BY lower(p1.name);
