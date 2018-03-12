@@ -9,7 +9,10 @@
   end
 
 %tr{'data-id' => user.id, class: ('success' if user.admin?)}
-  %td= user.login
+  %td
+    - if user.is_deactivated
+      %span.label.label-default deactivated
+    = user.login
   %td= user.email
   %td
     = link_to person_path(user.person) do

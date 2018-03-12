@@ -2,6 +2,8 @@
   %h1
     %i.glyphicon.glyphicon-user
     #{@user.person} (#{@user.login})
+    - if @user.is_deactivated
+      %span.label.label-default deactivated
   %small
     = link_to '&larr; Go back to users list'.html_safe, users_path
 

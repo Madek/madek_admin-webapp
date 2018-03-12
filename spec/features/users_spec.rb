@@ -16,12 +16,27 @@ feature 'Admin Users' do
 
   scenario 'Filtering admin users' do
     visit users_path
-    check 'admins_only'
+    check 'admins'
     click_button 'Apply'
 
+    expect(page).to have_checked_field 'admins'
     within 'table tbody' do
       expect(page).to have_content admin_user.login
       expect(page).to have_content admin_user.email
+    end
+  end
+
+  scenario 'Filtering deactivated users' do
+    deactivated_user = create :user, is_deactivated: true
+
+    visit users_path
+    check 'deactivated'
+    click_button 'Apply'
+
+    expect(page).to have_checked_field 'deactivated'
+    within 'table tbody' do
+      expect(page).to have_content "deactivated #{deactivated_user.login}"
+      expect(page).to have_css(:tr, count: 1)
     end
   end
 
@@ -63,6 +78,20 @@ feature 'Admin Users' do
     end
 
     expect(names).to eq names.sort
+  end
+
+  scenario 'Reseting filters' do
+    visit users_path
+
+    fill_in 'search_term', with: 'nor'
+    check 'admins'
+    check 'deactivated'
+    click_button 'Apply'
+    click_link 'Reset'
+
+    expect(find_field('search_term').value).to be_nil
+    expect(page).to have_no_checked_field 'admins'
+    expect(page).to have_no_checked_field 'deactivated'
   end
 
   scenario 'Creating a new user with person' do
@@ -142,7 +171,7 @@ feature 'Admin Users' do
     user = create :user
 
     visit users_path
-    check 'admins_only'
+    check 'admins'
     click_button 'Apply'
     expect(page).not_to have_content user.email
 
@@ -152,7 +181,7 @@ feature 'Admin Users' do
     expect(find('table tr', text: 'Admin?')).to have_content 'Yes'
 
     visit users_path
-    check 'admins_only'
+    check 'admins'
     click_button 'Apply'
     expect(page).to have_content user.email
   end
@@ -161,7 +190,7 @@ feature 'Admin Users' do
     user = create :admin_user
 
     visit users_path
-    check 'admins_only'
+    check 'admins'
     click_button 'Apply'
     expect(page).to have_content user.email
 
@@ -171,7 +200,7 @@ feature 'Admin Users' do
     expect(find('table tr', text: 'Admin?')).to have_content 'No'
 
     visit users_path
-    check 'admins_only'
+    check 'admins'
     click_button 'Apply'
     expect(page).not_to have_content user.email
   end
@@ -211,6 +240,13 @@ feature 'Admin Users' do
     expect(page).to have_content ': bar foo'
     expect(page).to have_link 'bar', href: group_path(group_2)
     expect(page).to have_link 'foo', href: group_path(group_1)
+  end
+
+  scenario 'view/show: show deactivated label in the header' do
+    deactivated_user = create :user, is_deactivated: true
+
+    visit user_path(deactivated_user)
+    expect(page).to have_css '.page-header h1 span', text: 'deactivated'
   end
 
   scenario 'Setting user as deactivated' do
