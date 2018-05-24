@@ -11,14 +11,14 @@ class AssistantsController < ApplicationController
   end
 
   def batch_translate
-    @langs = Settings.madek_available_locales
+    @langs = AppSetting.available_locales
     @meta_keys = MetaKey.all.reorder(:id)
     @context_keys = ContextKey.all
     @post_path = batch_translate_assistant_path
   end
 
   def batch_translate_update
-    langs = Settings.madek_available_locales
+    langs = AppSetting.available_locales
     fields = %i(label description hint).map(&:to_s).map(&:pluralize)
                                        .map { |f| { f => langs } }
     permitted_fields = [:id, { _original: fields }].concat(fields)
