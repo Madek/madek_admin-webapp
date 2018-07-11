@@ -22,7 +22,7 @@
                 rows: 12
             - when markdowned.include?(@field.to_s)
               = f.technical_field @field, rows: 12
-            - when @field.to_s =~ /contexts/
+            - when ::AppSetting.columns_hash[@field.try(:to_s)].array
               = f.technical_field @field, value: @app_settings[@field].join(', ')
             - else
               = f.technical_field @field, value: @app_settings[@field], rows: 1

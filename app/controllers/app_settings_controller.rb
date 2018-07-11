@@ -7,7 +7,8 @@ class AppSettingsController < ApplicationController
     'General' => {
       site_title: 'Name of this instance',
       brand_text: 'Name of provider of this instance',
-      brand_logo_url: 'URL to an image'
+      brand_logo_url: 'URL to an image',
+      allowed_internal_embeds: 'Allow internal embed to hosts'
     },
     'Welcome message (on home page)' => {
       welcome_title: 'Title of welcome box',
@@ -138,11 +139,15 @@ class AppSettingsController < ApplicationController
     params.try(:[], :app_setting).each do |attr, value|
       if attr_with_type?(attr, 'jsonb')
         params[:app_setting][attr] = YAML.safe_load(value)
-      elsif attr.to_s =~ /contexts|_keys$/
-        params[:app_setting][attr] =
-          params[:app_setting][attr].split(',').map(&:strip)
+      elsif ::AppSetting.columns_hash[attr.to_s].array
+        params[:app_setting][attr] = \
+          prepare_array_param(params[:app_setting][attr])
       end
     end
+  end
+
+  def prepare_array_param(param)
+    param.split(',').map(&:strip).reject(&:blank?)
   end
 
   def attr_with_type?(column, type)

@@ -382,4 +382,28 @@ feature 'Admin App Settings' do
       with: "#{valid_meta_key.id}, #{invalid_meta_key.id}"
     )
   end
+
+  scenario 'Updating Internal embeds setting' do
+    visit app_settings_path
+
+    within '#allowed_internal_embeds' do
+      click_link 'Edit'
+    end
+
+    expect(find_field('app_setting[allowed_internal_embeds]').value).to be_empty
+
+    fill_in 'app_setting[allowed_internal_embeds]',
+            with: 'foo.zhdk.ch,bar.zhdk.ch, zhdk.ch,  '
+    click_button 'Save'
+
+    expect(page).to have_css '.alert-success'
+
+    within '#allowed_internal_embeds' do
+      click_link 'Edit'
+    end
+
+    expect(
+      find_field('app_setting[allowed_internal_embeds]').value
+    ).to eq 'foo.zhdk.ch, bar.zhdk.ch, zhdk.ch'
+  end
 end

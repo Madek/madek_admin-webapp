@@ -21,6 +21,8 @@
                 = markdown(@app_settings.send(attr))
               - when meta_key_ids.include?(attr.to_s)
                 = meta_key_ids_as_links(@app_settings[:ignored_keyword_keys_for_browsing])
+              - when AppSetting.columns_hash[attr.to_s].array
+                = @app_settings.send(attr).join(', ')
               - else
                 = @app_settings.send(attr)
 
