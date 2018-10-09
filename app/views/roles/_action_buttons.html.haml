@@ -1,0 +1,27 @@
+/ - is_used = false# @usage_counts.fetch(keyword.id, 0) > 0
+- if is_used
+  = link_to "Show usage (#{@usage_counts[role.id]})".html_safe, usage_role_path(role), class: 'btn btn-default'
+- else
+  .btn.btn-default.disabled Not used
+
+- if false #webapp_keyword_path(keyword) && is_used
+  = link_to webapp_keyword_path(keyword), class: 'btn btn-default', target: :_blank do
+    %span.glyphicon.glyphicon-link
+    Show in Webapp
+/ = link_to form_merge_to_keyword_path(keyword, redirect_to: request.fullpath), data: { confirm: 'Did you either remember or copy ID of the target keyword? You will need it in the next step.' }, class: 'btn btn-warning' do
+/ %span.glyphicon.glyphicon-random
+/ Merge to
+= link_to edit_role_path(role), class: 'btn btn-info' do
+  %i.glyphicon.glyphicon-edit
+  Edit
+
+- if is_used
+  .btn.btn-danger.disabled{ title:'Keyword is used and cannot be deleted.' }
+    %i.glyphicon.glyphicon-trash
+    Delete
+- else
+  = link_to role_path(role, redirect_to: request.fullpath), method: :delete, data: { |
+    confirm: 'The role will be deleted. Do you want to proceed?' }, |
+    class: 'btn btn-danger' do
+    %i.glyphicon.glyphicon-trash
+    Delete

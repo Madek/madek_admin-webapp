@@ -1,0 +1,38 @@
+.page-header
+  %h2 Keywords (#{@meta_key.keywords.count})
+
+.alert.alert-info
+  - if @meta_key.keywords_alphabetical_order
+    The Keywords are ordered alphabetically. You cannot define their order by yourself.
+  - else
+    The Keywords are not ordered alphabetically. You can define their order by yourself.
+
+- if @keyword
+  = form_for @keyword, url: keywords_path(redirect_to: meta_key_path(@meta_key)), html: { class: 'form-inline', style: 'margin-bottom: 20px' } do |f|
+    = f.hidden_field :meta_key_id
+    .form-group
+      = f.text_field :term, class: 'form-control', placeholder: 'Term', size: 50
+    = f.button type: :submit, class: 'btn btn-primary' do
+      %i.glyphicon.glyphicon-plus
+      Add Keyword
+
+.row
+  .col-xs-12
+    %table.table.table-striped{id: :keywords}
+      %thead
+        %tr
+          %th.col-xs-4 ID
+          %th.col-xs-6 Term
+          %th.col-xs-2
+      %tbody
+        - @keywords.each do |keyword|
+          %tr{'data-id' => keyword.id}
+            %td= keyword.id
+            %td= keyword
+            %td.active.text-center
+              .btn-group.btn-group-sm.btn-group-vertical
+                - unless @meta_key.keywords_alphabetical_order
+                  = move_buttons(keyword)
+                = render partial: 'keywords/action_buttons', locals: { keyword: keyword }
+
+= paginate @keywords

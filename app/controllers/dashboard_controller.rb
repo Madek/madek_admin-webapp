@@ -55,6 +55,7 @@ class DashboardController < ApplicationController
         Person
       ],
       [
+        Role,
         User,
         Group,
         {
