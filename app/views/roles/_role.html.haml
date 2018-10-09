@@ -1,0 +1,12 @@
+%tr
+  %td= role.id
+  %td= link_to role.meta_key_id, meta_key_path(role.meta_key_id)
+  %td
+    - role.labels.each do |locale, label|
+      %div
+        %em= "#{locale}:"
+        = label
+
+  %td.active.col-xs-2.text-center
+    .btn-group.btn-group-sm
+      = render partial: 'action_buttons', locals: { role: role }

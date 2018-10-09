@@ -78,6 +78,8 @@ Rails.application.routes.draw do
       post :merge_to, on: :member
     end
 
+    resources :roles
+
     root to: 'dashboard#index'
     post 'dashboard/refresh', to: 'dashboard#refresh'
 

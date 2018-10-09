@@ -1,0 +1,9 @@
+= link_to edit_role_path(role), class: 'btn btn-info' do
+  %i.glyphicon.glyphicon-edit
+  Edit
+
+= link_to role_path(role, redirect_to: request.fullpath), method: :delete, data: { |
+  confirm: 'The role will be deleted. Do you want to proceed?' }, |
+  class: 'btn btn-danger' do
+  %i.glyphicon.glyphicon-trash
+  Delete

@@ -65,7 +65,7 @@ feature 'Admin Meta Datums' do
     anchor.click
 
     expect(current_path).to eq meta_key_path(meta_key.id)
-    expect(page).to have_content "Meta Key: #{meta_key.id}"
+    expect(page).to have_content "Meta Key #{meta_key.id}"
   end
 
   scenario 'linking to a Vocabulary' do

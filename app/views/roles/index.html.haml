@@ -1,0 +1,40 @@
+.page-header
+  %h1
+    Roles (#{@roles.total_count})
+
+.row
+  .col-xs-12
+    .panel.panel-default
+      .panel-heading
+        .panel-title Filters
+      .panel-body
+        = form_tag request.path, method: :get, class: 'form-inline' do
+          .form-group
+            = text_field_tag 'filter[term]', filter_value(:term), size: 50,
+              class: 'form-control', placeholder: 'ID, term'
+          .form-group
+            = label_tag 'filter[vocabulary_id]', 'Vocabulary'
+            = select_tag 'filter[vocabulary_id]', options_from_collection_for_select(@vocabularies, 'id', 'id', filter_value(:vocabulary_id)), class: 'form-control', prompt: '-- all --'
+
+          = submit_tag 'Apply', class: 'btn btn-primary'
+          = link_to 'Reset', roles_path, class: 'btn btn-default'
+      .panel-footer
+        = link_to new_role_path(vocabulary_id: @vocabulary.try(:id)), class: "btn btn-default#{' disabled' unless @vocabulary}" do
+          %i.glyphicon.glyphicon-plus
+          Create a Role
+        - unless @vocabulary
+          %span.text-muted To add a role filter by a specific vocabulary first.
+
+.row
+  .col-xs-12
+    %table.table.table-striped
+      %thead
+        %tr
+          %th ID
+          %th MetaKey
+          %th Label
+          %th
+      %tbody
+        = render @roles
+
+= paginate @roles

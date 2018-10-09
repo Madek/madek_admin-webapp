@@ -1,0 +1,34 @@
+= form_for @role, html: { class: 'form-horizontal', role: 'form' } do |f|
+  - if @role.persisted?
+    .form-group
+      .col-xs-2
+        = f.label :id, class: 'control-label'
+      .col-xs-6
+        = f.text_field :id, class: 'form-control', disabled: true
+  .form-group
+    .col-xs-2
+      = f.label :meta_key_id, class: 'control-label'
+    - if @meta_keys.exists?
+      .col-xs-6
+        = f.select :meta_key_id, @meta_keys.pluck(:id), {}, class: 'form-control'
+    - else
+      .col-xs-8
+        .text-danger(style='padding-top: 7px')
+          The vocabulary
+          %strong= @vocabulary
+          has no meta keys with
+          %strong MetaDatum::Roles
+          type yet. Create a one first.
+  = f.fields_for :labels, OpenStruct.new(f.object.labels) do |lf|
+    - I18n.available_locales.each do |locale|
+      .form-group
+        .col-xs-2
+          = lf.label locale, "Label [#{locale}]", class: 'control-label'
+        .col-xs-6
+          = lf.text_field locale, class: 'form-control'
+  .form-group
+    .col-xs-offset-2.col-xs-3
+      = button_tag type: 'submit', class: 'btn btn-success' do
+        %span.glyphicon.glyphicon-ok
+        Save
+      = link_to 'Go back', :back, class: 'btn btn-link'

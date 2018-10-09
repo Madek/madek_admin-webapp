@@ -1,0 +1,24 @@
+.page-header
+  %h2 Roles (#{@roles.total_count})
+
+.row
+  .col-xs-12
+    %table.table.table-striped{id: :roles}
+      %thead
+        %tr
+          %th.col-xs-4 ID
+          %th.col-xs-6 Label
+      %tbody
+        - @roles.each do |role|
+          %tr{'data-id' => role.id}
+            %td.col-xs-6= role.id
+            %td
+              - role.labels.each do |locale, label|
+                %div
+                  %em= "#{locale}:"
+                  = label
+            %td.active.text-center
+              .btn-group.btn-group-sm.btn-group-vertical
+                = render partial: 'roles/action_buttons', locals: { role: role }
+
+= paginate @roles

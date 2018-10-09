@@ -24,6 +24,7 @@ class MetaKeysController < ApplicationController
       )
     end
     @keywords = @meta_key.keywords.page(params[:page]).per(16)
+    @roles = @meta_key.roles.sorted.page(params[:page]).per(16)
     @usage_counts = Keyword.usage_count_for(@keywords)
   end
 

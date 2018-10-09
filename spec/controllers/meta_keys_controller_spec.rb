@@ -158,15 +158,12 @@ describe MetaKeysController do
 
     it 'updates the meta key' do
       meta_key.reload
-      expect(meta_key[:label]).to eq 'label DE'
       expect(meta_key.label).to eq 'label DE'
       expect(meta_key.label(:de)).to eq 'label DE'
       expect(meta_key.label(:en)).to eq 'label EN'
-      expect(meta_key[:description]).to eq 'description DE'
       expect(meta_key.description).to eq 'description DE'
       expect(meta_key.description(:de)).to eq 'description DE'
       expect(meta_key.description(:en)).to eq 'description EN'
-      expect(meta_key[:hint]).to eq 'hint DE'
       expect(meta_key.hint).to eq 'hint DE'
       expect(meta_key.hint(:de)).to eq 'hint DE'
       expect(meta_key.hint(:en)).to eq 'hint EN'
@@ -337,15 +334,12 @@ describe MetaKeysController do
 
       meta_key = MetaKey.find(meta_key_params[:id])
 
-      expect(meta_key[:label]).to eq 'label DE'
       expect(meta_key.label).to eq 'label DE'
       expect(meta_key.label(:de)).to eq 'label DE'
       expect(meta_key.label(:en)).to eq 'label EN'
-      expect(meta_key[:description]).to eq 'description DE'
       expect(meta_key.description).to eq 'description DE'
       expect(meta_key.description(:de)).to eq 'description DE'
       expect(meta_key.description(:en)).to eq 'description EN'
-      expect(meta_key[:hint]).to eq 'hint DE'
       expect(meta_key.hint).to eq 'hint DE'
       expect(meta_key.hint(:de)).to eq 'hint DE'
       expect(meta_key.hint(:en)).to eq 'hint EN'
