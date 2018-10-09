@@ -26,7 +26,9 @@ class RolesController < ApplicationController
   end
 
   def update
-    @role = Role.find(params[:id])
+    role = Role.find(params[:id])
+    role.update!(role_params)
+    respond_with role, location: roles_path
   end
 
   def destroy
