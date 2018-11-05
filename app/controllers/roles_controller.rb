@@ -1,9 +1,7 @@
 class RolesController < ApplicationController
-  before_action :load_meta_keys, only: [:index, :new, :edit]
-
   def index
     @roles = Role
-               .search(params[:filter])
+               .filter_by(params.fetch(:filter, {})[:term])
                .sorted
                .page(params[:page])
                .per(16)
@@ -22,7 +20,6 @@ class RolesController < ApplicationController
 
   def edit
     @role = Role.find(params[:id])
-    @vocabulary = @role.meta_key.vocabulary
   end
 
   def update
@@ -38,10 +35,6 @@ class RolesController < ApplicationController
   end
 
   private
-
-  def load_meta_keys
-    @meta_keys = MetaKey.with_type('MetaDatum::Roles')
-  end
 
   def role_params
     params.require(:role).permit!

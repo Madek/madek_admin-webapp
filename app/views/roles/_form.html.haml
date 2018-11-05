@@ -5,11 +5,13 @@
         = f.label :id, class: 'control-label'
       .col-xs-6
         = f.text_field :id, class: 'form-control', disabled: true
-  .form-group
-    .col-xs-2
-      = f.label :term, class: 'control-label'
-    .col-xs-6
-      = f.text_field :term, class: 'form-control'
+  = f.fields_for :terms, OpenStruct.new(f.object.terms) do |lf|
+    - I18n.available_locales.each do |locale|
+      .form-group
+        .col-xs-2
+          = lf.label locale, "Label [#{locale}]", class: 'control-label'
+        .col-xs-6
+          = lf.text_field locale, class: 'form-control'
   .form-group
     .col-xs-offset-2.col-xs-3
       = button_tag type: 'submit', class: 'btn btn-success' do
