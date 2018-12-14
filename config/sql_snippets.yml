@@ -98,12 +98,75 @@ sql_snippets:
         (SELECT *
          FROM people_tmp
          ORDER BY name ASC
-         OFFSET 0                       -- increase by 1 to get to the second page
-         LIMIT 500                      -- increase or decrease to adjust the result size and speed of execution
+         OFFSET 0    -- this is page 1; increase by ((N * LIMIT) + 1) to go to the N + 1 page
+         LIMIT 500   -- increase or decrease to adjust the result size and speed of execution
         ) p1,
         (SELECT *
          FROM people_tmp) p2
       WHERE p1.id <> p2.id
         AND p1.name <> p2.name
-        AND levenshtein(p1.name, p2.name) = 1           -- adjust the number of differences in names
+        -- levenshtein(text source, text target, int ins_cost, int del_cost, int sub_cost)
+        AND levenshtein(p1.name, p2.name, 1, 1, 1) = 1     -- adjust the number of differences in names
       ORDER BY lower(p1.name);
+
+  -
+    title: Find keywords with small differences in terms (might be the same ones)
+    query: |
+      -- For each keyword find a list similar keywords using the levenshtein distance function.
+      -- Levenshtein distance between two words is the minimum number of single-character edits
+      -- (insertions, deletions or substitutions) required to change one word into the other. 
+
+      -- Example: finding out keywords with exact difference of 1 letter and only substitution.
+      --  SELECT 1 AS min_difference,
+      --         1 AS max_difference,
+      --         2 AS insertion_cost,
+      --         2 AS deletion_cost,
+      --         1 AS substitution_cost,
+
+      -- Find keywords which are either exactly the same or have distance of 1
+      -- insertion or deletion or substitution.
+      WITH vars AS (
+        SELECT 0 AS min_difference,
+               1 AS max_difference,
+               1 AS insertion_cost,       -- must be at least 1
+               1 AS deletion_cost,        -- must be at least 1
+               1 AS substitution_cost,    -- must be at least 1
+               'madek_core:keywords'::text AS meta_key_id,
+               50 AS keywords_limit
+        )
+        SELECT k1.id as id,
+               k1.meta_key_id,
+               k1.term as term,
+               array_agg(k2.term) as similar_terms,
+               '/admin/keywords?search_term=' || k1.id AS term_link,
+               json_agg(k2.*) as similar_terms_data
+      FROM (
+        SELECT *
+        FROM keywords
+        WHERE meta_key_id = ( SELECT meta_key_id FROM vars )
+        --  AND term ~* 'Abschluss.*'
+        ORDER BY term ASC
+        LIMIT ( SELECT keywords_limit FROM vars )
+        ) AS k1
+        INNER JOIN (
+          SELECT id, term, meta_key_id
+          FROM keywords
+          WHERE meta_key_id = ( SELECT meta_key_id FROM vars )
+        ) AS k2
+        ON ( SELECT min_difference FROM vars ) <= levenshtein(
+          k1.term,
+          k2.term,
+          ( SELECT insertion_cost FROM vars ),
+          ( SELECT deletion_cost FROM vars ),
+          ( SELECT substitution_cost FROM vars )
+          )
+        AND levenshtein(
+          k1.term,
+          k2.term,
+          ( SELECT insertion_cost FROM vars ),
+          ( SELECT deletion_cost FROM vars ),
+          ( SELECT substitution_cost FROM vars )
+          ) <= ( SELECT max_difference FROM vars )
+        AND k1.id <> k2.id
+        GROUP BY k1.id, k1.term, k1.meta_key_id
+        ORDER BY k1.term ASC;
