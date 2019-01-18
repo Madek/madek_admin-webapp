@@ -2,6 +2,8 @@ require 'spec_helper'
 require 'spec_helper_feature'
 
 feature 'Keywords' do
+  include ActiveSupport::Testing::TimeHelpers
+
   let(:meta_key) do
     create(:meta_key_keywords,
            is_extensible_list: false,
@@ -10,6 +12,58 @@ feature 'Keywords' do
   let(:keyword_1) { create :keyword, term: 'Zett 1-2011', meta_key: meta_key }
   let(:keyword_2) { create :keyword, term: 'Zett 1-2012', meta_key: meta_key }
   let(:keyword_3) { create :keyword, term: 'Zett 1-2013', meta_key: meta_key }
+
+  scenario 'Filtering not used keywords' do
+    mdk = create :meta_datum_keywords
+    not_used_keyword = create :keyword
+    used_keyword = mdk.keywords.sample
+
+    visit keywords_path
+
+    fill_in 'search_term', with: not_used_keyword.term
+    check 'Not used?'
+    click_button 'Apply'
+
+    expect(page).to have_checked_field 'Not used?'
+    expect(page).to have_text not_used_keyword.term
+    expect(page).to have_no_text used_keyword.term
+
+    fill_in 'search_term', with: used_keyword.term
+    check 'Not used?'
+    click_button 'Apply'
+
+    expect(page).to have_no_text not_used_keyword.term
+    expect(page).to have_no_text used_keyword.term
+  end
+
+  scenario 'Sorting by creation date' do
+    keyword_1
+    travel 5.seconds do
+      keyword_3
+    end
+    travel 10.seconds do
+      keyword_2
+    end
+
+    visit keywords_path
+
+    fill_in 'search_term', with: 'Zett 1-'
+    select 'Created at ↑', from: 'Sort by'
+    click_button 'Apply'
+
+    expect(page).to have_select 'Sort by', selected: 'Created at ↑'
+    expect(keyword_terms).to eq ['Zett 1-2011',
+                                 'Zett 1-2013',
+                                 'Zett 1-2012']
+
+    select 'Created at ↓'
+    click_button 'Apply'
+
+    expect(page).to have_select 'Sort by', selected: 'Created at ↓'
+    expect(keyword_terms).to eq ['Zett 1-2012',
+                                 'Zett 1-2013',
+                                 'Zett 1-2011']
+  end
 
   context 'when meta key contains some keywords' do
     context 'when keywords are not alphabetically ordered' do
@@ -192,13 +246,17 @@ feature 'Keywords' do
   end
 
   def collect_keyword_terms
-    all('#keywords tbody tr td:nth-child(2)').map(&:text)
+    all('#keywords tbody tr td:nth(2)').map(&:text)
   end
 
   def expect_order(order, limit = 3)
     expect(
       all('#keywords tr[data-id] td:nth(2)').map(&:text)[0, limit]
     ).to eq(order)
+  end
+
+  def keyword_terms
+    all('#keywords tbody tr[data-id] td:nth(3)').map(&:text)
   end
 
   def toggle_alphabetical_ordering(target_state)

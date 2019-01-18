@@ -1,6 +1,6 @@
-- is_used = @usage_counts.fetch(keyword.id, 0) > 0
+- is_used = keyword.usage_count > 0
 - if is_used
-  = link_to "Show usage (#{@usage_counts[keyword.id]})".html_safe, usage_keyword_path(keyword), class: 'btn btn-default'
+  = link_to "Show usage (#{keyword.usage_count})".html_safe, usage_keyword_path(keyword), class: 'btn btn-default'
 - else
   .btn.btn-default.disabled Not used
 
@@ -16,7 +16,7 @@
   Edit
 
 - if is_used
-  .btn.btn-danger.disabled{ title:'Keyword is used and cannot be deleted.' }
+  .btn.btn-danger.disabled{ title: 'Keyword is used and cannot be deleted.' }
     %i.glyphicon.glyphicon-trash
     Delete
 - else

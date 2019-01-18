@@ -17,9 +17,18 @@
           .form-group
             = label_tag 'filter[vocabulary_id]', 'Vocabulary', class: 'form-label'
             = select_tag 'filter[vocabulary_id]', options_from_collection_for_select(@vocabularies, :id, :id, filter_value(:vocabulary_id)), class: 'form-control', prompt: '-- all --'
-
-          = submit_tag 'Apply', class: 'btn btn-primary'
-          = link_to 'Reset', keywords_path, class: 'btn btn-default'
+          .checkbox
+            %label
+              = check_box_tag 'filter[not_used]', '1', filter_value(:not_used) == '1'
+              Not used?
+          .form-group.pull-right
+            = label_tag :sort_by, 'Sort by', class: 'form-label'
+            = select_tag :sort_by,
+                options_for_select([['-- default --', ''], ['Created at ↑', :created_at_asc], ['Created at ↓', :created_at_desc]], params[:sort_by]),
+                class: 'form-control'
+          .form-group.actions
+            = submit_tag 'Apply', class: 'btn btn-primary'
+            = link_to 'Reset', keywords_path, class: 'btn btn-default'
       - if @vocabulary && @vocabulary.can_have_keywords?
         .panel-footer
           .btn-group
@@ -29,12 +38,13 @@
 
 .row
   .col-xs-12
-    %table.table.table-striped
+    %table.table.table-striped#keywords
       %thead
         %tr
           %th ID
           %th MetaKey
           %th Term
+          %th Created at
           %th
       %tbody
         = render @keywords

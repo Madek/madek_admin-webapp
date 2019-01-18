@@ -61,6 +61,28 @@ describe KeywordsController do
           expect(assigns[:keywords]).to match_array [keyword]
         end
       end
+
+      context 'not used' do
+        it 'return proper keywords' do
+          mtk = create :meta_datum_keywords
+          not_used_keyword = create :keyword, term: 'foo_1'
+          used_keyword = mtk.keywords.sample
+          used_keyword.update_column(:term, 'foo_2')
+
+          get(
+            :index,
+            {
+              filter: {
+                not_used: 1
+              },
+              search_term: 'foo'
+            },
+            user_id: admin_user.id
+          )
+
+          expect(assigns[:keywords]).to match_array [not_used_keyword]
+        end
+      end
     end
   end
 
