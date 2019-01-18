@@ -1,15 +1,12 @@
 class KeywordsController < ApplicationController
   def index
-    @vocabularies = Vocabulary.sorted
-    if filter_value(:vocabulary_id).present?
-      @vocabulary = Vocabulary.find(filter_value(:vocabulary_id))
-      @keywords = Keyword.of_vocabulary(@vocabulary.id)
-    else
-      @keywords = Keyword.all
-    end
-    @keywords = @keywords.order(:meta_key_id, :term).page(params[:page]).per(16)
+    @vocabularies = Vocabulary.reorder(:id)
+    @keywords = Keyword
+                  .all_with_usage_count
+                  .page(params[:page])
+                  .per(16)
     filter
-    @usage_counts = Keyword.usage_count_for(@keywords)
+    sort
     @current_meta_key = nil
   end
 
@@ -104,9 +101,7 @@ class KeywordsController < ApplicationController
   end
 
   def filter
-    term = params[:search_term]
-
-    if term.present?
+    if (term = params[:search_term]).present?
       term.strip!
       @keywords =
         if UUIDTools::UUID_REGEXP =~ term
@@ -117,5 +112,39 @@ class KeywordsController < ApplicationController
           )
         end
     end
+
+    if filter_value(:vocabulary_id).present?
+      @vocabulary = Vocabulary.find(filter_value(:vocabulary_id))
+      @keywords = @keywords.of_vocabulary(@vocabulary.id)
+    end
+
+    if filter_value(:not_used) == '1'
+      @keywords = @keywords.not_used
+    end
   end
+
+  def sort
+    @keywords =
+      if allowed_sortings.include?(params[:sort_by].try(:to_sym))
+        parts = params[:sort_by].reverse.split('_', 2)
+        attribute = parts.last.reverse
+        direction = parts.first.reverse
+
+        @keywords.order(attribute => direction)
+      else
+        @keywords.order(*default_sorting)
+      end
+  end
+
+  def allowed_sortings
+    [
+      :created_at_asc,
+      :created_at_desc
+    ]
+  end
+
+  def default_sorting
+    [:meta_key_id, :term]
+  end
+
 end
