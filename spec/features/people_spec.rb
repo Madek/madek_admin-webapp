@@ -79,7 +79,7 @@ feature 'Admin People' do
     expect(person.last_name).to eq 'Fischer'
   end
 
-  scenario 'Merging' do
+  scenario 'Merging when person has no user' do
     create :person, first_name: 'foo_1'
     create :person, first_name: 'foo_2'
 
@@ -115,6 +115,31 @@ feature 'Admin People' do
 
     expect(page).to have_text 'foo_', count: 1
     expect(page).not_to have_css '#merge-info'
+  end
+
+  scenario 'Merging when person has an user' do
+    originator = create :person, first_name: 'Originator'
+    receiver = create :person, first_name: 'Receiver'
+    user = create :user, person: originator
+
+    visit people_path
+
+    filter_for 'Originator'
+
+    within 'table tbody tr:first-of-type' do
+      click_link 'Merge'
+    end
+
+    filter_for 'Receiver'
+
+    click_link 'Merge to'
+
+    expect(page).to have_css '.alert-success'
+    expect(receiver.user).to eq user.reload
+
+    filter_for 'Originator'
+
+    expect(page).to have_no_text 'Originator'
   end
 
   scenario 'Aborting merge' do
