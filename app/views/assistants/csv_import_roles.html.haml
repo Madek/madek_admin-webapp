@@ -1,0 +1,10 @@
+:ruby
+  example_csv_snippet = "meta_key_id,label_de,label_en\nexample:key_id,\"label deutsch\",\"label english\""
+  locals = {
+    id: :roles,
+    title: 'Import Roles',
+    intro_text: 'Use this form to create many roles at once.',
+    example_csv_snippet: example_csv_snippet
+  }
+
+= render(partial: 'csv_import_base', locals: locals)

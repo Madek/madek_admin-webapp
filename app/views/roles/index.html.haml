@@ -22,8 +22,13 @@
         = link_to new_role_path(vocabulary_id: @vocabulary.try(:id)), class: "btn btn-default#{' disabled' unless @vocabulary}" do
           %i.glyphicon.glyphicon-plus
           Create a Role
+        %span= ' '
         - unless @vocabulary
           %span.text-muted To add a role filter by a specific vocabulary first.
+        %span.text-muted
+          For creating many roles, a
+          %a{href: csv_import_roles_assistant_path} CSV import is available
+          as well.
 
 .row
   .col-xs-12

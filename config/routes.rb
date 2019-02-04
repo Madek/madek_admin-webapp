@@ -85,8 +85,13 @@ Rails.application.routes.draw do
 
     resource :assistant, only: [:show] do
       get 'sql_reports'
+
       get 'batch_translate'
       post 'batch_translate', action:'batch_translate_update'
+
+      get 'csv_import_index'
+      get 'csv_import_roles'
+      post 'csv_import_roles_update'
     end
 
   end

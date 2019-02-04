@@ -1,3 +1,5 @@
+require 'csv'
+
 class RolesController < ApplicationController
   def index
     @roles = Role
@@ -54,4 +56,5 @@ class RolesController < ApplicationController
   def role_params
     params.require(:role).permit!
   end
+
 end
