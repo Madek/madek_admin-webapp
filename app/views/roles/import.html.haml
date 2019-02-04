@@ -1,0 +1,30 @@
+:ruby
+  csv_snippet = "meta_key_id,label_de,label_en\nexample:key_id,\"label deutsch\",\"label english\""
+
+.page-header
+  %h1
+    Import Roles
+  %small
+    = link_to '&larr; Go back to roles list'.html_safe, roles_path
+
+.row
+  .col-xs-6
+    %p Use this form to create many roles at once.
+    The input format is "CSV" (Comma-Separated Values), which can be created for example with MS Excel.
+    The expected data format is shown below and can be copied from there.
+    In case any error happens, nothing will be imported. Carefully read the message, then fix the data and try again.
+
+    %pre= csv_snippet
+%br
+
+= form_for :import do
+  .row.form-group
+    .col-xs-12
+      %label= 'CSV input'
+      %textarea.code{name: 'csv_input', rows: 12, class: "form-control technical-input"}
+
+  .row.form-group
+    .col-xs-offset2.col-xs-4
+      = button_tag type: 'submit', class: 'btn btn-success' do
+        Save
+      = link_to 'Go back', app_settings_path, class: 'btn'

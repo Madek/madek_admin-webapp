@@ -78,7 +78,10 @@ Rails.application.routes.draw do
       post :merge_to, on: :member
     end
 
-    resources :roles
+    resources :roles, except: [:show] do
+      get '/import', action: :import, on: :collection
+      post '/import', action: :import_post, on: :collection
+    end
 
     root to: 'dashboard#index'
     post 'dashboard/refresh', to: 'dashboard#refresh'
