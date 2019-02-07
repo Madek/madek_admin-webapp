@@ -22,7 +22,10 @@ class RolesController < ApplicationController
     role = Role.new(role_params)
     role.creator = current_user
     role.save!
-    respond_with role, location: roles_path
+    vocabulary = role.meta_key.vocabulary
+    respond_with(
+      nil,
+      location: roles_path(filter: { vocabulary_id: vocabulary.id }))
   end
 
   def edit
