@@ -30,14 +30,14 @@ describe GroupsController do
       end
 
       context 'by name' do
-        it "returns groups with 'test' in their name" do
-          group1 = create :group, name: 'test1'
-          group2 = create :group, name: 'test2'
-          group3 = create :group, name: 'test3'
+        it "returns groups with 'test_foo' in their name" do
+          group1 = create :group, name: 'test_foo1'
+          group2 = create :group, name: 'test_foo2'
+          group3 = create :group, name: 'test_foo3'
 
           get(
             :index,
-            { search_terms: 'test', sort_by: 'name' },
+            { search_terms: 'test_foo', sort_by: 'name' },
             user_id: admin_user.id
           )
 

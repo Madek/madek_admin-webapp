@@ -1,4 +1,6 @@
 class GroupsController < ApplicationController
+  before_action :ensure_presence_of_system_groups, only: [:index, :show, :edit]
+
   def index
     @groups = sort_and_filter(params)
 
@@ -103,5 +105,28 @@ class GroupsController < ApplicationController
     groups = groups.filter_by(search_terms, params[:sort_by]) \
       if params[:sort_by].present?
     groups
+  end
+
+  def ensure_presence_of_system_groups
+    # NOTE: this list could be moved to Madek::Constants
+    sysgroups = [
+      {
+        id: Madek::Constants::SIGNED_IN_USERS_GROUP_ID,
+        name: 'Signed-in Users',
+        type: 'AuthenticationGroup'
+      },
+      {
+        id: Madek::Constants::BETA_TESTERS_QUICK_EDIT_GROUP_ID,
+        name: 'Beta-Tester "Metadaten-Stapelverarbeitung"',
+        institutional_id: 'beta_test_quick_edit',
+        type: 'InstitutionalGroup'
+      }
+    ]
+    sysgroups.each do |attrs|
+      next if Group.find_by(id: attrs[:id].to_s, type: attrs[:type])
+      Group.create!(
+        id: attrs[:id].to_s, type: attrs[:type],
+        name: attrs[:name], institutional_id: attrs[:institutional_id])
+    end
   end
 end
