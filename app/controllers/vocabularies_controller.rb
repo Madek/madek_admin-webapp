@@ -1,4 +1,6 @@
 class VocabulariesController < ApplicationController
+  include Concerns::LocalizedFieldParams
+
   def index
     @vocabularies = Vocabulary.page(params[:page]).per(16).with_meta_keys_count
 
@@ -51,11 +53,10 @@ class VocabulariesController < ApplicationController
   end
 
   def update_vocabulary_params
-    params.require(:vocabulary).permit(:label,
-                                       :description,
-                                       :admin_comment,
+    params.require(:vocabulary).permit(:admin_comment,
                                        :enabled_for_public_view,
-                                       :enabled_for_public_use)
+                                       :enabled_for_public_use,
+                                       localized_field_params_for(Vocabulary))
   end
 
   def load_meta_keys

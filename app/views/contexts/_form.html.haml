@@ -4,29 +4,33 @@
     = hidden_field_tag pass_parameter, @params.try(:[], pass_parameter)
 
   .form-group
-    .col-xs-1
+    .col-xs-2
       = f.label :id, 'ID', class: 'control-label'
     .col-xs-6
       = f.technical_field :id, rows: 1, disabled: @context.persisted?
     %span.help-block
       %span.text-danger Note: can not be changed after creation!
+  = f.fields_for :labels, OpenStruct.new(f.object.labels) do |lf|
+    - I18n.available_locales.each do |locale|
+      .form-group
+        .col-xs-2
+          = lf.label locale, "Label [#{locale}]", class: 'control-label'
+        .col-xs-6
+          = lf.text_field locale, class: 'form-control'
+  = f.fields_for :descriptions, OpenStruct.new(f.object.descriptions) do |lf|
+    - I18n.available_locales.each do |locale|
+      .form-group
+        .col-xs-2
+          = lf.label locale, "Description [#{locale}]", class: 'control-label'
+        .col-xs-6
+          = lf.text_area locale, class: 'form-control', rows: 4
   .form-group
-    .col-xs-1
-      = f.label :label, 'Label', class: 'control-label'
-    .col-xs-6
-      = f.text_field :label, class: 'form-control'
-  .form-group
-    .col-xs-1
-      = f.label :description, 'Description', class: 'control-label'
-    .col-xs-6
-      = f.text_area :description, class: 'form-control', rows: 4
-  .form-group
-    .col-xs-1
+    .col-xs-2
       = f.label :admin_comment, 'Admin comment', class: 'control-label'
     .col-xs-6
       = f.text_area :admin_comment, class: 'form-control', rows: 4
   .form-group
-    .col-xs-offset-1.col-xs-3
+    .col-xs-offset-2.col-xs-3
       = button_tag type: 'submit', class: 'btn btn-success' do
         %span.glyphicon.glyphicon-ok
         Create
