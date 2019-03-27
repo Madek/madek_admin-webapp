@@ -1,4 +1,6 @@
 class ContextsController < ApplicationController
+  include Concerns::LocalizedFieldParams
+
   def index
     @contexts = Context.all
     @app_settings = AppSetting.first
@@ -78,9 +80,11 @@ class ContextsController < ApplicationController
   private
 
   def context_params
-    params.require(:context).permit(:label,
-                                    :description,
-                                    :admin_comment)
+    params
+      .require(:context)
+      .permit(
+        :admin_comment,
+        localized_field_params_for(Context))
   end
 
   def new_context_params
@@ -89,11 +93,10 @@ class ContextsController < ApplicationController
 
   def create_context_params
     params.require(:context).permit(:id,
-                                    :label,
-                                    :description,
                                     :admin_comment,
                                     :from_context,
-                                    :from_vocabulary)
+                                    :from_vocabulary,
+                                    localized_field_params_for(Context))
   end
 
   def create_context_key_for(context)

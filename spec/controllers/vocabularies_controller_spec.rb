@@ -80,8 +80,14 @@ describe VocabulariesController do
       params = {
         id: vocabulary.id,
         vocabulary: {
-          label: 'updated label',
-          description: 'updated description',
+          labels: {
+            de: 'updated label DE',
+            en: 'updated label EN'
+          },
+          descriptions: {
+            de: 'updated description DE',
+            en: 'updated description EN'
+          },
           admin_comment: 'updated admin comment',
           enabled_for_public_view: false,
           enabled_for_public_use: false
@@ -92,8 +98,10 @@ describe VocabulariesController do
 
       vocabulary.reload
 
-      expect(vocabulary.label).to eq 'updated label'
-      expect(vocabulary.description).to eq 'updated description'
+      expect(vocabulary.labels['de']).to eq 'updated label DE'
+      expect(vocabulary.labels['en']).to eq 'updated label EN'
+      expect(vocabulary.descriptions['de']).to eq 'updated description DE'
+      expect(vocabulary.descriptions['en']).to eq 'updated description EN'
       expect(vocabulary.admin_comment).to eq 'updated admin comment'
       expect(vocabulary.enabled_for_public_view).to be false
       expect(vocabulary.enabled_for_public_use).to be false

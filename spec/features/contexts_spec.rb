@@ -14,8 +14,27 @@ feature 'Admin Contexts' do
   end
   let(:collection_path) { contexts_path }
 
+  scenario 'Adding a context' do
+    visit contexts_path
+    click_link 'Create Context'
+
+    fill_in 'context[id]', with: 'test-id'
+    fill_in 'context[labels][de]', with: 'label DE'
+    fill_in 'context[labels][en]', with: 'label EN'
+    fill_in 'context[descriptions][de]', with: 'description DE'
+    fill_in 'context[descriptions][en]', with: 'description EN'
+    fill_in 'context[admin_comment]', with: 'admin comment'
+    click_button 'Create'
+
+    expect(page).to have_content 'Id test-id'
+    expect(page).to have_content 'Labels {"de"=>"label DE", "en"=>"label EN"}'
+    expect(page).to have_content 'Descriptions ' \
+                                 '{"de"=>"description DE", "en"=>"description EN"}'
+    expect(page).to have_content 'Admin comment admin comment'
+  end
+
   scenario 'Editing a context' do
-    visit collection_path
+    visit contexts_path
 
     within "[data-id='#{context.id}']" do
       click_link 'Edit'
@@ -23,15 +42,20 @@ feature 'Admin Contexts' do
 
     expect(current_path).to eq edit_context_path(context)
 
-    fill_in 'context[label]', with: 'new label'
-    fill_in 'context[description]', with: 'new description'
+    fill_in 'context[labels][de]', with: 'new label DE'
+    fill_in 'context[labels][en]', with: 'new label EN'
+    fill_in 'context[descriptions][de]', with: 'new description DE'
+    fill_in 'context[descriptions][en]', with: 'new description EN'
     fill_in 'context[admin_comment]', with: 'new admin comment'
 
     click_button 'Create'
 
     expect(current_path).to eq context_path(context)
-    expect(page).to have_content 'Label new label'
-    expect(page).to have_content 'Description new description'
+    expect(page).to have_content 'Labels ' \
+                                 '{"de"=>"new label DE", "en"=>"new label EN"}'
+    expect(page).to have_content 'Descriptions ' \
+                                 '{"de"=>"new description DE", ' \
+                                 '"en"=>"new description EN"}'
     expect(page).to have_content 'Admin comment new admin comment'
   end
 
@@ -45,7 +69,7 @@ feature 'Admin Contexts' do
   end
 
   scenario 'Deleting a context' do
-    visit collection_path
+    visit contexts_path
 
     all('tr[data-id]').each do |row|
       expect(row).to have_link 'Delete'
@@ -80,7 +104,7 @@ feature 'Admin Contexts' do
   scenario 'Displaying info about context usage in UI' do
     update_app_settings_with_context
 
-    visit collection_path
+    visit contexts_path
 
     within "[data-id='#{context.id}'] + tr + tr" do
       expect(page).to have_content usage_message
@@ -97,8 +121,8 @@ feature 'Admin Contexts' do
     visit context_path(context)
     click_on 'Duplicate Context'
 
-    fill_in 'context[label]', with: new_description
-    fill_in 'context[description]', with: new_label
+    fill_in 'context[labels][de]', with: new_label
+    fill_in 'context[descriptions][de]', with: new_description
 
     click_button 'Create'
     find('.alert', text: 'Success! Context was successfully created')
@@ -120,8 +144,8 @@ feature 'Admin Contexts' do
     visit vocabulary_path('madek_core')
     click_on 'Create Context'
 
-    fill_in 'context[label]', with: new_description
-    fill_in 'context[description]', with: new_label
+    fill_in 'context[labels][de]', with: new_label
+    fill_in 'context[descriptions][de]', with: new_description
 
     click_button 'Create'
     find('.alert', text: 'Success! Context was successfully created')

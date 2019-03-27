@@ -48,8 +48,14 @@ describe ContextsController do
       params = {
         id: context.id,
         context: {
-          label: 'updated label',
-          description: 'updated description',
+          labels: {
+            de: 'updated label DE',
+            en: 'updated label EN'
+          },
+          descriptions: {
+            de: 'updated description DE',
+            en: 'updated description EN'
+          },
           admin_comment: 'updated admin comment'
         }
       }
@@ -58,8 +64,10 @@ describe ContextsController do
 
       context.reload
 
-      expect(context.label).to eq 'updated label'
-      expect(context.description).to eq 'updated description'
+      expect(context.labels['de']).to eq 'updated label DE'
+      expect(context.labels['en']).to eq 'updated label EN'
+      expect(context.descriptions['de']).to eq 'updated description DE'
+      expect(context.descriptions['en']).to eq 'updated description EN'
       expect(context.admin_comment).to eq 'updated admin comment'
       expect(flash[:success]).to eq flash_message(:update, :success)
     end
