@@ -6,7 +6,11 @@
         = person.user.login
   %td= person.pseudonym
   %td= person.subtype
-  %td= pluralize(person.usage_count, 'time', 'times')
+  :ruby
+    meta_data_usage = pluralize(person.meta_data_usage_count, 'time', 'times')
+    media_entries_usage = pluralize(person.media_entries_usage_count, 'entry', 'entries')
+    collections_usage = pluralize(person.collections_usage_count, 'collection', 'collections')
+  %td= "#{meta_data_usage} in #{media_entries_usage} and #{collections_usage}"
   %td.active.col-xs-2.text-center
     .btn-group.btn-group-vertical.btn-group-sm
       - if @merge_originator
