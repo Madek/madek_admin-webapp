@@ -29,8 +29,8 @@ describe VocabulariesController do
 
       context 'by label' do
         it "returns vocabularies containing 'aaa' in labels" do
-          first_vocabulary = create :vocabulary, label: 'saaample label'
-          second_vocabulary = create :vocabulary, label: 'sample laaabel'
+          first_vocabulary = create :vocabulary, labels: { de: 'saaample label' }
+          second_vocabulary = create :vocabulary, labels: { de: 'sample laaabel' }
 
           get :index, { search_term: 'aaa' }, user_id: admin_user.id
 
@@ -170,7 +170,7 @@ describe VocabulariesController do
         post(
           :create,
           {
-            vocabulary: { id: nil, label: nil, description: nil }
+            vocabulary: { id: nil, labels: {}, descriptions: {} }
           },
           user_id: admin_user.id
         )

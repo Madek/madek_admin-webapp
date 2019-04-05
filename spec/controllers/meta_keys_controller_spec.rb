@@ -42,8 +42,8 @@ describe MetaKeysController do
 
     context 'filtering by label' do
       it 'returns correct collection of meta keys' do
-        meta_key_1 = create :meta_key_title, label: 'foo:bar'
-        meta_key_2 = create :meta_key_keywords, label: 'bar:foo'
+        meta_key_1 = create :meta_key_title, labels: { de: 'foo:bar' }
+        meta_key_2 = create :meta_key_keywords, labels: { de: 'bar:foo' }
 
         get :index, { search_term: 'bar' }, user_id: admin_user.id
 
@@ -74,8 +74,8 @@ describe MetaKeysController do
 
     context 'sorting by ID' do
       it 'returns correctly sorted collection of meta keys' do
-        meta_key_1 = create :meta_key_title, label: 'foo:bar'
-        meta_key_2 = create :meta_key_keywords, label: 'bar:foo'
+        meta_key_1 = create :meta_key_title, labels: { de: 'foo:bar' }
+        meta_key_2 = create :meta_key_keywords, labels: { de: 'bar:foo' }
 
         get :index, { search_term: 'foo' }, user_id: admin_user.id
 
@@ -85,8 +85,8 @@ describe MetaKeysController do
 
     context 'sorting by Name part' do
       it 'returns correctly sorted collection of meta keys' do
-        meta_key_1 = create :meta_key_title, label: 'foo:project_type'
-        meta_key_2 = create :meta_key_keywords, label: 'foo:academic_year'
+        meta_key_1 = create :meta_key_title, labels: { de: 'foo:project_type' }
+        meta_key_2 = create :meta_key_keywords, labels: { de: 'foo:academic_year' }
 
         get(:index,
             {

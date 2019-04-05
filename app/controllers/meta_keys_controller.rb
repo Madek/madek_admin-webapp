@@ -105,7 +105,7 @@ class MetaKeysController < ApplicationController
         :allowed_rdf_class,
         {
           allowed_people_subtypes: []
-        }.merge(localized_field_params_for(MetaKey))
+        }.merge(localized_field_params)
       )
   end
 

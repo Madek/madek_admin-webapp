@@ -40,8 +40,8 @@ class ContextsController < ApplicationController
       end
       prefilled_attrs = {
         id: @duplicated_from.id + '_copy',
-        label: @duplicated_from.label,
-        description: @duplicated_from.description,
+        labels: @duplicated_from.labels,
+        descriptions: @duplicated_from.descriptions,
         admin_comment: admin_comment
       }
     end
@@ -84,7 +84,7 @@ class ContextsController < ApplicationController
       .require(:context)
       .permit(
         :admin_comment,
-        localized_field_params_for(Context))
+        localized_field_params)
   end
 
   def new_context_params
@@ -96,7 +96,7 @@ class ContextsController < ApplicationController
                                     :admin_comment,
                                     :from_context,
                                     :from_vocabulary,
-                                    localized_field_params_for(Context))
+                                    localized_field_params)
   end
 
   def create_context_key_for(context)
@@ -119,7 +119,7 @@ class ContextsController < ApplicationController
               duplicate_from.context_keys.map(&:attributes)
             else
               duplicate_from.meta_keys.map do |mk|
-                dont_overide = { label: nil, description: nil, admin_comment: nil }
+                dont_overide = { labels: {}, descriptions: {}, admin_comment: nil }
                 mk.attributes.slice(*ContextKey.attribute_names)
                   .merge(meta_key_id: mk.id).merge(dont_overide)
               end

@@ -56,7 +56,7 @@ class VocabulariesController < ApplicationController
     params.require(:vocabulary).permit(:admin_comment,
                                        :enabled_for_public_view,
                                        :enabled_for_public_use,
-                                       localized_field_params_for(Vocabulary))
+                                       localized_field_params)
   end
 
   def load_meta_keys

@@ -63,8 +63,9 @@ feature 'Admin Contexts' do
     visit context_path(context)
 
     expect(page).to have_content "Id #{context.id}"
-    expect(page).to have_content "Label #{context.label}"
-    expect(page).to have_content "Description #{context.description}"
+    expect(page).to have_content "Labels {\"de\"=>\"#{context.label}\"}"
+    expect(page).to have_content 'Descriptions ' \
+                                 "{\"de\"=>\"#{context.description}\"}"
     expect(page).to have_content "Admin comment #{context.admin_comment}"
   end
 

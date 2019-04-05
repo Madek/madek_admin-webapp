@@ -249,6 +249,15 @@ feature 'Admin Vocabularies' do
 
   include_examples 'display admin comments on overview page'
 
+  scenario 'Displaying details' do
+    visit vocabulary_path(vocabulary)
+
+    expect(page).to have_content "Id #{vocabulary.id}"
+    expect(page).to have_content "Labels {\"de\"=>\"#{vocabulary.label}\"}"
+    expect(page).to have_content 'Descriptions ' \
+                                 "{\"de\"=>\"#{vocabulary.description}\"}"
+  end
+
   def expect_order(order)
     expect(
       all('table tr[data-id]').map { |tr| tr['data-id'] }

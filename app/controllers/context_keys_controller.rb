@@ -37,6 +37,6 @@ class ContextKeysController < ApplicationController
               :length_min,
               :length_max,
               :admin_comment,
-              localized_field_params_for(ContextKey))
+              localized_field_params)
   end
 end
