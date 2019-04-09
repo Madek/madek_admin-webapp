@@ -14,6 +14,7 @@
               -m app/ \
               -e app/controllers/concerns/app_environment_info.rb \
               -e app/controllers/assistants_controller.rb \
+              -e app/helpers/admin_form_builder.rb \
               -e app/helpers/ui_helper.rb
 
     code-similarity:
