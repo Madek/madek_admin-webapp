@@ -15,7 +15,7 @@
         .form-group
           .col-xs-12
             - type = ::AppSetting.columns_hash[@field.try(:to_s)].try(:sql_type)
-            - markdowned = ['welcome_text']
+            - markdowned = ['welcome_text', 'about_page']
             - case
             - when type === 'jsonb'
               = f.technical_field @field, value: @app_settings.send(@field).to_yaml,

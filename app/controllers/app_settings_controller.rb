@@ -15,6 +15,9 @@ class AppSettingsController < ApplicationController
     },
     'Other' => {
       sitemap: 'Links for footer menu',
+      about_page: \
+        'HTML/Markdown Content for "About Page" (<code>/about</code>)'
+        .html_safe,
       support_url: 'Link for support tab',
       ignored_keyword_keys_for_browsing: 'MetaKeys of type Keyword that are ' \
         'ignored for the feature "Browse similar entries (Stöbern)"'
