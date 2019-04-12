@@ -19,10 +19,19 @@ class AdminFormBuilder < ActionView::Helpers::FormBuilder
     @template.text_area @object_name, method, options
   end
 
+  def list_as_lines(method, options = {})
+    options = objectify_options(options)
+    attr_value = options[:object].send(method)
+    options[:class] = 'form-control technical-input'
+    options[:value] = attr_value.join("\n")
+    options[:rows] = calc_row_count(5, attr_value.size)
+    @template.text_area @object_name, method, options
+  end
+
   private
 
   def calc_row_count(given_row_count, content_length)
     default_row_count = 12
-    [default_row_count, given_row_count, content_length].map(&:to_i).max
+    [[default_row_count, given_row_count].map(&:to_i).min, content_length.to_i].max
   end
 end
