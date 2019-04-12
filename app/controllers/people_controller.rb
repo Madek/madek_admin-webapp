@@ -1,4 +1,5 @@
 class PeopleController < ApplicationController
+  include ApplicationHelper
   include Concerns::Filters
 
   def index
@@ -81,21 +82,7 @@ class PeopleController < ApplicationController
   def person_params
     pp = params.require(:person).permit!
     pp.map { |k, v| [k, v.presence] }.to_h
-    pp.merge(external_uris: parse_external_uris(pp.external_uris))
+      .merge(external_uris: parse_external_uris(pp[:external_uris]))
   end
 
-  def parse_external_uris(text)
-    text.split("\n").map do |line|
-      begin
-        uri = URI.parse(line.strip)
-        # cleanup
-        uri.user = nil
-        uri.password = nil
-        # ok
-        uri.to_s
-      rescue
-        nil
-      end
-    end.compact
-  end
 end

@@ -23,8 +23,8 @@ class AdminFormBuilder < ActionView::Helpers::FormBuilder
     options = objectify_options(options)
     attr_value = options[:object].send(method)
     options[:class] = 'form-control technical-input'
-    options[:value] = attr_value.join("\n")
-    options[:rows] = calc_row_count(5, attr_value.size)
+    options[:value] = attr_value.try(:join, "\n")
+    options[:rows] = calc_row_count(options[:rows] || 5, attr_value.try(:size))
     @template.text_area @object_name, method, options
   end
 

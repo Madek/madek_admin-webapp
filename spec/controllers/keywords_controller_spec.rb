@@ -101,20 +101,33 @@ describe KeywordsController do
   end
 
   describe '#update' do
+    let(:ext_uris_txt) do
+      <<-TEXTAREA
+      http://geonames.org/countries/CH/
+        https://user:pass@ld.example.com/foo/bar
+    TEXTAREA
+    end
+
+    let(:ext_uris) do
+      ['http://geonames.org/countries/CH/', 'https://ld.example.com/foo/bar']
+    end
+
     let(:params) do
       {
         vocabulary_id: vocabulary.id,
         id: keyword.id,
         keyword: {
-          term: 'updated term'
+          term: 'updated term',
+          external_uris: ext_uris_txt
         }
       }
     end
 
-    it "updates the keyword's term" do
+    it 'updates the keyword' do
       put :update, params, user_id: admin_user.id
-
-      expect(keyword.reload.term).to eq 'updated term'
+      kw = keyword.reload
+      expect(kw.term).to eq 'updated term'
+      expect(kw.external_uris).to eq ext_uris
       expect(flash[:success]).to eq flash_message(:update, :success)
     end
 

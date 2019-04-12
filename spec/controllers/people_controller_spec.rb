@@ -142,26 +142,34 @@ describe PeopleController do
       @person = create :person
     end
 
-    it 'redirects to admin person show page' do
-      patch(
-        :update,
-        { id: @person.id, person: { first_name: 'test' } },
-        session
-      )
+    let(:ext_uris_txt) do
+      <<-TEXTAREA
+      http://geonames.org/countries/CH/
+        https://user:pass@ld.example.com/foo/bar
+    TEXTAREA
+    end
 
+    let(:ext_uris) do
+      ['http://geonames.org/countries/CH/', 'https://ld.example.com/foo/bar']
+    end
+
+    let(:params) do
+      { id: @person.id, person: { first_name: 'test',
+                                  external_uris: ext_uris_txt } }
+    end
+
+    it 'redirects to admin person show page' do
+      patch(:update, params, session)
       expect(response).to have_http_status(302)
       expect(response).to redirect_to(person_path(@person))
     end
 
     it 'updates the person' do
-      patch(
-        :update,
-        { id: @person.id, person: { first_name: 'test' } },
-        session
-      )
-
+      patch(:update, params, session)
+      p = @person.reload
       expect(flash[:success]).to eq 'The person has been updated.'
-      expect(@person.reload.first_name).to eq 'test'
+      expect(p.first_name).to eq 'test'
+      expect(p.external_uris).to eq ext_uris
     end
 
     it 'displays error message when something went wrong' do

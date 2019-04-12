@@ -82,4 +82,18 @@ module ApplicationHelper
     end
   end
 
+  def parse_external_uris(text)
+    return unless text.present? and text.is_a?(String)
+    text.split("\n").map do |line|
+      begin
+        uri = URI.parse(line.strip)
+        uri.user = nil
+        uri.password = nil
+        uri
+      rescue
+        nil
+      end
+    end.map(&:to_s).map(&:presence).compact
+  end
+
 end

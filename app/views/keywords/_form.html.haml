@@ -1,4 +1,4 @@
-= form_for @keyword, html: { class: 'form-horizontal', role: 'form' } do |f|
+= form_for @keyword, html: { class: 'form-horizontal', role: 'form' }, builder: AdminFormBuilder do |f|
   - if @keyword.persisted?
     .form-group
       .col-xs-2
@@ -22,9 +22,13 @@
       = f.text_field :description, class: 'form-control'
   .form-group
     .col-xs-2
-      %label.control-label= 'External URI'
+      %label.control-label
+        External URIs
+        %br
+        %small
+          %em 1 per line
     .col-xs-6
-      = f.text_field :external_uri, class: 'form-control'
+      = f.list_as_lines :external_uris
   .form-group
     .col-xs-offset-2.col-xs-3
       = button_tag type: 'submit', class: 'btn btn-success' do

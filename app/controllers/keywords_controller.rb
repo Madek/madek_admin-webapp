@@ -1,4 +1,6 @@
 class KeywordsController < ApplicationController
+  include ApplicationHelper
+
   def index
     @vocabularies = Vocabulary.reorder(:id)
     @keywords = Keyword
@@ -97,7 +99,8 @@ class KeywordsController < ApplicationController
   private
 
   def keyword_params
-    params.require(:keyword).permit(:term, :meta_key_id)
+    kp = params.require(:keyword).permit(:term, :meta_key_id, :external_uris)
+    kp.merge(external_uris: parse_external_uris(kp[:external_uris]))
   end
 
   def filter
