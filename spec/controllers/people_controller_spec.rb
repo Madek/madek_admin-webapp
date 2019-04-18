@@ -6,16 +6,16 @@ describe PeopleController do
 
   describe '#index' do
     it 'responds with HTTP 200 status code' do
-      get :index, nil, session
+      get :index, session: session
 
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(response).to have_http_status(200)
     end
 
     it 'loads the first page of people into @people' do
-      get :index, nil, session
+      get :index, session: session
 
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(assigns(:people)).to eq Person.first(16)
     end
 
@@ -26,18 +26,18 @@ describe PeopleController do
           person_2 = create :person, first_name: 'test2xxx'
           person_3 = create :person, first_name: 'test3xxx'
 
-          get :index, { filter: { search_term: 'xxx' } }, session
+          get :index, params: { filter: { search_term: 'xxx' } }, session: session
 
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(assigns(:people)).to match_array [person_1, person_2, person_3]
         end
       end
 
       context 'with user' do
         it 'returns only people with user' do
-          get :index, { with_user: 1 }, session
+          get :index, params: { with_user: 1 }, session: session
 
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(assigns(:people)).to match_array Person.with_user
         end
       end
@@ -48,27 +48,30 @@ describe PeopleController do
         let!(:people_instgroup) { create :people_instgroup, first_name: 'Foo' }
 
         it 'returns only people with "Person" subtype' do
-          get :index, filter_params('Person'), session
+          get :index, params: filter_params('Person'), session: session
 
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(assigns[:people]).to include person
           expect(assigns[:people]).not_to include people_group
           expect(assigns[:people]).not_to include people_instgroup
         end
 
         it 'returns only people with "PeopleGroup" subtype' do
-          get :index, filter_params('PeopleGroup'), session
+          get :index, params: filter_params('PeopleGroup'), session: session
 
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(assigns[:people]).to include people_group
           expect(assigns[:people]).not_to include person
           expect(assigns[:people]).not_to include people_instgroup
         end
 
         it 'returns only people with "PeopleInstitutionalGroup" subtype' do
-          get :index, filter_params('PeopleInstitutionalGroup'), session
+          get(
+            :index,
+            params: filter_params('PeopleInstitutionalGroup'),
+            session: session)
 
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(assigns[:people]).to include people_instgroup
           expect(assigns[:people]).not_to include person
           expect(assigns[:people]).not_to include people_group
@@ -85,7 +88,10 @@ describe PeopleController do
       let(:receiver)   { create :person }
 
       it 'assigns @merge_originator if given' do
-        get :index, { merge_originator_id: originator.id }, session
+        get(
+          :index,
+          params: { merge_originator_id: originator.id },
+          session: session)
 
         expect(assigns[:merge_originator]).to eq originator
       end
@@ -98,20 +104,20 @@ describe PeopleController do
     end
 
     it 'responds with HTTP 200 status code' do
-      get :show, { id: @person.id }, session
+      get :show, params: { id: @person.id }, session: session
 
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(response).to have_http_status(200)
     end
 
     it 'renders the show template' do
-      get :show, { id: @person.id }, session
+      get :show, params: { id: @person.id }, session: session
 
       expect(response).to render_template(:show)
     end
 
     it 'loads the proper person into @person' do
-      get :show, { id: @person.id }, session
+      get :show, params: { id: @person.id }, session: session
 
       expect(assigns[:person]).to eq @person
     end
@@ -123,14 +129,14 @@ describe PeopleController do
     end
 
     it 'responds with HTTP 200 status code' do
-      get :edit, { id: @person.id }, session
+      get :edit, params: { id: @person.id }, session: session
 
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(response).to have_http_status(200)
     end
 
     it 'render the edit template and assigns the person to @person' do
-      get :edit, { id: @person.id }, session
+      get :edit, params: { id: @person.id }, session: session
 
       expect(response).to render_template(:edit)
       expect(assigns[:person]).to eq @person
@@ -159,13 +165,13 @@ describe PeopleController do
     end
 
     it 'redirects to admin person show page' do
-      patch(:update, params, session)
+      patch(:update, params: params, session: session)
       expect(response).to have_http_status(302)
       expect(response).to redirect_to(person_path(@person))
     end
 
     it 'updates the person' do
-      patch(:update, params, session)
+      patch(:update, params: params, session: session)
       p = @person.reload
       expect(flash[:success]).to eq 'The person has been updated.'
       expect(p.first_name).to eq 'test'
@@ -173,7 +179,7 @@ describe PeopleController do
     end
 
     it 'displays error message when something went wrong' do
-      patch :update, { id: @person.id }, session
+      patch :update, params: { id: @person.id }, session: session
 
       expect(response).to have_http_status(302)
       expect(response).to redirect_to(edit_person_path(@person))
@@ -183,7 +189,7 @@ describe PeopleController do
 
   describe '#create' do
     it 'redirects to admin people path after successfuly created person' do
-      post :create, { person: attributes_for(:person) }, session
+      post :create, params: { person: attributes_for(:person) }, session: session
 
       expect(response).to have_http_status(302)
       expect(response).to redirect_to(people_path)
@@ -193,15 +199,15 @@ describe PeopleController do
 
     it 'creates a person' do
       expect do
-        post :create, { person: attributes_for(:person) }, session
+        post :create, params: { person: attributes_for(:person) }, session: session
       end.to change { Person.count }.by(1)
     end
 
     context 'when validation failed' do
       it "renders 'new' template" do
-        post :create, nil, session
+        post :create, session: session
 
-        expect(response).to be_success
+        expect(response).to be_successful
         expect(response).to have_http_status(200)
         expect(response).to render_template(:new)
         expect(flash[:error]).to be_present
@@ -209,7 +215,7 @@ describe PeopleController do
 
       it 'assigns @person with previously given values' do
         attributes = { first_name: 'example_name' }
-        post :create, { person: attributes }, session
+        post :create, params: { person: attributes }, session: session
 
         expect(assigns[:person].first_name).to eq 'example_name'
       end
@@ -220,7 +226,7 @@ describe PeopleController do
     let!(:person) { create :person }
 
     it 'redirects to admin people path after succesful destroy' do
-      delete :destroy, { id: person.id }, session
+      delete :destroy, params: { id: person.id }, session: session
 
       expect(response).to redirect_to(people_path)
       expect(flash[:success]).to eq 'The person has been deleted.'
@@ -228,7 +234,7 @@ describe PeopleController do
 
     it 'destroys the person' do
       expect do
-        delete :destroy, { id: person.id }, session
+        delete :destroy, params: { id: person.id }, session: session
       end.to change { Person.count }.by(-1)
     end
   end
@@ -238,7 +244,10 @@ describe PeopleController do
     let(:receiver)   { create :person }
 
     it 'redirects to /people with success message' do
-      post :merge_to, { id: receiver.id, originator_id: originator.id }, session
+      post(
+        :merge_to,
+        params: { id: receiver.id, originator_id: originator.id },
+        session: session)
 
       expect(response).to redirect_to people_path
       expect(flash[:success]).not_to be_empty
@@ -249,7 +258,10 @@ describe PeopleController do
         allow_any_instance_of(Person).to receive(:merge_to)
                                            .and_raise(ActiveRecord::RecordNotFound)
 
-        post :merge_to, { id: receiver.id, originator_id: originator.id }, session
+        post(
+          :merge_to,
+          params: { id: receiver.id, originator_id: originator.id },
+          session: session)
 
         expect(response).to redirect_to people_path
         expect(flash[:error]).not_to be_empty

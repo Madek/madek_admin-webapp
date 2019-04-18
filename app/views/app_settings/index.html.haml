@@ -43,7 +43,10 @@
               - elsif attr == :featured_set_id
                 = collection_as_link(@app_settings.send(attr))
               - else
-                = @app_settings.send(attr)
+                - if AppSetting.localized_field?(attr)
+                  = render 'localized_setting', attr: attr
+                - else
+                  = @app_settings.send(attr)
 
     = link_to edit_app_setting_path(:explore_page), class: 'btn btn-info btn-sm' do
       %span.glyphicon.glyphicon-edit

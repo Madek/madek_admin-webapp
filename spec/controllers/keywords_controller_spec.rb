@@ -9,12 +9,12 @@ describe KeywordsController do
   describe '#index' do
     before do
       get :index,
-          { vocabulary_id: vocabulary.id },
-          user_id: admin_user.id
+          params: { vocabulary_id: vocabulary.id },
+          session: { user_id: admin_user.id }
     end
 
     it 'responds with HTTP 200 status code' do
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(response).to have_http_status(200)
     end
 
@@ -27,8 +27,8 @@ describe KeywordsController do
         it 'returns a proper keyword' do
           get(
             :index,
-            { vocabulary_id: vocabulary.id, search_term: keyword.id },
-            user_id: admin_user.id
+            params: { vocabulary_id: vocabulary.id, search_term: keyword.id },
+            session: { user_id: admin_user.id }
           )
 
           expect(assigns[:keywords]).to match_array [keyword]
@@ -39,8 +39,10 @@ describe KeywordsController do
         it 'returns a proper keyword ' do
           get(
             :index,
-            { vocabulary_id: vocabulary.id, search_term: keyword.term[0..-2] },
-            user_id: admin_user.id
+            params: {
+              vocabulary_id: vocabulary.id,
+              search_term: keyword.term[0..-2] },
+            session: { user_id: admin_user.id }
           )
 
           expect(assigns[:keywords]).to match_array [keyword]
@@ -51,11 +53,11 @@ describe KeywordsController do
         it 'returns a proper keyword' do
           get(
             :index,
-            {
+            params: {
               vocabulary_id: vocabulary.id,
               search_term: keyword.meta_key_id
             },
-            user_id: admin_user.id
+            session: { user_id: admin_user.id }
           )
 
           expect(assigns[:keywords]).to match_array [keyword]
@@ -71,13 +73,13 @@ describe KeywordsController do
 
           get(
             :index,
-            {
+            params: {
               filter: {
                 not_used: 1
               },
               search_term: 'foo'
             },
-            user_id: admin_user.id
+            session: { user_id: admin_user.id }
           )
 
           expect(assigns[:keywords]).to match_array [not_used_keyword]
@@ -90,8 +92,8 @@ describe KeywordsController do
     it 'assigns @vocabulary and @keyword correctly' do
       get(
         :edit,
-        { vocabulary_id: vocabulary.id, id: keyword.id },
-        user_id: admin_user.id
+        params: { vocabulary_id: vocabulary.id, id: keyword.id },
+        session: { user_id: admin_user.id }
       )
 
       expect(assigns[:vocabulary]).to eq vocabulary
@@ -124,7 +126,7 @@ describe KeywordsController do
     end
 
     it 'updates the keyword' do
-      put :update, params, user_id: admin_user.id
+      put :update, params: params, session: { user_id: admin_user.id }
       kw = keyword.reload
       expect(kw.term).to eq 'updated term'
       expect(kw.external_uris).to eq ext_uris
@@ -132,7 +134,7 @@ describe KeywordsController do
     end
 
     it 'redirects to admin keyword path' do
-      put :update, params, user_id: admin_user.id
+      put :update, params: params, session: { user_id: admin_user.id }
 
       expect(response).to have_http_status(302)
       expect(response).to redirect_to(
@@ -142,7 +144,12 @@ describe KeywordsController do
   end
 
   describe '#new' do
-    before { get :new, { vocabulary_id: vocabulary.id }, user_id: admin_user.id }
+    before do
+      get(
+        :new,
+        params: { vocabulary_id: vocabulary.id },
+        session: { user_id: admin_user.id })
+    end
 
     it 'assigns @vocabulary correctly' do
       expect(assigns[:vocabulary]).to eq vocabulary
@@ -170,12 +177,16 @@ describe KeywordsController do
     end
 
     it 'creates a new keyword' do
-      expect { post :create, keyword_params, user_id: admin_user.id }
-        .to change { Keyword.count }.by(1)
+      expect do
+        post(
+          :create,
+          params: keyword_params,
+          session: { user_id: admin_user.id })
+      end.to change { Keyword.count }.by(1)
     end
 
     it 'redirects to admin keywords path' do
-      post :create, keyword_params, user_id: admin_user.id
+      post :create, params: keyword_params, session: { user_id: admin_user.id }
 
       expect(response).to have_http_status(302)
       expect(response).to redirect_to(
@@ -185,7 +196,7 @@ describe KeywordsController do
     end
 
     it 'displays success message' do
-      post :create, keyword_params, user_id: admin_user.id
+      post :create, params: keyword_params, session: { user_id: admin_user.id }
 
       expect(flash[:success]).not_to be_empty
     end
@@ -198,8 +209,8 @@ describe KeywordsController do
       expect do
         delete(
           :destroy,
-          { vocabulary_id: vocabulary.id, id: keyword.id },
-          user_id: admin_user.id
+          params: { vocabulary_id: vocabulary.id, id: keyword.id },
+          session: { user_id: admin_user.id }
         )
       end.to change { Keyword.count }.by(-1)
     end
@@ -208,8 +219,8 @@ describe KeywordsController do
       before do
         delete(
           :destroy,
-          { vocabulary_id: vocabulary.id, id: keyword.id },
-          user_id: admin_user.id
+          params: { vocabulary_id: vocabulary.id, id: keyword.id },
+          session: { user_id: admin_user.id }
         )
       end
 
@@ -229,11 +240,11 @@ describe KeywordsController do
       it 'renders error template' do
         delete(
           :destroy,
-          {
+          params: {
             vocabulary_id: vocabulary.id,
             id: UUIDTools::UUID.random_create
           },
-          user_id: admin_user.id
+          session: { user_id: admin_user.id }
         )
 
         expect(response).to have_http_status(:not_found)
@@ -244,7 +255,10 @@ describe KeywordsController do
 
   describe '#form_merge_to' do
     before(:each) do
-      get :form_merge_to, { id: keyword.id }, user_id: admin_user.id
+      get(
+        :form_merge_to,
+        params: { id: keyword.id },
+        session: { user_id: admin_user.id })
     end
 
     it 'assigns variables correctly' do
@@ -267,8 +281,8 @@ describe KeywordsController do
       before(:each) do
         post(
           :merge_to,
-          { id: keyword.id, id_receiver: keyword.id },
-          user_id: admin_user.id
+          params: { id: keyword.id, id_receiver: keyword.id },
+          session: { user_id: admin_user.id }
         )
       end
 
@@ -286,11 +300,12 @@ describe KeywordsController do
       before(:each) do
         post(
           :merge_to,
-          { id: keyword.id,
+          params: {
+            id: keyword.id,
             id_receiver: receiver.id,
             redirect_to: '/redirected-to'
           },
-          user_id: admin_user.id
+          session: { user_id: admin_user.id }
         )
       end
 
@@ -307,12 +322,12 @@ describe KeywordsController do
 
   describe '#usage' do
     it 'responds with HTTP 200 status code' do
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(response).to have_http_status(200)
     end
 
     it 'assigns variables correctly' do
-      get :usage, { id: keyword.id }, user_id: admin_user.id
+      get :usage, params: { id: keyword.id }, session: { user_id: admin_user.id }
 
       expect(assigns[:keyword]).to eq keyword
       expect(assigns[:usage_count]).to eq 0

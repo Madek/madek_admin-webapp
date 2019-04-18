@@ -5,29 +5,29 @@ describe AppSettingsController do
   let(:app_settings) { AppSetting.first }
   before(:each) do
     unless AppSetting.first
-      create :app_settings, id: 0
+      create :app_setting, id: 0
     end
   end
 
   describe '#index' do
     it 'responds with status code 200' do
-      get :index, nil, user_id: admin_user.id
+      get :index, session: { user_id: admin_user.id }
 
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(response).to have_http_status(200)
     end
   end
 
   describe '#edit' do
     it 'assigns @field a proper setting' do
-      get :edit, { id: 'title' }, user_id: admin_user.id
+      get :edit, params: { id: 'title' }, session: { user_id: admin_user.id }
       expect(assigns[:app_settings]).to eq app_settings
       expect(assigns[:field]).to eq 'title'
       expect(response).to render_template :edit
     end
 
     it 'assigns @field a proper yaml setting' do
-      get :edit, { id: 'sitemap' }, user_id: admin_user.id
+      get :edit, params: { id: 'sitemap' }, session: { user_id: admin_user.id }
       expect(assigns[:app_settings]).to eq app_settings
       expect(assigns[:field]).to eq 'sitemap'
       expect(response).to render_template :edit
@@ -38,8 +38,8 @@ describe AppSettingsController do
     it 'redirects to app_settings#index after successful update' do
       patch(
         :update,
-        { id: app_settings.id, app_setting: { title: 'NEW TITLE' } },
-        user_id: admin_user.id
+        params: { id: app_settings.id, app_setting: { title: 'NEW TITLE' } },
+        session: { user_id: admin_user.id }
       )
 
       expect(response).to have_http_status(302)
@@ -49,31 +49,51 @@ describe AppSettingsController do
     it 'updates a setting' do
       patch(
         :update,
-        { id: app_settings.id, app_setting: { site_title: 'NEW TITLE' } },
-        user_id: admin_user.id
+        params: {
+          id: app_settings.id,
+          app_setting: {
+            site_titles: {
+              de: 'neuer Titel',
+              en: 'NEW TITLE'
+            }
+          }
+        },
+        session: { user_id: admin_user.id }
       )
 
       expect(flash[:success]).to eq flash_message(:update, :success)
-      expect(app_settings.reload.site_title).to eq 'NEW TITLE'
+      expect(app_settings.reload.site_title).to eq 'neuer Titel'
+      expect(app_settings.reload.site_title(:en)).to eq 'NEW TITLE'
     end
 
-    it 'updates a yaml setting' do
-      yaml = "---\n" \
-        "- About the project: http://www.test.ch/?test\n" \
-        "- Impressum: http://www.test.ch/index.php?id=12970\n" \
-        "- Contact: http://www.test.ch/index.php?id=49591\n" \
-        "- Help: http://wiki.test.ch/test-hilfe\n" \
-        "- Terms of Use: https://wiki.test.ch/test-hilfe/doku.php?id=terms\n" \
-        "- Archivierungsrichtlinien ZHdK: http://www.test.ch/?archivierung\n"
+    it 'updates a yaml setting', type: :feature do
+      new_sitemap = YAML.safe_load <<-YAML
+        de:
+          - "Über das Projekt": http://www.test.ch/?test
+          - "Impressum": http://www.test.ch/index.php?id=12970
+          - "Kontakt": http://www.test.ch/index.php?id=49591
+          - "Hilfe": http://wiki.test.ch/test-hilfe
+          - "Nutzungsbedingungen": https://wiki.test.ch/test-hilfe/doku.php?id=terms
+          - "Archivierungsrichtlinien ZHdK": http://www.test.ch/?archivierung
+        en:
+          - "About the project": http://www.test.ch/?test
+          - "Legal": http://www.test.ch/index.php?id=12970
+          - "Contact": http://www.test.ch/index.php?id=49591
+          - "Help": http://wiki.test.ch/test-hilfe
+          - "Terms of Use": https://wiki.test.ch/test-hilfe/doku.php?id=terms
+      YAML
 
       patch(
         :update,
-        { id: app_settings.id, app_setting: { sitemap: yaml } },
-        user_id: admin_user.id
+        params: {
+          id: app_settings.id,
+          app_setting: { sitemap: new_sitemap.to_yaml }
+        },
+        session: { user_id: admin_user.id }
       )
 
       expect(flash[:success]).to eq flash_message(:update, :success)
-      expect(app_settings.reload.sitemap.to_yaml).to eq yaml
+      expect(app_settings.reload.sitemap).to eq new_sitemap
     end
   end
 

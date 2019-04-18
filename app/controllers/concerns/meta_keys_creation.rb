@@ -7,7 +7,7 @@ module Concerns
     end
 
     def create
-      attr = meta_key_params.deep_symbolize_keys
+      attr = meta_key_params.to_h.deep_symbolize_keys
 
       # if vocabulary prefix wasn't given, we can just infer it:
       unless attr[:id].include?(':')

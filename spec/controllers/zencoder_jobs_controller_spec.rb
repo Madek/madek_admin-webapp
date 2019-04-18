@@ -5,10 +5,15 @@ describe ZencoderJobsController do
   let(:zencoder_job) { create :zencoder_job }
 
   describe '#show' do
-    before { get :show, { id: zencoder_job.id }, user_id: admin_user.id }
+    before do
+      get(
+        :show,
+        params: { id: zencoder_job.id },
+        session: { user_id: admin_user.id })
+    end
 
     it 'responds with 200 HTTP status code' do
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(response).to have_http_status(200)
     end
 
