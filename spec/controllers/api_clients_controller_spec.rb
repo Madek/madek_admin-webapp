@@ -5,16 +5,16 @@ describe ApiClientsController do
 
   describe '#index' do
     it 'responds with HTTP 200 status code' do
-      get :index, nil, user_id: admin_user.id
+      get :index, session: { user_id: admin_user.id }
 
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(response).to have_http_status(200)
     end
 
     it 'loads the first page of api_clients into api_clients' do
-      get :index, nil, user_id: admin_user.id
+      get :index, session: { user_id: admin_user.id }
 
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(assigns(:api_clients)).to eq ApiClient.first(16)
     end
   end
@@ -23,20 +23,20 @@ describe ApiClientsController do
     let(:api_client) { create :api_client }
 
     it 'responds with HTTP 200 status code' do
-      get :show, { id: api_client.id }, user_id: admin_user.id
+      get :show, params: { id: api_client.id }, session: { user_id: admin_user.id }
 
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(response).to have_http_status(200)
     end
 
     it 'renders the show template' do
-      get :show, { id: api_client.id }, user_id: admin_user.id
+      get :show, params: { id: api_client.id }, session: { user_id: admin_user.id }
 
       expect(response).to render_template(:show)
     end
 
     it 'loads the proper api_client into api_client' do
-      get :show, { id: api_client.id }, user_id: admin_user.id
+      get :show, params: { id: api_client.id }, session: { user_id: admin_user.id }
 
       expect(assigns[:api_client]).to eq api_client
     end
@@ -56,8 +56,8 @@ describe ApiClientsController do
       it 'assigns @api_client correctly' do
         get(
           :new,
-          { new_api_client: new_api_client_params },
-          user_id: admin_user.id
+          params: { new_api_client: new_api_client_params },
+          session: { user_id: admin_user.id }
         )
 
         expect(assigns[:api_client].login).to eq new_api_client_params[:login]
@@ -72,14 +72,14 @@ describe ApiClientsController do
     let(:api_client) { create :api_client }
 
     it 'responds with HTTP 200 status code' do
-      get :edit, { id: api_client.id }, user_id: admin_user.id
+      get :edit, params: { id: api_client.id }, session: { user_id: admin_user.id }
 
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(response).to have_http_status(200)
     end
 
     it 'render the edit template and assigns the api_client to api_client' do
-      get :edit, { id: api_client.id }, user_id: admin_user.id
+      get :edit, params: { id: api_client.id }, session: { user_id: admin_user.id }
 
       expect(response).to render_template(:edit)
       expect(assigns[:api_client]).to eq api_client
@@ -92,8 +92,10 @@ describe ApiClientsController do
     it 'redirects to admin api_client show page' do
       patch(
         :update,
-        { id: api_client.id, api_client: { description: 'test description' } },
-        user_id: admin_user.id
+        params: {
+          id: api_client.id,
+          api_client: { description: 'test description' } },
+        session: { user_id: admin_user.id }
       )
 
       expect(response).to have_http_status(302)
@@ -103,8 +105,10 @@ describe ApiClientsController do
     it 'updates the api_client' do
       patch(
         :update,
-        { id: api_client.id, api_client: { description: 'test description' } },
-        user_id: admin_user.id
+        params: {
+          id: api_client.id,
+          api_client: { description: 'test description' } },
+        session: { user_id: admin_user.id }
       )
 
       expect(flash[:success]).to eq flash_message(:update, :success)
@@ -125,8 +129,11 @@ describe ApiClientsController do
       it 'redirects to users listing with proper url params' do
         patch(
           :update,
-          { id: api_client.id, api_client: api_client_params, change_user: '' },
-          user_id: admin_user.id
+          params: {
+            id: api_client.id,
+            api_client: api_client_params,
+            change_user: '' },
+          session: { user_id: admin_user.id }
         )
 
         expect(response).to have_http_status(302)
@@ -148,7 +155,10 @@ describe ApiClientsController do
     end
 
     it 'redirects to admin api_clients path after successful create' do
-      post :create, { api_client: api_client_params }, user_id: admin_user.id
+      post(
+        :create,
+        params: { api_client: api_client_params },
+        session: { user_id: admin_user.id })
 
       expect(response).to have_http_status(302)
       expect(response).to redirect_to(api_clients_path)
@@ -157,14 +167,20 @@ describe ApiClientsController do
 
     it 'creates an api_client' do
       expect do
-        post :create, { api_client: api_client_params }, user_id: admin_user.id
+        post(
+          :create,
+          params: { api_client: api_client_params },
+          session: { user_id: admin_user.id })
       end.to change { ApiClient.count }.by(1)
     end
 
     context 'when user is missing' do
       it 'redirects to users listing with proper url params' do
         api_client_params[:user_id] = nil
-        post :create, { api_client: api_client_params }, user_id: admin_user.id
+        post(
+          :create,
+          params: { api_client: api_client_params },
+          session: { user_id: admin_user.id })
 
         expect(response).to have_http_status(302)
         expect(response).to redirect_to(
@@ -178,7 +194,10 @@ describe ApiClientsController do
     let!(:api_client) { create :api_client }
 
     it 'redirects to admin api_clients path after succesful destroy' do
-      delete :destroy, { id: api_client.id }, user_id: admin_user.id
+      delete(
+        :destroy,
+        params: { id: api_client.id },
+        session: { user_id: admin_user.id })
 
       expect(response).to redirect_to(api_clients_path)
       expect(flash[:success]).to eq flash_message(:destroy, :success)
@@ -186,7 +205,10 @@ describe ApiClientsController do
 
     it 'destroys the api_client' do
       expect do
-        delete :destroy, { id: api_client.id }, user_id: admin_user.id
+        delete(
+          :destroy,
+          params: { id: api_client.id },
+          session: { user_id: admin_user.id })
       end.to change { ApiClient.count }.by(-1)
     end
   end

@@ -5,16 +5,16 @@ describe MediaEntriesController do
 
   describe '#index' do
     it 'responds with HTTP 200 status code' do
-      get :index, nil, user_id: admin_user.id
+      get :index, session: { user_id: admin_user.id }
 
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(response).to have_http_status(200)
     end
 
     it 'loads the first page of media entries into @media_entries' do
-      get :index, nil, user_id: admin_user.id
+      get :index, session: { user_id: admin_user.id }
 
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(assigns(:media_entries)).to eq MediaEntry.first(16)
     end
 
@@ -23,9 +23,12 @@ describe MediaEntriesController do
         it 'returns a media entry' do
           media_entry = create :media_entry
 
-          get :index, { search_term: media_entry.id }, user_id: admin_user.id
+          get(
+            :index,
+            params: { search_term: media_entry.id },
+            session: { user_id: admin_user.id })
 
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(response).to have_http_status(200)
           expect(assigns[:media_entries]).to eq [media_entry]
         end
@@ -35,7 +38,10 @@ describe MediaEntriesController do
         it 'returns a media entry' do
           media_entry = create :media_entry_with_title, title: 'TITLE'
 
-          get :index, { search_term: 'TITLE' }, user_id: admin_user.id
+          get(
+            :index,
+            params: { search_term: 'TITLE' },
+            session: { user_id: admin_user.id })
 
           expect(assigns[:media_entries]).to eq [media_entry]
           expect(media_entry.title).to eq 'TITLE'
@@ -46,7 +52,10 @@ describe MediaEntriesController do
         it 'returns a media entry' do
           media_entry = create :media_entry, is_published: false
 
-          get :index, { filter: { is_published: '0' } }, user_id: admin_user.id
+          get(
+            :index,
+            params: { filter: { is_published: '0' } },
+            session: { user_id: admin_user.id })
 
           expect(assigns[:media_entries]).to eq [media_entry]
         end
@@ -56,7 +65,10 @@ describe MediaEntriesController do
         it 'returns a media entry' do
           create :media_entry
 
-          get :index, { filter: { is_published: '1' } }, user_id: admin_user.id
+          get(
+            :index,
+            params: { filter: { is_published: '1' } },
+            session: { user_id: admin_user.id })
 
           expect(assigns[:media_entries].map(&:is_published).uniq).to eq [true]
         end
@@ -66,10 +78,15 @@ describe MediaEntriesController do
 
   describe '#show' do
     let(:media_entry) { create :media_entry }
-    before { get :show, { id: media_entry.id }, user_id: admin_user.id }
+    before do
+      get(
+        :show,
+        params: { id: media_entry.id },
+        session: { user_id: admin_user.id })
+    end
 
     it 'responds with 200 HTTP status code' do
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(response).to have_http_status(200)
     end
 

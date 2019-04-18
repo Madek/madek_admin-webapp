@@ -11,10 +11,15 @@ describe VocabularyApiClientPermissionsController do
     let(:second_api_client_permission) do
       create(:vocabulary_api_client_permission, vocabulary: vocabulary)
     end
-    before { get :index, { vocabulary_id: vocabulary.id }, user_id: admin_user.id }
+    before do
+      get(
+        :index,
+        params: { vocabulary_id: vocabulary.id },
+        session: { user_id: admin_user.id })
+    end
 
     it 'responds with HTTP 200 status code' do
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(response).to have_http_status(200)
     end
 
@@ -28,7 +33,10 @@ describe VocabularyApiClientPermissionsController do
     let(:new_api_client) { create(:api_client) }
 
     it 'assigns locals correctly' do
-      get :new, { vocabulary_id: vocabulary.id }, user_id: admin_user.id
+      get(
+        :new,
+        params: { vocabulary_id: vocabulary.id },
+        session: { user_id: admin_user.id })
 
       expect(assigns[:vocabulary]).to eq vocabulary
       expect(assigns[:permission]).to be_an_instance_of(
@@ -37,14 +45,19 @@ describe VocabularyApiClientPermissionsController do
 
     it "assigns api_client_id value of permission's instance from params" do
       get(:new,
-          { vocabulary_id: vocabulary.id, api_client_id: new_api_client.id },
-          user_id: admin_user.id)
+          params: {
+            vocabulary_id: vocabulary.id,
+            api_client_id: new_api_client.id },
+          session: { user_id: admin_user.id })
 
       expect(assigns[:permission].api_client_id).to eq new_api_client.id
     end
 
     it 'renders new template' do
-      get :new, { vocabulary_id: vocabulary.id }, user_id: admin_user.id
+      get(
+        :new,
+        params: { vocabulary_id: vocabulary.id },
+        session: { user_id: admin_user.id })
 
       expect(response).to render_template(:new)
     end
@@ -54,13 +67,13 @@ describe VocabularyApiClientPermissionsController do
     it 'creates a permission correctly' do
       expect do
         post(:create,
-             {
+             params: {
                vocabulary_id: vocabulary.id,
                vocabulary_api_client_permission: {
                  api_client_id: create(:api_client).id
                }
              },
-             user_id: admin_user.id)
+             session: { user_id: admin_user.id })
       end.to change { Permissions::VocabularyApiClientPermission.count }.by(1)
     end
 
@@ -68,26 +81,26 @@ describe VocabularyApiClientPermissionsController do
       session[:vocabulary_id] = 123
 
       post(:create,
-           {
+           params: {
              vocabulary_id: vocabulary.id,
              vocabulary_api_client_permission: {
                api_client_id: create(:api_client).id
              }
            },
-           user_id: admin_user.id)
+           session: { user_id: admin_user.id })
 
       expect(session[:vocabulary_id]).to be_nil
     end
 
     it 'redirects to admin vocabulary api client permissions path' do
       post(:create,
-           {
+           params: {
              vocabulary_id: vocabulary.id,
              vocabulary_api_client_permission: {
                api_client_id: create(:api_client).id
              }
            },
-           user_id: admin_user.id)
+           session: { user_id: admin_user.id })
 
       expect(response).to redirect_to(
         vocabulary_vocabulary_api_client_permissions_url(vocabulary))
@@ -95,13 +108,13 @@ describe VocabularyApiClientPermissionsController do
 
     it 'sets a correct flash message' do
       post(:create,
-           {
+           params: {
              vocabulary_id: vocabulary.id,
              vocabulary_api_client_permission: {
                api_client_id: create(:api_client).id
              }
            },
-           user_id: admin_user.id)
+           session: { user_id: admin_user.id })
 
       expect(flash[:success]).to eq(
         'The Vocabulary Api Client Permission has been created.')
@@ -116,8 +129,8 @@ describe VocabularyApiClientPermissionsController do
 
     it 'assigns locals correctly' do
       get(:edit,
-          { vocabulary_id: vocabulary.id, id: permission.id },
-          user_id: admin_user.id)
+          params: { vocabulary_id: vocabulary.id, id: permission.id },
+          session: { user_id: admin_user.id })
 
       expect(assigns[:vocabulary]).to eq vocabulary
       expect(assigns[:permission]).to eq permission
@@ -125,11 +138,11 @@ describe VocabularyApiClientPermissionsController do
 
     it "assigns user_id value of permission's instance from params" do
       get(:edit,
-          {
+          params: {
             vocabulary_id: vocabulary.id,
             id: permission.id,
             api_client_id: new_api_client.id },
-          user_id: admin_user.id)
+          session: { user_id: admin_user.id })
 
       expect(assigns[:permission].api_client_id).to eq new_api_client.id
     end
@@ -146,7 +159,7 @@ describe VocabularyApiClientPermissionsController do
 
     before do
       patch :update,
-            {
+            params: {
               vocabulary_api_client_permission: {
                 api_client_id: new_api_client.id,
                 use: true,
@@ -155,7 +168,7 @@ describe VocabularyApiClientPermissionsController do
               vocabulary_id: vocabulary.id,
               id: permission.id
             },
-            user_id: admin_user.id
+            session: { user_id: admin_user.id }
     end
 
     it 'updates the permission' do
@@ -181,11 +194,11 @@ describe VocabularyApiClientPermissionsController do
 
       expect do
         delete(:destroy,
-               {
+               params: {
                  vocabulary_id: vocabulary.id,
                  id: permission.id
                },
-               user_id: admin_user.id)
+               session: { user_id: admin_user.id })
       end.to change { Permissions::VocabularyApiClientPermission.count }.by(-1)
     end
   end

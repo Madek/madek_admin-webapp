@@ -4,10 +4,10 @@ describe UsageTermsController do
   let!(:admin_user) { create :admin_user }
 
   describe '#index' do
-    before { get :index, nil, user_id: admin_user.id }
+    before { get :index, session: { user_id: admin_user.id } }
 
     it 'responds with HTTP 200 status code' do
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(response).to have_http_status(200)
     end
 
@@ -19,10 +19,15 @@ describe UsageTermsController do
 
   describe '#show' do
     let(:usage_terms) { create :usage_terms }
-    before { get :show, { id: usage_terms.id }, user_id: admin_user.id }
+    before do
+      get(
+        :show,
+        params: { id: usage_terms.id },
+        session: { user_id: admin_user.id })
+    end
 
     it 'responds with HTTP 200 status code' do
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(response).to have_http_status(200)
     end
 
@@ -36,7 +41,7 @@ describe UsageTermsController do
   end
 
   describe '#new' do
-    before { get :new, nil, user_id: admin_user.id }
+    before { get :new, session: { user_id: admin_user.id } }
 
     it 'assigns @usage_terms correctly' do
       expect(assigns[:usage_terms]).to be_an_instance_of(UsageTerms)
@@ -53,12 +58,18 @@ describe UsageTermsController do
 
     it 'creates a new usage terms' do
       expect do
-        post :create, { usage_terms: usage_terms_params }, user_id: admin_user.id
+        post(
+          :create,
+          params: { usage_terms: usage_terms_params },
+          session: { user_id: admin_user.id })
       end.to change { UsageTerms.count }.by(1)
     end
 
     it 'redirects to admin vocabularies path' do
-      post :create, { usage_terms: usage_terms_params }, user_id: admin_user.id
+      post(
+        :create,
+        params: { usage_terms: usage_terms_params },
+        session: { user_id: admin_user.id })
 
       expect(response).to have_http_status(302)
       expect(response).to redirect_to(usage_terms_path)
@@ -69,13 +80,13 @@ describe UsageTermsController do
       it 'renders error template' do
         post(
           :create,
-          {
+          params: {
             usage_terms: {
               title: nil, version: nil,
               intro: nil, body: nil
             }
           },
-          user_id: admin_user.id
+          session: { user_id: admin_user.id }
         )
 
         expect(response).to have_http_status(:unprocessable_entity)
@@ -88,12 +99,21 @@ describe UsageTermsController do
     let!(:usage_terms) { create :usage_terms }
 
     it 'destroys the usage_terms' do
-      expect { delete :destroy, { id: usage_terms.id }, user_id: admin_user.id }
-        .to change { UsageTerms.count }.by(-1)
+      expect do
+        delete(
+          :destroy,
+          params: { id: usage_terms.id },
+          session: { user_id: admin_user.id })
+      end.to change { UsageTerms.count }.by(-1)
     end
 
     context 'when delete was successful' do
-      before { delete :destroy, { id: usage_terms.id }, user_id: admin_user.id }
+      before do
+        delete(
+          :destroy,
+          params: { id: usage_terms.id },
+          session: { user_id: admin_user.id })
+      end
 
       it 'redirects to usage terms path' do
         expect(response).to have_http_status(302)
@@ -109,8 +129,8 @@ describe UsageTermsController do
       before do
         delete(
           :destroy,
-          { id: UUIDTools::UUID.random_create },
-          user_id: admin_user.id
+          params: { id: UUIDTools::UUID.random_create },
+          session: { user_id: admin_user.id }
         )
       end
 

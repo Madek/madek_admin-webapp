@@ -5,7 +5,12 @@ describe ContextKeysController do
 
   describe '#edit' do
     let(:context_key) { create :context_key }
-    before { get :edit, { id: context_key.id }, user_id: admin_user.id }
+    before do
+      get(
+        :edit,
+        params: { id: context_key.id },
+        session: { user_id: admin_user.id })
+    end
 
     it 'assigns @context_key correctly' do
       expect(assigns[:context_key]).to eq context_key
@@ -30,7 +35,7 @@ describe ContextKeysController do
         }
       }
 
-      put :update, params, user_id: admin_user.id
+      put :update, params: params, session: { user_id: admin_user.id }
 
       context_key.reload
 
@@ -51,11 +56,11 @@ describe ContextKeysController do
 
       put(
         :update,
-        {
+        params: {
           id: context_key.id,
           context_key: { id: Faker::Internet.slug }
         },
-        user_id: admin_user.id
+        session: { user_id: admin_user.id }
       )
 
       expect(context_key.reload.id).to eq previous_id
@@ -64,7 +69,12 @@ describe ContextKeysController do
 
   describe '#move_up' do
     let(:context_key) { create :context_key }
-    before { patch :move_up, { id: context_key.id }, user_id: admin_user.id }
+    before do
+      patch(
+        :move_up,
+        params: { id: context_key.id },
+        session: { user_id: admin_user.id })
+    end
 
     it 'it redirects to a proper context path' do
       expect(response).to have_http_status(302)
@@ -78,8 +88,8 @@ describe ContextKeysController do
     context 'when Context Key does not exist' do
       it 'renders error template' do
         patch :move_up,
-              { id: UUIDTools::UUID.random_create },
-              user_id: admin_user.id
+              params: { id: UUIDTools::UUID.random_create },
+              session: { user_id: admin_user.id }
 
         expect(response).to have_http_status(404)
         expect(response).to render_template 'errors/404'
@@ -89,7 +99,12 @@ describe ContextKeysController do
 
   describe '#move_down' do
     let(:context_key) { create :context_key }
-    before { patch :move_down, { id: context_key.id }, user_id: admin_user.id }
+    before do
+      patch(
+        :move_down,
+        params: { id: context_key.id },
+        session: { user_id: admin_user.id })
+    end
 
     it 'it redirects to a proper context path' do
       expect(response).to have_http_status(302)
@@ -102,7 +117,7 @@ describe ContextKeysController do
 
     context 'when ID is missing' do
       it 'renders error template' do
-        patch :move_down, { id: '' }, user_id: admin_user.id
+        patch :move_down, params: { id: '' }, session: { user_id: admin_user.id }
 
         expect(response).to have_http_status(404)
         expect(response).to render_template 'errors/404'

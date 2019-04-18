@@ -4,10 +4,10 @@ describe ContextsController do
   let(:admin_user) { create :admin_user }
 
   describe '#index' do
-    before { get :index, nil, user_id: admin_user.id }
+    before { get :index, session: { user_id: admin_user.id } }
 
     it 'responds with HTTP 200 status code' do
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(response).to have_http_status(200)
     end
 
@@ -19,10 +19,15 @@ describe ContextsController do
 
   describe '#show' do
     let(:context) { create :context_with_context_keys }
-    before { get :show, { id: context.id }, user_id: admin_user.id }
+    before do
+      get(
+        :show,
+        params: { id: context.id },
+        session: { user_id: admin_user.id })
+    end
 
     it 'responds with HTTP 200 status code' do
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(response).to have_http_status(200)
     end
 
@@ -33,7 +38,12 @@ describe ContextsController do
 
   describe '#edit' do
     let(:context) { create :context }
-    before { get :edit, { id: context.id }, user_id: admin_user.id }
+    before do
+      get(
+        :edit,
+        params: { id: context.id },
+        session: { user_id: admin_user.id })
+    end
 
     it 'assigns @context correctly' do
       expect(assigns[:context]).to eq context
@@ -60,7 +70,7 @@ describe ContextsController do
         }
       }
 
-      put :update, params, user_id: admin_user.id
+      put :update, params: params, session: { user_id: admin_user.id }
 
       context.reload
 
@@ -77,11 +87,11 @@ describe ContextsController do
 
       put(
         :update,
-        {
+        params: {
           id: context.id,
           context: { id: Faker::Internet.slug }
         },
-        user_id: admin_user.id
+        session: { user_id: admin_user.id }
       )
 
       expect(context.reload.id).to eq previous_id
@@ -89,7 +99,7 @@ describe ContextsController do
   end
 
   describe '#new' do
-    before { get :new, nil, user_id: admin_user.id }
+    before { get :new, session: { user_id: admin_user.id } }
 
     it 'assigns @context correctly' do
       expect(assigns[:context]).to be_an_instance_of(Context)
@@ -106,12 +116,18 @@ describe ContextsController do
 
     it 'creates a new Context' do
       expect do
-        post :create, { context: context_params }, user_id: admin_user.id
+        post(
+          :create,
+          params: { context: context_params },
+          session: { user_id: admin_user.id })
       end.to change { Context.count }.by(1)
     end
 
     it 'redirects to context path' do
-      post :create, { context: context_params }, user_id: admin_user.id
+      post(
+        :create,
+        params: { context: context_params },
+        session: { user_id: admin_user.id })
 
       expect(response).to have_http_status(302)
       expect(response).to \
@@ -123,7 +139,10 @@ describe ContextsController do
       let!(:context) { create :context, id: context_params[:id] }
 
       it 'renders error template' do
-        post :create, { context: context_params }, user_id: admin_user.id
+        post(
+          :create,
+          params: { context: context_params },
+          session: { user_id: admin_user.id })
 
         expect(response).to have_http_status(500)
         expect(response).to render_template 'errors/500'
@@ -134,10 +153,10 @@ describe ContextsController do
       it 'renders error template' do
         post(
           :create,
-          {
+          params: {
             context: { id: nil, label: nil, description: nil }
           },
-          user_id: admin_user.id
+          session: { user_id: admin_user.id }
         )
 
         expect(response).to have_http_status(:internal_server_error)
@@ -150,12 +169,21 @@ describe ContextsController do
     let!(:context) { create :context }
 
     it 'destroys the context' do
-      expect { delete :destroy, { id: context.id }, user_id: admin_user.id }
-        .to change { Context.count }.by(-1)
+      expect do
+        delete(
+          :destroy,
+          params: { id: context.id },
+          session: { user_id: admin_user.id })
+      end.to change { Context.count }.by(-1)
     end
 
     context 'when delete was successful' do
-      before { delete :destroy, { id: context.id }, user_id: admin_user.id }
+      before do
+        delete(
+          :destroy,
+          params: { id: context.id },
+          session: { user_id: admin_user.id })
+      end
 
       it 'redirects to admin contexts path' do
         expect(response).to have_http_status(302)
@@ -171,8 +199,8 @@ describe ContextsController do
       before do
         delete(
           :destroy,
-          { id: UUIDTools::UUID.random_create },
-          user_id: admin_user.id
+          params: { id: UUIDTools::UUID.random_create },
+          session: { user_id: admin_user.id }
         )
       end
 
@@ -190,18 +218,18 @@ describe ContextsController do
     it 'adds a meta key to a context' do
       expect do
         patch(:add_meta_key,
-              { id: context.id, meta_key_id: meta_key.id },
-              user_id: admin_user.id)
+              params: { id: context.id, meta_key_id: meta_key.id },
+              session: { user_id: admin_user.id })
       end.to change { ContextKey.count }.by(1)
     end
 
     it 'redirects to edit context path' do
       patch(:add_meta_key,
-            {
+            params: {
               id: context.id,
               meta_key_id: context.context_keys.first.meta_key_id
             },
-            user_id: admin_user.id)
+            session: { user_id: admin_user.id })
 
       expect(response).to have_http_status(302)
       expect(response).to redirect_to(edit_context_path(context))

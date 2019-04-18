@@ -37,8 +37,8 @@ feature 'Admin App Settings' do
       expect(page.all('td').map(&:text)).to eq \
         [
           'About Page HTML/Markdown Content for "About Page" (/about)',
-          'de → DE# About this Archive ## Notice … ' \
-          'en → EN# About this Archive ## Notice …',
+          'de → DE# About this Archive ## Notice… ' \
+          'en → EN# About this Archive ## Notice…',
           'Edit'
         ]
 

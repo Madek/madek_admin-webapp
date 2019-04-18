@@ -81,7 +81,7 @@ class PeopleController < ApplicationController
 
   def person_params
     pp = params.require(:person).permit!
-    pp.map { |k, v| [k, v.presence] }.to_h
+    pp.to_h.map { |k, v| [k, v.presence] }.to_h
       .merge(external_uris: parse_external_uris(pp[:external_uris]))
   end
 

@@ -20,7 +20,6 @@ gem 'bcrypt-ruby'
 gem 'pundit'
 gem 'cider_ci-open_session', '>= 1.0.0', '< 2.0.0'
 gem 'kaminari'
-gem 'inshape', '>= 1.0.1', '< 2.0'
 gem 'sys-filesystem', require: false
 
 
@@ -28,13 +27,12 @@ gem 'sys-filesystem', require: false
 # TEST or DEVELOPMENT only
 #####################################################################
 
-gem 'better_errors', platform: :mri, group: [:development]
-gem 'binding_of_caller', platform: :mri, group: [:development]
+gem 'better_errors', group: [:development]
+gem 'binding_of_caller', group: [:development]
 gem 'capybara', '~> 2.4', group: [:test]
-gem 'meta_request', group: [:development]
-gem 'ffi', group: [:test, :development], platform: :mri
+gem 'ffi', group: [:test, :development]
 gem 'poltergeist', group: [:test, :development, :personas]
-gem 'quiet_assets', group: [:development]
 gem 'rest-client', group: [:test, :development, :personas]
-gem 'ruby-prof', group: [:development], platform: :mri
+gem 'ruby-prof', group: [:development]
 gem 'selenium-webdriver', group: [:test]
+gem 'rails-controller-testing', group: :test

@@ -35,9 +35,9 @@ feature 'Admin Vocabulary User Permissions' do
   end
 
   scenario 'Editing a permission' do
-    visit vocabularies_path(search_term: user_permission.vocabulary.id)
-
-    within find('table tbody tr', text: user_permission.vocabulary.id) do
+    vocab_id = user_permission.vocabulary.id
+    visit vocabularies_path(search_term: vocab_id)
+    within find("table tbody tr[data-id=\"#{vocab_id}\"]") do
       click_link 'User Permissions'
     end
     within find('table tbody tr', text: user_permission.user.login) do

@@ -11,10 +11,15 @@ describe VocabularyGroupPermissionsController do
     let(:second_group_permission) do
       create(:vocabulary_group_permission, vocabulary: vocabulary)
     end
-    before { get :index, { vocabulary_id: vocabulary.id }, user_id: admin_user.id }
+    before do
+      get(
+        :index,
+        params: { vocabulary_id: vocabulary.id },
+        session: { user_id: admin_user.id })
+    end
 
     it 'responds with HTTP 200 status code' do
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(response).to have_http_status(200)
     end
 
@@ -28,7 +33,10 @@ describe VocabularyGroupPermissionsController do
     let(:new_group) { create(:group) }
 
     it 'assigns locals correctly' do
-      get :new, { vocabulary_id: vocabulary.id }, user_id: admin_user.id
+      get(
+        :new,
+        params: { vocabulary_id: vocabulary.id },
+        session: { user_id: admin_user.id })
 
       expect(assigns[:vocabulary]).to eq vocabulary
       expect(assigns[:permission]).to be_an_instance_of(
@@ -37,14 +45,17 @@ describe VocabularyGroupPermissionsController do
 
     it "assigns group_id value of permission's instance from params" do
       get(:new,
-          { vocabulary_id: vocabulary.id, group_id: new_group.id },
-          user_id: admin_user.id)
+          params: { vocabulary_id: vocabulary.id, group_id: new_group.id },
+          session: { user_id: admin_user.id })
 
       expect(assigns[:permission].group_id).to eq new_group.id
     end
 
     it 'renders new template' do
-      get :new, { vocabulary_id: vocabulary.id }, user_id: admin_user.id
+      get(
+        :new,
+        params: { vocabulary_id: vocabulary.id },
+        session: { user_id: admin_user.id })
 
       expect(response).to render_template(:new)
     end
@@ -54,10 +65,10 @@ describe VocabularyGroupPermissionsController do
     it 'creates a permission correctly' do
       expect do
         post(:create,
-             {
+             params: {
                vocabulary_id: vocabulary.id,
                vocabulary_group_permission: { group_id: create(:group).id } },
-             user_id: admin_user.id)
+             session: { user_id: admin_user.id })
       end.to change { Permissions::VocabularyGroupPermission.count }.by(1)
     end
 
@@ -65,21 +76,21 @@ describe VocabularyGroupPermissionsController do
       session[:vocabulary_id] = 123
 
       post(:create,
-           {
+           params: {
              vocabulary_id: vocabulary.id,
              vocabulary_group_permission: { group_id: create(:group).id }
            },
-           user_id: admin_user.id)
+           session: { user_id: admin_user.id })
 
       expect(session[:vocabulary_id]).to be_nil
     end
 
     it 'redirects to admin vocabulary group permissions path' do
       post(:create,
-           {
+           params: {
              vocabulary_id: vocabulary.id,
              vocabulary_group_permission: { group_id: create(:group).id } },
-           user_id: admin_user.id)
+           session: { user_id: admin_user.id })
 
       expect(response).to redirect_to(
         vocabulary_vocabulary_group_permissions_url(vocabulary))
@@ -87,10 +98,10 @@ describe VocabularyGroupPermissionsController do
 
     it 'sets a correct flash message' do
       post(:create,
-           {
+           params: {
              vocabulary_id: vocabulary.id,
              vocabulary_group_permission: { group_id: create(:group).id } },
-           user_id: admin_user.id)
+           session: { user_id: admin_user.id })
 
       expect(flash[:success]).to eq(
         'The Vocabulary Group Permission has been created.')
@@ -105,8 +116,8 @@ describe VocabularyGroupPermissionsController do
 
     it 'assigns locals correctly' do
       get(:edit,
-          { vocabulary_id: vocabulary.id, id: permission.id },
-          user_id: admin_user.id)
+          params: { vocabulary_id: vocabulary.id, id: permission.id },
+          session: { user_id: admin_user.id })
 
       expect(assigns[:vocabulary]).to eq vocabulary
       expect(assigns[:permission]).to eq permission
@@ -114,11 +125,11 @@ describe VocabularyGroupPermissionsController do
 
     it "assigns user_id value of permission's instance from params" do
       get(:edit,
-          {
+          params: {
             vocabulary_id: vocabulary.id,
             id: permission.id,
             group_id: new_group.id },
-          user_id: admin_user.id)
+          session: { user_id: admin_user.id })
 
       expect(assigns[:permission].group_id).to eq new_group.id
     end
@@ -135,7 +146,7 @@ describe VocabularyGroupPermissionsController do
 
     before do
       patch :update,
-            {
+            params: {
               vocabulary_group_permission: {
                 group_id: new_group.id,
                 use: true,
@@ -144,7 +155,7 @@ describe VocabularyGroupPermissionsController do
               vocabulary_id: vocabulary.id,
               id: permission.id
             },
-            user_id: admin_user.id
+            session: { user_id: admin_user.id }
     end
 
     it 'updates the permission' do
@@ -169,11 +180,11 @@ describe VocabularyGroupPermissionsController do
 
       expect do
         delete(:destroy,
-               {
+               params: {
                  vocabulary_id: vocabulary.id,
                  id: permission.id
                },
-               user_id: admin_user.id)
+               session: { user_id: admin_user.id })
       end.to change { Permissions::VocabularyGroupPermission.count }.by(-1)
     end
   end

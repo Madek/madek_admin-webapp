@@ -5,23 +5,23 @@ describe UsersController do
 
   describe '#index' do
     it 'responds with HTTP 200 status code' do
-      get :index, nil, user_id: admin_user.id
+      get :index, session: { user_id: admin_user.id }
 
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(response).to have_http_status(200)
     end
 
     it 'loads the first page of users into @users' do
-      get :index, nil, user_id: admin_user.id
+      get :index, session: { user_id: admin_user.id }
 
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(assigns(:users)).to eq User.first(16)
     end
 
     it 'remembers in session ids of values related to permission' do
       get(:index,
-          { permission_id: 123, vocabulary_id: 321 },
-          user_id: admin_user.id)
+          params: { permission_id: 123, vocabulary_id: 321 },
+          session: { user_id: admin_user.id })
 
       expect(session[:permission_id]).to eq '123'
       expect(session[:vocabulary_id]).to eq '321'
@@ -34,9 +34,12 @@ describe UsersController do
           user_2 = create :user, login: 'adam2xxx'
           user_3 = create :user, login: 'adxxxam3'
 
-          get :index, { search_term: 'xxx' }, user_id: admin_user.id
+          get(
+            :index,
+            params: { search_term: 'xxx' },
+            session: { user_id: admin_user.id })
 
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(assigns(:users)).to eq [user_1, user_2, user_3]
         end
       end
@@ -47,18 +50,21 @@ describe UsersController do
           user_2 = create :user, email: 'adam@madekxxx.zhdk.ch'
           user_3 = create :user, email: 'adxxxam@madek.zhdk.ch'
 
-          get :index, { search_term: 'xxx' }, user_id: admin_user.id
+          get(
+            :index,
+            params: { search_term: 'xxx' },
+            session: { user_id: admin_user.id })
 
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(assigns(:users)).to match_array [user_1, user_2, user_3]
         end
       end
 
       context 'by admin role' do
         it 'returns only admin users' do
-          get :index, { admins: 1 }, user_id: admin_user.id
+          get :index, params: { admins: 1 }, session: { user_id: admin_user.id }
 
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(assigns(:users)).to match_array User.admins
         end
       end
@@ -67,7 +73,10 @@ describe UsersController do
         it 'returns only deactivated users' do
           deactivated_user = create :user, is_deactivated: true
 
-          get :index, { deactivated: 1 }, user_id: admin_user.id
+          get(
+            :index,
+            params: { deactivated: 1 },
+            session: { user_id: admin_user.id })
 
           expect(assigns(:users)).to eq [deactivated_user]
         end
@@ -77,18 +86,21 @@ describe UsersController do
     describe 'sorting users' do
       context 'by login (default)' do
         it 'returns users sorted by login in ascending order' do
-          get :index, nil, user_id: admin_user.id
+          get :index, session: { user_id: admin_user.id }
 
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(assigns[:users]).to eq User.page(1).per(16)
         end
       end
 
       context 'by email address' do
         it 'returns users sorted by email in ascending order' do
-          get :index, { sort_by: :email }, user_id: admin_user.id
+          get(
+            :index,
+            params: { sort_by: :email },
+            session: { user_id: admin_user.id })
 
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(assigns[:users].pluck(:email)).to eq(
             assigns[:users].pluck(:email).sort)
         end
@@ -96,9 +108,12 @@ describe UsersController do
 
       context 'by person first name and last name' do
         it 'returns users with a correct order' do
-          get :index, { sort_by: :first_name_last_name }, user_id: admin_user.id
+          get(
+            :index,
+            params: { sort_by: :first_name_last_name },
+            session: { user_id: admin_user.id })
 
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(full_names(assigns[:users])).to eq(
             full_names(assigns[:users]).sort)
         end
@@ -114,20 +129,20 @@ describe UsersController do
     let(:user) { create :user }
 
     it 'responds with HTTP 200 status code' do
-      get :show, { id: user.id }, user_id: admin_user.id
+      get :show, params: { id: user.id }, session: { user_id: admin_user.id }
 
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(response).to have_http_status(200)
     end
 
     it 'renders the show template' do
-      get :show, { id: user.id }, user_id: admin_user.id
+      get :show, params: { id: user.id }, session: { user_id: admin_user.id }
 
       expect(response).to render_template(:show)
     end
 
     it 'loads the proper user into @user' do
-      get :show, { id: user.id }, user_id: admin_user.id
+      get :show, params: { id: user.id }, session: { user_id: admin_user.id }
 
       expect(assigns[:user]).to eq user
     end
@@ -137,7 +152,10 @@ describe UsersController do
     let(:user) { create :user }
 
     it 'redirects to the /my path' do
-      post :switch_to, { id: user.id }, user_id: admin_user.id
+      post(
+        :switch_to,
+        params: { id: user.id },
+        session: { user_id: admin_user.id })
 
       expect(response).to redirect_to('/my')
       expect(response).to have_http_status(302)
@@ -150,7 +168,10 @@ describe UsersController do
     let(:user) { create :user, accepted_usage_terms: usage_terms }
 
     it 'redirects to admin users path' do
-      patch :reset_usage_terms, { id: user.id }, user_id: admin_user.id
+      patch(
+        :reset_usage_terms,
+        params: { id: user.id },
+        session: { user_id: admin_user.id })
 
       expect(response).to redirect_to(users_path)
       expect(response).to have_http_status(302)
@@ -160,7 +181,10 @@ describe UsersController do
     it 'resets usage terms for the user' do
       expect(user.accepted_usage_terms_id).to eq usage_terms.id
 
-      patch :reset_usage_terms, { id: user.id }, user_id: admin_user.id
+      patch(
+        :reset_usage_terms,
+        params: { id: user.id },
+        session: { user_id: admin_user.id })
 
       expect(user.reload.accepted_usage_terms_id).to be_nil
     end
@@ -172,8 +196,8 @@ describe UsersController do
     it 'redirects to the given redirect path' do
       patch(
         :grant_admin_role,
-        { id: user.id, redirect_path: user_path(user) },
-        user_id: admin_user.id
+        params: { id: user.id, redirect_path: user_path(user) },
+        session: { user_id: admin_user.id }
       )
 
       expect(response).to redirect_to(user_path(user))
@@ -185,8 +209,8 @@ describe UsersController do
     it 'grants the admin role to the user' do
       patch(
         :grant_admin_role,
-        { id: user.id, redirect_path: users_path },
-        user_id: admin_user.id
+        params: { id: user.id, redirect_path: users_path },
+        session: { user_id: admin_user.id }
       )
 
       expect(user.reload).to be_admin
@@ -198,8 +222,8 @@ describe UsersController do
 
         patch(
           :grant_admin_role,
-          { id: user.id, redirect_path: user_path(user) },
-          user_id: admin_user.id
+          params: { id: user.id, redirect_path: user_path(user) },
+          session: { user_id: admin_user.id }
         )
 
         expect(response).to have_http_status(:not_found)
@@ -214,8 +238,8 @@ describe UsersController do
     it 'redirects to the given redirect path' do
       delete(
         :remove_admin_role,
-        { id: user.id, redirect_path: users_path },
-        user_id: admin_user.id
+        params: { id: user.id, redirect_path: users_path },
+        session: { user_id: admin_user.id }
       )
 
       expect(response).to redirect_to(users_path)
@@ -227,8 +251,8 @@ describe UsersController do
     it 'removes the admin role from the user' do
       delete(
         :remove_admin_role,
-        { id: user.id, redirect_path: user_path(user) },
-        user_id: admin_user.id
+        params: { id: user.id, redirect_path: user_path(user) },
+        session: { user_id: admin_user.id }
       )
 
       expect(user.reload).not_to be_admin
@@ -239,14 +263,14 @@ describe UsersController do
     let(:user) { create :user }
 
     it 'responds with HTTP 200 status code' do
-      get :edit, { id: user.id }, user_id: admin_user.id
+      get :edit, params: { id: user.id }, session: { user_id: admin_user.id }
 
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(response).to have_http_status(200)
     end
 
     it 'render the edit template and assigns the user to @user' do
-      get :edit, { id: user.id }, user_id: admin_user.id
+      get :edit, params: { id: user.id }, session: { user_id: admin_user.id }
 
       expect(response).to render_template(:edit)
       expect(assigns[:user]).to eq user
@@ -259,8 +283,8 @@ describe UsersController do
     it 'redirects to admin user show page' do
       patch(
         :update,
-        { id: user.id, user: { login: 'george' } },
-        user_id: admin_user.id
+        params: { id: user.id, user: { login: 'george' } },
+        session: { user_id: admin_user.id }
       )
 
       expect(response).to have_http_status(302)
@@ -270,8 +294,8 @@ describe UsersController do
     it 'updates the user' do
       patch(
         :update,
-        { id: user.id, user: { login: 'george' } },
-        user_id: admin_user.id
+        params: { id: user.id, user: { login: 'george' } },
+        session: { user_id: admin_user.id }
       )
 
       expect(flash[:success]).to eq flash_message(:update, :success)
@@ -279,7 +303,10 @@ describe UsersController do
     end
 
     it 'renders error template when something went wrong' do
-      patch :update, { id: UUIDTools::UUID.random_create }, user_id: admin_user.id
+      patch(
+        :update,
+        params: { id: UUIDTools::UUID.random_create },
+        session: { user_id: admin_user.id })
 
       expect(response).to have_http_status(:not_found)
       expect(response).to render_template 'errors/404'
@@ -289,7 +316,10 @@ describe UsersController do
   describe '#create' do
     context 'without person' do
       it 'redirects to admin users path after successfuly created user' do
-        post :create, { user: user_params }, user_id: admin_user.id
+        post(
+          :create,
+          params: { user: user_params },
+          session: { user_id: admin_user.id })
 
         expect(response).to have_http_status(302)
         expect(response).to redirect_to(users_path)
@@ -298,13 +328,19 @@ describe UsersController do
 
       it 'creates an user' do
         expect do
-          post :create, { user: user_params }, user_id: admin_user.id
+          post(
+            :create,
+            params: { user: user_params },
+            session: { user_id: admin_user.id })
         end.to change { User.count }.by(1)
       end
 
       context 'when validation failed' do
         it 'renders error template' do
-          post :create, { user: { email: '' } }, user_id: admin_user.id
+          post(
+            :create,
+            params: { user: { email: '' } },
+            session: { user_id: admin_user.id })
 
           expect(response).to have_http_status(:unprocessable_entity)
           expect(response).to render_template 'errors/422'
@@ -323,7 +359,10 @@ describe UsersController do
 
     context 'with person' do
       it 'redirects to admin users path after successfuly created user' do
-        post :create, { user: user_params }, user_id: admin_user.id
+        post(
+          :create,
+          params: { user: user_params },
+          session: { user_id: admin_user.id })
 
         expect(response).to have_http_status(302)
         expect(response).to redirect_to(users_path)
@@ -332,7 +371,10 @@ describe UsersController do
 
       it 'creates an user' do
         expect do
-          post :create, { user: user_params }, user_id: admin_user.id
+          post(
+            :create,
+            params: { user: user_params },
+            session: { user_id: admin_user.id })
         end.to change { User.count }.by(1)
       end
 
@@ -341,9 +383,12 @@ describe UsersController do
           attributes = {
             login: 'example-login',
             email: 'nickname@example.com',
-            person_attributes: {}
+            person_attributes: { id: '' }
           }
-          post :create, { user: attributes }, user_id: admin_user.id
+          post(
+            :create,
+            params: { user: attributes },
+            session: { user_id: admin_user.id })
 
           expect(response).to have_http_status(:unprocessable_entity)
           expect(response).to render_template 'errors/422'
@@ -368,7 +413,10 @@ describe UsersController do
     let!(:user) { create :user }
 
     it 'redirects to admin users path after succesful destroy' do
-      delete :destroy, { id: user.id }, user_id: admin_user.id
+      delete(
+        :destroy,
+        params: { id: user.id },
+        session: { user_id: admin_user.id })
 
       expect(response).to redirect_to(users_path)
       expect(flash[:success]).to eq flash_message(:destroy, :success)
@@ -376,7 +424,10 @@ describe UsersController do
 
     it 'destroys the user' do
       expect do
-        delete :destroy, { id: user.id }, user_id: admin_user.id
+        delete(
+          :destroy,
+          params: { id: user.id },
+          session: { user_id: admin_user.id })
       end.to change { User.count }.by(-1)
     end
 
@@ -385,8 +436,8 @@ describe UsersController do
 
       it 'renders error template with extra message' do
         delete :destroy,
-               { id: user.id },
-               user_id: admin_user.id
+               params: { id: user.id },
+               session: { user_id: admin_user.id }
 
         expect(response).to have_http_status 500
         expect(response).to render_template 'errors/500'
@@ -407,8 +458,8 @@ describe UsersController do
 
         delete(
           :remove_user_from_group,
-          { group_id: group.id, user_id: user.id },
-          user_id: admin_user.id
+          params: { group_id: group.id, user_id: user.id },
+          session: { user_id: admin_user.id }
         )
 
         expect(response).to have_http_status 302
@@ -428,8 +479,8 @@ describe UsersController do
 
         delete(
           :remove_user_from_group,
-          { group_id: group.id, user_id: user.id },
-          user_id: admin_user.id
+          params: { group_id: group.id, user_id: user.id },
+          session: { user_id: admin_user.id }
         )
 
         expect(response).to have_http_status 302
@@ -449,8 +500,8 @@ describe UsersController do
 
         delete(
           :remove_user_from_group,
-          { group_id: group.id, user_id: user.id },
-          user_id: admin_user.id
+          params: { group_id: group.id, user_id: user.id },
+          session: { user_id: admin_user.id }
         )
 
         expect(response).to have_http_status :forbidden
