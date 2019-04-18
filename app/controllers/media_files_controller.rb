@@ -55,7 +55,7 @@ class MediaFilesController < ApplicationController
       end
     end
 
-    redirect_to :back
+    redirect_back fallback_location: media_files_url
   end
 
   private

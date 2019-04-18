@@ -56,11 +56,11 @@ feature 'Roles' do
   end
 
   scenario 'Creating with empty label' do
-    vocabulary = create :vocabulary
+    meta_key = create :meta_key_roles
 
     visit roles_path
 
-    select vocabulary.id, from: 'Vocabulary'
+    select meta_key.vocabulary_id, from: 'Vocabulary'
     click_button 'Apply'
     add_role_button.click
     click_button 'Save'

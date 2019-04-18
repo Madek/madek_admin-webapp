@@ -8,9 +8,9 @@ describe IoInterfacesController do
 
   context '#index' do
     it 'responds with 200 HTTP status code' do
-      get :index, nil, user_id: @admin_user.id
+      get :index, session: { user_id: @admin_user.id }
 
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(response).to render_template :index
       expect(response).to have_http_status(200)
     end
@@ -19,18 +19,22 @@ describe IoInterfacesController do
       @io_interface = create(:io_interface)
       expect do
         put(:update,
-            { id: @io_interface.id,
+            params: {
+              id: @io_interface.id,
               description: Faker::Lorem.sentence },
-            user_id: @admin_user.id)
+            session: { user_id: @admin_user.id })
       end
         .to raise_error ActionController::UrlGenerationError
     end
 
     it '#show' do
       @io_interface = create(:io_interface)
-      get :show, { id: @io_interface.id }, user_id: @admin_user.id
+      get(
+        :show,
+        params: { id: @io_interface.id },
+        session: { user_id: @admin_user.id })
 
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(response).to have_http_status(200)
       expect(response).to render_template :show
       expect(assigns[:io_interface]).to eq @io_interface
@@ -38,7 +42,10 @@ describe IoInterfacesController do
 
     it '#destroy' do
       @io_interface = create(:io_interface)
-      delete :destroy, { id: @io_interface.id }, user_id: @admin_user.id
+      delete(
+        :destroy,
+        params: { id: @io_interface.id },
+        session: { user_id: @admin_user.id })
       expect(response).to have_http_status(302)
       expect(response).to redirect_to(io_interfaces_path)
     end
@@ -51,8 +58,8 @@ describe IoInterfacesController do
 
       expect do
         post(:create,
-             { io_interface: io_interface_params },
-             user_id: @admin_user.id)
+             params: { io_interface: io_interface_params },
+             session: { user_id: @admin_user.id })
       end.to change { IoInterface.count }.by(1)
     end
   end

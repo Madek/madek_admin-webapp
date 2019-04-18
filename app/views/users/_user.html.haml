@@ -1,5 +1,5 @@
 :ruby
-  api_client_assign_path = if @api_client_params.is_a?(Hash)
+  api_client_assign_path = if @api_client_params.is_a?(ActionController::Parameters)
     @api_client_params.merge!(user_id: user.id)
     if @api_client_params.key?(:id)
       edit_api_client_path(@api_client_params[:id], edited_api_client: @api_client_params)

@@ -6,7 +6,7 @@ describe MediaFilesController do
 
   describe '#index' do
     it 'prepares sorters' do
-      get :index, {}, user_id: admin_user.id
+      get :index, session: { user_id: admin_user.id }
 
       expect(assigns[:sorters]).to eq [
         ['created_at (asc)', 'created_at_asc'],
@@ -78,13 +78,13 @@ describe MediaFilesController do
 
         get(
           :index,
-          {
+          params: {
             filter: {
               search_term: 'foo.ogg',
               conversion_status: :missing
             }
           },
-          user_id: admin_user.id
+          session: { user_id: admin_user.id }
         )
 
         expect(assigns[:media_files]).to match_array [mf1, mf2, mf3]
@@ -104,13 +104,13 @@ describe MediaFilesController do
 
         get(
           :index,
-          {
+          params: {
             filter: {
               search_term: 'foo.mov',
               conversion_status: :failed
             }
           },
-          user_id: admin_user.id
+          session: { user_id: admin_user.id }
         )
 
         expect(assigns[:media_files]).to eq [mf]
@@ -135,11 +135,11 @@ describe MediaFilesController do
 
           get(
             :index,
-            {
+            params: {
               filter: { search_term: 'foo' },
               sort_by: :uploader_asc
             },
-            user_id: admin_user.id
+            session: { user_id: admin_user.id }
           )
 
           expect(assigns[:media_files]).to eq [mf3, mf1, mf2]
@@ -153,8 +153,10 @@ describe MediaFilesController do
 
           get(
             :index,
-            { filter: { search_term: uploader.id }, sort_by: :media_type_asc },
-            user_id: admin_user.id
+            params: {
+              filter: { search_term: uploader.id },
+              sort_by: :media_type_asc },
+            session: { user_id: admin_user.id }
           )
 
           expect(assigns[:media_files]).to eq [mf3, mf2, mf1]
@@ -168,8 +170,8 @@ describe MediaFilesController do
 
           get(
             :index,
-            { filter: { search_term: uploader.id }, sort_by: :size_asc },
-            user_id: admin_user.id
+            params: { filter: { search_term: uploader.id }, sort_by: :size_asc },
+            session: { user_id: admin_user.id }
           )
 
           expect(assigns[:media_files]).to eq [mf3, mf1, mf2]
@@ -193,11 +195,11 @@ describe MediaFilesController do
 
           get(
             :index,
-            {
+            params: {
               filter: { search_term: 'foo' },
               sort_by: :uploader_desc
             },
-            user_id: admin_user.id
+            session: { user_id: admin_user.id }
           )
 
           expect(assigns[:media_files]).to eq [mf2, mf1, mf3]
@@ -211,8 +213,10 @@ describe MediaFilesController do
 
           get(
             :index,
-            { filter: { search_term: uploader.id }, sort_by: :media_type_desc },
-            user_id: admin_user.id
+            params: {
+              filter: { search_term: uploader.id },
+              sort_by: :media_type_desc },
+            session: { user_id: admin_user.id }
           )
 
           expect(assigns[:media_files]).to eq [mf1, mf2, mf3]
@@ -226,8 +230,8 @@ describe MediaFilesController do
 
           get(
             :index,
-            { filter: { search_term: uploader.id }, sort_by: :size_desc },
-            user_id: admin_user.id
+            params: { filter: { search_term: uploader.id }, sort_by: :size_desc },
+            session: { user_id: admin_user.id }
           )
 
           expect(assigns[:media_files]).to eq [mf2, mf1, mf3]
@@ -242,10 +246,15 @@ describe MediaFilesController do
     end
 
     context 'when media file has not audio/video type' do
-      before { get :show, { id: media_file.id }, user_id: admin_user.id }
+      before do
+        get(
+          :show,
+          params: { id: media_file.id },
+          session: { user_id: admin_user.id })
+      end
 
       it 'responds with 200 HTTP status code' do
-        expect(response).to be_success
+        expect(response).to be_successful
         expect(response).to have_http_status(200)
       end
 
@@ -263,7 +272,10 @@ describe MediaFilesController do
         allow_any_instance_of(MediaFile)
           .to receive(:previews_zencoder?).and_return(true)
 
-        get :show, { id: media_file.id }, user_id: admin_user.id
+        get(
+          :show,
+          params: { id: media_file.id },
+          session: { user_id: admin_user.id })
 
         expect(assigns[:zencoder_jobs]).to be
       end
@@ -273,7 +285,10 @@ describe MediaFilesController do
   describe '#reencode' do
     before do
       allow_any_instance_of(ZencoderRequester).to receive(:process)
-      post :reencode, { id: media_file.id }, user_id: admin_user.id
+      post(
+        :reencode,
+        params: { id: media_file.id },
+        session: { user_id: admin_user.id })
     end
 
     it 'redirects to media file show page' do

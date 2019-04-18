@@ -4,10 +4,10 @@ describe MetaDatumsController do
   let(:admin) { create :admin_user }
 
   describe '#index' do
-    before { get :index, {}, user_id: admin.id }
+    before { get :index, session: { user_id: admin.id } }
 
     it 'responds with HTTP 200 status code' do
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(response).to have_http_status(200)
     end
 
@@ -25,11 +25,11 @@ describe MetaDatumsController do
       it 'assigns @meta_datums correctly' do
         get(
           :index,
-          { search_term: meta_datum.id, search_by: :id },
-          user_id: admin.id
+          params: { search_term: meta_datum.id, search_by: :id },
+          session: { user_id: admin.id }
         )
 
-        expect(response).to be_success
+        expect(response).to be_successful
         expect(assigns[:meta_datums]).to eq [meta_datum]
       end
     end
@@ -38,9 +38,12 @@ describe MetaDatumsController do
       let(:meta_datum) { create :meta_datum_title, string: 'foo bar' }
 
       it 'assigns @meta_datums correctly' do
-        get :index, { search_term: 'o b', search_by: :string }, user_id: admin.id
+        get(
+          :index,
+          params: { search_term: 'o b', search_by: :string },
+          session: { user_id: admin.id })
 
-        expect(response).to be_success
+        expect(response).to be_successful
         expect(assigns[:meta_datums]).to include meta_datum
       end
     end

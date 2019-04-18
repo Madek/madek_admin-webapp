@@ -7,7 +7,7 @@ class UsersController < ApplicationController
   def index
     @users = User.page(params[:page]).per(16)
     @users = filter(@users)
-    @users = @users.sort_by(params[:sort_by]) if params[:sort_by].present?
+    @users = @users.order_by(params[:sort_by]) if params[:sort_by].present?
 
     remember_vocabulary_url_params
     get_api_client_params
@@ -116,7 +116,7 @@ class UsersController < ApplicationController
       %i(new_api_client edited_api_client).detect do |group|
         params[group].present?
       end
-    )]
+    )]&.permit(:id, :login, :description)
   end
 
   def get_group_from_params

@@ -1,5 +1,5 @@
 require 'application_responder'
-require 'inshape'
+# require 'inshape'
 
 class ApplicationController < ActionController::Base
   include Concerns::MadekCookieSession
@@ -27,9 +27,8 @@ class ApplicationController < ActionController::Base
   helper_method :feature_toggle_sql_reports
 
   def status
-    memory_status = InShape::Memory.status
-    render json: { memory: memory_status.content }, \
-           status: memory_status.is_ok ? 200 : 499
+    render plain: 'OK, but we need to provide memory usage info ' \
+                  'as Inshape was designed for jruby'
   end
 
   private
@@ -43,7 +42,7 @@ class ApplicationController < ActionController::Base
     wrapper = ActionDispatch::ExceptionWrapper.new(Rails.env, @error)
     @status_code = wrapper.status_code
     if only_text
-      render text: "Error #{@status_code} - #{@error.message}",
+      render plain: "Error #{@status_code} - #{@error.message}",
              status: @status_code
     else
       render "/errors/#{@status_code}", status: @status_code

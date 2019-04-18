@@ -52,7 +52,7 @@
       .col-xs-3
         = second_step_label(:allowed_type, f)
       .col-xs-6
-        = f.collection_radio_buttons :allowed_rdf_class, RdfClass.all, :id, :id do |c|
+        = f.collection_radio_buttons :allowed_rdf_class, RdfClass.all, :id, :id, include_hidden: false do |c|
           = c.label(class: 'radio-inline') { c.radio_button(disabled: is_used) + c.text }
   = f.fields_for :labels, OpenStruct.new(f.object.labels) do |lf|
     - I18n.available_locales.each do |locale|
