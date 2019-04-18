@@ -11,23 +11,23 @@ describe AppSettingsController do
 
   describe '#index' do
     it 'responds with status code 200' do
-      get :index, nil, user_id: admin_user.id
+      get :index, session: { user_id: admin_user.id }
 
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(response).to have_http_status(200)
     end
   end
 
   describe '#edit' do
     it 'assigns @field a proper setting' do
-      get :edit, { id: 'title' }, user_id: admin_user.id
+      get :edit, params: { id: 'title' }, session: { user_id: admin_user.id }
       expect(assigns[:app_settings]).to eq app_settings
       expect(assigns[:field]).to eq 'title'
       expect(response).to render_template :edit
     end
 
     it 'assigns @field a proper yaml setting' do
-      get :edit, { id: 'sitemap' }, user_id: admin_user.id
+      get :edit, params: { id: 'sitemap' }, session: { user_id: admin_user.id }
       expect(assigns[:app_settings]).to eq app_settings
       expect(assigns[:field]).to eq 'sitemap'
       expect(response).to render_template :edit
@@ -38,8 +38,8 @@ describe AppSettingsController do
     it 'redirects to app_settings#index after successful update' do
       patch(
         :update,
-        { id: app_settings.id, app_setting: { title: 'NEW TITLE' } },
-        user_id: admin_user.id
+        params: { id: app_settings.id, app_setting: { title: 'NEW TITLE' } },
+        session: { user_id: admin_user.id }
       )
 
       expect(response).to have_http_status(302)
@@ -49,8 +49,8 @@ describe AppSettingsController do
     it 'updates a setting' do
       patch(
         :update,
-        { id: app_settings.id, app_setting: { site_title: 'NEW TITLE' } },
-        user_id: admin_user.id
+        params: { id: app_settings.id, app_setting: { site_title: 'NEW TITLE' } },
+        session: { user_id: admin_user.id }
       )
 
       expect(flash[:success]).to eq flash_message(:update, :success)
@@ -68,8 +68,8 @@ describe AppSettingsController do
 
       patch(
         :update,
-        { id: app_settings.id, app_setting: { sitemap: yaml } },
-        user_id: admin_user.id
+        params: { id: app_settings.id, app_setting: { sitemap: yaml } },
+        session: { user_id: admin_user.id }
       )
 
       expect(flash[:success]).to eq flash_message(:update, :success)

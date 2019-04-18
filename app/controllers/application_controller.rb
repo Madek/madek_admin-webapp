@@ -1,5 +1,5 @@
 require 'application_responder'
-require 'inshape'
+# require 'inshape'
 
 class ApplicationController < ActionController::Base
   include Concerns::MadekCookieSession
@@ -43,7 +43,7 @@ class ApplicationController < ActionController::Base
     wrapper = ActionDispatch::ExceptionWrapper.new(Rails.env, @error)
     @status_code = wrapper.status_code
     if only_text
-      render text: "Error #{@status_code} - #{@error.message}",
+      render plain: "Error #{@status_code} - #{@error.message}",
              status: @status_code
     else
       render "/errors/#{@status_code}", status: @status_code
