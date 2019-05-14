@@ -19,7 +19,8 @@ describe IoInterfacesController do
       @io_interface = create(:io_interface)
       expect do
         put(:update,
-            params: { id: @io_interface.id,
+            params: {
+              id: @io_interface.id,
               description: Faker::Lorem.sentence },
             session: { user_id: @admin_user.id })
       end
@@ -28,7 +29,10 @@ describe IoInterfacesController do
 
     it '#show' do
       @io_interface = create(:io_interface)
-      get :show, params: { id: @io_interface.id }, session: { user_id: @admin_user.id }
+      get(
+        :show,
+        params: { id: @io_interface.id },
+        session: { user_id: @admin_user.id })
 
       expect(response).to be_successful
       expect(response).to have_http_status(200)
@@ -38,7 +42,10 @@ describe IoInterfacesController do
 
     it '#destroy' do
       @io_interface = create(:io_interface)
-      delete :destroy, params: { id: @io_interface.id }, session: { user_id: @admin_user.id }
+      delete(
+        :destroy,
+        params: { id: @io_interface.id },
+        session: { user_id: @admin_user.id })
       expect(response).to have_http_status(302)
       expect(response).to redirect_to(io_interfaces_path)
     end

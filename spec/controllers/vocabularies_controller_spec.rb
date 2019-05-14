@@ -4,7 +4,7 @@ describe VocabulariesController do
   let(:admin_user) { create :admin_user }
 
   describe '#index' do
-    before { get :index, session:{ user_id: admin_user.id } }
+    before { get :index, session: { user_id: admin_user.id } }
 
     it 'responds with HTTP 200 status code' do
       expect(response).to be_successful
@@ -21,7 +21,10 @@ describe VocabulariesController do
         it 'returns a proper vocabulary' do
           vocabulary = create :vocabulary, id: 'sample_id'
 
-          get :index, params: { search_term: 'sample_id' }, session:{ user_id: admin_user.id }
+          get(
+            :index,
+            params: { search_term: 'sample_id' },
+            session: { user_id: admin_user.id })
 
           expect(assigns[:vocabularies]).to eq [vocabulary]
         end
@@ -32,7 +35,10 @@ describe VocabulariesController do
           first_vocabulary = create :vocabulary, labels: { de: 'saaample label' }
           second_vocabulary = create :vocabulary, labels: { de: 'sample laaabel' }
 
-          get :index, params: { search_term: 'aaa' }, session:{ user_id: admin_user.id }
+          get(
+            :index,
+            params: { search_term: 'aaa' },
+            session: { user_id: admin_user.id })
 
           expect(assigns[:vocabularies]).to \
             match_array([first_vocabulary, second_vocabulary])
@@ -43,7 +49,12 @@ describe VocabulariesController do
 
   describe '#show' do
     let(:vocabulary) { create :vocabulary }
-    before { get :show, params: { id: vocabulary.id }, session:{ user_id: admin_user.id } }
+    before do
+      get(
+        :show,
+        params: { id: vocabulary.id },
+        session: { user_id: admin_user.id })
+    end
 
     it 'responds with HTTP 200 status code' do
       expect(response).to be_successful
@@ -61,7 +72,9 @@ describe VocabulariesController do
 
   describe '#edit' do
     let(:vocabulary) { create :vocabulary }
-    before { get :edit, params: { id: vocabulary.id }, session:{ user_id: admin_user.id } }
+    before do
+      get :edit, params: { id: vocabulary.id }, session: { user_id: admin_user.id }
+    end
 
     it 'assigns @vocabulary correctly' do
       expect(assigns[:vocabulary]).to eq vocabulary
@@ -94,7 +107,7 @@ describe VocabulariesController do
         }
       }
 
-      put :update, params: params, session:{ user_id: admin_user.id }
+      put :update, params: params, session: { user_id: admin_user.id }
 
       vocabulary.reload
 
@@ -117,7 +130,7 @@ describe VocabulariesController do
           id: vocabulary.id,
           vocabulary: { id: Faker::Internet.slug }
         },
-        session:{ user_id: admin_user.id }
+        session: { user_id: admin_user.id }
       )
 
       expect(vocabulary.reload.id).to eq remember_id
@@ -125,7 +138,7 @@ describe VocabulariesController do
   end
 
   describe '#new' do
-    before { get :new, session:{ user_id: admin_user.id } }
+    before { get :new, session: { user_id: admin_user.id } }
 
     it 'assigns @vocabulary correctly' do
       expect(assigns[:vocabulary]).to be_an_instance_of(Vocabulary)
@@ -142,12 +155,18 @@ describe VocabulariesController do
 
     it 'creates a new vocabulary' do
       expect do
-        post :create, params: { vocabulary: vocabulary_params }, session:{ user_id: admin_user.id }
+        post(
+          :create,
+          params: { vocabulary: vocabulary_params },
+          session: { user_id: admin_user.id })
       end.to change { Vocabulary.count }.by(1)
     end
 
     it 'redirects to admin vocabularies path' do
-      post :create, params: { vocabulary: vocabulary_params }, session:{ user_id: admin_user.id }
+      post(
+        :create,
+        params: { vocabulary: vocabulary_params },
+        session: { user_id: admin_user.id })
 
       expect(response).to have_http_status(302)
       expect(response).to redirect_to(vocabularies_path)
@@ -158,7 +177,10 @@ describe VocabulariesController do
       let!(:vocabulary) { create :vocabulary, id: vocabulary_params[:id] }
 
       it 'renders error template' do
-        post :create, params: { vocabulary: vocabulary_params }, session:{ user_id: admin_user.id }
+        post(
+          :create,
+          params: { vocabulary: vocabulary_params },
+          session: { user_id: admin_user.id })
 
         expect(response).to have_http_status(500)
         expect(response).to render_template 'errors/500'
@@ -172,7 +194,7 @@ describe VocabulariesController do
           params: {
             vocabulary: { id: nil, labels: {}, descriptions: {} }
           },
-          session:{ user_id: admin_user.id }
+          session: { user_id: admin_user.id }
         )
 
         expect(response).to have_http_status(:unprocessable_entity)
@@ -185,12 +207,21 @@ describe VocabulariesController do
     let!(:vocabulary) { create :vocabulary }
 
     it 'destroys the vocabulary' do
-      expect { delete :destroy, params: { id: vocabulary.id }, session:{ user_id: admin_user.id } }
-        .to change { Vocabulary.count }.by(-1)
+      expect do
+        delete(
+          :destroy,
+          params: { id: vocabulary.id },
+          session: { user_id: admin_user.id })
+      end.to change { Vocabulary.count }.by(-1)
     end
 
     context 'when delete was successful' do
-      before { delete :destroy, params: { id: vocabulary.id }, session:{ user_id: admin_user.id } }
+      before do
+        delete(
+          :destroy,
+          params: { id: vocabulary.id },
+          session: { user_id: admin_user.id })
+      end
 
       it 'redirects to admin vocabularies path' do
         expect(response).to have_http_status(302)
@@ -207,7 +238,7 @@ describe VocabulariesController do
         delete(
           :destroy,
           params: { id: UUIDTools::UUID.random_create },
-          session:{ user_id: admin_user.id }
+          session: { user_id: admin_user.id }
         )
       end
 
@@ -220,7 +251,12 @@ describe VocabulariesController do
 
   describe '#move_up' do
     let(:vocabulary) { create :vocabulary }
-    before { patch :move_up, params: { id: vocabulary.id }, session:{ user_id: admin_user.id } }
+    before do
+      patch(
+        :move_up,
+        params: { id: vocabulary.id },
+        session: { user_id: admin_user.id })
+    end
 
     it 'it redirects to admin vocabularies path' do
       expect(response).to have_http_status(302)
@@ -235,7 +271,7 @@ describe VocabulariesController do
       it 'renders error template' do
         patch :move_up,
               params: { id: UUIDTools::UUID.random_create },
-              session:{ user_id: admin_user.id }
+              session: { user_id: admin_user.id }
 
         expect(response).to have_http_status(404)
         expect(response).to render_template 'errors/404'
@@ -245,7 +281,12 @@ describe VocabulariesController do
 
   describe '#move_down' do
     let(:vocabulary) { create :vocabulary }
-    before { patch :move_down, params: { id: vocabulary.id }, session:{ user_id: admin_user.id } }
+    before do
+      patch(
+        :move_down,
+        params: { id: vocabulary.id },
+        session: { user_id: admin_user.id })
+    end
 
     it 'it redirects to admin vocabularies path' do
       expect(response).to have_http_status(302)
@@ -258,7 +299,7 @@ describe VocabulariesController do
 
     context 'when ID is missing' do
       it 'renders error template' do
-        patch :move_down, params: { id: '' }, session:{ user_id: admin_user.id }
+        patch :move_down, params: { id: '' }, session: { user_id: admin_user.id }
 
         expect(response).to have_http_status(404)
         expect(response).to render_template 'errors/404'

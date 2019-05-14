@@ -6,7 +6,10 @@ describe ZencoderJobsController do
 
   describe '#show' do
     before do
-      get :show, params: { id: zencoder_job.id }, session: { user_id: admin_user.id }
+      get(
+        :show,
+        params: { id: zencoder_job.id },
+        session: { user_id: admin_user.id })
     end
 
     it 'responds with 200 HTTP status code' do

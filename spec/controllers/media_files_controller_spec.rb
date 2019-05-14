@@ -153,7 +153,9 @@ describe MediaFilesController do
 
           get(
             :index,
-            params: { filter: { search_term: uploader.id }, sort_by: :media_type_asc },
+            params: {
+              filter: { search_term: uploader.id },
+              sort_by: :media_type_asc },
             session: { user_id: admin_user.id }
           )
 
@@ -211,7 +213,9 @@ describe MediaFilesController do
 
           get(
             :index,
-            params: { filter: { search_term: uploader.id }, sort_by: :media_type_desc },
+            params: {
+              filter: { search_term: uploader.id },
+              sort_by: :media_type_desc },
             session: { user_id: admin_user.id }
           )
 
@@ -242,7 +246,12 @@ describe MediaFilesController do
     end
 
     context 'when media file has not audio/video type' do
-      before { get :show, params: { id: media_file.id }, session: { user_id: admin_user.id } }
+      before do
+        get(
+          :show,
+          params: { id: media_file.id },
+          session: { user_id: admin_user.id })
+      end
 
       it 'responds with 200 HTTP status code' do
         expect(response).to be_successful
@@ -263,7 +272,10 @@ describe MediaFilesController do
         allow_any_instance_of(MediaFile)
           .to receive(:previews_zencoder?).and_return(true)
 
-        get :show, params: { id: media_file.id }, session: { user_id: admin_user.id }
+        get(
+          :show,
+          params: { id: media_file.id },
+          session: { user_id: admin_user.id })
 
         expect(assigns[:zencoder_jobs]).to be
       end
@@ -273,7 +285,10 @@ describe MediaFilesController do
   describe '#reencode' do
     before do
       allow_any_instance_of(ZencoderRequester).to receive(:process)
-      post :reencode, params: { id: media_file.id }, session: { user_id: admin_user.id }
+      post(
+        :reencode,
+        params: { id: media_file.id },
+        session: { user_id: admin_user.id })
     end
 
     it 'redirects to media file show page' do

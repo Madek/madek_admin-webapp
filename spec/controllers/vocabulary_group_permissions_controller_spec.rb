@@ -11,7 +11,12 @@ describe VocabularyGroupPermissionsController do
     let(:second_group_permission) do
       create(:vocabulary_group_permission, vocabulary: vocabulary)
     end
-    before { get :index, params: { vocabulary_id: vocabulary.id }, session: { user_id: admin_user.id } }
+    before do
+      get(
+        :index,
+        params: { vocabulary_id: vocabulary.id },
+        session: { user_id: admin_user.id })
+    end
 
     it 'responds with HTTP 200 status code' do
       expect(response).to be_successful
@@ -28,7 +33,10 @@ describe VocabularyGroupPermissionsController do
     let(:new_group) { create(:group) }
 
     it 'assigns locals correctly' do
-      get :new, params: { vocabulary_id: vocabulary.id }, session: { user_id: admin_user.id }
+      get(
+        :new,
+        params: { vocabulary_id: vocabulary.id },
+        session: { user_id: admin_user.id })
 
       expect(assigns[:vocabulary]).to eq vocabulary
       expect(assigns[:permission]).to be_an_instance_of(
@@ -44,7 +52,10 @@ describe VocabularyGroupPermissionsController do
     end
 
     it 'renders new template' do
-      get :new, params: { vocabulary_id: vocabulary.id }, session: { user_id: admin_user.id }
+      get(
+        :new,
+        params: { vocabulary_id: vocabulary.id },
+        session: { user_id: admin_user.id })
 
       expect(response).to render_template(:new)
     end

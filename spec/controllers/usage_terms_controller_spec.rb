@@ -19,7 +19,12 @@ describe UsageTermsController do
 
   describe '#show' do
     let(:usage_terms) { create :usage_terms }
-    before { get :show, params: { id: usage_terms.id }, session: { user_id: admin_user.id } }
+    before do
+      get(
+        :show,
+        params: { id: usage_terms.id },
+        session: { user_id: admin_user.id })
+    end
 
     it 'responds with HTTP 200 status code' do
       expect(response).to be_successful
@@ -53,12 +58,18 @@ describe UsageTermsController do
 
     it 'creates a new usage terms' do
       expect do
-        post :create, params: { usage_terms: usage_terms_params }, session: { user_id: admin_user.id }
+        post(
+          :create,
+          params: { usage_terms: usage_terms_params },
+          session: { user_id: admin_user.id })
       end.to change { UsageTerms.count }.by(1)
     end
 
     it 'redirects to admin vocabularies path' do
-      post :create, params: { usage_terms: usage_terms_params }, session: { user_id: admin_user.id }
+      post(
+        :create,
+        params: { usage_terms: usage_terms_params },
+        session: { user_id: admin_user.id })
 
       expect(response).to have_http_status(302)
       expect(response).to redirect_to(usage_terms_path)
@@ -88,12 +99,21 @@ describe UsageTermsController do
     let!(:usage_terms) { create :usage_terms }
 
     it 'destroys the usage_terms' do
-      expect { delete :destroy, params: { id: usage_terms.id }, session: { user_id: admin_user.id } }
-        .to change { UsageTerms.count }.by(-1)
+      expect do
+        delete(
+          :destroy,
+          params: { id: usage_terms.id },
+          session: { user_id: admin_user.id })
+      end.to change { UsageTerms.count }.by(-1)
     end
 
     context 'when delete was successful' do
-      before { delete :destroy, params: { id: usage_terms.id }, session: { user_id: admin_user.id } }
+      before do
+        delete(
+          :destroy,
+          params: { id: usage_terms.id },
+          session: { user_id: admin_user.id })
+      end
 
       it 'redirects to usage terms path' do
         expect(response).to have_http_status(302)

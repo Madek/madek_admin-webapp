@@ -66,7 +66,10 @@ describe PeopleController do
         end
 
         it 'returns only people with "PeopleInstitutionalGroup" subtype' do
-          get :index, params: filter_params('PeopleInstitutionalGroup'), session: session
+          get(
+            :index,
+            params: filter_params('PeopleInstitutionalGroup'),
+            session: session)
 
           expect(response).to be_successful
           expect(assigns[:people]).to include people_instgroup
@@ -85,7 +88,10 @@ describe PeopleController do
       let(:receiver)   { create :person }
 
       it 'assigns @merge_originator if given' do
-        get :index, params: { merge_originator_id: originator.id }, session: session
+        get(
+          :index,
+          params: { merge_originator_id: originator.id },
+          session: session)
 
         expect(assigns[:merge_originator]).to eq originator
       end
@@ -238,7 +244,10 @@ describe PeopleController do
     let(:receiver)   { create :person }
 
     it 'redirects to /people with success message' do
-      post :merge_to, params: { id: receiver.id, originator_id: originator.id }, session: session
+      post(
+        :merge_to,
+        params: { id: receiver.id, originator_id: originator.id },
+        session: session)
 
       expect(response).to redirect_to people_path
       expect(flash[:success]).not_to be_empty
@@ -249,7 +258,10 @@ describe PeopleController do
         allow_any_instance_of(Person).to receive(:merge_to)
                                            .and_raise(ActiveRecord::RecordNotFound)
 
-        post :merge_to, params: { id: receiver.id, originator_id: originator.id }, session: session
+        post(
+          :merge_to,
+          params: { id: receiver.id, originator_id: originator.id },
+          session: session)
 
         expect(response).to redirect_to people_path
         expect(flash[:error]).not_to be_empty

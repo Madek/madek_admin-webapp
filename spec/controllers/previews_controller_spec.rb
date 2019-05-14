@@ -5,7 +5,12 @@ describe PreviewsController do
   let(:preview) { create :preview, media_file_id: create(:media_file).id }
 
   describe '#show' do
-    before { get :show, params: { id: preview.id }, session: { user_id: admin_user.id } }
+    before do
+      get(
+        :show,
+        params: { id: preview.id },
+        session: { user_id: admin_user.id })
+    end
 
     it 'responds with HTTP 200 status code' do
       expect(response).to be_successful
@@ -21,13 +26,20 @@ describe PreviewsController do
     before { @preview = create :preview, media_file_id: create(:media_file).id }
 
     it 'destroys preview' do
-      expect { delete :destroy, params: { id: @preview.id }, session: { user_id: admin_user.id } }
-        .to change { Preview.count }.by(-1)
+      expect do
+        delete(
+          :destroy,
+          params: { id: @preview.id },
+          session: { user_id: admin_user.id })
+      end.to change { Preview.count }.by(-1)
     end
 
     context 'when preview is destroyed successfully' do
       it 'redirects to admin media file path with success message' do
-        delete :destroy, params: { id: @preview.id }, session: { user_id: admin_user.id }
+        delete(
+          :destroy,
+          params: { id: @preview.id },
+          session: { user_id: admin_user.id })
 
         expect(response).to redirect_to(media_file_path(@preview.media_file))
         expect(flash[:success]).to eq flash_message(:destroy, :success)

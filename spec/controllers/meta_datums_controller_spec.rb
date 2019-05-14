@@ -38,7 +38,10 @@ describe MetaDatumsController do
       let(:meta_datum) { create :meta_datum_title, string: 'foo bar' }
 
       it 'assigns @meta_datums correctly' do
-        get :index, params: { search_term: 'o b', search_by: :string }, session: { user_id: admin.id }
+        get(
+          :index,
+          params: { search_term: 'o b', search_by: :string },
+          session: { user_id: admin.id })
 
         expect(response).to be_successful
         expect(assigns[:meta_datums]).to include meta_datum

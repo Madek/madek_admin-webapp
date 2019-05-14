@@ -14,14 +14,20 @@ describe GroupsController do
     describe 'filtering/sorting groups' do
       context 'by type' do
         it "returns groups with 'Group' type" do
-          get :index, params: { type: 'Group' }, session: { user_id: admin_user.id }
+          get(
+            :index,
+            params: { type: 'Group' },
+            session: { user_id: admin_user.id })
 
           expect(assigns(:groups)) \
             .to match_array(Group.page(1).per(25).where(type: 'Group'))
         end
 
         it "returns groups with 'InstitutionalGroup' type" do
-          get :index, params: { type: 'InstitutionalGroup' }, session: { user_id: admin_user.id }
+          get(
+            :index,
+            params: { type: 'InstitutionalGroup' },
+            session: { user_id: admin_user.id })
 
           expect(assigns(:groups)).to match_array(Group.page(1).per(25) \
             .where(type: 'InstitutionalGroup'))
@@ -220,7 +226,10 @@ describe GroupsController do
 
   describe '#create' do
     it 'redirects to group#show after successful create' do
-      post :create, params: { group: attributes_for(:group) }, session: { user_id: admin_user.id }
+      post(
+        :create,
+        params: { group: attributes_for(:group) },
+        session: { user_id: admin_user.id })
 
       expect(response).to redirect_to group_path(assigns(:group))
       expect(flash[:success]).to eq flash_message(:create, :success)
@@ -228,13 +237,19 @@ describe GroupsController do
 
     it 'creates a group' do
       expect do
-        post :create, params: { group: attributes_for(:group) }, session: { user_id: admin_user.id }
+        post(
+          :create,
+          params: { group: attributes_for(:group) },
+          session: { user_id: admin_user.id })
       end.to change { Group.count }.by(1)
     end
 
     context 'failed validation' do
       it 'renders error template' do
-        post :create, params: { group: { name: '' } }, session: { user_id: admin_user.id }
+        post(
+          :create,
+          params: { group: { name: '' } },
+          session: { user_id: admin_user.id })
 
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response).to render_template 'errors/422'
@@ -248,7 +263,10 @@ describe GroupsController do
 
       context 'when group does not have any users' do
         it 'redirects to admin groups path after a successful destroy' do
-          delete :destroy, params: { id: group.id }, session: { user_id: admin_user.id }
+          delete(
+            :destroy,
+            params: { id: group.id },
+            session: { user_id: admin_user.id })
 
           expect(response).to redirect_to(groups_path)
           expect(flash[:success]).to eq flash_message(:destroy, :success)
@@ -256,7 +274,10 @@ describe GroupsController do
 
         it 'destroys the group' do
           expect do
-            delete :destroy, params: { id: group.id }, session: { user_id: admin_user.id }
+            delete(
+              :destroy,
+              params: { id: group.id },
+              session: { user_id: admin_user.id })
           end.to change { Group.count }.by(-1)
         end
       end
@@ -282,7 +303,10 @@ describe GroupsController do
 
       context 'when group does not have any users' do
         it 'redirects to admin groups path after a successful destroy' do
-          delete :destroy, params: { id: group.id }, session: { user_id: admin_user.id }
+          delete(
+            :destroy,
+            params: { id: group.id },
+            session: { user_id: admin_user.id })
 
           expect(response).to redirect_to(groups_path)
           expect(flash[:success]).to eq(
@@ -292,7 +316,10 @@ describe GroupsController do
 
         it 'destroys the group' do
           expect do
-            delete :destroy, params: { id: group.id }, session: { user_id: admin_user.id }
+            delete(
+              :destroy,
+              params: { id: group.id },
+              session: { user_id: admin_user.id })
           end.to change { Group.count }.by(-1)
         end
       end
@@ -317,7 +344,10 @@ describe GroupsController do
       let!(:group) { create :authentication_group }
 
       it 'renders forbidden message' do
-        delete(:destroy, params: { id: group.id }, session: { user_id: admin_user.id })
+        delete(
+          :destroy,
+          params: { id: group.id },
+          session: { user_id: admin_user.id })
 
         expect(response).to have_http_status :forbidden
         expect(response.body).to end_with 'Access denied!'
@@ -329,7 +359,10 @@ describe GroupsController do
     let(:group) { create :group }
 
     it 'redirects to users listing with proper url param' do
-      get :form_add_user, params: { id: group.id }, session: { user_id: admin_user.id }
+      get(
+        :form_add_user,
+        params: { id: group.id },
+        session: { user_id: admin_user.id })
 
       expect(response).to have_http_status 302
       expect(response).to redirect_to users_path(add_to_group_id: group.id)
@@ -341,7 +374,10 @@ describe GroupsController do
     let!(:user)  { create :user  }
 
     it 'redirects to group page after successful addition' do
-      post :add_user, params: { id: group.id, user_id: user.id }, session: { user_id: admin_user.id }
+      post(
+        :add_user,
+        params: { id: group.id, user_id: user.id },
+        session: { user_id: admin_user.id })
 
       expect(response).to redirect_to(group_path(group))
       expect(flash[:success]).to eq(
@@ -350,20 +386,32 @@ describe GroupsController do
 
     it 'adds user to selected group' do
       expect do
-        post :add_user, params: { id: group.id, user_id: user.id }, session: { user_id: admin_user.id }
+        post(
+          :add_user,
+          params: { id: group.id, user_id: user.id },
+          session: { user_id: admin_user.id })
       end.to change { group.users.count }.by(1)
     end
 
     it 'displays an error if user is already a member' do
-      post :add_user, params: { id: group.id, user_id: user.id }, session: { user_id: admin_user.id }
-      post :add_user, params: { id: group.id, user_id: user.id }, session: { user_id: admin_user.id }
+      post(
+        :add_user,
+        params: { id: group.id, user_id: user.id },
+        session: { user_id: admin_user.id })
+      post(
+        :add_user,
+        params: { id: group.id, user_id: user.id },
+        session: { user_id: admin_user.id })
       expect(response).to redirect_to(group_path(group))
       expect(flash[:error]).to eq(
         "The user <strong>#{user.login}</strong> already belongs to this group.")
     end
 
     it 'displays error template if something goes wrong' do
-      post :add_user, params: { id: group.id, user_id: '' }, session: { user_id: admin_user.id }
+      post(
+        :add_user,
+        params: { id: group.id, user_id: '' },
+        session: { user_id: admin_user.id })
 
       expect(response).to have_http_status(404)
       expect(response).to render_template 'errors/404'
@@ -373,7 +421,10 @@ describe GroupsController do
       let!(:group) { create :authentication_group }
 
       it 'renders forbidden message' do
-        post :add_user, params: { id: group.id, user_id: user.id }, session: { user_id: admin_user.id }
+        post(
+          :add_user,
+          params: { id: group.id, user_id: user.id },
+          session: { user_id: admin_user.id })
 
         expect(response).to have_http_status :forbidden
         expect(response.body).to end_with 'Access denied!'
@@ -385,7 +436,10 @@ describe GroupsController do
     let(:group) { create :institutional_group }
 
     it 'renders template' do
-      get :form_merge_to, params: { id: group.id }, session: { user_id: admin_user.id }
+      get(
+        :form_merge_to,
+        params: { id: group.id },
+        session: { user_id: admin_user.id })
 
       expect(response).to be_successful
       expect(response).to render_template :form_merge_to

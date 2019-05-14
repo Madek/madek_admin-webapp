@@ -5,7 +5,12 @@ describe ContextKeysController do
 
   describe '#edit' do
     let(:context_key) { create :context_key }
-    before { get :edit, params: { id: context_key.id }, session: { user_id: admin_user.id } }
+    before do
+      get(
+        :edit,
+        params: { id: context_key.id },
+        session: { user_id: admin_user.id })
+    end
 
     it 'assigns @context_key correctly' do
       expect(assigns[:context_key]).to eq context_key
@@ -64,7 +69,12 @@ describe ContextKeysController do
 
   describe '#move_up' do
     let(:context_key) { create :context_key }
-    before { patch :move_up, params: { id: context_key.id }, session: { user_id: admin_user.id } }
+    before do
+      patch(
+        :move_up,
+        params: { id: context_key.id },
+        session: { user_id: admin_user.id })
+    end
 
     it 'it redirects to a proper context path' do
       expect(response).to have_http_status(302)
@@ -89,7 +99,12 @@ describe ContextKeysController do
 
   describe '#move_down' do
     let(:context_key) { create :context_key }
-    before { patch :move_down, params: { id: context_key.id }, session: { user_id: admin_user.id } }
+    before do
+      patch(
+        :move_down,
+        params: { id: context_key.id },
+        session: { user_id: admin_user.id })
+    end
 
     it 'it redirects to a proper context path' do
       expect(response).to have_http_status(302)

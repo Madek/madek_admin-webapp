@@ -28,7 +28,10 @@ describe IoMappingsController do
                               meta_key: @meta_key,
                               io_interface: @io_interface)
 
-        get :index, params: { search_term: 'foo' }, session: { user_id: @admin_user.id }
+        get(
+          :index,
+          params: { search_term: 'foo' },
+          session: { user_id: @admin_user.id })
 
         expect(assigns[:io_mappings]).to match_array([io_mapping_1, io_mapping_2])
       end
@@ -45,7 +48,10 @@ describe IoMappingsController do
                               meta_key: @meta_key,
                               io_interface: @io_interface)
 
-        get :index, params: { search_term: 'bar' }, session: { user_id: @admin_user.id }
+        get(
+          :index,
+          params: { search_term: 'bar' },
+          session: { user_id: @admin_user.id })
 
         expect(assigns[:io_mappings]).to match_array([io_mapping_1, io_mapping_2])
       end
@@ -56,7 +62,8 @@ describe IoMappingsController do
                            meta_key: @meta_key,
                            io_interface: @io_interface)
       put(:update,
-          params: { id: @io_mapping.id,
+          params: {
+            id: @io_mapping.id,
             io_mapping: { io_interface_id: @io_interface.id,
                           meta_key_id: @meta_key.id,
                           key_map: 'test_edit' } },
@@ -70,7 +77,10 @@ describe IoMappingsController do
       @io_mapping = create(:io_mapping,
                            meta_key: @meta_key,
                            io_interface: @io_interface)
-      get :show, params: { id: @io_mapping.id }, session: { user_id: @admin_user.id }
+      get(
+        :show,
+        params: { id: @io_mapping.id },
+        session: { user_id: @admin_user.id })
 
       expect(response).to be_successful
       expect(response).to have_http_status(200)
@@ -83,7 +93,10 @@ describe IoMappingsController do
                            meta_key: @meta_key,
                            io_interface: @io_interface)
 
-      delete :destroy, params: { id: @io_mapping.id }, session: { user_id: @admin_user.id }
+      delete(
+        :destroy,
+        params: { id: @io_mapping.id },
+        session: { user_id: @admin_user.id })
       expect(response).to have_http_status(302)
       expect(response).to redirect_to(io_mappings_path)
     end
@@ -96,7 +109,10 @@ describe IoMappingsController do
       }
 
       expect do
-        post :create, params: { io_mapping: io_mapping_params }, session: { user_id: @admin_user.id }
+        post(
+          :create,
+          params: { io_mapping: io_mapping_params },
+          session: { user_id: @admin_user.id })
       end.to change { IoMapping.count }.by(1)
     end
   end

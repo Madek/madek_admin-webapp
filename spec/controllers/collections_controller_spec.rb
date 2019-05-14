@@ -37,18 +37,27 @@ describe CollectionsController do
     let!(:collection) { create :collection }
 
     it 'responds with status code 200' do
-      get :media_entries, params: { id: collection.id }, session: { user_id: admin_user.id }
+      get(
+        :media_entries,
+        params: { id: collection.id },
+        session: { user_id: admin_user.id })
       expect(response).to be_successful
       expect(response).to have_http_status(200)
     end
 
     it 'renders the show template' do
-      get :media_entries, params: { id: collection.id }, session: { user_id: admin_user.id }
+      get(
+        :media_entries,
+        params: { id: collection.id },
+        session: { user_id: admin_user.id })
       expect(response).to render_template(:media_entries)
     end
 
     it 'loads the proper models into variables' do
-      get :media_entries, params: { id: collection.id }, session: { user_id: admin_user.id }
+      get(
+        :media_entries,
+        params: { id: collection.id },
+        session: { user_id: admin_user.id })
       expect(assigns[:collection]).to eq collection
       expect(assigns[:user]).to eq collection.responsible_user
       expect(assigns[:media_entries]).to eq collection.media_entries
@@ -59,18 +68,27 @@ describe CollectionsController do
     let!(:collection) { create :collection }
 
     it 'responds with status code 200' do
-      get :collections, params: { id: collection.id }, session: { user_id: admin_user.id }
+      get(
+        :collections,
+        params: { id: collection.id },
+        session: { user_id: admin_user.id })
       expect(response).to be_successful
       expect(response).to have_http_status(200)
     end
 
     it 'renders the show template' do
-      get :collections, params: { id: collection.id }, session: { user_id: admin_user.id }
+      get(
+        :collections,
+        params: { id: collection.id },
+        session: { user_id: admin_user.id })
       expect(response).to render_template(:collections)
     end
 
     it 'loads the proper models into variables' do
-      get :collections, params: { id: collection.id }, session: { user_id: admin_user.id }
+      get(
+        :collections,
+        params: { id: collection.id },
+        session: { user_id: admin_user.id })
       expect(assigns[:collection]).to eq collection
       expect(assigns[:user]).to eq collection.responsible_user
       expect(assigns[:collections]).to eq collection.collections

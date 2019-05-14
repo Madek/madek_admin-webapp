@@ -39,7 +39,9 @@ describe KeywordsController do
         it 'returns a proper keyword ' do
           get(
             :index,
-            params: { vocabulary_id: vocabulary.id, search_term: keyword.term[0..-2] },
+            params: {
+              vocabulary_id: vocabulary.id,
+              search_term: keyword.term[0..-2] },
             session: { user_id: admin_user.id }
           )
 
@@ -142,7 +144,12 @@ describe KeywordsController do
   end
 
   describe '#new' do
-    before { get :new, params: { vocabulary_id: vocabulary.id }, session: { user_id: admin_user.id } }
+    before do
+      get(
+        :new,
+        params: { vocabulary_id: vocabulary.id },
+        session: { user_id: admin_user.id })
+    end
 
     it 'assigns @vocabulary correctly' do
       expect(assigns[:vocabulary]).to eq vocabulary
@@ -170,8 +177,12 @@ describe KeywordsController do
     end
 
     it 'creates a new keyword' do
-      expect { post :create, params: keyword_params, session: { user_id: admin_user.id } }
-        .to change { Keyword.count }.by(1)
+      expect do
+        post(
+          :create,
+          params: keyword_params,
+          session: { user_id: admin_user.id })
+      end.to change { Keyword.count }.by(1)
     end
 
     it 'redirects to admin keywords path' do
@@ -244,7 +255,10 @@ describe KeywordsController do
 
   describe '#form_merge_to' do
     before(:each) do
-      get :form_merge_to, params: { id: keyword.id }, session: { user_id: admin_user.id }
+      get(
+        :form_merge_to,
+        params: { id: keyword.id },
+        session: { user_id: admin_user.id })
     end
 
     it 'assigns variables correctly' do
@@ -286,7 +300,8 @@ describe KeywordsController do
       before(:each) do
         post(
           :merge_to,
-          params: { id: keyword.id,
+          params: {
+            id: keyword.id,
             id_receiver: receiver.id,
             redirect_to: '/redirected-to'
           },

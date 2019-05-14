@@ -34,7 +34,10 @@ describe MetaKeysController do
         meta_key_1 = create :meta_key_title, id: 'test:bar_foo'
         meta_key_2 = create :meta_key_title, id: 'test:foo_bar'
 
-        get :index, params: { search_term: 'foo' }, session: { user_id: admin_user.id }
+        get(
+          :index,
+          params: { search_term: 'foo' },
+          session: { user_id: admin_user.id })
 
         expect(assigns[:meta_keys]).to match_array([meta_key_1, meta_key_2])
       end
@@ -45,7 +48,10 @@ describe MetaKeysController do
         meta_key_1 = create :meta_key_title, labels: { de: 'foo:bar' }
         meta_key_2 = create :meta_key_keywords, labels: { de: 'bar:foo' }
 
-        get :index, params: { search_term: 'bar' }, session: { user_id: admin_user.id }
+        get(
+          :index,
+          params: { search_term: 'bar' },
+          session: { user_id: admin_user.id })
 
         expect(assigns[:meta_keys]).to match_array([meta_key_1, meta_key_2])
       end
@@ -77,7 +83,10 @@ describe MetaKeysController do
         meta_key_1 = create :meta_key_title, labels: { de: 'foo:bar' }
         meta_key_2 = create :meta_key_keywords, labels: { de: 'bar:foo' }
 
-        get :index, params: { search_term: 'foo' }, session: { user_id: admin_user.id }
+        get(
+          :index,
+          params: { search_term: 'foo' },
+          session: { user_id: admin_user.id })
 
         expect(assigns[:meta_keys]).to match_array [meta_key_2, meta_key_1]
       end
@@ -102,7 +111,12 @@ describe MetaKeysController do
 
   describe '#edit' do
     let(:meta_key) { create :meta_key_title }
-    before { get :edit, params: { id: meta_key.id }, session: { user_id: admin_user.id } }
+    before do
+      get(
+        :edit,
+        params: { id: meta_key.id },
+        session: { user_id: admin_user.id })
+    end
 
     it 'responds with 200 HTTP status code' do
       expect(response).to be_successful
@@ -181,7 +195,8 @@ describe MetaKeysController do
 
         patch(
           :update,
-          params: { id: meta_key.id,
+          params: {
+            id: meta_key.id,
             meta_key: {
               allowed_people_subtypes: ['', 'Person', '']
             }
@@ -232,7 +247,10 @@ describe MetaKeysController do
     let!(:meta_key) { create :meta_key_title }
 
     it 'redirects to admin meta keys path' do
-      delete :destroy, params: { id: meta_key.id }, session: { user_id: admin_user.id }
+      delete(
+        :destroy,
+        params: { id: meta_key.id },
+        session: { user_id: admin_user.id })
 
       expect(response).to have_http_status(302)
       expect(response).to redirect_to(meta_keys_path)
@@ -240,12 +258,18 @@ describe MetaKeysController do
 
     it 'deletes the meta key' do
       expect do
-        delete :destroy, params: { id: meta_key.id }, session: { user_id: admin_user.id }
+        delete(
+          :destroy,
+          params: { id: meta_key.id },
+          session: { user_id: admin_user.id })
       end.to change { MetaKey.count }.by(-1)
     end
 
     it 'sets correct flash message' do
-      delete :destroy, params: { id: meta_key.id }, session: { user_id: admin_user.id }
+      delete(
+        :destroy,
+        params: { id: meta_key.id },
+        session: { user_id: admin_user.id })
 
       expect(flash[:success]).to eq flash_message(:destroy, :success)
     end
@@ -265,7 +289,10 @@ describe MetaKeysController do
       end
 
       it 'renders forbidden notice' do
-        delete :destroy, params: { id: meta_key.id }, session: { user_id: admin_user.id }
+        delete(
+          :destroy,
+          params: { id: meta_key.id },
+          session: { user_id: admin_user.id })
 
         expect(response).to have_http_status(:forbidden)
         expect(response.body).to eq 'Error 403 - Admin access denied!'
@@ -302,12 +329,18 @@ describe MetaKeysController do
 
     it 'creates a new meta key' do
       expect do
-        post :create, params: { meta_key: meta_key_params }, session: { user_id: admin_user.id }
+        post(
+          :create,
+          params: { meta_key: meta_key_params },
+          session: { user_id: admin_user.id })
       end.to change { MetaKey.count }.by(1)
     end
 
     it 'redirects to edit admin meta key path' do
-      post :create, params: { meta_key: meta_key_params }, session: { user_id: admin_user.id }
+      post(
+        :create,
+        params: { meta_key: meta_key_params },
+        session: { user_id: admin_user.id })
 
       meta_key = MetaKey.find(meta_key_params[:id])
 
@@ -315,13 +348,19 @@ describe MetaKeysController do
     end
 
     it 'sets a success message correctly' do
-      post :create, params: { meta_key: meta_key_params }, session: { user_id: admin_user.id }
+      post(
+        :create,
+        params: { meta_key: meta_key_params },
+        session: { user_id: admin_user.id })
 
       expect(flash[:success]).to eq flash_message(:create, :success)
     end
 
     it 'sets boolean fields correctly' do
-      post :create, params: { meta_key: meta_key_params }, session: { user_id: admin_user.id }
+      post(
+        :create,
+        params: { meta_key: meta_key_params },
+        session: { user_id: admin_user.id })
 
       meta_key = MetaKey.find(meta_key_params[:id])
 
@@ -332,7 +371,10 @@ describe MetaKeysController do
     end
 
     it 'sets localized fields correctly' do
-      post :create, params: { meta_key: meta_key_params }, session: { user_id: admin_user.id }
+      post(
+        :create,
+        params: { meta_key: meta_key_params },
+        session: { user_id: admin_user.id })
 
       meta_key = MetaKey.find(meta_key_params[:id])
 
@@ -352,7 +394,10 @@ describe MetaKeysController do
     describe "#move_#{direction}" do
       let(:meta_key) { create :meta_key_text }
       before do
-        patch "move_#{direction}", params: { id: meta_key.id }, session: { user_id: admin_user.id }
+        patch(
+          "move_#{direction}",
+          params: { id: meta_key.id },
+          session: { user_id: admin_user.id })
       end
 
       it 'it redirects to admin vocabulary path' do
@@ -367,7 +412,10 @@ describe MetaKeysController do
 
       context 'when ID is missing' do
         it 'renders error template' do
-          patch "move_#{direction}", params: { id: '' }, session: { user_id: admin_user.id }
+          patch(
+            "move_#{direction}",
+            params: { id: '' },
+            session: { user_id: admin_user.id })
 
           expect(response).to have_http_status(404)
           expect(response).to render_template 'errors/404'

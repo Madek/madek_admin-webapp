@@ -11,7 +11,12 @@ describe VocabularyApiClientPermissionsController do
     let(:second_api_client_permission) do
       create(:vocabulary_api_client_permission, vocabulary: vocabulary)
     end
-    before { get :index, params: { vocabulary_id: vocabulary.id }, session: { user_id: admin_user.id } }
+    before do
+      get(
+        :index,
+        params: { vocabulary_id: vocabulary.id },
+        session: { user_id: admin_user.id })
+    end
 
     it 'responds with HTTP 200 status code' do
       expect(response).to be_successful
@@ -28,7 +33,10 @@ describe VocabularyApiClientPermissionsController do
     let(:new_api_client) { create(:api_client) }
 
     it 'assigns locals correctly' do
-      get :new, params: { vocabulary_id: vocabulary.id }, session: { user_id: admin_user.id }
+      get(
+        :new,
+        params: { vocabulary_id: vocabulary.id },
+        session: { user_id: admin_user.id })
 
       expect(assigns[:vocabulary]).to eq vocabulary
       expect(assigns[:permission]).to be_an_instance_of(
@@ -37,14 +45,19 @@ describe VocabularyApiClientPermissionsController do
 
     it "assigns api_client_id value of permission's instance from params" do
       get(:new,
-          params: { vocabulary_id: vocabulary.id, api_client_id: new_api_client.id },
+          params: {
+            vocabulary_id: vocabulary.id,
+            api_client_id: new_api_client.id },
           session: { user_id: admin_user.id })
 
       expect(assigns[:permission].api_client_id).to eq new_api_client.id
     end
 
     it 'renders new template' do
-      get :new, params: { vocabulary_id: vocabulary.id }, session: { user_id: admin_user.id }
+      get(
+        :new,
+        params: { vocabulary_id: vocabulary.id },
+        session: { user_id: admin_user.id })
 
       expect(response).to render_template(:new)
     end

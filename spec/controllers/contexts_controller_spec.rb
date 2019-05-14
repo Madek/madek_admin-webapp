@@ -19,7 +19,12 @@ describe ContextsController do
 
   describe '#show' do
     let(:context) { create :context_with_context_keys }
-    before { get :show, params: { id: context.id }, session: { user_id: admin_user.id } }
+    before do
+      get(
+        :show,
+        params: { id: context.id },
+        session: { user_id: admin_user.id })
+    end
 
     it 'responds with HTTP 200 status code' do
       expect(response).to be_successful
@@ -33,7 +38,12 @@ describe ContextsController do
 
   describe '#edit' do
     let(:context) { create :context }
-    before { get :edit, params: { id: context.id }, session: { user_id: admin_user.id } }
+    before do
+      get(
+        :edit,
+        params: { id: context.id },
+        session: { user_id: admin_user.id })
+    end
 
     it 'assigns @context correctly' do
       expect(assigns[:context]).to eq context
@@ -106,12 +116,18 @@ describe ContextsController do
 
     it 'creates a new Context' do
       expect do
-        post :create, params: { context: context_params }, session: { user_id: admin_user.id }
+        post(
+          :create,
+          params: { context: context_params },
+          session: { user_id: admin_user.id })
       end.to change { Context.count }.by(1)
     end
 
     it 'redirects to context path' do
-      post :create, params: { context: context_params }, session: { user_id: admin_user.id }
+      post(
+        :create,
+        params: { context: context_params },
+        session: { user_id: admin_user.id })
 
       expect(response).to have_http_status(302)
       expect(response).to \
@@ -123,7 +139,10 @@ describe ContextsController do
       let!(:context) { create :context, id: context_params[:id] }
 
       it 'renders error template' do
-        post :create, params: { context: context_params }, session: { user_id: admin_user.id }
+        post(
+          :create,
+          params: { context: context_params },
+          session: { user_id: admin_user.id })
 
         expect(response).to have_http_status(500)
         expect(response).to render_template 'errors/500'
@@ -150,12 +169,21 @@ describe ContextsController do
     let!(:context) { create :context }
 
     it 'destroys the context' do
-      expect { delete :destroy, params: { id: context.id }, session: { user_id: admin_user.id } }
-        .to change { Context.count }.by(-1)
+      expect do
+        delete(
+          :destroy,
+          params: { id: context.id },
+          session: { user_id: admin_user.id })
+      end.to change { Context.count }.by(-1)
     end
 
     context 'when delete was successful' do
-      before { delete :destroy, params: { id: context.id }, session: { user_id: admin_user.id } }
+      before do
+        delete(
+          :destroy,
+          params: { id: context.id },
+          session: { user_id: admin_user.id })
+      end
 
       it 'redirects to admin contexts path' do
         expect(response).to have_http_status(302)

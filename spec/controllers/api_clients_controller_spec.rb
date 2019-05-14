@@ -92,7 +92,9 @@ describe ApiClientsController do
     it 'redirects to admin api_client show page' do
       patch(
         :update,
-        params: { id: api_client.id, api_client: { description: 'test description' } },
+        params: {
+          id: api_client.id,
+          api_client: { description: 'test description' } },
         session: { user_id: admin_user.id }
       )
 
@@ -103,7 +105,9 @@ describe ApiClientsController do
     it 'updates the api_client' do
       patch(
         :update,
-        params: { id: api_client.id, api_client: { description: 'test description' } },
+        params: {
+          id: api_client.id,
+          api_client: { description: 'test description' } },
         session: { user_id: admin_user.id }
       )
 
@@ -125,7 +129,10 @@ describe ApiClientsController do
       it 'redirects to users listing with proper url params' do
         patch(
           :update,
-          params: { id: api_client.id, api_client: api_client_params, change_user: '' },
+          params: {
+            id: api_client.id,
+            api_client: api_client_params,
+            change_user: '' },
           session: { user_id: admin_user.id }
         )
 
@@ -148,7 +155,10 @@ describe ApiClientsController do
     end
 
     it 'redirects to admin api_clients path after successful create' do
-      post :create, params: { api_client: api_client_params }, session: { user_id: admin_user.id }
+      post(
+        :create,
+        params: { api_client: api_client_params },
+        session: { user_id: admin_user.id })
 
       expect(response).to have_http_status(302)
       expect(response).to redirect_to(api_clients_path)
@@ -157,14 +167,20 @@ describe ApiClientsController do
 
     it 'creates an api_client' do
       expect do
-        post :create, params: { api_client: api_client_params }, session: { user_id: admin_user.id }
+        post(
+          :create,
+          params: { api_client: api_client_params },
+          session: { user_id: admin_user.id })
       end.to change { ApiClient.count }.by(1)
     end
 
     context 'when user is missing' do
       it 'redirects to users listing with proper url params' do
         api_client_params[:user_id] = nil
-        post :create, params: { api_client: api_client_params }, session: { user_id: admin_user.id }
+        post(
+          :create,
+          params: { api_client: api_client_params },
+          session: { user_id: admin_user.id })
 
         expect(response).to have_http_status(302)
         expect(response).to redirect_to(
@@ -178,7 +194,10 @@ describe ApiClientsController do
     let!(:api_client) { create :api_client }
 
     it 'redirects to admin api_clients path after succesful destroy' do
-      delete :destroy, params: { id: api_client.id }, session: { user_id: admin_user.id }
+      delete(
+        :destroy,
+        params: { id: api_client.id },
+        session: { user_id: admin_user.id })
 
       expect(response).to redirect_to(api_clients_path)
       expect(flash[:success]).to eq flash_message(:destroy, :success)
@@ -186,7 +205,10 @@ describe ApiClientsController do
 
     it 'destroys the api_client' do
       expect do
-        delete :destroy, params: { id: api_client.id }, session: { user_id: admin_user.id }
+        delete(
+          :destroy,
+          params: { id: api_client.id },
+          session: { user_id: admin_user.id })
       end.to change { ApiClient.count }.by(-1)
     end
   end
