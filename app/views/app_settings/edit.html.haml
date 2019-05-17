@@ -1,3 +1,6 @@
+- markdowned = ['welcome_text', 'about_page']
+- is_markdowned = markdowned.include?(@field.to_s)
+
 .page-header
   %h1
     Edit Setting
@@ -6,6 +9,19 @@
     = link_to "&larr; Go back to settings".html_safe, app_settings_path
 
 .row
+
+  - if is_markdowned
+    .col-xs-12
+      %p.help-block
+        = 'NOTE: This field supports Markdown formatting'
+        %span= ' '
+        %small<> (the normal, non-Github-flavored kind)
+        = ' — see'
+        %a{href: 'https://commonmark.org/help/', target: '_blank'} the CommonMark Markdown Reference
+        for details.
+        %br
+        Also note that Markdown does not have to be used, plain HTML is also allowed!
+
   .col-xs-12
     = form_for @app_settings, html: { class: 'form-horizontal', role: 'form' }, builder: AdminFormBuilder do |f|
 
@@ -15,12 +31,11 @@
         .form-group
           .col-xs-12
             - type = ::AppSetting.columns_hash[@field.try(:to_s)].try(:sql_type)
-            - markdowned = ['welcome_text', 'about_page']
             - case
             - when type === 'jsonb'
               = f.technical_field @field, value: @app_settings.send(@field).to_yaml,
                 rows: 12
-            - when markdowned.include?(@field.to_s)
+            - when is_markdowned
               = f.technical_field @field, rows: 12
             - when @field.to_s =~ /contexts/
               = f.technical_field @field, value: @app_settings[@field].join(', ')
