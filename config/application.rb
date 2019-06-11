@@ -26,8 +26,6 @@ module MadekAdmin
     config.active_record.record_timestamps = false
 
     config.autoload_paths += [
-      Rails.root.join('app', 'api'),
-      Rails.root.join('app', 'views'),
       Rails.root.join('lib')
     ]
 
