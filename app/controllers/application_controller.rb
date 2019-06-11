@@ -27,9 +27,8 @@ class ApplicationController < ActionController::Base
   helper_method :feature_toggle_sql_reports
 
   def status
-    memory_status = InShape::Memory.status
-    render json: { memory: memory_status.content }, \
-           status: memory_status.is_ok ? 200 : 499
+    render plain: 'OK, but we need to provide memory usage info ' \
+                  'as Inshape was designed for jruby'
   end
 
   private

@@ -20,7 +20,6 @@ gem 'bcrypt-ruby'
 gem 'pundit'
 gem 'cider_ci-open_session', '>= 1.0.0', '< 2.0.0'
 gem 'kaminari'
-# gem 'inshape', '>= 1.0.1', '< 2.0'
 gem 'sys-filesystem', require: false
 
 
