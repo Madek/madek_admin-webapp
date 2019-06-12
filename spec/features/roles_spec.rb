@@ -25,7 +25,8 @@ feature 'Roles' do
     fill_in 'role[labels][de]', with: Faker::Name.title
     click_button 'Save'
 
-    expect(page).to have_content 'Validation failed: Meta key must exist'
+    expect(page).to have_content 'ERROR: null value in column "meta_key_id" ' \
+                                 'violates not-null constraint'
   end
 
   scenario 'Creating' do
