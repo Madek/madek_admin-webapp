@@ -1,14 +1,15 @@
-require File.expand_path('../boot', __FILE__)
-#$:.push File.expand_path('../../engines/datalayer/lib', __FILE__)
+require_relative 'boot'
 
 require "rails"
 # Pick the frameworks you want:
 require "active_model/railtie"
-require "active_job/railtie"
+# require "active_job/railtie"
 require "active_record/railtie"
+# require "active_storage/engine"
 require "action_controller/railtie"
-require "action_mailer/railtie"
+# require "action_mailer/railtie"
 require "action_view/railtie"
+# require "action_cable/engine"
 require "sprockets/railtie"
 # require "rails/test_unit/railtie"
 
@@ -25,11 +26,9 @@ module MadekAdmin
     config.active_record.timestamped_migrations = false
     config.active_record.record_timestamps = false
 
-    config.autoload_paths += [
-      Rails.root.join('lib')
-    ]
+    config.autoload_paths << Rails.root.join('lib')
 
-    config.paths["db/migrate"] << \
+    config.paths['db/migrate'] << \
       Rails.root.join('datalayer', 'db', 'migrate')
 
     config.paths['config/initializers'] <<  \
@@ -51,10 +50,13 @@ module MadekAdmin
     end
     config.log_tags = [->(req) { Time.now.strftime('%T') }, :port, :remote_ip]
 
+    # Initialize configuration defaults for originally generated Rails version.
+    config.load_defaults 5.0
 
     # Settings in config/environments/* take precedence over those specified here.
-    # Application configuration should go into files in config/initializers
-    # -- all .rb files in that directory are automatically loaded.
+    # Application configuration can go into files in config/initializers
+    # -- all .rb files in that directory are automatically loaded after loading
+    # the framework and any gems in your application.
 
     config.consider_all_requests_local = false
 
