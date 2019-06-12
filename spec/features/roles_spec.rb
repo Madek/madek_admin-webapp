@@ -25,8 +25,7 @@ feature 'Roles' do
     fill_in 'role[labels][de]', with: Faker::Name.title
     click_button 'Save'
 
-    expect(page).to have_content 'ERROR: null value in column "meta_key_id" ' \
-                                 'violates not-null constraint'
+    expect(page).to have_content 'Validation failed: Meta key must exist'
   end
 
   scenario 'Creating' do
@@ -56,11 +55,11 @@ feature 'Roles' do
   end
 
   scenario 'Creating with empty label' do
-    vocabulary = create :vocabulary
+    meta_key = create :meta_key_roles
 
     visit roles_path
 
-    select vocabulary.id, from: 'Vocabulary'
+    select meta_key.vocabulary_id, from: 'Vocabulary'
     click_button 'Apply'
     add_role_button.click
     click_button 'Save'
