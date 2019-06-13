@@ -31,7 +31,6 @@ Rails.application.configure do
   # it's faster and there is a dedicated test to verify static assets.
   if ENV['CIDER_CI_TRIAL_ID'].present?
     config.assets.compile = false
-    config.assets.digest = true
   else
     config.assets.compile = true
   end
