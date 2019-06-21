@@ -1,0 +1,5 @@
+%ul.list-unstyled
+  - I18n.available_locales.each do |locale|
+    %li
+      = locale_label locale
+      = @app_settings.send(attr)[locale.to_s]

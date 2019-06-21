@@ -1,11 +1,20 @@
 - @explore_page_settings.each_key do |attr|
-  .form-group
-    .col-xs-3
-      = f.label attr, attr.to_s.titleize
-    .col-xs-9
-      - if attr.to_s =~ /context_keys/
-        = f.technical_field attr
-      - elsif attr.to_s =~ /_id\Z/
-        = f.technical_field attr, rows: 1
-      - else
-        = f.text_field attr, class: 'form-control'
+  - if AppSetting.localized_field?(attr.to_s.pluralize)
+    = f.fields_for attr, OpenStruct.new(f.object[attr]) do |lf|
+      - I18n.available_locales.each do |locale|
+        .form-group
+          .col-xs-3
+            = lf.label locale, "#{setting_header(attr)} [#{locale}]"
+          .col-xs-9
+            = lf.text_field locale, class: 'form-control'
+  - else
+    .form-group
+      .col-xs-3
+        = f.label attr, setting_header(attr)
+      .col-xs-9
+        - if attr.to_s =~ /context_keys/
+          = f.technical_field attr
+        - elsif attr.to_s =~ /_id\Z/
+          = f.technical_field attr, rows: 1
+        - else
+          = f.text_field attr, class: 'form-control'

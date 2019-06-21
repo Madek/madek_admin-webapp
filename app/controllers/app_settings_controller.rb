@@ -5,20 +5,20 @@ class AppSettingsController < ApplicationController
   SETTINGS_GROUPS = {
     # hash keys == table rows; grouping and descriptions for displaying only
     'General' => {
-      site_title: 'Name of this instance',
-      brand_text: 'Name of provider of this instance',
+      site_titles: 'Name of this instance',
+      brand_texts: 'Name of provider of this instance',
       brand_logo_url: 'URL to an image'
     },
     'Welcome message (on home page)' => {
-      welcome_title: 'Title of welcome box',
-      welcome_text: 'Markdown text of welcome box'
+      welcome_titles: 'Title of welcome box',
+      welcome_texts: 'Markdown text of welcome box'
     },
     'Other' => {
       sitemap: 'Links for footer menu',
-      about_page: \
+      about_pages: \
         'HTML/Markdown Content for "About Page" (<code>/about</code>)'
         .html_safe,
-      support_url: 'Link for support tab',
+      support_urls: 'Link for support tab',
       ignored_keyword_keys_for_browsing: 'MetaKeys of type Keyword that are ' \
         'ignored for the feature "Browse similar entries (Stöbern)"'
     },
@@ -74,11 +74,11 @@ class AppSettingsController < ApplicationController
   }.freeze
 
   EXPLORE_PAGE_SETTINGS = {
-    catalog_title: {
+    catalog_titles: {
       label: 'Catalog: Name',
       description: ''
     },
-    catalog_subtitle: {
+    catalog_subtitles: {
       label: 'Catalog: Subtitle',
       description: ''
     },
@@ -87,11 +87,11 @@ class AppSettingsController < ApplicationController
       description: "List of ContextKeys that are displayed as sections of \
                     the Catalog"
     },
-    featured_set_title: {
+    featured_set_titles: {
       label: 'Featured Content: Title',
       description: ''
     },
-    featured_set_subtitle: {
+    featured_set_subtitles: {
       label: 'Featured Content: Subtitle',
       description: ''
     },

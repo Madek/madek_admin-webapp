@@ -5,7 +5,7 @@ describe AppSettingsController do
   let(:app_settings) { AppSetting.first }
   before(:each) do
     unless AppSetting.first
-      create :app_settings, id: 0
+      create :app_setting, id: 0
     end
   end
 
@@ -49,12 +49,21 @@ describe AppSettingsController do
     it 'updates a setting' do
       patch(
         :update,
-        { id: app_settings.id, app_setting: { site_title: 'NEW TITLE' } },
+        {
+          id: app_settings.id,
+          app_setting: {
+            site_titles: {
+              de: 'neuer Titel',
+              en: 'NEW TITLE'
+            }
+          }
+        },
         user_id: admin_user.id
       )
 
       expect(flash[:success]).to eq flash_message(:update, :success)
-      expect(app_settings.reload.site_title).to eq 'NEW TITLE'
+      expect(app_settings.reload.site_title).to eq 'neuer Titel'
+      expect(app_settings.reload.site_title(:en)).to eq 'NEW TITLE'
     end
 
     it 'updates a yaml setting' do

@@ -32,7 +32,7 @@ module Concerns
     end
 
     def get_madek_base_info
-      app_settings = AppSettings.first
+      app_settings = AppSetting.first
       zencoder_api_key = Settings.zencoder_api_key.present?
       {
         site_title: app_settings.try(:site_title),

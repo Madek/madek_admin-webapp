@@ -29,6 +29,104 @@ feature 'Admin App Settings' do
   let(:collection) { Collection.first }
   let(:random_uuid) { SecureRandom.uuid }
 
+  scenario 'Updating Site Title' do
+    new_title = Faker::Name.title
+
+    visit app_settings_path
+
+    within '#site_titles' do
+      click_link 'Edit'
+    end
+
+    fill_in '[de]', with: new_title + 'DE'
+    fill_in '[en]', with: new_title + 'EN'
+    click_button 'Save'
+
+    expect(page).to have_css '.alert-success'
+
+    within '#site_titles' do
+      expect(page).to have_content "de → #{new_title}DE en → #{new_title}EN"
+    end
+  end
+
+  scenario 'Updating Brand Text' do
+    new_text = Faker::Book.title
+
+    visit app_settings_path
+
+    within '#brand_texts' do
+      click_link 'Edit'
+    end
+
+    fill_in '[de]', with: new_text + 'DE'
+    fill_in '[en]', with: new_text + 'EN'
+    click_button 'Save'
+
+    expect(page).to have_css '.alert-success'
+
+    within '#brand_texts' do
+      expect(page).to have_content "de → #{new_text}DE en → #{new_text}EN"
+    end
+  end
+
+  scenario 'Updating Welcome Title' do
+    new_title = Faker::Book.title
+
+    visit app_settings_path
+
+    within '#welcome_titles' do
+      click_link 'Edit'
+    end
+
+    fill_in '[de]', with: new_title + 'DE'
+    fill_in '[en]', with: new_title + 'EN'
+    click_button 'Save'
+
+    expect(page).to have_css '.alert-success'
+
+    within '#welcome_titles' do
+      expect(page).to have_content "de → #{new_title}DE en → #{new_title}EN"
+    end
+  end
+
+  scenario 'Updating Welcome Texts', browser: :firefox do
+    new_text = Faker::Lorem.paragraph
+
+    visit app_settings_path
+
+    within '#welcome_texts' do
+      click_link 'Edit'
+    end
+
+    fill_in '[de]', with: new_text + 'DE'
+    fill_in '[en]', with: new_text + 'EN'
+    click_button 'Save'
+
+    expect(page).to have_css '.alert-success'
+
+    within '#welcome_texts' do
+      expect(page).to have_content "de ↘ #{new_text}DE en ↘ #{new_text}EN"
+    end
+  end
+
+  scenario 'Updating Media Entry Default License Usage Text' do
+    new_text = Faker::Lorem.sentence
+    visit app_settings_path
+
+    within '#media_entry_default_license_usage_text' do
+      click_link 'Edit'
+    end
+
+    fill_in 'app_setting[media_entry_default_license_usage_text]', with: new_text
+    click_button 'Save'
+
+    expect(page).to have_css '.alert-success'
+
+    within '#media_entry_default_license_usage_text' do
+      expect(page).to have_content new_text
+    end
+  end
+
   describe 'Updating Summary Context for Entry View' do
     scenario 'with existing context' do
       visit app_settings_path
@@ -284,11 +382,15 @@ feature 'Admin App Settings' do
       with: default_catalog_context_key.id
     )
 
-    fill_in 'Catalog Title', with: 'CatalogTitle'
-    fill_in 'Catalog Subtitle', with: 'CatalogSubtitle'
+    fill_in 'Catalog Title [de]', with: 'CatalogTitleDE'
+    fill_in 'Catalog Title [en]', with: 'CatalogTitleEN'
+    fill_in 'Catalog Subtitle [de]', with: 'CatalogSubtitleDE'
+    fill_in 'Catalog Subtitle [en]', with: 'CatalogSubtitleEN'
     fill_in 'Catalog Context Keys', with: catalog_context_keys.join(', ')
-    fill_in 'Featured Set Title', with: 'FeaturedSetTitle'
-    fill_in 'Featured Set Subtitle', with: 'FeaturedSetSubtitle'
+    fill_in 'Featured Set Title [de]', with: 'FeaturedSetTitleDE'
+    fill_in 'Featured Set Title [en]', with: 'FeaturedSetTitleEN'
+    fill_in 'Featured Set Subtitle [de]', with: 'FeaturedSetSubtitleDE'
+    fill_in 'Featured Set Subtitle [en]', with: 'FeaturedSetSubtitleEN'
     fill_in 'Featured Set', with: collection.id
 
     click_button 'Save'
@@ -296,10 +398,16 @@ feature 'Admin App Settings' do
     expect(page).to have_css '.alert-success'
 
     within '#explore-page-section' do
-      expect(page).to have_content 'Catalog: Name CatalogTitle'
-      expect(page).to have_content 'Catalog: Subtitle CatalogSubtitle'
-      expect(page).to have_content 'Featured Content: Title FeaturedSetTitle'
-      expect(page).to have_content 'Featured Content: Subtitle FeaturedSetSubtitle'
+      expect(page).to have_content 'Catalog: Name de → CatalogTitleDE ' \
+                                   'en → CatalogTitleEN'
+      expect(page).to have_content 'Catalog: Subtitle de → CatalogSubtitleDE ' \
+                                   'en → CatalogSubtitleEN'
+      expect(page).to have_content 'Featured Content: Title ' \
+                                   'de → FeaturedSetTitleDE ' \
+                                   'en → FeaturedSetTitleEN'
+      expect(page).to have_content 'Featured Content: Subtitle ' \
+                                   'de → FeaturedSetSubtitleDE ' \
+                                   'en → FeaturedSetSubtitleEN'
       expect(find('#featured_set_id')).to have_content collection.id
 
       within 'tr#catalog_context_keys' do
@@ -338,17 +446,19 @@ feature 'Admin App Settings' do
 
     visit app_settings_path
 
-    within '#support_url' do
+    within '#support_urls' do
       expect(page).not_to have_content(new_url)
       click_link 'Edit'
     end
 
-    fill_in 'app_setting[support_url]', with: new_url
+    fill_in '[de]', with: new_url + '?lang=de'
+    fill_in '[en]', with: new_url + '?lang=en'
     click_button 'Save'
 
     expect(page).to have_css '.alert-success'
-    within '#support_url' do
-      expect(page).to have_content new_url
+    within '#support_urls' do
+      expect(page).to have_content "de → #{new_url}?lang=de " \
+                                   "en → #{new_url}?lang=en"
     end
   end
 

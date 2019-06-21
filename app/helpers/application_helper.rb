@@ -2,6 +2,7 @@ module ApplicationHelper
   include UiHelper
 
   def markdown(source)
+    return '' if source.blank?
     Kramdown::Document.new(source).to_html.html_safe
   end
 
