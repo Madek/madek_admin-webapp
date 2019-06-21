@@ -1,10 +1,11 @@
-- markdowned = ['welcome_text', 'about_page']
+- markdowned = ['welcome_texts', 'about_pages']
 - is_markdowned = markdowned.include?(@field.to_s)
+- is_localized = AppSetting.localized_field?(@field)
 
 .page-header
   %h1
     Edit Setting
-    %small= @field.humanize
+    %small= setting_header(@field)
   %small
     = link_to "&larr; Go back to settings".html_safe, app_settings_path
 
@@ -27,6 +28,18 @@
 
       - if @field == 'explore_page'
         = render 'explore_page_fields', f: f
+      - elsif is_localized
+        = f.fields_for @field, OpenStruct.new(f.object[@field]) do |lf|
+          - I18n.available_locales.each do |locale|
+            .form-group
+              .col-xs-1
+                = lf.label locale, "[#{locale}]", class: 'control-label'
+              .col-xs-11
+                - case
+                - when is_markdowned
+                  = lf.technical_field locale, rows: 12
+                - else
+                  = lf.technical_field locale, value: @app_settings[@field][locale.to_s], rows: 1
       - else
         .form-group
           .col-xs-12

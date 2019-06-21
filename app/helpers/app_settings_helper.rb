@@ -60,4 +60,14 @@ module AppSettingsHelper
   def invalid_reference_tag(id)
     content_tag(:span, "#{id} (invalid!)", class: 'text-danger')
   end
+
+  def setting_header(field_name)
+    field_name = field_name.to_s
+    field_name = field_name.singularize if AppSetting.localized_field?(field_name)
+    field_name.titleize
+  end
+
+  def locale_label(locale, arrow_code = '&rarr;')
+    content_tag :em, "#{locale} #{arrow_code}".html_safe, class: 'locale-label'
+  end
 end
