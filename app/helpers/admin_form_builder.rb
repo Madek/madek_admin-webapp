@@ -7,7 +7,7 @@ class AdminFormBuilder < ActionView::Helpers::FormBuilder
     end
 
     # rows:
-    attr_value = options[:object].send(method)
+    attr_value = options[:value] || options[:object].send(method)
     if attr_value.is_a?(Array)
       options[:rows] = calc_row_count(options[:rows], attr_value.size)
       options[:value] = attr_value.join(', ')
