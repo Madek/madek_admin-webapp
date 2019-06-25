@@ -35,5 +35,4 @@ gem 'poltergeist', group: [:test, :development, :personas]
 gem 'rest-client', group: [:test, :development, :personas]
 gem 'ruby-prof', group: [:development]
 gem 'selenium-webdriver', group: [:test]
-gem 'listen', group: :development
 gem 'rails-controller-testing', group: :test
