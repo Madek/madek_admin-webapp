@@ -5,11 +5,12 @@ feature 'Admin People' do
   let!(:admin_user) { create :admin_user, password: 'password' }
 
   scenario 'Filtering persons by search term' do
+    the_search_term = 'nor'
     visit people_path
-    fill_in 'filter[search_term]', with: 'nor'
+    fill_in 'filter[search_term]', with: the_search_term
     click_button 'Apply'
     all('table tbody tr').each do |tr|
-      expect(tr).to have_content 'nor'
+      expect(tr.text.downcase).to include the_search_term.downcase
     end
     expect(find_field('filter[search_term]')[:value]).to eq 'nor'
   end

@@ -49,7 +49,6 @@ describe AppSettingsController do
     it 'updates a setting' do
       patch(
         :update,
-        session: { user_id: admin_user.id }
         params: {
           id: app_settings.id,
           app_setting: {
@@ -58,7 +57,8 @@ describe AppSettingsController do
               en: 'NEW TITLE'
             }
           }
-        }
+        },
+        session: { user_id: admin_user.id }
       )
 
       expect(flash[:success]).to eq flash_message(:update, :success)
@@ -66,25 +66,34 @@ describe AppSettingsController do
       expect(app_settings.reload.site_title(:en)).to eq 'NEW TITLE'
     end
 
-    it 'updates a yaml setting' do
-      yaml = YAML.safe_load <<-YAML
+    it 'updates a yaml setting', type: :feature do
+      new_sitemap = YAML.safe_load <<-YAML
         de:
-          - "About the project": http://www.test.ch/?test
+          - "Über das Projekt": http://www.test.ch/?test
           - "Impressum": http://www.test.ch/index.php?id=12970
+          - "Kontakt": http://www.test.ch/index.php?id=49591
+          - "Hilfe": http://wiki.test.ch/test-hilfe
+          - "Nutzungsbedingungen": https://wiki.test.ch/test-hilfe/doku.php?id=terms
+          - "Archivierungsrichtlinien ZHdK": http://www.test.ch/?archivierung
+        en:
+          - "About the project": http://www.test.ch/?test
+          - "Legal": http://www.test.ch/index.php?id=12970
           - "Contact": http://www.test.ch/index.php?id=49591
           - "Help": http://wiki.test.ch/test-hilfe
           - "Terms of Use": https://wiki.test.ch/test-hilfe/doku.php?id=terms
-          - "Archivierungsrichtlinien ZHdK": http://www.test.ch/?archivierung
       YAML
 
       patch(
         :update,
-        params: { id: app_settings.id, app_setting: { sitemap: yaml } },
+        params: {
+          id: app_settings.id,
+          app_setting: { sitemap: new_sitemap.to_yaml }
+        },
         session: { user_id: admin_user.id }
       )
 
       expect(flash[:success]).to eq flash_message(:update, :success)
-      expect(app_settings.reload.sitemap.to_yaml).to eq yaml
+      expect(app_settings.reload.sitemap).to eq new_sitemap
     end
   end
 
