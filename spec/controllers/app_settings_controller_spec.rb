@@ -5,7 +5,7 @@ describe AppSettingsController do
   let(:app_settings) { AppSetting.first }
   before(:each) do
     unless AppSetting.first
-      create :app_settings, id: 0
+      create :app_setting, id: 0
     end
   end
 
@@ -49,22 +49,33 @@ describe AppSettingsController do
     it 'updates a setting' do
       patch(
         :update,
-        params: { id: app_settings.id, app_setting: { site_title: 'NEW TITLE' } },
         session: { user_id: admin_user.id }
+        params: {
+          id: app_settings.id,
+          app_setting: {
+            site_titles: {
+              de: 'neuer Titel',
+              en: 'NEW TITLE'
+            }
+          }
+        }
       )
 
       expect(flash[:success]).to eq flash_message(:update, :success)
-      expect(app_settings.reload.site_title).to eq 'NEW TITLE'
+      expect(app_settings.reload.site_title).to eq 'neuer Titel'
+      expect(app_settings.reload.site_title(:en)).to eq 'NEW TITLE'
     end
 
     it 'updates a yaml setting' do
-      yaml = "---\n" \
-        "- About the project: http://www.test.ch/?test\n" \
-        "- Impressum: http://www.test.ch/index.php?id=12970\n" \
-        "- Contact: http://www.test.ch/index.php?id=49591\n" \
-        "- Help: http://wiki.test.ch/test-hilfe\n" \
-        "- Terms of Use: https://wiki.test.ch/test-hilfe/doku.php?id=terms\n" \
-        "- Archivierungsrichtlinien ZHdK: http://www.test.ch/?archivierung\n"
+      yaml = YAML.safe_load <<-YAML
+        de:
+          - "About the project": http://www.test.ch/?test
+          - "Impressum": http://www.test.ch/index.php?id=12970
+          - "Contact": http://www.test.ch/index.php?id=49591
+          - "Help": http://wiki.test.ch/test-hilfe
+          - "Terms of Use": https://wiki.test.ch/test-hilfe/doku.php?id=terms
+          - "Archivierungsrichtlinien ZHdK": http://www.test.ch/?archivierung
+      YAML
 
       patch(
         :update,
