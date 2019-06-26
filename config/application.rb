@@ -3,7 +3,8 @@ require_relative 'boot'
 require "rails"
 # Pick the frameworks you want:
 require "active_model/railtie"
-# require "active_job/railtie"
+# FIXME: can be removed again next Rails version <https://github.com/rails/rails/pull/35896>
+require "active_job/railtie"
 require "active_record/railtie"
 # require "active_storage/engine"
 require "action_controller/railtie"
