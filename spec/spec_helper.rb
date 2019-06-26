@@ -36,6 +36,9 @@ RSpec.configure do |config|
   #     --seed 1234
   config.order = 'random'
 
+  # always render (ActionView) views
+  config.render_views
+
   # infer spec type from file location (like in RSpec 2.x)
   config.infer_spec_type_from_file_location!
 
