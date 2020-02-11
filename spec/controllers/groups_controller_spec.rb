@@ -105,21 +105,52 @@ describe GroupsController do
 
   describe '#show' do
     let!(:group) { create :group }
+    let(:session) { { user_id: admin_user.id } }
 
     it 'responds with status code 200' do
-      get :show, params: { id: group.id }, session: { user_id: admin_user.id }
+      get :show, params: { id: group.id }, session: session
       expect(response).to be_successful
       expect(response).to have_http_status(200)
     end
 
     it 'renders the show template' do
-      get :show, params: { id: group.id }, session: { user_id: admin_user.id }
+      get :show, params: { id: group.id }, session: session
       expect(response).to render_template(:show)
     end
 
     it 'loads the proper group into @group' do
-      get :show, params: { id: group.id }, session: { user_id: admin_user.id }
+      get :show, params: { id: group.id }, session: session
       expect(assigns[:group]).to eq group
+    end
+
+    context 'when previous id was passed' do
+      it 'redirects to current group page' do
+        previous_obj = create(:group)
+        current_obj = create(:group)
+
+        previous_obj.merge_to(current_obj)
+
+        get(:show, params: { id: previous_obj.id }, session: session)
+
+        expect(response).to redirect_to(group_path(current_obj))
+      end
+    end
+
+    context 'when not existing id was passed' do
+      render_views
+      let(:fake_id) { SecureRandom.uuid }
+
+      it 'raises 404 error' do
+        get(:show, params: { id: fake_id }, session: session)
+
+        expect(response).to have_http_status :not_found
+      end
+
+      it 'includes the id in response body' do
+        get(:show, params: { id: fake_id }, session: session)
+
+        expect(response.body).to include(fake_id)
+      end
     end
   end
 

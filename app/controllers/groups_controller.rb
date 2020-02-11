@@ -1,4 +1,6 @@
 class GroupsController < ApplicationController
+  include Concerns::PreviousResource
+
   before_action :ensure_presence_of_system_groups, only: [:index, :show, :edit]
 
   def index
@@ -32,6 +34,8 @@ class GroupsController < ApplicationController
     end
 
     @users = @users.page(params[:page])
+  rescue ActiveRecord::RecordNotFound
+    try_redirect_to_subsequent_resource
   end
 
   def edit

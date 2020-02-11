@@ -121,6 +121,36 @@ describe PeopleController do
 
       expect(assigns[:person]).to eq @person
     end
+
+    context 'when previous id was passed' do
+      it 'redirects to current person page' do
+        previous_obj = create(:person)
+        current_obj = create(:person)
+
+        previous_obj.merge_to(current_obj, nil)
+
+        get(:show, params: { id: previous_obj.id }, session: session)
+
+        expect(response).to redirect_to(person_path(current_obj))
+      end
+    end
+
+    context 'when not existing id was passed' do
+      render_views
+      let(:fake_id) { SecureRandom.uuid }
+
+      it 'raises 404 error' do
+        get(:show, params: { id: fake_id }, session: session)
+
+        expect(response).to have_http_status :not_found
+      end
+
+      it 'includes the id in response body' do
+        get(:show, params: { id: fake_id }, session: session)
+
+        expect(response.body).to include(fake_id)
+      end
+    end
   end
 
   describe '#edit' do
