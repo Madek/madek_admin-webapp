@@ -120,6 +120,12 @@ class GroupsController < ApplicationController
         name: 'Beta-Tester "Metadaten-Stapelverarbeitung"',
         institutional_id: 'beta_test_quick_edit',
         type: 'InstitutionalGroup'
+      },
+      {
+        id: Madek::Constants::BETA_TESTERS_WORKFLOWS_GROUP_ID,
+        name: 'Beta-Tester "Workflows"',
+        institutional_id: 'beta_test_workflows',
+        type: 'InstitutionalGroup'
       }
     ]
     sysgroups.each do |attrs|
