@@ -107,6 +107,7 @@ class GroupsController < ApplicationController
     groups
   end
 
+  # rubocop:disable Metrics/MethodLength
   def ensure_presence_of_system_groups
     # NOTE: this list could be moved to Madek::Constants
     sysgroups = [
@@ -119,6 +120,12 @@ class GroupsController < ApplicationController
         id: Madek::Constants::BETA_TESTERS_QUICK_EDIT_GROUP_ID,
         name: 'Beta-Tester "Metadaten-Stapelverarbeitung"',
         institutional_id: 'beta_test_quick_edit',
+        type: 'InstitutionalGroup'
+      },
+      {
+        id: Madek::Constants::BETA_TESTERS_WORKFLOWS_GROUP_ID,
+        name: 'Beta-Tester "Workflows"',
+        institutional_id: 'beta_test_workflows',
         type: 'InstitutionalGroup'
       }
     ]
