@@ -69,6 +69,26 @@ feature 'Admin App Settings' do
     end
   end
 
+  scenario 'Updating Provenance Notive' do
+    new_text = Faker::University.name
+
+    visit app_settings_path
+
+    within '#provenance_notices' do
+      click_link 'Edit'
+    end
+
+    fill_in '[de]', with: new_text + 'DE'
+    fill_in '[en]', with: new_text + 'EN'
+    click_button 'Save'
+
+    expect(page).to have_css '.alert-success'
+
+    within '#provenance_notices' do
+      expect(page).to have_content "de → #{new_text}DE en → #{new_text}EN"
+    end
+  end
+
   scenario 'Updating Welcome Title' do
     new_title = Faker::Book.title
 
