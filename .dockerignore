@@ -1,0 +1,6 @@
+/.git
+/datalayer/.git
+/log
+/tmp
+/spec
+/node_modules
