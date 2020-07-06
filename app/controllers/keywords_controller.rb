@@ -99,7 +99,8 @@ class KeywordsController < ApplicationController
   private
 
   def keyword_params
-    kp = params.require(:keyword).permit(:term, :meta_key_id, :external_uris)
+    kp = params.require(:keyword)
+               .permit(:term, :description, :meta_key_id, :external_uris)
     kp.merge(external_uris: parse_external_uris(kp[:external_uris]))
   end
 

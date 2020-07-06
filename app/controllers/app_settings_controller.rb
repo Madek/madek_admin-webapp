@@ -7,6 +7,8 @@ class AppSettingsController < ApplicationController
     'General' => {
       site_titles: 'Name of this instance',
       brand_texts: 'Name of provider of this instance',
+      provenance_notices: 'Notice of provenience for content in this instance, '\
+        'for example included when exporting Metadata',
       brand_logo_url: 'URL to an image'
     },
     'Welcome message (on home page)' => {

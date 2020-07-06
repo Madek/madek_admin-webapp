@@ -27,18 +27,19 @@ module MadekAdmin
     config.active_record.timestamped_migrations = false
     config.active_record.record_timestamps = false
 
-    config.autoload_paths << Rails.root.join('lib')
-
     config.paths['db/migrate'] << \
       Rails.root.join('datalayer', 'db', 'migrate')
 
     config.paths['config/initializers'] <<  \
       Rails.root.join('datalayer', 'initializers')
 
-    config.autoload_paths += [
+    config.eager_load_paths += [
+      Rails.root.join('lib'),
       Rails.root.join('datalayer', 'lib'),
+      Rails.root.join('datalayer', 'app', 'models', 'concerns'),
       Rails.root.join('datalayer', 'app', 'models'),
       Rails.root.join('datalayer', 'app', 'lib'),
+      Rails.root.join('datalayer', 'app', 'queries'),
     ]
 
     config.logger = ActiveSupport::Logger.new(STDOUT) unless Rails.env.development?
