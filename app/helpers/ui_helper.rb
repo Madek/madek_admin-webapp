@@ -1,4 +1,3 @@
-# rubocop:disable Metrics/LineLength
 # rubocop:disable Metrics/MethodLength
 module UiHelper
 

@@ -43,10 +43,12 @@
       - else
         .form-group
           .col-xs-12
-            - type = ::AppSetting.columns_hash[@field.try(:to_s)].try(:sql_type)
+            - column = ::AppSetting.columns_hash["#{@field}"]
             - case
-            - when type === 'jsonb'
-              = f.technical_field @field, value: @app_settings.send(@field).to_yaml,
+            - when edit_partials.include?(@field)
+              = render partial: "#{@field}_edit", locals: { f: f }
+            - when column&.sql_type == 'jsonb'
+              = f.technical_field @field, value: @app_settings[@field].to_yaml,
                 rows: 12
             - when is_markdowned
               = f.technical_field @field, rows: 12

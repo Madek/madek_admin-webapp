@@ -1,6 +1,7 @@
 class AppSettingsController < ApplicationController
 
   before_action :set_app_settings
+  helper_method :edit_partials
 
   SETTINGS_GROUPS = {
     # hash keys == table rows; grouping and descriptions for displaying only
@@ -29,7 +30,9 @@ class AppSettingsController < ApplicationController
       media_entry_default_license_id: 'Keyword UUID for License set on upload',
       media_entry_default_license_usage_meta_key: \
         'MetaKey ID for MediaEntry Usage Text',
-      media_entry_default_license_usage_text: 'Usage Text set on upload'
+      media_entry_default_license_usage_text: 'Usage Text set on upload',
+      copyright_notice_default_text: 'Default Text for Copyright Notice',
+      copyright_notice_templates: 'List of copyright notice templates'
     }
   }.freeze
 
@@ -112,8 +115,6 @@ class AppSettingsController < ApplicationController
   end
 
   def update
-    prepare_params
-
     @app_settings.update!(app_setting_params)
 
     respond_with @app_settings, location: (lambda do
@@ -138,20 +139,9 @@ class AppSettingsController < ApplicationController
     params.require(:app_setting).permit!
   end
 
-  def prepare_params
-    # all 'json' settings are shown and edited as yaml, transform them here:
-    params.try(:[], :app_setting).each do |attr, value|
-      if attr_with_type?(attr, 'jsonb')
-        params[:app_setting][attr] = YAML.safe_load(value)
-      elsif attr.to_s =~ /contexts|_keys$/
-        params[:app_setting][attr] =
-          params[:app_setting][attr].split(',').map(&:strip)
-      end
-    end
+  def edit_partials
+    %w(
+      copyright_notice_templates
+    )
   end
-
-  def attr_with_type?(column, type)
-    ::AppSetting.columns_hash[column.to_s].try(:sql_type) == type
-  end
-
 end

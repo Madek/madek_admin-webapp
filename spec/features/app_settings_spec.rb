@@ -147,6 +147,60 @@ feature 'Admin App Settings' do
     end
   end
 
+  scenario 'Updating Copyright Notice Default Text' do
+    field_name = 'app_setting[copyright_notice_default_text]'
+
+    visit app_settings_path
+
+    within '#copyright_notice_default_text' do
+      click_link 'Edit'
+    end
+
+    fill_in field_name, with: 'Some Default Text'
+    click_button 'Save'
+
+    expect(page).to have_css '.alert-success'
+
+    within '#copyright_notice_default_text' do
+      expect(page).to have_content 'Some Default Text'
+    end
+  end
+
+  scenario 'Updating Copyright Notice Templates' do
+    field_name = 'app_setting[copyright_notice_templates]'
+
+    visit app_settings_path
+
+    within '#copyright_notice_templates' do
+      click_link 'Edit'
+    end
+
+    fill_in field_name, with: <<-TEXT.strip_heredoc
+
+      foo
+
+      bar.
+      xoxo
+    TEXT
+
+    click_button 'Save'
+
+    expect(page).to have_css '.alert-success'
+
+    within '#copyright_notice_templates' do
+      expect(page).to have_css('li', count: 3)
+      expect(page).to have_css('li', text: 'foo')
+      expect(page).to have_css('li', text: 'bar.')
+      expect(page).to have_css('li', text: 'xoxo')
+    end
+
+    within '#copyright_notice_templates' do
+      click_link 'Edit'
+    end
+
+    expect(find_field(field_name).value).to eq("foo\nbar.\nxoxo")
+  end
+
   describe 'Updating Summary Context for Entry View' do
     scenario 'with existing context' do
       visit app_settings_path

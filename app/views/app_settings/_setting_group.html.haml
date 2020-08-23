@@ -14,41 +14,46 @@
               - type = AppSetting.columns_hash[attr.try(:to_s)].try(:sql_type)
               - markdowned = ['welcome_texts']
               - text_blocks = ['about_pages']
+              - as_listing = ['copyright_notice_templates']
               - is_localized_field = AppSetting.localized_field?(attr)
               - meta_key_ids = ['ignored_keyword_keys_for_browsing']
               - case
               - when type === 'jsonb'
-                %pre.col-xs-9= @app_settings.send(attr).to_yaml
+                %pre.col-xs-9= @app_settings.public_send(attr).to_yaml
               - when markdowned.include?(attr.to_s)
                 - if is_localized_field
                   %ul.list-unstyled
                     - I18n.available_locales.each do |locale|
                       %li
                         = locale_label locale, '&searr;'
-                        = markdown(@app_settings.send(attr)[locale.to_s])
+                        = markdown(@app_settings.public_send(attr)[locale.to_s])
                 - else
-                  = markdown(@app_settings.send(attr))
+                  = markdown(@app_settings.public_send(attr))
               - when meta_key_ids.include?(attr.to_s)
                 = meta_key_ids_as_links(@app_settings[:ignored_keyword_keys_for_browsing])
+              - when as_listing.include?(attr.to_s)
+                %ul{style: 'padding-left: 19px'}
+                  - @app_settings.read_attribute(attr).each do |value|
+                    %li= simple_format(value)
               - when text_blocks.include?(attr.to_s)
                 - if is_localized_field
                   %ul.list-unstyled
                     - I18n.available_locales.each do |locale|
                       %li
                         = locale_label locale
-                        - if @app_settings.send(attr)[locale.to_s].present?
-                          %pre= @app_settings.send(attr)[locale.to_s].split("\n").first(3).join("\n") + '…'
+                        - if @app_settings.public_send(attr)[locale.to_s].present?
+                          %pre= @app_settings.public_send(attr)[locale.to_s].split("\n").first(3).join("\n") + '…'
                         - else
                           %em Not configured
-                - elsif @app_settings.send(attr).present?
-                  %pre= @app_settings.send(attr).split("\n").first(3).join("\n") + '…'
+                - elsif @app_settings.public_send(attr).present?
+                  %pre= @app_settings.public_send(attr).split("\n").first(3).join("\n") + '…'
                 - else
                   %em= "Not configured"
               - else
                 - if is_localized_field
                   = render 'localized_setting', attr: attr
                 - else
-                  = @app_settings.send(attr)
+                  = @app_settings.public_send(attr)
 
             %td.col-xs-1
               = link_to edit_app_setting_path(attr), class: 'btn btn-info btn-sm' do
