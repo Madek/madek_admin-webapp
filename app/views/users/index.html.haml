@@ -16,6 +16,7 @@
           - params[:edited_api_client] and params[:edited_api_client].each do |key, value|
             = unescaped_hidden_field_tag "edited_api_client[#{key}]", value
           = hidden_field_tag :add_to_group_id, @group.id if @group
+          = hidden_field_tag :add_to_delegation_id, @delegation.id if @delegation
           .form-group
             = text_field_tag :search_term, params[:search_term], class: 'form-control', placeholder: 'Search term'
           .form-group

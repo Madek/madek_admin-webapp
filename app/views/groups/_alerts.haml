@@ -1,0 +1,5 @@
+- if @delegation
+  .row
+    .col-xs-12
+      .alert.alert-info{role: 'alert'}
+        Choose a Group to be added to the Delegation <strong>#{@delegation.name}</strong> or #{link_to 'cancel and go back to the delegation', delegation_path(@delegation)}.
