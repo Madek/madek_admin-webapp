@@ -40,11 +40,6 @@ class DashboardController < ApplicationController
         }
       ],
       [
-        Vocabulary,
-        MetaKey,
-        Context
-      ],
-      [
         MediaFile,
         {
           title: 'metadata',
@@ -55,9 +50,15 @@ class DashboardController < ApplicationController
         Person
       ],
       [
-        Role,
+        Vocabulary,
+        MetaKey,
+        Context,
+        Role
+      ],
+      [
         User,
         Group,
+        Delegation,
         {
           title: 'api-clients',
           model: ApiClient

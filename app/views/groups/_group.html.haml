@@ -13,7 +13,14 @@
         = link_to groups_path(reset_vocabulary_params: true),
                   class: 'btn btn-default' do
           Cancel
+      - elsif @delegation
+        - if @delegation_group_ids.include?(group.id)
+          .text-muted Already added
+        - else
+          = link_to add_group_delegation_path(@delegation, group_id: group.id), method: :patch, class: 'btn btn-success' do
+            %span.glyphicon.glyphicon-plus
+            Add to the Delegation
       - else
-        = link_to group_path(group), class: 'btn btn-default' do
+        = link_to group_path(group), class: 'btn btn-default btn-with-icon-only' do
           %span.glyphicon.glyphicon-eye-open
         = render partial: 'action_buttons', locals: { group: group }

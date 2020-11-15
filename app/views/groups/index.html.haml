@@ -3,13 +3,16 @@
     %i.icon-group
     Groups (#{@groups.total_count})
 
+= render 'alerts'
+
 .row
   .col-xs-12
     .panel.panel-default
       .panel-heading
         .panel-title Filters
       .panel-body
-        = form_tag groups_path, method: 'GET', class: 'form-inline'  do 
+        = form_tag groups_path, method: 'GET', class: 'form-inline' do
+          = hidden_field_tag :add_to_delegation_id, @delegation.id if @delegation
           .form-group
             = text_field_tag :search_terms, params[:search_terms],
               class: 'form-control', placeholder: 'Search term'

@@ -27,3 +27,7 @@
     %td.col-xs-5
       %strong This user belongs to the following groups:
     %td.col-xs-7= group_links(@user.groups)
+  %tr.info
+    %td.col-xs-5
+      %strong This user belongs to the following delegations:
+    %td.col-xs-7= delegation_links(@user.delegations)

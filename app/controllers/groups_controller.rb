@@ -5,6 +5,7 @@ class GroupsController < ApplicationController
     @groups = sort_and_filter(params)
 
     remember_vocabulary_url_params
+    get_delegation_from_params
   rescue ArgumentError => e
     @groups = Group.all.page(params[:page])
     flash[:error] = e.to_s
@@ -89,6 +90,13 @@ class GroupsController < ApplicationController
                                                              'has been merged.' }
   end
 
+  def remove_from_delegation
+    delegation = Delegation.find(params[:delegation_id])
+    delegation.groups.delete(Group.find(params[:group_id]))
+
+    respond_with delegation, notice: 'The group has been removed.'
+  end
+
   private
 
   def group_params
@@ -135,5 +143,11 @@ class GroupsController < ApplicationController
         id: attrs[:id].to_s, type: attrs[:type],
         name: attrs[:name], institutional_id: attrs[:institutional_id])
     end
+  end
+  # rubocop:enable Methics/MethodLength
+
+  def get_delegation_from_params
+    @delegation = Delegation.find_by(id: params[:add_to_delegation_id])
+    @delegation_group_ids = @delegation&.group_ids || []
   end
 end

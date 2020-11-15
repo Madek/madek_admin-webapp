@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
   before_action :find_user, except: [
-    :index, :new, :new_with_person, :create, :remove_user_from_group
+    :index, :new, :new_with_person, :create, :remove_user_from_group, :remove_from_delegation
   ]
   before_action :initialize_user, only: [:new, :new_with_person]
 
@@ -12,6 +12,7 @@ class UsersController < ApplicationController
     remember_vocabulary_url_params
     get_api_client_params
     get_group_from_params
+    get_delegation_from_params
   end
 
   def reset_usage_terms
@@ -93,6 +94,13 @@ class UsersController < ApplicationController
                  notice: 'The user has been removed.'
   end
 
+  def remove_from_delegation
+    delegation = Delegation.find(params[:delegation_id])
+    delegation.users.delete(User.find(params[:user_id]))
+
+    respond_with delegation, notice: 'The user has been removed.'
+  end
+
   private
 
   def initialize_user
@@ -121,6 +129,11 @@ class UsersController < ApplicationController
 
   def get_group_from_params
     @group = Group.find_by(id: params[:add_to_group_id])
+  end
+
+  def get_delegation_from_params
+    @delegation = Delegation.find_by(id: params[:add_to_delegation_id])
+    @delegation_user_ids = @delegation&.user_ids || []
   end
 
   def filter(relation)
