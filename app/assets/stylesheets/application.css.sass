@@ -134,6 +134,12 @@ textarea.technical-input
 .form-inline .form-group.actions
   margin-top: 3px
 
+.control-label.required
+  &::after
+    content: '*'
+    color: darkred
+    margin-left: 3px
+
 // data tables (see UiHelper)
 table.table
   tbody + thead tr th
@@ -166,3 +172,8 @@ table.table
   font-size: 0.9em
   position: relative
   top: -1px
+
+.btn-with-icon-only .glyphicon
+  margin:
+    top: 3px
+    bottom: 3px

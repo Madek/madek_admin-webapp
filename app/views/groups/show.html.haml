@@ -58,7 +58,7 @@
           %th Id
           %th
       %tbody
-        = render(partial: 'groups/user', collection: @users) || empty_collection(4, 'users')
+        = render(partial: 'groups/user', collection: @users) || empty_collection('users', 4)
     
 = paginate @users
 

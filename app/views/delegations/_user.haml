@@ -1,0 +1,14 @@
+%tr
+  %td.col-xs-2{style: 'word-break: break-word'}= user.login
+  %td.col-xs-4{style: 'word-break: break-word'}= user.email
+  %td.col-xs-4= user.id
+  %td.col-xs-1.text-center
+    .btn-group.btn-group-vertical.btn-group-xs
+      = link_to user_path(user), class: 'btn btn-default btn-with-icon-only',
+          title: 'Show the user' do
+        %i.glyphicon.glyphicon-eye-open
+      = link_to delegation_user_remove_from_delegation_path(@delegation, user), method: :delete,
+          data: {confirm: %Q{Are you sure you want to remove "#{user.login}" from this delegation?}},
+          title: 'Remove from this delegation',
+          class: 'btn btn-danger btn-with-icon-only' do
+        %i.glyphicon.glyphicon-trash

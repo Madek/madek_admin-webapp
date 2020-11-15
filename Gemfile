@@ -29,9 +29,9 @@ gem 'sys-filesystem', require: false
 # TEST or DEVELOPMENT only
 #####################################################################
 
-gem 'better_errors', group: [:development]
+# gem 'better_errors', group: [:development]
 gem 'binding_of_caller', group: [:development]
-gem 'capybara', '~> 2.4', group: [:test]
+gem 'capybara', '~> 2.18', group: [:test]
 gem 'ffi', group: [:test, :development]
 gem 'poltergeist', group: [:test, :development, :personas]
 gem 'rest-client', group: [:test, :development, :personas]
