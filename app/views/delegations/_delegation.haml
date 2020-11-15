@@ -1,0 +1,7 @@
+%tr
+  %td= delegation.name
+  %td= delegation_members_column(delegation)
+  %td.col-xs-1= delegation.resources_count
+  %td.active.col-xs-3.text-center
+    .btn-group.btn-group-sm
+      = render partial: 'action_buttons', locals: { delegation: delegation }

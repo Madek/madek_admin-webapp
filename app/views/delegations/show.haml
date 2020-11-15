@@ -1,0 +1,61 @@
+.page-header
+  %h1
+    %i.icon-group
+    #{@delegation.name}
+    %small Delegation
+  %small
+    = link_to '&larr; Go back to delegations list'.html_safe, delegations_path
+
+.row
+  .col-xs-12
+    .panel.panel-default
+      .panel-body
+        .btn-group
+          = link_to form_add_user_delegation_path(@delegation), class: 'btn btn-default' do
+            %i.glyphicon.glyphicon-plus
+            Add user
+          = link_to form_add_group_delegation_path(@delegation), class: 'btn btn-default' do
+            %i.glyphicon.glyphicon-plus
+            Add group
+          = render partial: 'action_buttons', locals: { delegation: @delegation }
+
+.row
+  .col-xs-12
+    %table.table.table-striped
+      %thead
+      %tbody
+      - @delegation.attributes.each do |name, value|
+        %tr
+          %td= name.capitalize.split("_").join(" ")
+          - case name
+          - when nil
+          - else
+            %td= value
+
+.row
+  - @members.each_pair do |member_type, hash|
+    - singular = member_type.to_s.singularize
+    - opposite = { users: :groups, groups: :users }[member_type]
+    - reset_path = params.fetch(opposite, {})[:search_term].present? ? delegation_path(@delegation, opposite => { search_term: params.fetch(opposite, {})[:search_term] }) : delegation_path(@delegation)
+    .col-xs-6
+      .page-header
+        %h3 #{member_type.capitalize} (#{hash[:collection].count})
+    
+      = form_tag delegation_path(@delegation), method: :get, class: 'form-inline' do
+        = hidden_field_tag "#{opposite}[search_term]", params.fetch(opposite, {})[:search_term] if params.fetch(opposite, {})[:search_term].present?
+        .form-group
+          = text_field_tag "#{member_type}[search_term]", params.fetch(member_type, {})[:search_term], class: 'form-control', size: 40, placeholder: 'Search term'
+        .form-group 
+          = submit_tag 'Filter', class: 'btn btn-primary'
+          = link_to 'Reset', reset_path, class: 'btn btn-default'
+
+      %table#group-users.table.table-striped
+        %thead
+          %tr
+            - hash[:attributes].each do |attr|
+              %th= t(attr, scope: [:activerecord, :attributes, singular])
+            %th
+        %tbody
+          = render(partial: "delegations/#{singular}", collection: hash[:collection]) || empty_collection(hash[:attributes].size + 1, member_type)
+      
+      = paginate hash[:collection]

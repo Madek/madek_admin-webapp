@@ -1,0 +1,11 @@
+- if action_name != 'show'
+  = link_to delegation_path(delegation), class: "btn btn-default btn-with-icon-only" do
+    %span.glyphicon.glyphicon-eye-open
+= link_to edit_delegation_path(delegation), class: "btn btn-info" do
+  %i.glyphicon.glyphicon-edit
+  Edit
+= link_to delegation_path(delegation, redirect_path: request.original_url), method: :delete,
+    data: { confirm: 'Do you really want to delete this delegation?' },
+    class: "btn btn-danger" do
+  %i.glyphicon.glyphicon-trash
+  Delete

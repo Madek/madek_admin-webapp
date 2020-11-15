@@ -1,0 +1,49 @@
+.page-header
+  %h1
+    %i.icon-group
+    Delegations (#{@delegations.total_count})
+
+.row
+  .col-xs-12
+    .panel.panel-default
+      .panel-heading
+        .panel-title Filters
+      .panel-body
+        = form_tag delegations_path, method: 'GET', class: 'form-inline'  do 
+          .form-group
+            = text_field_tag :search_term, params[:search_term],
+              class: 'form-control', placeholder: 'Search term'
+
+          .form-group
+            = label_tag :by_members, 'By Members'
+            = text_field_tag :group_or_user_id, params[:group_or_user_id],
+              class: 'form-control', placeholder: 'User or Group ID', size: 38
+
+          .form-group
+            = label_tag :sort_by, 'Sort by'
+            = select_tag :sort_by, options_for_select([['Name', :name],
+              ['Amount of members', :members_count],
+              ['Amount of resources', :resources_count]],
+            params[:sort_by]), {class: 'form-control'}
+      
+          .form-group
+            = submit_tag 'Apply', class: 'btn btn-primary'
+            = link_to 'Reset', delegations_path, class: 'btn btn-default'
+      .panel-footer
+        = link_to new_delegation_path, class: 'btn btn-default' do
+          %i.glyphicon.glyphicon-plus
+          Create delegation
+
+.row
+  .col-xs-12
+    %table.table.table-striped
+      %thead
+        %tr
+          %th Name
+          %th Members
+          %th Resources
+          %th
+      %tbody
+        = render partial: 'delegation', collection: @delegations
+
+= paginate @delegations

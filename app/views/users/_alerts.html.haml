@@ -17,6 +17,12 @@
       .alert.alert-info{role: 'alert'}
         Choose an User to be added to the Group <strong>#{@group.name}</strong> or #{link_to 'cancel and go back to the group', group_path(@group)}.
 
+- if @delegation
+  .row
+    .col-xs-12
+      .alert.alert-info{role: 'alert'}
+        Choose an User to be added to the Delegation <strong>#{@delegation.name}</strong> or #{link_to 'cancel and go back to the delegation', delegation_path(@delegation)}.
+
 - if @api_client_params.present?
   .row
     .col-xs-12

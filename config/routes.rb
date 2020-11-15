@@ -80,6 +80,22 @@ Rails.application.routes.draw do
     end
 
     resources :roles
+    resources :delegations do
+      member do
+        get :form_add_group
+        patch :add_group
+        get :form_add_user
+        patch :add_user
+      end
+
+      resources :users, only: [] do
+        delete :remove_from_delegation
+      end
+
+      resources :groups, only: [] do
+        delete :remove_from_delegation
+      end
+    end
 
     root to: 'dashboard#index'
     post 'dashboard/refresh', to: 'dashboard#refresh'

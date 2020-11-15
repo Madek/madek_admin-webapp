@@ -26,6 +26,13 @@
         = link_to add_user_group_path(@group, user_id: user.id), method: :patch, class: 'btn btn-success' do
           %span.glyphicon.glyphicon-plus
           Add to the Group
+      - elsif @delegation
+        - if @delegation_user_ids.include?(user.id)
+          .text-muted Already added
+        - else
+          = link_to add_user_delegation_path(@delegation, user_id: user.id), method: :patch, class: 'btn btn-success' do
+            %span.glyphicon.glyphicon-plus
+            Add to the Delegation
       - elsif @api_client_params.present?
         = link_to api_client_assign_path, class: 'btn btn-success' do
           %span.glyphicon.glyphicon-plus
