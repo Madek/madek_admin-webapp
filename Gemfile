@@ -1,6 +1,6 @@
 eval_gemfile Pathname(File.dirname(File.absolute_path(__FILE__))).join('datalayer', 'Gemfile')
 
-ruby '2.6.6'
+ruby '2.7.2'
 
 # Webserver
 gem 'puma'
@@ -18,7 +18,6 @@ gem 'jquery-rails'
 
 
 # rest
-gem 'bcrypt-ruby'
 gem 'pundit'
 gem 'cider_ci-open_session', '>= 1.0.0', '< 2.0.0'
 gem 'kaminari'
