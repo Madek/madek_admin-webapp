@@ -1,15 +1,15 @@
 module DelegationsHelper
   def delegation_members_column(delegation)
-    users_count = delegation.users.count
-    users_part = pluralize(users_count, 'User')
-    groups_count = delegation.groups.count
-    groups_part = pluralize(groups_count, 'Group')
-    total_count = users_count + groups_count
+    members_count = delegation.members_count
+    group_members_count = delegation.group_members_count
 
-    if total_count.zero?
+    if members_count.zero?
       content_tag :span, 'No members', class: 'text-muted'
     else
-      pluralize(users_count + groups_count, 'Member') + " (#{[users_part, groups_part].join(', ')})"
+      pluralize(members_count, 'User').html_safe +
+        content_tag(:small, class: 'text-muted show') do
+          " (incl. #{pluralize(group_members_count, 'group member')})"
+        end
     end
   end
 
