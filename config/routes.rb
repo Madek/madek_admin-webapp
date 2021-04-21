@@ -96,6 +96,7 @@ Rails.application.routes.draw do
         delete :remove_from_delegation
       end
     end
+    resources :static_pages, only: [:edit, :update, :create, :new, :destroy]
 
     root to: 'dashboard#index'
     post 'dashboard/refresh', to: 'dashboard#refresh'

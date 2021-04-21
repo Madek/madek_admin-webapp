@@ -18,8 +18,11 @@ class AppSettingsController < ApplicationController
     },
     'Other' => {
       sitemap: 'Links for footer menu',
-      about_pages: \
+      about_pages:
         'HTML/Markdown Content for "About Page" (<code>/about</code>)'
+        .html_safe,
+      static_pages:
+        'HTML/Markdown Content for "Static Pages" (<code>/about/:page_name</code>)'
         .html_safe,
       support_urls: 'Link for support tab',
       ignored_keyword_keys_for_browsing: 'MetaKeys of type Keyword that are ' \
@@ -108,6 +111,7 @@ class AppSettingsController < ApplicationController
   }.freeze
 
   def index
+    @static_pages = StaticPage.all
   end
 
   def edit

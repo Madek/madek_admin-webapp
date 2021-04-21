@@ -13,15 +13,7 @@
 
   - if is_markdowned
     .col-xs-12
-      %p.help-block
-        = 'NOTE: This field supports Markdown formatting'
-        %span= ' '
-        %small<> (the normal, non-Github-flavored kind)
-        = ' — see'
-        %a{href: 'https://commonmark.org/help/', target: '_blank'} the CommonMark Markdown Reference
-        for details.
-        %br
-        Also note that Markdown does not have to be used, plain HTML is also allowed!
+      = render 'shared/markdown_field_help_block'
 
   .col-xs-12
     = form_for @app_settings, html: { class: 'form-horizontal', role: 'form' }, builder: AdminFormBuilder do |f|
@@ -57,7 +49,7 @@
             - else
               = f.technical_field @field, value: @app_settings[@field], rows: 1
       .form-group
-        .col-xs-offset2.col-xs-4
+        .col-xs-offset-1.col-xs-4
           = button_tag type: 'submit', class: 'btn btn-success' do
             Save
           = link_to 'Go back', app_settings_path, class: 'btn'

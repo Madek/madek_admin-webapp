@@ -1,0 +1,9 @@
+.page-header
+  %h1
+    New Static Page
+  %small
+    = link_to '&larr; Go back to app settings'.html_safe, app_settings_path(anchor: 'static_pages')
+
+.row
+  .col-xs-12
+    = render 'form'
