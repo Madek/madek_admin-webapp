@@ -96,8 +96,8 @@ GEM
     execjs (2.7.0)
     factory_girl (4.8.1)
       activesupport (>= 3.0.0)
-    faker (1.7.2)
-      i18n (~> 0.5)
+    faker (1.8.7)
+      i18n (>= 0.7)
     ffi (1.9.14)
     ffi (1.9.14-java)
     flay (2.6.1)
@@ -125,7 +125,7 @@ GEM
       ruby_parser (~> 3.5)
     http-cookie (1.0.2)
       domain_name (~> 0.5)
-    i18n (0.9.5)
+    i18n (1.8.10)
       concurrent-ruby (~> 1.0)
     jquery-rails (4.1.1)
       rails-dom-testing (>= 1, < 3)
@@ -335,7 +335,7 @@ DEPENDENCIES
   cider_ci-open_session (>= 1.0.0, < 2.0.0)
   cider_ci-support (= 3.2)
   factory_girl (~> 4.8.1)
-  faker
+  faker (~> 1.8.7)
   ffi
   haml-rails
   jquery-rails
