@@ -470,59 +470,104 @@ feature 'Admin Meta Keys' do
 
   include_examples 'display admin comments on overview page'
 
-  context 'when meta key belongs to madek_core Vocabulary' do
-    let(:meta_key) do
-      MetaKey.find_by(id: 'madek_core:title') || create(:meta_key_core_title)
-    end
+  describe 'Deleting' do
+    context 'when meta key belongs to madek_core Vocabulary' do
+      let(:meta_key) do
+        MetaKey.find_by(id: 'madek_core:title') || create(:meta_key_core_title)
+      end
 
-    context 'index page' do
-      scenario 'it cannot be edited' do
-        visit meta_keys_path
+      context 'index page' do
+        scenario 'it cannot be edited' do
+          visit meta_keys_path
 
-        select 'madek_core', from: 'vocabulary_id'
-        click_button 'Apply'
+          select 'madek_core', from: 'vocabulary_id'
+          click_button 'Apply'
 
-        within "[data-id='#{meta_key.id}']" do
-          expect(page).not_to have_link 'Edit'
+          within "[data-id='#{meta_key.id}']" do
+            expect(page).not_to have_link 'Edit'
+          end
+        end
+
+        scenario 'it cannot be deleted' do
+          visit meta_keys_path
+
+          select 'madek_core', from: 'vocabulary_id'
+          click_button 'Apply'
+
+          within "[data-id='#{meta_key.id}']" do
+            expect(page).not_to have_link 'Delete'
+          end
         end
       end
 
-      scenario 'it cannot be deleted' do
-        visit meta_keys_path
+      context 'show page' do
+        scenario 'it cannot be edited' do
+          visit meta_key_path(meta_key)
 
-        select 'madek_core', from: 'vocabulary_id'
-        click_button 'Apply'
+          expect(page).not_to have_link 'Edit'
+        end
 
-        within "[data-id='#{meta_key.id}']" do
+        scenario 'it cannot be deleted' do
+          visit meta_key_path(meta_key)
+
           expect(page).not_to have_link 'Delete'
         end
       end
-    end
 
-    context 'show page' do
-      scenario 'it cannot be edited' do
-        visit meta_key_path(meta_key)
+      context 'vocabulary edit page' do
+        scenario 'it cannot be reordered' do
+          visit edit_vocabulary_path(meta_key.vocabulary)
 
-        expect(page).not_to have_link 'Edit'
-      end
-
-      scenario 'it cannot be deleted' do
-        visit meta_key_path(meta_key)
-
-        expect(page).not_to have_link 'Delete'
-      end
-    end
-
-    context 'vocabulary edit page' do
-      scenario 'it cannot be reordered' do
-        visit edit_vocabulary_path(meta_key.vocabulary)
-
-        within '#meta_keys_list' do
-          expect(page).not_to have_css 'a.move-to-top'
-          expect(page).not_to have_css 'a.move-up'
-          expect(page).not_to have_css 'a.move-down'
-          expect(page).not_to have_css 'a.move-to-bottom'
+          within '#meta_keys_list' do
+            expect(page).not_to have_css 'a.move-to-top'
+            expect(page).not_to have_css 'a.move-up'
+            expect(page).not_to have_css 'a.move-down'
+            expect(page).not_to have_css 'a.move-to-bottom'
+          end
         end
+      end
+    end
+
+    context 'when meta key has related meta data', browser: :firefox do
+      given(:meta_key) { create(:meta_key_text) }
+      given!(:meta_data) { create_list(:meta_datum_text, 3, meta_key_id: meta_key.id) }
+
+      scenario 'meta key cannot be deleted' do
+        visit meta_key_path(meta_key)
+
+        accept_alert do
+          click_link 'Delete', href: meta_key_path(meta_key)
+        end
+
+        expect(page).to have_content('An error occured code: 500')
+        expect(page).to have_content('PG::ForeignKeyViolation: ERROR: '\
+                                     'update or delete on table "meta_keys" '\
+                                     'violates foreign key constraint')
+
+        click_link 'Go back'
+
+        expect(current_path).to eq(meta_key_path(meta_key))
+        expect(meta_key.meta_data.reload).to eq(meta_data)
+      end
+    end
+
+    context 'when meta key has no related meta data', browser: :firefox do
+      given(:meta_key) { create(:meta_key_text, id: 'test:foo') }
+
+      scenario 'meta key can be deleted' do
+        visit meta_key_path(meta_key)
+
+        accept_alert do
+          click_link 'Delete', href: meta_key_path(meta_key)
+        end
+
+        expect(page).to have_css('.alert-success')
+        expect(current_path).to eq(meta_keys_path)
+
+        visit meta_key_path(meta_key)
+
+        expect(page).to have_content('An error occured code: 404')
+        expect(page).to have_content("Couldn't find MetaKey with 'id'=test:foo")
       end
     end
   end

@@ -124,5 +124,4 @@ class MetaKeysController < ApplicationController
   def get_context_from_session
     Context.find(session[:context_id]) if session[:context_id].present?
   end
-
 end
