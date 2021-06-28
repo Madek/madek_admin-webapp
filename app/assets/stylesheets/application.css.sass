@@ -134,11 +134,16 @@ textarea.technical-input
 .form-inline .form-group.actions
   margin-top: 3px
 
-.control-label.required
-  &::after
-    content: '*'
-    color: darkred
-    margin-left: 3px
+.control-label
+  &.required
+    &::after
+      content: '*'
+      color: darkred
+      margin-left: 3px
+
+  &.localized-label span
+    color: #777
+    text-transform: uppercase
 
 // data tables (see UiHelper)
 table.table

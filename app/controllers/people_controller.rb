@@ -1,6 +1,7 @@
 class PeopleController < ApplicationController
   include ApplicationHelper
   include Concerns::Filters
+  include Concerns::PreviousResource
 
   def index
     @people = Person.page(params[:page]).per(16)
@@ -18,6 +19,8 @@ class PeopleController < ApplicationController
 
   def show
     @person = Person.find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    try_redirect_to_subsequent_resource
   end
 
   def edit

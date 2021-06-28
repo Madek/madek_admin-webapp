@@ -1,0 +1,32 @@
+%td.col-xs-8{colspan: 2}
+  - if @static_pages.count.zero?
+    %ul.list-group
+      %li.list-group-item.disabled
+        %small
+          %em No static pages defined
+  - else
+    %ul.list-group
+      - @static_pages.each do |static_page|
+        %li.list-group-item
+          .row
+            .col-xs-9
+              = static_page.name
+              &rarr;
+              %code /about/#{static_page.name}
+              - if static_page.empty_content?
+                %small{style: 'color: #777'}
+                  (no content)
+            .col-xs-3
+              .btn-group.btn-group-xs.pull-right
+                = link_to edit_static_page_path(static_page), class: 'btn btn-info' do
+                  %span.glyphicon.glyphicon-edit
+                  Edit
+                = link_to static_page_path(static_page), method: :delete, data: { confirm: 'The static page will be deleted. Do you want to proceed?' }, class: 'btn btn-danger' do
+                  %span.glyphicon.glyphicon-trash
+                  Delete
+
+  -# .row
+  -#   .col-xs-12
+  = link_to new_static_page_path, class: 'btn btn-default btn-sm' do
+    %span.glyphicon.glyphicon-plus
+    Add Static Page

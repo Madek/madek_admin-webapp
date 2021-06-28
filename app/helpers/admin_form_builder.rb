@@ -28,10 +28,22 @@ class AdminFormBuilder < ActionView::Helpers::FormBuilder
     @template.text_area @object_name, method, options
   end
 
+  def localized_label(method, text = nil, options = {})
+    options[:class] ||= ''
+    options[:class] += ' control-label localized-label'
+    options[:class] += ' required' if default_locale == method.to_s
+    options[:class] = options[:class].lstrip
+    @template.label @object_name, method, "#{text} &rarr; <span>#{method}</span>".html_safe, options
+  end
+
   private
 
   def calc_row_count(given_row_count, content_length)
     default_row_count = 12
     [[default_row_count, given_row_count].map(&:to_i).min, content_length.to_i].max
+  end
+
+  def default_locale
+    AppSetting.first.default_locale
   end
 end

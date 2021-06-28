@@ -9,7 +9,7 @@
       .panel-body
         = form_tag meta_datums_path, method: :get, class: 'form-inline' do
           .form-group
-            = text_field_tag :search_term, params[:search_term], size: 28,
+            = text_field_tag :search_term, params[:search_term]&.strip, size: 28,
               class: 'form-control', placeholder: 'Search term'
           .form-group
             = label_tag :search_by, 'Search by', class: 'form-label'
@@ -17,7 +17,8 @@
                 options_for_select(                    |
                   [['ID', :id], ['String', :string],   |
                   ['Media Entry ID', :media_entry_id], |
-                  ['Collection ID', :collection_id]],  |
+                  ['Collection ID', :collection_id],   |
+                  ['Meta Key', :meta_key_id]],         |
                   params[:search_by]),                 |
                 class: 'form-control'
           .form-group

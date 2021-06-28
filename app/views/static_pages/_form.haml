@@ -1,0 +1,26 @@
+%div{style: 'margin-bottom: 30px'}
+  = render 'shared/markdown_field_help_block'
+
+= form_for @static_page, html: { class: 'form-horizontal', role: 'form' }, builder: AdminFormBuilder do |f|
+  .form-group
+    .col-xs-2
+      = f.label :name, class: 'control-label required'
+    .col-xs-6
+      = f.text_field :name, class: 'form-control'
+      - if f.object.persisted?
+        %span.help-block
+          &rarr;
+          %code= "/about/#{f.object.name}"
+  = f.fields_for :contents, OpenStruct.new(f.object.contents) do |lf|
+    - I18n.available_locales.each do |locale|
+      .form-group
+        .col-xs-2
+          = lf.localized_label locale, 'Content'
+        .col-xs-10
+          = lf.technical_field locale, rows: 12, required: default_locale == locale.to_s
+  .form-group
+    .col-xs-offset-2.col-xs-3
+      = button_tag type: 'submit', class: 'btn btn-success' do
+        %span.glyphicon.glyphicon-ok
+        Save
+      = link_to 'Go back', app_settings_path(anchor: 'static_pages'), class: 'btn btn-link'

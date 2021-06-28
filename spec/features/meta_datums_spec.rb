@@ -16,7 +16,7 @@ feature 'Admin Meta Datums' do
     expect(page).to have_select('type', with_options: MetaKey.object_types)
   end
 
-  context 'filtering meta datums' do
+  describe 'filtering' do
     let!(:meta_datum) { create :meta_datum_title, string: 'foo bar' }
 
     scenario 'filtering by ID' do
@@ -53,6 +53,47 @@ feature 'Admin Meta Datums' do
                                text: 'MetaDatum::Text',
                                count: 16)
       expect(page).to have_select('type', selected: 'MetaDatum::Text')
+    end
+
+    scenario 'filtering by meta key' do
+      create(:meta_datum_text,
+             meta_key: create(:meta_key_text, id: 'lorem:author'),
+             string: 'lorem ipsum')
+      create(:meta_datum_text,
+             meta_key: create(:meta_key_text, id: 'lorem:authors'),
+             string: 'lorem ipsum')
+
+      visit meta_datums_path
+
+      fill_in 'search_term', with: ' lorem:author  '
+      select 'Meta Key', from: 'search_by'
+      click_button 'Apply'
+
+      expect(page).to have_css('table tbody tr', count: 1)
+      expect(page).to have_css('table tbody tr',
+                               text: 'lorem ipsum lorem:author MetaDatum::Text',
+                               count: 1)
+      expect(page).to have_field('search_term', with: 'lorem:author')
+      expect(page).to have_select('search_by', selected: 'Meta Key')
+    end
+
+    scenario 'reseting form', browser: :firefox do
+      visit meta_datums_path
+
+      fill_in 'search_term', with: ' foo  '
+      select 'Media Entry ID', from: 'search_by'
+      select 'MetaDatum::TextDate', from: 'type'
+      click_button 'Apply'
+
+      expect(page).to have_field('search_term', with: 'foo')
+      expect(page).to have_select('search_by', selected: 'Media Entry ID')
+      expect(page).to have_select('type', selected: 'MetaDatum::TextDate')
+
+      click_link 'Reset'
+
+      expect(page).to have_field('search_term', with: '')
+      expect(page).to have_select('search_by', selected: 'ID')
+      expect(page).to have_select('type', selected: '')
     end
   end
 
