@@ -57,8 +57,7 @@ GEM
     autoprefixer-rails (6.4.0.1)
       execjs
     base32-crockford (0.1.0)
-    bcrypt (3.1.11)
-    bcrypt (3.1.11-java)
+    bcrypt (3.1.16)
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
     bootstrap-sass (3.3.7)
@@ -327,7 +326,7 @@ PLATFORMS
 
 DEPENDENCIES
   base32-crockford
-  bcrypt
+  bcrypt (~> 3.1.13)
   binding_of_caller
   bootstrap-sass
   capybara (~> 2.18)
