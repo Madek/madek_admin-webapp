@@ -1,8 +1,11 @@
 .page-header
-  %h1 Edit Context #{@context}
+  %h1 Edit Context <span>#{@context}</span>
+  %small
+    = link_to '&larr; Go back to contexts list'.html_safe, contexts_path
 
 .row
   .col-xs-12
     = render 'form'
 
-= render 'context_keys_list', edit: true
+- content_for :fluid_content do
+  = render 'context_keys_list', edit: true
