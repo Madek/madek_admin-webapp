@@ -27,15 +27,18 @@
     %table.table.table-striped
       %thead
       %tbody
-        - @meta_key.attributes.each do |attr|
-          - attr_name = attr.first
-          - if conditional_attributes.has_key?(attr_name) && !@meta_key.send(conditional_attributes[attr_name])
+        - @meta_key.attributes.each_pair do |attr, value|
+          - if conditional_attributes.has_key?(attr) && !@meta_key.send(conditional_attributes[attr])
             - next
           - else
             %tr
               %td.col-xs-5
-                %strong= t("activerecord.attributes.meta_key.#{attr_name}", default: attr_name.humanize)
-              %td.col-xs-7= attr.last
+                %strong= t("activerecord.attributes.meta_key.#{attr}", default: attr.humanize)
+              %td.col-xs-7
+                - if attr == 'documentation_url' && value.present?
+                  = link_to value, value, target: :_blank
+                - else
+                  = value
         %tr.info
           %td.col-xs-5
             %strong This meta key is used in the following contexts:

@@ -1,5 +1,8 @@
 - content_for :main_content do
   .container
     = yield
+  - if content_for?(:fluid_content)
+    .container-fluid
+      = yield :fluid_content
 
 = render template: 'layouts/_base'

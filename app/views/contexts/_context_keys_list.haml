@@ -27,6 +27,7 @@
           %th label
           %th description
           %th hint
+          %th.nowrap documentation URL
           %th required?
           %th
       %tbody
@@ -46,8 +47,13 @@
               %p= ck.description || _EMPTY_MARKER
             %td
               %p= ck.hint || _EMPTY_MARKER
+            %td
+              - if ck.documentation_url.present?
+                = link_to ck.documentation_url, ck.documentation_url, target: :_blank
+              - else
+                = _EMPTY_MARKER
             %td= ck.is_required ? 'Yes' : 'No'
-            %td.col-xs-2.text-center
+            %td.text-center
               .btn-group-vertical.btn-group-sm
                 = link_to edit_context_key_path(ck), class: 'btn btn-info' do
                   %span.glyphicon.glyphicon-edit
@@ -57,10 +63,9 @@
                     %span.glyphicon.glyphicon-trash
                     Remove MetaKey
                   = move_buttons(ck)
-          = admin_comment_row(ck, colspan: 8, striped: striped)
+          = admin_comment_row(ck, colspan: 9, striped: striped)
           %tr.semiborder{class: striped}
-            %td
-            %td
+            %td{colspan: 2}
             %td
               %small
                 %em from MetaKey:
@@ -73,5 +78,11 @@
             %td
               %small
                 %em= ck.meta_key.hint || _EMPTY_MARKER
-            %td
-            %td
+            %td.break-word
+              %small
+                %em
+                  - if ck.meta_key.documentation_url.present?
+                    = link_to ck.meta_key.documentation_url, ck.meta_key.documentation_url, target: :_blank
+                  - else
+                    = _EMPTY_MARKER
+            %td{colspan: 2}
