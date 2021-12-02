@@ -5,12 +5,12 @@
   - if @context_key.persisted?
     .form-group
       .col-xs-3
-        = f.label :id, 'ID', class: 'control-label'
+        = f.label :id, class: 'control-label'
       .col-xs-6
         = f.text_field :id, class: 'form-control', disabled: true
   .form-group
     .col-xs-3
-      = f.label :meta_key_id, 'MetaKey', class: 'control-label'
+      = f.label :meta_key_id, class: 'control-label'
     .col-xs-6
       = f.text_field :meta_key_id, class: 'form-control', disabled: @context_key.persisted?
   = f.fields_for :labels, OpenStruct.new(f.object.labels) do |lf|
@@ -43,6 +43,16 @@
           %span.help-block
             %small
               %em from MetaKey: #{@context_key.meta_key.hints[locale] || _EMPTY_MARKER }
+  = f.fields_for :documentation_urls, OpenStruct.new(f.object.documentation_urls) do |lf|
+    - I18n.available_locales.each do |locale|
+      .form-group
+        .col-xs-3
+          = lf.label locale, "Documentation URL [#{locale}]", class: 'control-label'
+        .col-xs-9
+          = lf.text_field locale, class: 'form-control'
+          %span.help-block
+            %small
+              %em from MetaKey: #{@context_key.meta_key.documentation_urls[locale] || _EMPTY_MARKER }
   .form-group
     .col-xs-offset-3.col-sm-4
       .checkbox

@@ -14,6 +14,7 @@ end
 feature 'Admin Meta Keys' do
   let(:meta_key_keywords) { create(:meta_key_keywords, is_extensible_list: true) }
   let(:vocabulary) { Vocabulary.find('archhist') }
+  let(:meta_key) { create(:meta_key_text) }
   let(:collection_path) { meta_keys_path }
 
   scenario 'Sorting meta keys by ID by default' do
@@ -32,9 +33,10 @@ feature 'Admin Meta Keys' do
   end
 
   context 'Editing' do
+    let(:de_documentation_url) { Faker::Internet.url('example.com', '?lang=de') }
+    let(:en_documentation_url) { Faker::Internet.url('example.com', '?lang=en') }
 
     scenario 'Editing MetaKey (Text) via Edit button' do
-      meta_key = create(:meta_key_text)
       visit meta_key_path(meta_key)
 
       click_link 'Edit'
@@ -161,6 +163,22 @@ feature 'Admin Meta Keys' do
         expect(page).not_to have_field 'PeopleGroup'
         expect(page).not_to have_field 'PeopleInstitutionalGroup'
       end
+    end
+
+    scenario 'Editing documentation URL' do
+      visit meta_key_path(meta_key)
+      click_link 'Edit'
+
+      expect(meta_key.documentation_urls).to eq({})
+      expect(page).to have_current_path(edit_meta_key_path(meta_key))
+
+      fill_in 'Documentation URL [de]', with: de_documentation_url
+      fill_in 'Documentation URL [en]', with: en_documentation_url
+      click_button 'Save'
+
+      expect(meta_key.reload.documentation_urls).to eq('de' => de_documentation_url,
+                                                       'en' => en_documentation_url)
+      expect(page).to have_css('.alert-success')
     end
   end
 
@@ -395,8 +413,6 @@ feature 'Admin Meta Keys' do
   end
 
   scenario "Don't show 'Is extensible list' for non MetaDatum::Keywords" do
-    meta_key = create(:meta_key_text)
-
     visit meta_key_path(meta_key)
 
     expect(page).not_to have_content 'Is extensible list'
@@ -411,15 +427,12 @@ feature 'Admin Meta Keys' do
   end
 
   scenario "Don't show 'Allowed Subtypes' for non MetaDatum::People" do
-    meta_key = create(:meta_key_text)
-
     visit meta_key_path(meta_key)
 
     expect(page).not_to have_content 'Allowed Subtypes'
   end
 
   scenario 'view/index: show contexts which meta key is used in' do
-    meta_key = create(:meta_key_text)
     create(:context_key, meta_key: meta_key, context: create(:context, id: 'foo'))
     create(:context_key, meta_key: meta_key, context: create(:context, id: 'bar'))
 
@@ -431,7 +444,6 @@ feature 'Admin Meta Keys' do
   end
 
   scenario 'view/show: show contexts which meta key is used in' do
-    meta_key = create(:meta_key_text)
     create(:context_key, meta_key: meta_key, context: create(:context, id: 'foo'))
     create(:context_key, meta_key: meta_key, context: create(:context, id: 'bar'))
 
@@ -478,7 +490,7 @@ feature 'Admin Meta Keys' do
 
       context 'index page' do
         scenario 'it cannot be edited' do
-          visit meta_keys_path
+          visit collection_path
 
           select 'madek_core', from: 'vocabulary_id'
           click_button 'Apply'
@@ -489,7 +501,7 @@ feature 'Admin Meta Keys' do
         end
 
         scenario 'it cannot be deleted' do
-          visit meta_keys_path
+          visit collection_path
 
           select 'madek_core', from: 'vocabulary_id'
           click_button 'Apply'

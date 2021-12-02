@@ -6,6 +6,8 @@ feature 'Admin Context Keys' do
   let(:context) { Context.find('upload') }
   let(:context_key) { context.context_keys.first }
   let(:collection_path) { context_path(context) }
+  let(:de_documentation_url) { Faker::Internet.url('example.com', '?lang=de') }
+  let(:en_documentation_url) { Faker::Internet.url('example.com', '?lang=en') }
 
   scenario 'Editing ContextKey via Edit button' do
     visit collection_path
@@ -47,6 +49,25 @@ feature 'Admin Context Keys' do
     expect(page).to have_field 'context_key[length_max]', with: 128
     expect(page).to have_field('context_key[admin_comment]',
                                with: 'new admin comment')
+  end
+
+  scenario 'Editing documentation URL' do
+    visit context_path(context)
+
+    within "[data-id='#{context_key.id}']" do
+      click_link 'Edit'
+    end
+
+    expect(context_key.documentation_urls).to eq({})
+    expect(page).to have_current_path(edit_context_key_path(context_key))
+
+    fill_in 'Documentation URL [de]', with: de_documentation_url
+    fill_in 'Documentation URL [en]', with: en_documentation_url
+    click_button 'Save'
+
+    expect(context_key.reload.documentation_urls).to eq('de' => de_documentation_url,
+                                                        'en' => en_documentation_url)
+    expect(page).to have_css('.alert-success')
   end
 
   scenario 'Changing position in scope of a context' do

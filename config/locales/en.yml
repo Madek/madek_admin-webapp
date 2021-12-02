@@ -32,20 +32,30 @@
 en:
   activerecord:
     attributes:
+      context:
+        id: ID
+      context_key:
+        documentation_url: Documentation URL
+        id: ID
+        meta_key_id: MetaKey
       group:
-        id: Id
+        id: ID
         name: Name
       meta_key:
         allowed_people_subtypes: Allowed Subtypes
         allowed_rdf_class: Allowed Type
+        id: ID
+        documentation_url: Documentation URL
       keyword:
-        id: Id
+        id: ID
         meta_key_id: MetaKey
         term: Term
       user:
         email: E-mail
-        id: Id
+        id: ID
         login: Login
+      vocabulary:
+        id: ID
   second_step_flash:
     allowed_people_subtypes: Select at least one Allowed Subtype!
     allowed_rdf_class: 'Select one Allowed Type.' 

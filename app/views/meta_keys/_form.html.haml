@@ -3,7 +3,7 @@
 = form_for @meta_key, html: { class: 'form-horizontal', role: 'form' } do |f|
   .form-group
     .col-xs-3
-      = f.label :id, 'ID', class: 'control-label'
+      = f.label :id, class: 'control-label'
     .col-xs-6
       - static_input_if_persisted(f.object, f.object.id) do
         = f.text_field :id, class: 'form-control'
@@ -75,6 +75,18 @@
           = lf.label locale, "Hint [#{locale}]", class: 'control-label'
         .col-xs-6
           = lf.text_area locale, class: 'form-control', rows: 4
+  .form-group
+    .col-xs-3
+      = f.label :documentation_url, class: 'control-label'
+    .col-xs-9
+      = f.text_field :documentation_url, class: 'form-control'
+  = f.fields_for :documentation_urls, OpenStruct.new(f.object.documentation_urls) do |lf|
+    - I18n.available_locales.each do |locale|
+      .form-group
+        .col-xs-3
+          = lf.label locale, "Documentation URL [#{locale}]", class: 'control-label'
+        .col-xs-9
+          = lf.text_field locale, class: 'form-control'
 
   - if f.object.can_have_text_type?
     .form-group

@@ -4,7 +4,9 @@
   end
 
 .page-header
-  %h1 Context: #{@context}
+  %h1 Context <span>#{@context}</span>
+  %small
+    = link_to '&larr; Go back to contexts list'.html_safe, contexts_path
 
 .row
   .col-xs-12
@@ -30,4 +32,5 @@
         %tr.info
           %td{colspan: 2} This context is used as: <strong>#{used_as.join(', ')}</strong>
 
-= render 'context_keys_list'
+- content_for :fluid_content do
+  = render 'context_keys_list'
