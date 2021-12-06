@@ -62,6 +62,7 @@ Rails.application.routes.draw do
     end
     resources :contexts do
       patch :add_meta_key, on: :member
+      resources :context_api_client_permissions, except: :show, path: 'api_client_permissions'
     end
     resources :context_keys, only: [:edit, :update, :destroy], concerns: :orderable
     resources :meta_datums, only: :index

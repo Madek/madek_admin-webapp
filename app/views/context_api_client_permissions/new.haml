@@ -1,0 +1,15 @@
+.page-header
+  %h1
+    New API Client Permission
+    %small Context: #{@context}
+  %small
+    = link_to '&larr; Go back to permissions list'.html_safe, context_context_api_client_permissions_path(@context)
+
+.row
+  .col-xs-12
+    = form_for [@context, @permission],
+        method: :post,
+        as: :context_api_client_permission,
+        url: context_context_api_client_permissions_path(@context),
+        html: { class: 'form-horizontal', role: 'form' } do |f|
+      = render partial: 'form_fields', locals: { f: f }

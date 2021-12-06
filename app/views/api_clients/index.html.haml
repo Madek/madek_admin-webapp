@@ -3,6 +3,8 @@
     %i.glyphicon.glyphicon-filter
     API Clients (#{@api_clients.total_count})
 
+= render 'alerts'
+
 .panel.panel-default
   .panel-body
     = link_to new_api_client_path, class: 'btn btn-default' do

@@ -42,6 +42,9 @@ en:
         id: Id
         meta_key_id: MetaKey
         term: Term
+      permissions/context_api_client_permission:
+        api_client_id: API Client
+        context_id: Context ID
       user:
         email: E-mail
         id: Id
