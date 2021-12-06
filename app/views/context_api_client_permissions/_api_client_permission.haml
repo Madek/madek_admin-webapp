@@ -1,0 +1,6 @@
+%tr
+  %td= api_client_permission.api_client.login
+  %td.col-xs-3= api_client_permission.view
+  %td.active.col-xs-3.text-center
+    .btn-group.btn-group-s
+      = render partial: 'action_buttons', locals: { api_client_permission: api_client_permission }

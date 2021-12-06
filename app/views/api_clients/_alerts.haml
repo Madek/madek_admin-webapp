@@ -1,0 +1,5 @@
+- if @context
+  .row
+    .col-xs-12
+      .alert.alert-info{role: 'alert'}
+        Choose an API Client that will be granted permissions for <strong>#{@context.id}</strong> Context or #{link_to 'cancel and display the ordinary API Clients list', api_clients_path}.

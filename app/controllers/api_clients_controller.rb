@@ -3,6 +3,7 @@ class ApiClientsController < ApplicationController
   def index
     @api_clients = ApiClient.page(params[:page]).per(16)
     remember_vocabulary_url_params
+    get_context_from_params
   end
 
   def show
@@ -74,5 +75,11 @@ class ApiClientsController < ApplicationController
 
   def edited_api_client_params
     params.require(:edited_api_client).permit(:login, :user_id, :description)
+  end
+
+  def get_context_from_params
+    @context = Context.find_by(id: params[:add_to_context_id])
+    @granted_api_client_ids = @context&.api_client_permissions&.pluck(:api_client_id) || []
+    @context_permission = @context&.api_client_permissions&.find_by(id: params[:permission_id])
   end
 end

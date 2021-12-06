@@ -1,0 +1,8 @@
+= link_to edit_context_context_api_client_permission_path(@context, api_client_permission), class: "btn btn-info" do
+  %i.glyphicon.glyphicon-edit
+  Edit
+= link_to context_context_api_client_permission_path(@context, api_client_permission), method: :delete, data: { |
+  confirm: 'The Vocabulary API Client Permission will be deleted. Do you want to proceed?' },                   |
+  class: "btn btn-danger" do
+  %i.glyphicon.glyphicon-trash
+  Delete

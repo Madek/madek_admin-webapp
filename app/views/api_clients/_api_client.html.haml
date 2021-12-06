@@ -7,14 +7,16 @@
         = api_client.user.person
   %td= api_client.description
 
-  %td.active.col-xs-3.text-center
-    .btn-group.btn-group-sm
-      = link_to api_client_path(api_client), class: 'btn btn-default' do
-        %i.glyphicon.glyphicon-eye-open
-      = render partial: 'action_buttons', locals: {api_client: api_client }
-      - if session[:vocabulary_id].present?
-        = link_to path_to_vocabulary_permission_form(api_client), class: 'btn btn-success' do
-          Grant Vocabulary Permission
-        = link_to api_clients_path(reset_vocabulary_params: true),
-                  class: 'btn btn-default' do
-          Cancel
+  %td.active.col-xs-2.text-center
+    .btn-group.btn-group-sm.btn-group-vertical
+      - if @context
+        - path = params[:is_persisted] == 'true' ? edit_context_context_api_client_permission_path(@context, @context_permission, api_client_id: api_client.id) : new_context_context_api_client_permission_path(@context, api_client_id: api_client.id)
+        = link_to 'Grant Context Permission', path, class: "btn btn-success#{' disabled' if @granted_api_client_ids.include?(api_client.id)}"
+        = link_to 'Cancel', api_clients_path, class: 'btn btn-default'
+      - else
+        = link_to api_client_path(api_client), class: 'btn btn-default' do
+          %i.glyphicon.glyphicon-eye-open
+        = render partial: 'action_buttons', locals: {api_client: api_client }
+        - if session[:vocabulary_id].present?
+          = link_to 'Grant Vocabulary Permission', path_to_vocabulary_permission_form(api_client), class: 'btn btn-success'
+          = link_to 'Cancel', api_clients_path(reset_vocabulary_params: true), class: 'btn btn-default'
