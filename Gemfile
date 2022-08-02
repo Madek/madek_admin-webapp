@@ -1,6 +1,6 @@
 eval_gemfile Pathname(File.dirname(File.absolute_path(__FILE__))).join('datalayer', 'Gemfile')
 
-ruby '2.7.2'
+ruby '2.7.6'
 
 # Webserver
 gem 'puma'
