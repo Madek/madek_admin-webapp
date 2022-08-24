@@ -84,7 +84,7 @@ module ApplicationHelper
   end
 
   def parse_external_uris(text)
-    return unless text.present? and text.is_a?(String)
+    return [] unless text.present? and text.is_a?(String)
     URI.extract(text).map do |line|
       begin
         uri = URI.parse(line)
