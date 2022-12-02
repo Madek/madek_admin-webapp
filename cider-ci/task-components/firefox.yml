@@ -1,0 +1,10 @@
+traits:
+  asdf: true
+scripts:
+  firefox-asdf-install:
+    exclusive_executor_resource: asdf-firefox
+    body: ./cider-ci/bin/firefox-setup
+  test:
+    start_when:
+      firefox is installed:
+        script_key: firefox-asdf-install

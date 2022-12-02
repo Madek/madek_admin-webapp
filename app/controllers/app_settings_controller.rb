@@ -42,18 +42,18 @@ class AppSettingsController < ApplicationController
   CONTEXT_FOR_VIEWS = {
     context_for_entry_summary: {
       title: 'Summary Context for Entry View',
-      description: "The MetaData in this Context are shown on the \
-                    Detail-View, left to the Media Preview."
+      description: 'The MetaData in this Context are shown on the \
+      Detail-View, left to the Media Preview.'
     },
     context_for_collection_summary: {
       title: 'Summary Context for Collection View',
-      description: "The MetaData in this Context are shown on the \
-                    Detail-View, left to the Media Preview."
+      description: 'The MetaData in this Context are shown on the \
+      Detail-View, left to the Media Preview.'
     },
     contexts_for_entry_extra: {
       title: 'Extra Contexts for Entry View',
-      description: "Up to 4 Contexts showing more info on \
-                    a MediaEntry page (bottom)."
+      description: 'Up to 4 Contexts showing more info on  \
+      a MediaEntry page (bottom).'
     },
     contexts_for_collection_extra: {
       title: 'Extra Contexts for Collection View',
@@ -92,8 +92,8 @@ class AppSettingsController < ApplicationController
     },
     catalog_context_keys: {
       label: 'Catalog: ContextKeys',
-      description: "List of ContextKeys that are displayed as sections of \
-                    the Catalog"
+      description: 'List of ContextKeys that are displayed as sections of \
+      the Catalog'
     },
     featured_set_titles: {
       label: 'Featured Content: Title',

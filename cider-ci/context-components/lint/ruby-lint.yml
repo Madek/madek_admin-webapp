@@ -9,7 +9,6 @@
         test:
           body: |
             set -eux
-            export PATH=~/.rubies/$RUBY/bin:$PATH
             bundle exec cider-ci_flog \
               -m app/ \
               -e app/controllers/concerns/app_environment_info.rb \
@@ -23,7 +22,6 @@
         test:
           body: |
             set -eux
-            export PATH=~/.rubies/$RUBY/bin:$PATH
             bundle exec cider-ci_flay -m 78 app/
 
     lint-ruby:
@@ -32,5 +30,4 @@
         test:
           body: |
             set -eux
-            export PATH=~/.rubies/$RUBY/bin:$PATH
             bundle exec rubocop

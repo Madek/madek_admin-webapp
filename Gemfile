@@ -1,7 +1,5 @@
 eval_gemfile Pathname(File.dirname(File.absolute_path(__FILE__))).join('datalayer', 'Gemfile')
 
-ruby '2.7.6'
-
 # Webserver
 gem 'puma'
 
@@ -9,9 +7,9 @@ gem 'puma'
 gem 'responders'
 
 # FRONTEND
-gem 'bootstrap-sass'
-gem 'haml-rails'
-gem 'sass'
+gem 'bootstrap-sass', '= 3.3.7'
+gem 'haml-rails', '~> 1.0'
+gem 'sass', '= 3.4.22'
 gem 'sass-rails', '~> 5.0'
 gem 'kramdown'
 gem 'jquery-rails'
@@ -32,8 +30,7 @@ gem 'sys-filesystem', '>= 1.4.3', require: false
 gem 'binding_of_caller', group: [:development]
 gem 'capybara', '~> 2.18', group: [:test]
 gem 'ffi', '>= 1.15.5', group: [:test, :development]
-gem 'poltergeist', group: [:test, :development, :personas]
 gem 'rest-client', group: [:test, :development, :personas]
 gem 'ruby-prof', group: [:development]
-gem 'selenium-webdriver', group: [:test]
+gem 'selenium-webdriver', '~> 2.53', group: [:test]
 gem 'rails-controller-testing', group: :test

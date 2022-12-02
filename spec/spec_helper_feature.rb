@@ -2,13 +2,14 @@ ENV['RAILS_ENV'] ||= 'test'
 require File.expand_path('../../config/environment', __FILE__)
 require 'rspec/rails'
 
-require 'capybara/poltergeist'
-
 DEFAULT_BROWSER_TIMEOUT = 180 # instead of the default 60
 
 Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
 
 ActiveRecord::Migration.check_pending! if defined?(ActiveRecord::Migration)
+
+firefox_bin_path = Pathname.new(`asdf where firefox`.strip).join('bin/firefox').expand_path.to_s
+Selenium::WebDriver::Firefox.path = firefox_bin_path
 
 def truncate_tables
   PgTasks.truncate_tables
@@ -27,10 +28,6 @@ RSpec.configure do |config|
         Selenium::WebDriver::Remote::Capabilities.firefox(marionette: false))
   end
 
-  if ENV['FIREFOX_ESR_45_PATH'].present?
-    Selenium::WebDriver::Firefox.path = ENV['FIREFOX_ESR_45_PATH']
-  end
-
   Capybara.register_driver :selenium_ff do |app|
     create_firefox_driver(app, DEFAULT_BROWSER_TIMEOUT)
   end
@@ -45,7 +42,6 @@ RSpec.configure do |config|
       case example.metadata[:browser]
       when :firefox then :selenium_ff
       when :firefox_nojs then :selenium_ff_nojs
-      when :phantomjs then :poltergeist
       else :rack_test
       end
   end

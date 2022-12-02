@@ -8,6 +8,7 @@ script_defaults:
 
 task_defaults:
   include:
+    - path: cider-ci/task-components/firefox.yml
     - path: cider-ci/task-components/database.yml
       submodule: [datalayer]
     - path: cider-ci/task-components/bundle.yml
@@ -19,7 +20,6 @@ task_defaults:
       body: |
         #!/usr/bin/env bash
         set -eux
-        export PATH=~/.rubies/$RUBY/bin:$PATH
         mkdir -p log
         xvfb-run -a -e log/xvfb.log \
           bundle exec rspec $CIDER_CI_TASK_FILE

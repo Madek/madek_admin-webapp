@@ -81,7 +81,6 @@ GEM
       flay (~> 2.6.1)
       flog (~> 4.3.2)
       mime-types
-    cliver (0.3.2)
     coderay (1.1.1)
     concurrent-ruby (1.1.8)
     crack (0.4.3)
@@ -169,10 +168,6 @@ GEM
     parser (2.3.1.2)
       ast (~> 2.2)
     pg (0.19.0)
-    poltergeist (1.10.0)
-      capybara (~> 2.1)
-      cliver (~> 0.3.1)
-      websocket-driver (>= 0.2.0)
     powerpack (0.1.1)
     pry (0.10.4)
       coderay (~> 1.1.0)
@@ -304,7 +299,7 @@ GEM
     unf (0.1.4)
       unf_ext
     unf (0.1.4-java)
-    unf_ext (0.0.7.2)
+    unf_ext (0.0.8.2)
     unicode-display_width (1.1.0)
     uuidtools (2.1.5)
     webmock (2.3.2)
@@ -330,7 +325,7 @@ DEPENDENCIES
   base32-crockford
   bcrypt (~> 3.1.13)
   binding_of_caller
-  bootstrap-sass
+  bootstrap-sass (= 3.3.7)
   capybara (~> 2.18)
   chronic_duration
   cider_ci-open_session (>= 1.0.0, < 2.0.0)
@@ -338,7 +333,7 @@ DEPENDENCIES
   factory_girl (~> 4.8.1)
   faker (~> 1.8.7)
   ffi (>= 1.15.5)
-  haml-rails
+  haml-rails (~> 1.0)
   jquery-rails
   kaminari
   kramdown
@@ -346,7 +341,6 @@ DEPENDENCIES
   mimemagic (= 0.3.10)
   pg
   pg_tasks!
-  poltergeist
   pry
   pry-nav
   pry-rails
@@ -359,9 +353,9 @@ DEPENDENCIES
   rspec-rails (~> 3.1)
   rubocop (= 0.39.0)
   ruby-prof
-  sass
+  sass (= 3.4.22)
   sass-rails (~> 5.0)
-  selenium-webdriver
+  selenium-webdriver (~> 2.53)
   sprockets (< 4)
   strong_password
   sys-filesystem (>= 1.4.3)
@@ -370,8 +364,5 @@ DEPENDENCIES
   webmock
   zencoder (~> 2.4)
 
-RUBY VERSION
-   ruby 2.7.6p219
-
 BUNDLED WITH
-   2.2.16
+   2.1.4

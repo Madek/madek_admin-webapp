@@ -15,9 +15,10 @@ task_defaults:
     screenshots:
       include_match: '^tmp\/.+\.png$'
       content_type: image/png
-    logs:
-      include_match: '^logs?\/.+\.log$'
-      content_type: text/plain
-    config:
-      include_match: '^config\/.+\.ya?ml$'
-      content_type: text/yaml
+# enable extended attachments only for debugging:
+#    logs:
+#      include_match: '^logs?\/.+\.log$'
+#      content_type: text/plain
+#    config:
+#      include_match: '^config\/.+\.ya?ml$'
+#      content_type: text/yaml

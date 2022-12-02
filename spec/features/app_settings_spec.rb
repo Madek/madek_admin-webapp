@@ -431,15 +431,13 @@ feature 'Admin App Settings' do
       end
       fill_in(
         'app_setting[contexts_for_dynamic_filters]',
-        with: "core, media_content, media_object, \
-               copyright, zhdk_bereich, foo"
+        with: 'core, media_content, media_object,copyright, zhdk_bereich, foo'
       )
       click_button 'Save'
 
       expect(page).to have_css '.alert-success'
       within '#contexts_for_dynamic_filters' do
-        expect(page).to have_content "Core, Werk, Medium, Credits, \
-                                      ZHdK, foo (invalid!)"
+        expect(page).to have_content 'Core, Werk, Medium, Credits, ZHdK, foo (invalid!)'
       end
     end
   end

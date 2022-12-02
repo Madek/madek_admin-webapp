@@ -148,7 +148,7 @@ class GroupsController < ApplicationController
         name: attrs[:name], institutional_id: attrs[:institutional_id])
     end
   end
-  # rubocop:enable Methics/MethodLength
+  # rubocop:enable Metrics/MethodLength
 
   def get_delegation_from_params
     @delegation = Delegation.find_by(id: params[:add_to_delegation_id])
