@@ -23,5 +23,7 @@ class CollectionsController < ApplicationController
   def find_collection
     @collection = Collection.find params[:id]
     @user = @collection.responsible_user
+    @delegation = @collection.responsible_user
+    @responsible_entity = @user || @delegation
   end
 end

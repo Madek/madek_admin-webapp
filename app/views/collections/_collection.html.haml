@@ -1,8 +1,8 @@
 %tr.collection{id: collection.id}
   %th= collection.title
   %td
-    = link_to user_path(collection.responsible_user) do
-      = collection.responsible_user.person
+    = link_to responsible_entity_path(collection) do
+      = collection.responsible_entity_name
 
   %td.active.col-xs-4.text-center
     .btn-group.btn-group-sm

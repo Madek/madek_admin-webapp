@@ -18,13 +18,16 @@
     %table.table.table-striped
       %thead
       %tbody
-        - @media_entry.attributes.each do |attr|
+        - @media_entry.attributes.each do |key, val|
           %tr
             %td
-              %strong= attr.first.humanize
+              %strong= key.humanize
             %td
-              - if %w(responsible_user_id creator_id).include?(attr.first)
-                - user = User.find(attr.last)
+              - if %w(responsible_user_id creator_id).include?(key) and val
+                - user = User.find(val)
                 = link_to "#{user.person} (#{user.login})", user_path(user)
+              - elsif key == 'responsible_delegation_id' and val
+                - delegation = Delegation.find(val)
+                = link_to "#{delegation.name} (Delegation)", delegation_path(delegation)
               - else
-                = attr.last
+                = val

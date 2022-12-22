@@ -3,6 +3,7 @@ require 'application_responder'
 
 class ApplicationController < ActionController::Base
   include Concerns::MadekCookieSession
+  include Concerns::ResponsibleEntityPath
   include Pundit
   include Errors
 

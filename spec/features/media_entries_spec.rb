@@ -6,6 +6,13 @@ feature 'Admin Media Entries' do
     create(:media_entry, is_published: false)
   end
 
+  let!(:media_entry_of_a_delegation) do
+    create(:media_entry_with_image_media_file,
+           is_published: false,
+           responsible_delegation: create(:delegation),
+           responsible_user: nil)
+  end
+
   scenario 'linking to Meta Datums list' do
     media_entry = MediaEntry.first
     visit media_entry_path(media_entry)
@@ -46,5 +53,17 @@ feature 'Admin Media Entries' do
       selected: 'Not published'
     )
     expect(page).to have_css "tr[data-id='#{not_published_media_entry.id}']"
+  end
+
+  scenario 'Searching for an entry of a delegation renders without error' do
+    visit media_entries_path
+    fill_in "search_term", with: media_entry_of_a_delegation.id
+    click_button 'Apply'
+    expect(page).to have_css "tr[data-id='#{media_entry_of_a_delegation.id}']"
+  end
+
+  scenario 'Show page of an entry from a delegation renders without error' do
+    visit media_entry_path(media_entry_of_a_delegation)
+    expect(page).to have_content media_entry_of_a_delegation.title
   end
 end

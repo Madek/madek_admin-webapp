@@ -1,6 +1,6 @@
 %tr{ data: { id: media_entry.id } }
   %td= media_entry.title
-  %td= media_entry.responsible_user.person
+  %td= media_entry.responsible_entity_name
   %td
     - if media_entry.media_file.nil?
       %span.label.label-default No Media File
