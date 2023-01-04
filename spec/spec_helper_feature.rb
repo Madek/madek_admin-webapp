@@ -23,9 +23,7 @@ RSpec.configure do |config|
   Capybara.register_driver :selenium do |app|
     Capybara::Selenium::Driver.new(
       app,
-      browser: :firefox,
-      desired_capabilities:
-        Selenium::WebDriver::Remote::Capabilities.firefox(marionette: false))
+      browser: :firefox)
   end
 
   Capybara.register_driver :selenium_ff do |app|
@@ -95,8 +93,9 @@ end
 def create_firefox_driver(app, timeout, profileConfig = {})
   profile = Selenium::WebDriver::Firefox::Profile.new
   profileConfig.each { |k, v| profile[k] = v }
+  opts = Selenium::WebDriver::Firefox::Options.new(profile: profile)
   client = Selenium::WebDriver::Remote::Http::Default.new
-  client.timeout = timeout
+  client.read_timeout = timeout
   Capybara::Selenium::Driver.new \
-    app, browser: :firefox, profile: profile, http_client: client
+    app, browser: :firefox, options: opts, http_client: client
 end

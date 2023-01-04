@@ -125,7 +125,7 @@ feature 'Admin App Settings' do
     expect(page).to have_css '.alert-success'
 
     within '#welcome_texts' do
-      expect(page).to have_content "de ↘ #{new_text}DE en ↘ #{new_text}EN"
+      expect(page).to have_content "de ↘\n#{new_text}DE\nen ↘\n#{new_text}EN"
     end
   end
 
@@ -470,16 +470,18 @@ feature 'Admin App Settings' do
     expect(page).to have_css '.alert-success'
 
     within '#explore-page-section' do
-      expect(page).to have_content 'Catalog: Name de → CatalogTitleDE ' \
-                                   'en → CatalogTitleEN'
-      expect(page).to have_content 'Catalog: Subtitle de → CatalogSubtitleDE ' \
-                                   'en → CatalogSubtitleEN'
-      expect(page).to have_content 'Featured Content: Title ' \
-                                   'de → FeaturedSetTitleDE ' \
-                                   'en → FeaturedSetTitleEN'
-      expect(page).to have_content 'Featured Content: Subtitle ' \
-                                   'de → FeaturedSetSubtitleDE ' \
-                                   'en → FeaturedSetSubtitleEN'
+      expect(page).to have_content "Catalog: Name\n" \
+                                   "de → CatalogTitleDE\n" \
+                                   "en → CatalogTitleEN"
+      expect(page).to have_content "Catalog: Subtitle\n" \
+                                   "de → CatalogSubtitleDE\n" \
+                                   "en → CatalogSubtitleEN"
+      expect(page).to have_content "Featured Content: Title\n" \
+                                   "de → FeaturedSetTitleDE\n" \
+                                   "en → FeaturedSetTitleEN"
+      expect(page).to have_content "Featured Content: Subtitle\n" \
+                                   "de → FeaturedSetSubtitleDE\n" \
+                                   "en → FeaturedSetSubtitleEN"
       expect(find('#featured_set_id')).to have_content collection.id
 
       within 'tr#catalog_context_keys' do
@@ -509,8 +511,8 @@ feature 'Admin App Settings' do
     click_button 'Save'
 
     expect(page).to have_css '.alert-danger'
-    expect(page).to have_content "The set with a given ID:
-                                  #{random_uuid} doesn't exist!"
+    expect(page).to have_content \
+      "The set with a given ID: #{random_uuid} doesn't exist!"
   end
 
   scenario 'Updating Support URL' do

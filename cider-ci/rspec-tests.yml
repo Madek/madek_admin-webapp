@@ -22,7 +22,7 @@ task_defaults:
         set -eux
         mkdir -p log
         xvfb-run -a -e log/xvfb.log \
-          bundle exec rspec $CIDER_CI_TASK_FILE
+          ./bin/rspec $CIDER_CI_TASK_FILE
 
   dispatch_storm_delay_duration: 1 seconds
 

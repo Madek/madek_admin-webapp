@@ -19,8 +19,8 @@ feature 'Admin App Settings' do
     within('#about_pages') do
       expect(page.all('td').map(&:text)).to eq \
         [
-          'About Page HTML/Markdown Content for "About Page" (/about)',
-          'de → Not configured en → Not configured',
+          "About Page\nHTML/Markdown Content for \"About Page\" (/about)",
+          "de → Not configured\nen → Not configured",
           'Edit'
         ]
 
@@ -36,9 +36,9 @@ feature 'Admin App Settings' do
     within('#about_pages') do
       expect(page.all('td').map(&:text)).to eq \
         [
-          'About Page HTML/Markdown Content for "About Page" (/about)',
-          'de → DE# About this Archive ## Notice… ' \
-          'en → EN# About this Archive ## Notice…',
+          "About Page\nHTML/Markdown Content for \"About Page\" (/about)",
+          "de →\nDE# About this Archive\n\n## Notice…\n" \
+          "en →\nEN# About this Archive\n\n## Notice…",
           'Edit'
         ]
 

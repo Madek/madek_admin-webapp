@@ -28,9 +28,9 @@ gem 'sys-filesystem', '>= 1.4.3', require: false
 
 # gem 'better_errors', group: [:development]
 gem 'binding_of_caller', group: [:development]
-gem 'capybara', '~> 2.18', group: [:test]
+gem 'capybara', '~> 3.8', group: [:test]
 gem 'ffi', '>= 1.15.5', group: [:test, :development]
 gem 'rest-client', group: [:test, :development, :personas]
 gem 'ruby-prof', group: [:development]
-gem 'selenium-webdriver', '~> 2.53', group: [:test]
+gem 'selenium-webdriver', group: [:test]
 gem 'rails-controller-testing', group: :test

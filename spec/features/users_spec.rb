@@ -135,7 +135,7 @@ feature 'Admin Users' do
       click_link 'Delete user'
     end
 
-    expect(current_path).to eq users_path
+    expect(page).to have_current_path users_path
     expect { user.reload }.to raise_error(ActiveRecord::RecordNotFound)
   end
 
@@ -237,7 +237,7 @@ feature 'Admin Users' do
 
     visit user_path(user)
 
-    expect(page).to have_content ': bar foo'
+    expect(page).to have_content ":\nbar foo"
     expect(page).to have_link 'bar', href: group_path(group_2)
     expect(page).to have_link 'foo', href: group_path(group_1)
   end

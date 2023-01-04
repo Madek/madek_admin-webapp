@@ -61,7 +61,7 @@ feature 'Admin People' do
       click_link 'Delete'
     end
 
-    expect(current_path).to eq people_path
+    expect(page).to have_current_path people_path
     expect { person.reload }.to raise_error(ActiveRecord::RecordNotFound)
   end
 

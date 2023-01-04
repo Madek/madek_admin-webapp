@@ -6,11 +6,11 @@ feature 'Admin Contexts' do
   let!(:context) { create :context_with_context_keys }
   let(:app_settings) { AppSetting.first.presence || create(:app_setting) }
   let(:usage_message) do
-    "This context is used as: \
-     Extra Contexts for Entry View, \
-     Contexts for \"List\" View, \
-     Summary Context for Entry View, \
-     Extra Contexts for Collection View"
+    'This context is used as: ' \
+    'Extra Contexts for Entry View, ' \
+    'Contexts for "List" View, ' \
+    'Summary Context for Entry View, ' \
+    'Extra Contexts for Collection View'
   end
   let(:collection_path) { contexts_path }
 
