@@ -22,7 +22,7 @@ feature 'Roles' do
 
     expect(page).to have_content 'New Role'
 
-    fill_in 'role[labels][de]', with: Faker::Name.title
+    fill_in 'role[labels][de]', with: Faker::Lorem.characters(number: 10)
     click_button 'Save'
 
     expect(page).to have_content 'ERROR: null value in column "meta_key_id" ' \
@@ -82,7 +82,7 @@ feature 'Roles' do
 
     expect(page).to have_content "Edit Role #{role}"
 
-    new_label = Faker::Name.title
+    new_label = Faker::Lorem.characters(number: 10)
 
     fill_in 'role[labels][de]', with: "#{new_label} DE"
     fill_in 'role[labels][en]', with: "#{new_label} EN"

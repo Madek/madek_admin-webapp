@@ -15,7 +15,7 @@ describe DashboardController do
 
     context 'when user is authorized but not admin' do
       it 'renders 403 message' do
-        user = FactoryGirl.create :user
+        user = FactoryBot.create :user
 
         get :index, session: { user_id: user.id }
 
@@ -26,7 +26,7 @@ describe DashboardController do
 
     context 'when user is authorized and is an admin' do
       it 'renders dashboard template' do
-        user = FactoryGirl.create :admin_user
+        user = FactoryBot.create :admin_user
 
         get :index, session: { user_id: user.id }
 

@@ -6,8 +6,8 @@ feature 'Admin Context Keys' do
   let(:context) { Context.find('upload') }
   let(:context_key) { context.context_keys.first }
   let(:collection_path) { context_path(context) }
-  let(:de_documentation_url) { Faker::Internet.url('example.com', '?lang=de') }
-  let(:en_documentation_url) { Faker::Internet.url('example.com', '?lang=en') }
+  let(:de_documentation_url) { Faker::Internet.url(host: 'example.com', path: '?lang=de') }
+  let(:en_documentation_url) { Faker::Internet.url(host: 'example.com', path: '?lang=en') }
 
   scenario 'Editing ContextKey via Edit button' do
     visit collection_path

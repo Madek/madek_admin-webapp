@@ -7,7 +7,7 @@ module ApplicationHelper
   end
 
   def navbar_item(text, path)
-    content_tag :li, class: ('active' if current_page?(path)) do
+    content_tag :li, nil, class: ('active' if current_page?(path)) do
       link_to text, path
     end
   end
@@ -31,16 +31,7 @@ module ApplicationHelper
   def icon(name)
     throw ArgumentError unless name.present?
     capture_haml do
-      haml_tag('i', class: "glyphicon glyphicon-#{name}", aria: { hidden: true })
-    end
-  end
-
-  def static_input_if_persisted(object, text)
-    throw ArgumentError unless block_given?
-    if object.persisted?
-      haml_tag('p.form-control-static') { haml_tag('samp') { haml_concat text } }
-    else
-      yield
+      content_tag('i', nil, class: "glyphicon glyphicon-#{name}", aria: { hidden: true })
     end
   end
 
@@ -75,7 +66,7 @@ module ApplicationHelper
   end
 
   def empty_collection(collection_name, colspan)
-    content_tag :tr, class: 'empty-collection' do
+    content_tag :tr, nil, class: 'empty-collection' do
       content_tag(:td,
                   "No #{collection_name}",
                   colspan: colspan,

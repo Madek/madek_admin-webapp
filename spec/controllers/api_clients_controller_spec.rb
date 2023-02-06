@@ -47,7 +47,7 @@ describe ApiClientsController do
     let(:new_api_client_params) do
       {
         login: 'new_login',
-        description: Faker::Lorem.words(10).join(' '),
+        description: Faker::Lorem.words(number: 10).join(' '),
         user_id: user.id
       }
     end
@@ -120,8 +120,8 @@ describe ApiClientsController do
       let(:api_client_params) do
         {
           id: api_client.id,
-          login: Faker::Lorem.words(2).join('_').slice(0, 20),
-          description: Faker::Lorem.words(10).join(' '),
+          login: Faker::Lorem.words(number: 2).join('_').slice(0, 20),
+          description: Faker::Lorem.words(number: 10).join(' '),
           user_id: user.id
         }
       end
@@ -148,8 +148,8 @@ describe ApiClientsController do
     let(:user) { create :user }
     let(:api_client_params) do
       {
-        login: Faker::Lorem.words(2).join('_').slice(0, 20),
-        description: Faker::Lorem.words(10).join(' '),
+        login: Faker::Lorem.words(number: 2).join('_').slice(0, 20),
+        description: Faker::Lorem.words(number: 10).join(' '),
         user_id: user.id
       }
     end

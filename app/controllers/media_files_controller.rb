@@ -11,12 +11,10 @@ class MediaFilesController < ApplicationController
     @media_types = MediaFile.distinct.pluck(:media_type).sort
     @extensions = MediaFile.distinct.pluck(:extension).reject(&:empty?).sort
     @sorters = prepare_sorters
-    @media_files = MediaFile
-                    .includes(:media_entry, uploader: [:person])
-                    .page(params[:page])
-                    .per(16)
+    @media_files = MediaFile.includes(:media_entry, uploader: [:person])
     filter
     sort
+    @media_files = @media_files.page(page_params).per(16)
   end
 
   def show

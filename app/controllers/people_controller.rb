@@ -4,7 +4,7 @@ class PeopleController < ApplicationController
   include Concerns::PreviousResource
 
   def index
-    @people = Person.page(params[:page]).per(16)
+    @people = Person.page(page_params).per(16)
     filter_with(
       { search_term: :search_by_term },
       :subtype

@@ -45,7 +45,7 @@ RSpec.configure do |config|
     c.syntax = :expect
   end
 
-  config.include FactoryGirl::Syntax::Methods
+  config.include FactoryBot::Syntax::Methods
   config.include Concerns::MadekCookieSession
 
   # Note: rails test provides some sort of mock for for cookies and sessions;

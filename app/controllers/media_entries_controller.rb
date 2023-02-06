@@ -1,6 +1,6 @@
 class MediaEntriesController < ApplicationController
   def index
-    @media_entries = MediaEntry.unscoped.ordered.page(params[:page]).per(16)
+    @media_entries = MediaEntry.unscoped.ordered.page(page_params).per(16)
     filter
   end
 

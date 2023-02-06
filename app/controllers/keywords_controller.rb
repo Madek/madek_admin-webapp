@@ -3,12 +3,10 @@ class KeywordsController < ApplicationController
 
   def index
     @vocabularies = Vocabulary.reorder(:id)
-    @keywords = Keyword
-                  .all_with_usage_count
-                  .page(params[:page])
-                  .per(16)
+    @keywords = Keyword.all_with_usage_count
     filter
     sort
+    @keywords = @keywords.page(page_params).per(16)
     @current_meta_key = nil
   end
 
@@ -71,7 +69,7 @@ class KeywordsController < ApplicationController
       MediaEntry
         .unscoped
         .where(id: @keyword.meta_data.pluck(:media_entry_id))
-        .page(params[:page]).per(16)
+        .page(page_params).per(16)
   end
 
   def form_merge_to

@@ -30,7 +30,7 @@ class IoMappingsController < ApplicationController
   private
 
   def paginate(io_mappings)
-    io_mappings.page(params[:page]).per(16)
+    io_mappings.page(page_params).per(16)
   end
 
   def filter(io_mappings)

@@ -3,19 +3,19 @@ module UiHelper
 
   def data_table(data, *args)
     capture_haml do
-      haml_tag 'table.table.table-condensed', *args do
+      content_tag 'table.table.table-condensed', *args do
         data.each do |title, hash|
-          haml_tag('thead') do
-            haml_tag('th') { haml_tag('.h5') { haml_concat title } }
-            haml_tag('th')
+          content_tag('thead') do
+            content_tag('th') { content_tag('.h5') { concat title } }
+            content_tag('th')
           end
-          haml_tag 'tbody' do
+          content_tag 'tbody' do
             hash.each do |key, val|
-              haml_tag 'tr' do
-                haml_tag('th') { haml_tag('samp') { haml_concat key } }
-                haml_tag('td') do
+              content_tag 'tr' do
+                content_tag('th') { content_tag('samp') { concat key } }
+                content_tag('td') do
                   val = JSON.pretty_generate(val) if val.is_a?(Hash) || val.is_a?(Array)
-                  haml_tag('samp') { haml_concat val }
+                  content_tag('samp') { concat val }
                 end
               end
             end

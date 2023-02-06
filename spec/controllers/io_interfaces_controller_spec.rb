@@ -52,7 +52,7 @@ describe IoInterfacesController do
 
     it '#create' do
       io_interface_params = {
-        id: Faker::Lorem.characters(10),
+        id: Faker::Lorem.characters(number: 10),
         description: Faker::Lorem.sentence
       }
 

@@ -229,7 +229,7 @@ feature 'Admin Users' do
     expect(page).to have_content 'Admin access denied'
   end
 
-  scenario 'view/show: show groups which user belongs to' do
+  scenario 'view/show: show groups which user belongs to', browser: :firefox do
     user = create :user
     group_1 = create(:group, name: 'foo')
     group_2 = create(:group, name: 'bar')
@@ -237,7 +237,7 @@ feature 'Admin Users' do
 
     visit user_path(user)
 
-    expect(page).to have_content ":\nbar foo"
+    expect(page).to have_content ":\nbar\nfoo"
     expect(page).to have_link 'bar', href: group_path(group_2)
     expect(page).to have_link 'foo', href: group_path(group_1)
   end

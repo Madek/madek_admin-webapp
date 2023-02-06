@@ -1,4 +1,4 @@
-require_relative 'boot'
+require_relative "boot"
 
 require "rails"
 # Pick the frameworks you want:
@@ -21,6 +21,9 @@ Bundler.require(*Rails.groups)
 
 module MadekAdmin
   class Application < Rails::Application
+    config.load_defaults 6.1
+    config.autoloader = :classic
+
     # Use the responders controller from the responders gem
     config.app_generators.scaffold_controller :responders_controller
     config.responders.flash_keys = [ :success, :error ]
@@ -56,6 +59,14 @@ module MadekAdmin
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 5.2
     config.active_record.belongs_to_required_by_default = false
+
+    # Configuration for the application, engines, and railties goes here.
+    #
+    # These settings can be overridden in specific environments using the files
+    # in config/environments, which are processed later.
+    #
+    # config.time_zone = "Central Time (US & Canada)"
+    # config.eager_load_paths << Rails.root.join("extras")
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration can go into files in config/initializers

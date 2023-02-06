@@ -33,8 +33,8 @@ feature 'Admin Meta Keys' do
   end
 
   context 'Editing' do
-    let(:de_documentation_url) { Faker::Internet.url('example.com', '?lang=de') }
-    let(:en_documentation_url) { Faker::Internet.url('example.com', '?lang=en') }
+    let(:de_documentation_url) { Faker::Internet.url(host: 'example.com', path: '?lang=de') }
+    let(:en_documentation_url) { Faker::Internet.url(host: 'example.com', path: '?lang=en') }
 
     scenario 'Editing MetaKey (Text) via Edit button' do
       visit meta_key_path(meta_key)

@@ -1,6 +1,6 @@
 class IoInterfacesController < ApplicationController
   def index
-    @io_interfaces = IoInterface.page(params[:page]).per(16)
+    @io_interfaces = IoInterface.page(page_params).per(16)
   end
 
   def show

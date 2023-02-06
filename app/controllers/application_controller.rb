@@ -60,6 +60,10 @@ class ApplicationController < ActionController::Base
     render_error e, true
   end
 
+  def page_params
+    params.fetch(:page, 1)
+  end
+
   def forget_vocabulary_url_params_if_requested
     if params[:reset_vocabulary_params]
       vocabulary_url_params.each do |key|
@@ -88,7 +92,7 @@ class ApplicationController < ActionController::Base
 
   def authorize_admin_if_test
     if (Rails.env.test? || Rails.env.development?) && !current_user
-      user = FactoryGirl.create :admin_user
+      user = FactoryBot.create :admin_user
       if user and user.authenticate user.password
         set_madek_session user
       end

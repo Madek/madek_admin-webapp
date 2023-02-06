@@ -5,7 +5,7 @@ describe IoMappingsController do
   before :context do
     @admin_user = create(:admin_user)
     @io_interface = create(:io_interface)
-    @meta_key = create(:meta_key_text, id: "test:#{Faker::Lorem.characters(10)}")
+    @meta_key = create(:meta_key_text, id: "test:#{Faker::Lorem.characters(number: 10)}")
   end
 
   context '#index' do

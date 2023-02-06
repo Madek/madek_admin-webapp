@@ -5,13 +5,17 @@
     .col-xs-3
       = f.label :id, class: 'control-label'
     .col-xs-6
-      - static_input_if_persisted(f.object, f.object.id) do
+      - if f.object.persisted?
+        = content_tag('p', nil, class: 'form-control-static') { content_tag('samp') { concat f.object.id } }
+      - else
         = f.text_field :id, class: 'form-control'
   .form-group
     .col-xs-3
       = f.label :vocabulary_id, class: 'control-label'
     .col-xs-6
-      - static_input_if_persisted(f.object, f.object.vocabulary_id) do
+      - if f.object.persisted?
+        = content_tag('p', nil, class: 'form-control-static') { content_tag('samp') { concat f.object.vocabulary_id } }
+      - else
         = f.select :vocabulary_id,
             options_from_collection_for_select(Vocabulary.sorted, :id, :id, f.object.vocabulary_id),
             {}, class: 'form-control'

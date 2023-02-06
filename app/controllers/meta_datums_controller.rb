@@ -1,10 +1,8 @@
 class MetaDatumsController < ApplicationController
   def index
     @meta_datums = MetaDatum.includes(:meta_key)
-                            .page(params[:page])
-                            .per(16)
-
     filter
+    @meta_datums = @meta_datums.page(page_params).per(16)
   end
 
   private

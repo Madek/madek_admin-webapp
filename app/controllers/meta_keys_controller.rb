@@ -4,15 +4,14 @@ class MetaKeysController < ApplicationController
   include Concerns::LocalizedFieldParams
 
   def index
-    @meta_keys = MetaKey.with_keywords_count
-                        .includes(:context_keys)
-                        .page(params[:page])
-                        .per(16)
+    @meta_keys = MetaKey.with_keywords_count.includes(:context_keys)
 
     remember_context_id
     @context = get_context_from_session
 
     filter_and_sort
+
+    @meta_keys = @meta_keys.page(page_params).per(16)
   end
 
   def show
@@ -23,8 +22,8 @@ class MetaKeysController < ApplicationController
         meta_key_id: @meta_key.id
       )
     end
-    @keywords = @meta_key.keywords.page(params[:page]).per(16)
-    @roles = @meta_key.roles.sorted.page(params[:page]).per(16)
+    @keywords = @meta_key.keywords.page(page_params).per(16)
+    @roles = @meta_key.roles.sorted.page(page_params).per(16)
     @usage_counts = Keyword.usage_count_for(@keywords)
   end
 

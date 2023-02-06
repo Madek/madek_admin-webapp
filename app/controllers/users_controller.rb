@@ -5,9 +5,9 @@ class UsersController < ApplicationController
   before_action :initialize_user, only: [:new, :new_with_person]
 
   def index
-    @users = User.page(params[:page]).per(16)
-    @users = filter(@users)
+    @users = filter(User)
     @users = @users.order_by(params[:sort_by]) if params[:sort_by].present?
+    @users = @users.page(page_params).per(16)
 
     remember_vocabulary_url_params
     get_api_client_params

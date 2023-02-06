@@ -2,11 +2,11 @@ class DelegationsController < ApplicationController
   def index
     @delegations = Delegation
       .all
-      .page(params[:page])
       .with_members_count
       .with_resources_count
       .filter_by(params[:search_term], params[:group_or_user_id])
       .apply_sorting(params[:sort_by])
+      .page(page_params)
   end
 
   def new

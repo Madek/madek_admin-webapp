@@ -7,7 +7,7 @@ module DelegationsHelper
       content_tag :span, 'No members', class: 'text-muted'
     else
       pluralize(members_count, 'User').html_safe +
-        content_tag(:small, class: 'text-muted show') do
+        content_tag(:small, nil, class: 'text-muted show') do
           " (incl. #{pluralize(group_members_count, 'group member')})"
         end
     end
@@ -15,9 +15,9 @@ module DelegationsHelper
 
   def delegation_links(delegations)
     capture_haml do
-      haml_tag('ul') do
+      content_tag('ul') do
         delegations.order(:name).map do |delegation|
-          haml_tag('li') { haml_concat link_to delegation.name, delegation_path(delegation) }
+          concat content_tag('li') { concat link_to delegation.name, delegation_path(delegation) }
         end
       end
     end

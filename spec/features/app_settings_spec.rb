@@ -14,7 +14,7 @@ feature 'Admin App Settings' do
   let(:new_context_key) do
     create(:context_key,
            meta_key: create(:meta_key_keywords,
-                            id: "test:#{Faker::Lorem.characters(8)}"))
+                            id: "test:#{Faker::Lorem.characters(number: 8)}"))
   end
   let(:catalog_context_keys) do
     [
@@ -30,7 +30,7 @@ feature 'Admin App Settings' do
   let(:random_uuid) { SecureRandom.uuid }
 
   scenario 'Updating Site Title' do
-    new_title = Faker::Name.title
+    new_title = Faker::Lorem.characters(number: 10)
 
     visit app_settings_path
 
@@ -516,7 +516,7 @@ feature 'Admin App Settings' do
   end
 
   scenario 'Updating Support URL' do
-    new_url = Faker::Internet.url('wiki.zhdk.ch')
+    new_url = Faker::Internet.url(host: 'wiki.zhdk.ch')
 
     visit app_settings_path
 

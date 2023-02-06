@@ -2,11 +2,13 @@ class VocabulariesController < ApplicationController
   include Concerns::LocalizedFieldParams
 
   def index
-    @vocabularies = Vocabulary.page(params[:page]).per(16).with_meta_keys_count
+    @vocabularies = Vocabulary.with_meta_keys_count
 
     if (search_term = params[:search_term]).present?
       @vocabularies = @vocabularies.filter_by(search_term)
     end
+
+    @vocabularies = @vocabularies.page(page_params).per(16)
   end
 
   def show
@@ -60,6 +62,6 @@ class VocabulariesController < ApplicationController
   end
 
   def load_meta_keys
-    @vocabulary.meta_keys.with_keywords_count.page(params[:page]).per(16)
+    @vocabulary.meta_keys.with_keywords_count.page(page_params).per(16)
   end
 end

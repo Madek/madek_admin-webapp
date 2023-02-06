@@ -9,7 +9,7 @@ class GroupsController < ApplicationController
     remember_vocabulary_url_params
     get_delegation_from_params
   rescue ArgumentError => e
-    @groups = Group.all.page(params[:page])
+    @groups = Group.all.page(page_params)
     flash[:error] = e.to_s
   end
 
@@ -33,7 +33,7 @@ class GroupsController < ApplicationController
       @users = @users.filter_by(params[:user][:search_term])
     end
 
-    @users = @users.page(params[:page])
+    @users = @users.page(page_params)
   rescue ActiveRecord::RecordNotFound
     try_redirect_to_subsequent_resource
   end
@@ -109,7 +109,7 @@ class GroupsController < ApplicationController
   alias_method :update_group_params, :group_params
 
   def sort_and_filter(params)
-    groups = Group.page(params[:page]).per(25)
+    groups = Group.page(page_params).per(25)
     groups = groups.by_type(params[:type]) \
       if params[:type].present?
     search_terms = params[:search_terms].strip \

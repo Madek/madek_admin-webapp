@@ -5,7 +5,7 @@ class RolesController < ApplicationController
     @roles = Role
                .filter_by(filter_value(:term, nil))
                .sorted
-               .page(params[:page])
+               .page(page_params)
                .per(16)
     filter_by_vocabulary
     @vocabularies = Vocabulary.reorder(:id)
