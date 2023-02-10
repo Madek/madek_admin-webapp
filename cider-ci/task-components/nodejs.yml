@@ -3,7 +3,7 @@ traits:
 scripts:
   nodejs-asdf-install:
     exclusive_executor_resource: asdf-nodejs
-    body: ./cider-ci/bin/nodejs-setup
+    body: ./bin/env/nodejs-setup
   test:
     start_when:
       nodejs is installed:

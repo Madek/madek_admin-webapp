@@ -1,19 +1,16 @@
+include:
+  - path: cider-ci/context-components/env.yml
+  - path: cider-ci/context-components/rails-setup.yml
+
 generate_tasks:
   include_match: spec/.*_spec.rb
 
 tasks: {}
 
-script_defaults:
-  template_environment_variables: true
-
 task_defaults:
   include:
     - path: cider-ci/task-components/firefox.yml
-    - path: cider-ci/task-components/database.yml
-      submodule: [datalayer]
-    - path: cider-ci/task-components/bundle.yml
-      submodule: [datalayer]
-
+  dispatch_storm_delay_duration: 1 seconds
   scripts:
     test:
       timeout: 15 Minutes
@@ -21,29 +18,7 @@ task_defaults:
         #!/usr/bin/env bash
         set -eux
         mkdir -p log
-        xvfb-run -a -e log/xvfb.log \
+        unset PGPORT; unset PGUSER
+        PGPORT=${PG10PORT} PGUSER=${PG10USER} \
+          xvfb-run -a -e log/xvfb.log \
           ./bin/rspec $CIDER_CI_TASK_FILE
-
-  dispatch_storm_delay_duration: 1 seconds
-
-  environment_variables:
-    RAILS_ENV: test
-    LANG: "en_US.UTF-8"
-    DATABASE: madek_admin_webapp_{{CIDER_CI_TRIAL_ID}}
-
-  git_options:
-    submodules:
-      include_match: ^.*$
-
-  trial_attachments:
-    screenshots:
-      include_match: 'tmp\/.+\.png$'
-      content_type: image/png
-    logs:
-      include_match: 'logs?\/.+\.log$'
-      exclude_match: 'vendor\/'
-      content_type: text/plain
-    config:
-      include_match: 'config\/.+\.ya?ml$'
-      exclude_match: 'vendor\/'
-      content_type: text/yaml

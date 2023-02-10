@@ -2,7 +2,9 @@
 
 contexts:
   rails:
-    include: cider-ci/context-components/rails-setup.yml
+    include: 
+      - cider-ci/context-components/env.yml
+      - cider-ci/context-components/rails-setup.yml
     task_defaults:
       include: cider-ci/task-components/nodejs.yml
     tasks:
@@ -13,7 +15,9 @@ contexts:
           test:
             timeout: 10 Minutes
             body: |
-              set -exu
+              #!/usr/bin/env bash
+              set -euo pipefail
+              cd $ADMIN_WEBAPP_DIR
               mv public/admin/assets tmp/static_assets
               bin/precompile-assets
               cider-ci/bin/check-precompiled-assets tmp/static_assets public/admin/assets

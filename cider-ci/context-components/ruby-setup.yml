@@ -2,9 +2,6 @@ script_defaults:
   template_environment_variables: true
 
 task_defaults:
-  include:
-    - submodule: [datalayer]
-      path: cider-ci/task-components/bundle.yml
 
   git_options:
     submodules:
@@ -13,3 +10,19 @@ task_defaults:
   environment_variables:
     RAILS_ENV: test
     LANG: "en_US.UTF-8"
+
+  scripts:
+
+    admin-webapp-bundle-ruby:
+      exclusive_executor_resource: asdf-ruby
+      timeout: 20 Minutes
+      body: |
+        #!/usr/bin/env bash
+        set -euo pipefail
+        cd $ADMIN_WEBAPP_DIR
+        ./bin/env/ruby-setup 
+
+    test:
+      start_when:
+        admin-webapp-bundle-ruby has passed:
+          script_key: admin-webapp-bundle-ruby
