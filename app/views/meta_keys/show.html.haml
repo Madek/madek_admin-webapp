@@ -1,8 +1,8 @@
 :ruby
   conditional_attributes = {
-    is_extensible_list: :can_have_keywords?,
-    allowed_people_subtypes: :can_have_people_subtypes?,
-    allowed_rdf_class: :can_have_allowed_rdf_class?
+    is_extensible_list: [:can_have_keywords?, :can_have_roles?],
+    allowed_people_subtypes: [:can_have_people_subtypes?],
+    allowed_rdf_class: [:can_have_allowed_rdf_class?]
   }.with_indifferent_access
   used_as = context_links(@meta_key.context_keys.pluck(:context_id))
 
@@ -28,7 +28,7 @@
       %thead
       %tbody
         - @meta_key.attributes.each_pair do |attr, value|
-          - if conditional_attributes.has_key?(attr) && !@meta_key.send(conditional_attributes[attr])
+          - if conditional_attributes.has_key?(attr) && conditional_attributes[attr].none? { |attr| @meta_key.send(attr) }
             - next
           - else
             %tr
