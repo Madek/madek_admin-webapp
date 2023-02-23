@@ -30,7 +30,6 @@ gem 'sys-filesystem', '>= 1.4.3', require: false
 gem 'binding_of_caller', group: [:development]
 gem 'capybara', '~> 3.8', group: [:test]
 gem 'ffi', '>= 1.15.5', group: [:test, :development]
-gem 'listen', group: [:development]
 gem 'rest-client', group: [:test, :development, :personas]
 gem 'ruby-prof', group: [:development]
 gem 'selenium-webdriver', group: [:test]
