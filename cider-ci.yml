@@ -16,6 +16,28 @@ jobs:
     context:
       include: cider-ci/context-components/precompilation.yml
 
+
+
+  lint:
+    name: 'Linting'
+    description: |
+      Code checks: static checks and metrics: complexity, duplication, and format, git checks 
+    priority: 3
+    run_when: *DEFAULT_TRIGGERS
+    context:
+      include: [cider-ci/context-components/env.yml]
+      task_defaults:
+        environment_variables:
+          GIT_LINEAR_HISTORY_CHECK_START_SHA: 0dd0528dbb6a2eeb39770403c166550e6c597aad
+      contexts:
+        include:
+          - path: cider-ci/context-components/lint/git-lint.yml
+            submodule: [datalayer]
+          - path: cider-ci/context-components/lint/rspec-lint.yml
+            submodule: [datalayer]
+
+
+
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # META JOBS (only depend on other jobs)                                           #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -32,6 +54,7 @@ jobs:
       task: "echo '✔︎ All dependencies have passed' ; exit 0"
     depends_on: &ALL_TEST_DEPENDS
       rspec-tests: {job_key: rspec-tests, type: job, states: [passed]}
+      lint: {job_key: lint, type: job, states: [passed]}
       all-tests of the datalayer: {job_key: all-tests, type: job, submodule: [datalayer], states: [passed]}
     run_when: *ALL_TEST_DEPENDS
 
