@@ -1,9 +1,9 @@
-include: cider-ci/context-components/ruby-setup.yml
-
 task_defaults:
   include:
     - submodule: [datalayer]
       path: cider-ci/task-components/database.yml
+    - cider-ci/task-components/database.yml
+    - cider-ci/task-components/ruby-setup.yml
 
   max_trials: 3
   dispatch_storm_delay_duration: 1 seconds
@@ -12,20 +12,6 @@ task_defaults:
     screenshots:
       include_match: '^tmp\/.+\.png$'
       content_type: image/png
-
-  scripts:
-    admin-webapp-configure-rails-db:
-      start_when:
-        datalayer-configure-rails-db passed:
-          script_key: datalayer-configure-rails-db
-      body: |
-        #!/usr/bin/env bash
-        set -euo pipefail
-        ln -s $DATALAYER_DIR/config/database.yml  $ADMIN_WEBAPP_DIR/config/database.yml
-    test:
-      start_when:
-        admin-webapp-configure-rails-db has passed:
-          script_key: admin-webapp-configure-rails-db
 
 # enable extended attachments only for debugging:
 #    logs:
