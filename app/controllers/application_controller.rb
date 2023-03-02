@@ -2,6 +2,15 @@ require 'application_responder'
 # require 'inshape'
 
 class ApplicationController < ActionController::Base
+  # https://github.com/Madek/Madek/issues/423
+  before_action do
+    begin
+      session.exists?
+    rescue JSON::ParserError
+      cookies.delete(Madek::Constants::AdminWebapp::SESSION_NAME)
+    end
+  end
+
   include Concerns::MadekCookieSession
   include Concerns::ResponsibleEntityPath
   include Pundit

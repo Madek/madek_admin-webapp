@@ -1,4 +1,5 @@
 require_relative "boot"
+$:.push File.expand_path('../../datalayer/lib', __FILE__)
 
 require "rails"
 # Pick the frameworks you want:
@@ -32,6 +33,8 @@ module MadekAdmin
     config.active_record.record_timestamps = false
     config.active_record.yaml_column_permitted_classes = [Time, Rational]
 
+    config.eager_load_paths << Rails.root.join('lib')
+
     config.paths['db/migrate'] << \
       Rails.root.join('datalayer', 'db', 'migrate')
 
@@ -39,7 +42,6 @@ module MadekAdmin
       Rails.root.join('datalayer', 'initializers')
 
     config.eager_load_paths += [
-      Rails.root.join('lib'),
       Rails.root.join('datalayer', 'lib'),
       Rails.root.join('datalayer', 'app', 'models', 'concerns'),
       Rails.root.join('datalayer', 'app', 'models'),
@@ -87,3 +89,5 @@ module MadekAdmin
     config.i18n.default_locale = :en
   end
 end
+
+require 'madek/constants'
