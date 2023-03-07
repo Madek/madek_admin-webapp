@@ -1,26 +1,29 @@
 # rubocop:disable Metrics/MethodLength
 module UiHelper
 
-  def data_table(data, *args)
+  def data_table(data)
     capture_haml do
-      content_tag 'table.table.table-condensed', *args do
-        data.each do |title, hash|
-          content_tag('thead') do
-            content_tag('th') { content_tag('.h5') { concat title } }
-            content_tag('th')
+      content_tag('table', nil, class: ['table', 'table-condensed', 'code-table']) do
+        data.map do |title, hash|
+          thead = content_tag('thead') do
+            th1 = content_tag('th') { content_tag('div', nil, class: 'h5') { concat title } }
+            th2 = content_tag('th')
+            th1 + th2
           end
-          content_tag 'tbody' do
-            hash.each do |key, val|
-              content_tag 'tr' do
-                content_tag('th') { content_tag('samp') { concat key } }
-                content_tag('td') do
+          tbody = content_tag('tbody') do
+            hash.map do |key, val|
+              content_tag('tr') do
+                th = content_tag('th') { content_tag('samp') { concat key } }
+                td = content_tag('td') do
                   val = JSON.pretty_generate(val) if val.is_a?(Hash) || val.is_a?(Array)
                   content_tag('samp') { concat val }
                 end
+                th + td
               end
-            end
+            end.reduce(:+)
           end
-        end
+          thead + tbody
+        end.reduce(:+)
       end
     end
   end

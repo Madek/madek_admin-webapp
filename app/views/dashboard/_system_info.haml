@@ -52,7 +52,6 @@
     (see
     %a{:href => app_settings_path + '#' + 'deploy-config'} Deploy-Config)
 
-
 :ruby
   info_table_data = begin
     !env.present? ? nil : {
@@ -78,7 +77,7 @@
 -# main:
 
 - if info_table_data
-  = data_table(info_table_data, class: 'code-table')
+  = data_table(info_table_data)
 - else
   No Data available!
 
