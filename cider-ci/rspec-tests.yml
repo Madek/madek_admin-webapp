@@ -16,9 +16,8 @@ task_defaults:
       timeout: 15 Minutes
       body: |
         #!/usr/bin/env bash
-        set -eux
+        set -euo pipefail
         mkdir -p log
-        unset PGPORT; unset PGUSER
-        PGPORT=${PG10PORT} PGUSER=${PG10USER} \
-          xvfb-run -a -e log/xvfb.log \
+        source $DATALAYER_DIR/cider-ci/bin/pg_env_set
+        xvfb-run -a -e log/xvfb.log \
           ./bin/rspec $CIDER_CI_TASK_FILE

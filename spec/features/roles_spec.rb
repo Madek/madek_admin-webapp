@@ -25,8 +25,9 @@ feature 'Roles' do
     fill_in 'role[labels][de]', with: Faker::Lorem.characters(number: 10)
     click_button 'Save'
 
-    expect(page).to have_content 'ERROR: null value in column "meta_key_id" ' \
-                                 'violates not-null constraint'
+    expect(page).to have_content "ERROR: null value in column \"meta_key_id\" " \
+      "of relation \"roles\" violates not-null constraint"
+
   end
 
   scenario 'Creating' do
