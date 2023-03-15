@@ -1,0 +1,32 @@
+= form_for @section, html: { class: 'form-horizontal', role: 'form' }, builder: AdminFormBuilder do |f|
+
+  = hidden_field_tag :keyword_id, @section.keyword.id
+
+  = f.fields_for :labels, OpenStruct.new(f.object.labels) do |lf|
+    - I18n.available_locales.each do |locale|
+      .form-group
+        .col-xs-2
+          = lf.label locale, "Label [#{locale}]", class: 'control-label'
+        .col-xs-6
+          = lf.text_field locale, class: 'form-control'
+
+  .form-group
+    .col-xs-2
+      = f.label :color, class: 'control-label'
+    .col-xs-6
+      = f.text_field :color, class: 'form-control'
+      .help-block Any CSS color, used as background of the label
+
+  .form-group
+    .col-xs-2
+      = f.label :index_collection, "Index set", class: 'control-label'
+    .col-xs-6
+      = f.text_field :index_collection_id, class: 'form-control'
+      .help-block ID of the index/home set for this section. The label will be linked to this set. 
+
+  .form-group
+    .col-xs-offset-2.col-xs-3
+      = button_tag type: 'submit', class: 'btn btn-success' do
+        %span.glyphicon.glyphicon-ok
+        Save
+      = link_to 'Go back', :back, class: 'btn btn-link'

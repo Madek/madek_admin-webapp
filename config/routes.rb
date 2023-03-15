@@ -74,6 +74,7 @@ Rails.application.routes.draw do
       get :form_merge_to, on: :member
       post :merge_to, on: :member
     end
+    resources :sections, only: [:index, :edit, :update, :new, :create, :destroy]
 
     resources :people do
       post :merge_to, on: :member

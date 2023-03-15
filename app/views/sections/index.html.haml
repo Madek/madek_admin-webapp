@@ -1,0 +1,66 @@
+.page-header
+  %h1
+    Section Labels
+  - if @section_meta_key
+    %div
+      Section labels are defined for the keywords of
+      = '"' + @section_meta_key.id + '".'
+  - else
+    %div
+      To enable sections, configure "Section Label Meta Key" in settings.
+
+.row
+  .col-xs-12
+    %table.table.table-striped{'data-test-id': 'sections-table'}
+      %thead
+        %tr
+          %th Keyword
+          %th Section label
+          %th en
+          %th Color
+          %th Index collection
+          %th
+      %tbody 
+        - @keywords.each do |keyword|
+          %tr{"data-id": keyword.id}
+            - section = keyword.section
+            %td
+              = keyword
+            - if section
+              %td
+                %span.badge{ style: "color: white; background-color: " + section.color + "; font-size: 1.5rem;"}
+                  = section.labels["de"].present? ? section.labels["de"] : "(no label)"
+              %td
+                - if section.labels["en"].present? && section.labels["en"] != section.labels["de"]
+                  %span.badge{ style: "color: white; background-color: " + section.color + "; font-size: 1.5rem;"}
+                    = section.labels["en"]
+              %td
+                = section.color 
+              %td
+                - if @section_meta_key != keyword.meta_key
+                  .text-danger.small{style: "max-width: 250px;"}
+                    %span.glyphicon.glyphicon-exclamation-sign
+                    This keyword belongs to meta key
+                    = '"' + keyword.meta_key.id + '",'
+                    which is not configured as section meta key in settings.
+                - if section.index_collection
+                  =link_to(section.index_collection.title, section.index_collection)
+              %td.text-right
+                .btn-group.btn-group
+                  = link_to edit_section_path(section.id), class: 'btn btn-info' do
+                    %i.glyphicon.glyphicon-edit
+                    Edit
+                  = link_to section_path(section.id), method: :delete, data: { confirm: 'The section label will be removed from the keyword. Do you want to proceed?' }, class: 'btn btn-danger' do
+                    %span.glyphicon.glyphicon-remove
+                    Remove
+            - else
+              %td
+              %td
+              %td
+              %td
+              %td.text-right
+                .btn-group.btn-group
+                  = link_to new_section_path(keyword_id: keyword.id), class: 'btn btn-info' do
+                    %span.glyphicon.glyphicon-remove
+                    Create
+

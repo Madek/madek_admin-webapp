@@ -119,7 +119,11 @@ class AppSettingsController < ApplicationController
   end
 
   def update
-    @app_settings.update!(app_setting_params)
+    # replace "" with nil, but only for `app_settings.section_meta_key_id`
+    data = app_setting_params[:section_meta_key_id] == "" ? 
+      { section_meta_key_id: nil } : 
+      app_setting_params
+    @app_settings.update!(data)
 
     respond_with @app_settings, location: (lambda do
       app_settings_path

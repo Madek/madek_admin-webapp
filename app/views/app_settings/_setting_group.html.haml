@@ -13,7 +13,7 @@
             - if attr == :static_pages
               = render 'app_settings/sections/static_pages'
             - else
-              %td.col-xs-7
+              %td.col-xs-7.break-word
                 - type = AppSetting.columns_hash[attr.try(:to_s)].try(:sql_type)
                 - markdowned = ['welcome_texts']
                 - text_blocks = ['about_pages']

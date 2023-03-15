@@ -52,6 +52,31 @@
       %span.glyphicon.glyphicon-edit
       Edit
 
+.panel.panel-default
+  .panel-heading
+    .panel-title
+      Sections
+  .panel-body
+    %table.table.table-striped
+      %tbody
+        %tr.row{"data-id": :section_meta_key_id}
+          %td.col-xs-5
+            Section Label Meta Key 
+          %td.col-xs-6
+            %div
+              - if @app_settings.section_meta_key_id
+                Meta key:
+                = meta_key_ids_as_links(@app_settings[:section_meta_key_id])
+              - else 
+                Not configured
+            = link_to sections_path, class: 'btn btn-default btn-sm', style: 'margin-top: 1rem' do
+              %span.glyphicon.glyphicon-eye-open
+              View/edit section labels
+          %td.col-xs-1
+            = link_to edit_app_setting_path(:section_meta_key_id), class: 'btn btn-info btn-sm' do
+              %span.glyphicon.glyphicon-edit
+              Edit
+
 .page-header
   %h2{id: 'deploy-config'}
     %i.glyphicon.glyphicon-hdd
