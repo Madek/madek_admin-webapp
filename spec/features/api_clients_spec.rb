@@ -39,7 +39,8 @@ feature 'Admin API Clients' do
 
     api_client = ApiClient.find_by(login: 'test-login')
     expect(api_client).to be
-    expect(api_client.password_digest).not_to be_empty
+    expect(api_client.password_digest).to be_nil
+    expect(api_client.password_hash).not_to be_empty
 
     check_session_cleanup
   end
@@ -71,7 +72,7 @@ feature 'Admin API Clients' do
     api_client.reload
     expect(current_path).to eq api_client_path(api_client)
     expect(api_client.description).to eq 'test description'
-    expect(api_client.password_digest).to eq password_digest
+    expect(api_client.password_digest.presence).to eq password_digest.presence
   end
 
   scenario 'Changing responsible user', browser: :firefox do
