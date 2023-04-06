@@ -23,7 +23,13 @@ RSpec.configure do |config|
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false
   # instead of true.
-  config.use_transactional_fixtures = true
+  config.use_transactional_fixtures = false
+  config.before(:each) do |example|
+    truncate_tables
+    PgTasks.data_restore Rails.root.join('datalayer', 'db', 'seeds.pgbin')
+  end
+
+
 
   # If true, the base class of anonymous controllers will be inferred
   # automatically. This will be the default behavior in future versions of
@@ -56,7 +62,15 @@ RSpec.configure do |config|
     if example.metadata[:type] == :controller
       @controller.instance_eval do
         def validate_services_session_cookie_and_get_user
-          User.find_by id: session[:user_id]
+          if user = User.find_by(id: session[:user_id])
+            auth_system = AuthSystem.find_by!(id: 'password')
+            @session = UserSession.create!(
+              user: user, 
+              auth_system: auth_system,
+              meta_data: {http_user_agent: "Rails Test",
+                          remote_addr: "127.0.0.1"})
+            @session.user
+          end
         end
       end
     end

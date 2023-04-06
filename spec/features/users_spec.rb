@@ -219,13 +219,11 @@ feature 'Admin Users' do
 
   scenario 'Switching to an ordinary user' do
     user = create :user
-
     visit users_path
     fill_in 'search_term', with: user.email
     click_button 'Apply'
     click_button 'Switch to...'
     visit root_path
-
     expect(page).to have_content 'Admin access denied'
   end
 

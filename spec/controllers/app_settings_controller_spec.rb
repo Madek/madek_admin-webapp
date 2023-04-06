@@ -66,7 +66,7 @@ describe AppSettingsController do
       expect(app_settings.reload.site_title(:en)).to eq 'NEW TITLE'
     end
 
-    it 'updates a yaml setting', type: :feature do
+    it 'updates a yaml setting' do
       new_sitemap = YAML.safe_load <<-YAML
         de:
           - "Über das Projekt": http://www.test.ch/?test

@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe IoMappingsController do
 
-  before :context do
+  before :each do
     @admin_user = create(:admin_user)
     @io_interface = create(:io_interface)
     @meta_key = create(:meta_key_text, id: "test:#{Faker::Lorem.characters(number: 10)}")

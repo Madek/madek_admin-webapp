@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe IoInterfacesController do
 
-  before :context do
+  before :each do
     @admin_user = create(:admin_user)
   end
 

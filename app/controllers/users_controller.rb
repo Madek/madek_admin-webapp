@@ -62,9 +62,10 @@ class UsersController < ApplicationController
   end
 
   def switch_to
+    auth_system = @session.auth_system
     reset_session
     destroy_madek_session
-    set_madek_session(@user)
+    set_madek_session(@user, auth_system)
     redirect_to '/my'
   end
 
