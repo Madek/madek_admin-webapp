@@ -13,7 +13,7 @@ class ApplicationController < ActionController::Base
 
   include Concerns::MadekCookieSession
   include Concerns::ResponsibleEntityPath
-  include Pundit
+  include Pundit::Authorization
   include Errors
 
   self.responder = ApplicationResponder

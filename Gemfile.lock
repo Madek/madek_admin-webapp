@@ -1,6 +1,7 @@
 GIT
-  remote: https://github.com/drtom/rails_pg-tasks
-  revision: a1fa04ff62b4319c4775cfc458d4cc89b9a6b79e
+  remote: https://github.com/leihs/rails_pg-tasks
+  revision: e4ac9c5eac542e9adfb46569374ccbb5a629ab02
+  branch: mk/master
   specs:
     pg_tasks (2.2.0.pre.0)
       rails (~> 6.1.0)
@@ -396,4 +397,4 @@ DEPENDENCIES
   zencoder (~> 2.4)
 
 BUNDLED WITH
-   2.1.4
+   2.4.12
