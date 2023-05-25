@@ -39,8 +39,7 @@ feature 'Admin API Clients' do
 
     api_client = ApiClient.find_by(login: 'test-login')
     expect(api_client).to be
-    expect(api_client.password_digest).to be_nil
-    expect(api_client.password_hash).not_to be_empty
+    expect(api_client.password_digest).not_to be_nil
 
     check_session_cleanup
   end
@@ -57,7 +56,7 @@ feature 'Admin API Clients' do
     expect { api_client.reload }.to raise_error(ActiveRecord::RecordNotFound)
   end
 
-  scenario 'Editing an API Client without changing password' do
+  scenario 'Editing an API Client without changing password', browser: :firefox do
     visit api_client_path(api_client)
     expect(page).to have_css('[data-attr="password_digest"]')
     password_digest = get_value(:password_digest)
@@ -67,11 +66,11 @@ feature 'Admin API Clients' do
     expect(find_field('New password').value).to be_blank
     fill_in 'api_client[description]', with: 'test description'
     click_button 'Save'
-
     expect(page).to have_css '.alert-success'
     api_client.reload
     expect(current_path).to eq api_client_path(api_client)
     expect(api_client.description).to eq 'test description'
+    binding.pry
     expect(api_client.password_digest.presence).to eq password_digest.presence
   end
 
