@@ -20,6 +20,7 @@ gem 'pundit'
 gem 'cider_ci-open_session', '>= 1.0.0', '< 2.0.0'
 gem 'kaminari'
 gem 'sys-filesystem', '>= 1.4.3', require: false
+gem 'listen'
 
 
 ####################################################################
