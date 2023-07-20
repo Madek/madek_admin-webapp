@@ -1,6 +1,7 @@
 - is_used = @meta_key.meta_data.any?
 
 = form_for @meta_key, html: { class: 'form-horizontal', role: 'form' } do |f|
+
   .form-group
     .col-xs-3
       = f.label :id, class: 'control-label'
@@ -9,6 +10,7 @@
         = content_tag('p', nil, class: 'form-control-static') { content_tag('samp') { concat f.object.id } }
       - else
         = f.text_field :id, class: 'form-control'
+
   .form-group
     .col-xs-3
       = f.label :vocabulary_id, class: 'control-label'
@@ -19,18 +21,20 @@
         = f.select :vocabulary_id,
             options_from_collection_for_select(Vocabulary.sorted, :id, :id, f.object.vocabulary_id),
             {}, class: 'form-control'
-  .form-group
-    .col-xs-3
-      = f.label :meta_datum_object_type, class: 'control-label'
-    .col-xs-6
-      = f.select :meta_datum_object_type,
-          options_for_select(['', MetaKey.object_types].flatten, f.object.meta_datum_object_type),
-          {},
-          class: 'form-control',
-          disabled: is_used,
-          title: "This Metakey is #{is_used ? '' : 'NOT '}used!"
 
-  - if @meta_key.can_have_keywords?
+  - unless @meta_key.core?
+    .form-group
+      .col-xs-3
+        = f.label :meta_datum_object_type, class: 'control-label'
+      .col-xs-6
+        = f.select :meta_datum_object_type,
+            options_for_select(['', MetaKey.object_types].flatten, f.object.meta_datum_object_type),
+            {},
+            class: 'form-control',
+            disabled: is_used,
+            title: "This Metakey is #{is_used ? '' : 'NOT '}used!"
+
+  - if not @meta_key.core? and @meta_key.can_have_keywords?
     .form-group
       .col-xs-3
         = second_step_label(:keywords_alphabetical_order, f)
@@ -42,7 +46,7 @@
           = f.radio_button :keywords_alphabetical_order, false
           No
 
-  - if @meta_key.can_have_people_subtypes?
+  - if not @meta_key.core? and @meta_key.can_have_people_subtypes?
     .form-group
       .col-xs-3
         = second_step_label(:allowed_people_subtypes, f)
@@ -51,13 +55,14 @@
           = f.collection_check_boxes :allowed_people_subtypes, Person.subtypes, :subtype, :subtype do |c|
             = c.label { c.check_box(disabled: is_used) + c.text }
 
-  - if @meta_key.can_have_allowed_rdf_class?
+  - if not @meta_key.core? and @meta_key.can_have_allowed_rdf_class?
     .form-group
       .col-xs-3
         = second_step_label(:allowed_type, f)
       .col-xs-6
         = f.collection_radio_buttons :allowed_rdf_class, RdfClass.all, :id, :id, include_hidden: false do |c|
           = c.label(class: 'radio-inline') { c.radio_button(disabled: is_used) + c.text }
+
   = f.fields_for :labels, OpenStruct.new(f.object.labels) do |lf|
     - I18n.available_locales.each do |locale|
       .form-group
@@ -65,6 +70,7 @@
           = lf.label locale, "Label [#{locale}]", class: 'control-label'
         .col-xs-6
           = lf.text_field locale, class: 'form-control'
+
   = f.fields_for :descriptions, OpenStruct.new(f.object.descriptions) do |lf|
     - I18n.available_locales.each do |locale|
       .form-group
@@ -72,6 +78,7 @@
           = lf.label locale, "Description [#{locale}]", class: 'control-label'
         .col-xs-6
           = lf.text_area locale, class: 'form-control', rows: 4
+
   = f.fields_for :hints, OpenStruct.new(f.object.hints) do |lf|
     - I18n.available_locales.each do |locale|
       .form-group
@@ -79,11 +86,13 @@
           = lf.label locale, "Hint [#{locale}]", class: 'control-label'
         .col-xs-6
           = lf.text_area locale, class: 'form-control', rows: 4
+
   .form-group
     .col-xs-3
       = f.label :documentation_url, class: 'control-label'
     .col-xs-9
       = f.text_field :documentation_url, class: 'form-control'
+
   = f.fields_for :documentation_urls, OpenStruct.new(f.object.documentation_urls) do |lf|
     - I18n.available_locales.each do |locale|
       .form-group
@@ -92,27 +101,30 @@
         .col-xs-9
           = lf.text_field locale, class: 'form-control'
 
-  - if f.object.can_have_text_type?
+  - if not @meta_key.core? and f.object.can_have_text_type?
     .form-group
       .col-xs-3
         = f.label :text_type, class: 'control-label'
       .col-xs-3
         = f.select :text_type, MetaKey.text_types.keys, {}, class: 'form-control'
 
-  - if f.object.can_have_keywords? or f.object.can_have_roles?
+  - if not @meta_key.core? and ( f.object.can_have_keywords? or f.object.can_have_roles? )
     .form-group
       .col-xs-offset-3.col-sm-4
         .checkbox
           = second_step_label(:is_extensible_list, f) do
             = f.check_box :is_extensible_list
             Extensible?
-  - %w(media_entries collections).each do |resource_type|
-    .form-group
-      .col-xs-offset-3.col-sm-4
-        .checkbox
-          %label
-            = f.check_box "is_enabled_for_#{resource_type}"
-            Enabled for #{resource_type.humanize(capitalize: false)}?
+
+  - unless @meta_key.core? 
+    - %w(media_entries collections).each do |resource_type|
+      .form-group
+        .col-xs-offset-3.col-sm-4
+          .checkbox
+            %label
+              = f.check_box "is_enabled_for_#{resource_type}"
+              Enabled for #{resource_type.humanize(capitalize: false)}?
+
   .form-group
     .col-xs-offset-3.col-xs-3
       = button_tag type: :submit, class: 'btn btn-success' do

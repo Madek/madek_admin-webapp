@@ -51,7 +51,6 @@ class ApplicationController < ActionController::Base
     @error = error
     wrapper = ActionDispatch::ExceptionWrapper.new(Rails.env, @error)
     @status_code = wrapper.status_code
-    binding.pry
     if only_text
       render plain: "Error #{@status_code} - #{@error.message}",
              status: @status_code
@@ -101,7 +100,7 @@ class ApplicationController < ActionController::Base
   end
 
   def authorize_admin_if_test
-    if (Rails.env.test? || Rails.env.development?) && !current_user
+    if Rails.env.test? && !current_user
       user = FactoryBot.create :admin_user
       if user and user.authenticate user.password
         set_madek_session user, AuthSystem.find_by!(id: 'password')

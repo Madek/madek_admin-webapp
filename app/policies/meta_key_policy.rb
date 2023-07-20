@@ -1,6 +1,6 @@
 class MetaKeyPolicy < DefaultPolicy
   def edit?
-    @record.vocabulary_id != 'madek_core'
+    true
   end
 
   def update?
@@ -8,22 +8,22 @@ class MetaKeyPolicy < DefaultPolicy
   end
 
   def destroy?
-    edit?
+    not @record.core?
   end
 
   def move_to_top?
-    edit?
+    not @record.core?
   end
 
   def move_up?
-    edit?
+    not @record.core?
   end
 
   def move_down?
-    edit?
+    not @record.core?
   end
 
   def move_to_bottom?
-    edit?
+    not @record.core?
   end
 end

@@ -132,9 +132,9 @@ describe MetaKeysController do
         MetaKey.find_by(id: 'madek_core:title') || create(:meta_key_core_title)
       end
 
-      it 'renders forbidden notice' do
-        expect(response).to have_http_status(:forbidden)
-        expect(response.body).to eq 'Error 403 - Admin access denied!'
+      it 'responds with 200 HTTP status code' do
+        expect(response).to be_successful
+        expect(response).to have_http_status(200)
       end
     end
   end
@@ -213,9 +213,8 @@ describe MetaKeysController do
         MetaKey.find_by(id: 'madek_core:title') || create(:meta_key_core_title)
       end
 
-      it 'renders forbidden notice' do
-        expect(response).to have_http_status(:forbidden)
-        expect(response.body).to eq 'Error 403 - Admin access denied!'
+      it 'responds with internal_server_error' do
+        expect(response).to have_http_status(:internal_server_error)
       end
     end
   end

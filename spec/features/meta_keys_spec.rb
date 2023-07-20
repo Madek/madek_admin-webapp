@@ -489,14 +489,14 @@ feature 'Admin Meta Keys' do
       end
 
       context 'index page' do
-        scenario 'it cannot be edited' do
+        scenario 'it can be edited' do
           visit collection_path
 
           select 'madek_core', from: 'vocabulary_id'
           click_button 'Apply'
 
           within "[data-id='#{meta_key.id}']" do
-            expect(page).not_to have_link 'Edit'
+            expect(page).to have_link 'Edit'
           end
         end
 
@@ -513,10 +513,10 @@ feature 'Admin Meta Keys' do
       end
 
       context 'show page' do
-        scenario 'it cannot be edited' do
+        scenario 'it can be edited' do
           visit meta_key_path(meta_key)
 
-          expect(page).not_to have_link 'Edit'
+          expect(page).to have_link 'Edit'
         end
 
         scenario 'it cannot be deleted' do
