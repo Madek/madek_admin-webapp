@@ -46,7 +46,7 @@
                 - if section.index_collection
                   =link_to(section.index_collection.title, section.index_collection)
               %td.text-right
-                .btn-group.btn-group
+                .btn-group
                   = link_to edit_section_path(section.id), class: 'btn btn-info' do
                     %i.glyphicon.glyphicon-edit
                     Edit
@@ -59,8 +59,8 @@
               %td
               %td
               %td.text-right
-                .btn-group.btn-group
-                  = link_to new_section_path(keyword_id: keyword.id), class: 'btn btn-info' do
-                    %span.glyphicon.glyphicon-remove
+                .btn-group
+                  = link_to new_section_path(keyword_id: keyword.id), class: 'btn btn-default' do
+                    %span.glyphicon.glyphicon-plus
                     Create
 
