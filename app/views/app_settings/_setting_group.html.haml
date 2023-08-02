@@ -20,6 +20,7 @@
                 - as_listing = ['copyright_notice_templates']
                 - is_localized_field = AppSetting.localized_field?(attr)
                 - meta_key_ids = ['ignored_keyword_keys_for_browsing']
+                - group_ids = ['edit_meta_data_power_users_group_id']
                 - case
                 - when attr == :static_pages
                   = render 'static_pages_section'
@@ -36,6 +37,8 @@
                     = markdown(@app_settings.public_send(attr))
                 - when meta_key_ids.include?(attr.to_s)
                   = meta_key_ids_as_links(@app_settings[:ignored_keyword_keys_for_browsing])
+                - when group_ids.include?(attr.to_s)
+                  = group_id_as_link(@app_settings[:edit_meta_data_power_users_group_id])
                 - when as_listing.include?(attr.to_s)
                   %ul{style: 'padding-left: 19px'}
                     - @app_settings.read_attribute(attr).each do |value|

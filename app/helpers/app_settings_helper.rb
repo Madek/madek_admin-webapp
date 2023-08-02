@@ -57,6 +57,16 @@ module AppSettingsHelper
     html.join(', ').html_safe
   end
 
+  def group_id_as_link(id)
+    return unless id.present?
+    html = if (group = Group.find_by(id: id))
+             link_to(group.id, group_path(group.id))
+           else
+             invalid_reference_tag(id)
+           end
+    html.html_safe
+  end
+
   def invalid_reference_tag(id)
     content_tag(:span, "#{id} (invalid!)", class: 'text-danger')
   end
