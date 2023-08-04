@@ -12,6 +12,8 @@ class ApplicationController < ActionController::Base
   end
 
   include Concerns::MadekCookieSession
+  before_action :notify_if_session_expiring_soon
+
   include Concerns::ResponsibleEntityPath
   include Pundit::Authorization
   include Errors
