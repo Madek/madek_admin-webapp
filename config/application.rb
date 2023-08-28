@@ -1,4 +1,5 @@
 require_relative "boot"
+require_relative('../lib/madek/middleware/audit.rb')
 $:.push File.expand_path('../../datalayer/lib', __FILE__)
 
 require "rails"
@@ -89,6 +90,8 @@ module MadekAdmin
     # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     config.i18n.default_locale = :en
+
+    config.middleware.insert_before ActionDispatch::ShowExceptions, Madek::Middleware::Audit
   end
 end
 

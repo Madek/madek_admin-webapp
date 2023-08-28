@@ -547,6 +547,11 @@ feature 'Admin Meta Keys' do
       scenario 'meta key cannot be deleted' do
         visit meta_key_path(meta_key)
 
+        AuditedChange.delete_all
+        audited_changes_before = AuditedChange.count
+        audited_requests_before = AuditedRequest.count
+        audited_responses_before = AuditedResponse.count
+
         accept_alert do
           click_link 'Delete', href: meta_key_path(meta_key)
         end
@@ -560,6 +565,10 @@ feature 'Admin Meta Keys' do
 
         expect(current_path).to eq(meta_key_path(meta_key))
         expect(meta_key.meta_data.reload).to eq(meta_data)
+
+        expect(AuditedChange.count).to eq audited_changes_before
+        expect(AuditedRequest.count).to eq (audited_requests_before + 1)
+        expect(AuditedResponse.count).to eq (audited_responses_before + 1)
       end
     end
 
