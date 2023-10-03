@@ -37,6 +37,12 @@ class UsersController < ApplicationController
   end
 
   def update
+
+    if new_password = user_params[:password].presence
+      @user.password = new_password
+      @user.save_new_password
+    end
+
     @user.update!(user_params)
 
     respond_with @user, location: -> { user_path(@user) }
