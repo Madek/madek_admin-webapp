@@ -87,12 +87,6 @@
         .col-xs-6
           = lf.text_area locale, class: 'form-control', rows: 4
 
-  .form-group
-    .col-xs-3
-      = f.label :documentation_url, class: 'control-label'
-    .col-xs-9
-      = f.text_field :documentation_url, class: 'form-control'
-
   = f.fields_for :documentation_urls, OpenStruct.new(f.object.documentation_urls) do |lf|
     - I18n.available_locales.each do |locale|
       .form-group
