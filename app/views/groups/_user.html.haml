@@ -5,7 +5,7 @@
   %td
     - if policy(@group).remove_user_from_group?
       = link_to group_user_remove_user_from_group_path(@group, user), method: :delete,
-          data: {confirm: %Q{Are you user you want to remove "#{user.login}" from this group?}},
+          data: {confirm: %Q{Are you sure you want to remove "#{user.login}" from this group?}},
           class: 'btn btn-danger btn-xs' do
         %i.glyphicon.glyphicon-trash
         Remove from group

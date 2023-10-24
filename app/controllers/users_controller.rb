@@ -96,9 +96,15 @@ class UsersController < ApplicationController
     authorize group
     group.users.delete(User.find(params[:user_id]))
 
-    respond_with group,
-                 location: -> { group_path(group) },
-                 notice: 'The user has been removed.'
+    if group.users.empty?
+      respond_with group,
+                  location: -> { groups_path() },
+                  notice: 'The user has been removed. The group was deleted because it was empty.'
+    else
+      respond_with group,
+                  location: -> { group_path(group) },
+                  notice: 'The user has been removed.'
+    end
   end
 
   def remove_from_delegation

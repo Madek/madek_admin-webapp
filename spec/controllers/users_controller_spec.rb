@@ -463,7 +463,7 @@ describe UsersController do
         )
 
         expect(response).to have_http_status 302
-        expect(response).to redirect_to group_path(group)
+        expect(response).to redirect_to groups_path()
         expect(group.users.reload).not_to include user
       end
     end
@@ -484,7 +484,7 @@ describe UsersController do
         )
 
         expect(response).to have_http_status 302
-        expect(response).to redirect_to group_path(group)
+        expect(response).to redirect_to groups_path()
         expect(group.users.reload).not_to include user
       end
     end
