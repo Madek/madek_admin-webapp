@@ -14,6 +14,5 @@
 %table.table.table-striped
   - @person.attributes.each do |attr|
     %tr
-      %td
-        %strong #{attr.first.humanize}
+      = admin_db_column(attr.first)
       %td= attr.last

@@ -20,8 +20,7 @@
       %tbody
         - @media_entry.attributes.each do |key, val|
           %tr
-            %td
-              %strong= key.humanize
+            = admin_db_column(key)
             %td
               - if %w(responsible_user_id creator_id).include?(key) and val
                 - user = User.find(val)

@@ -74,7 +74,7 @@ feature 'Keywords' do
 
         visit meta_key_path(meta_key)
 
-        expect(page).to have_content 'Keywords alphabetical order false'
+        expect(page).to have_content 'Keywords alphabetical order [keywords_alphabetical_order] false'
         expect(page).to have_content 'Keywords'
 
         fill_in 'keyword[term]', with: 'Zett 1-2010'
@@ -102,7 +102,7 @@ feature 'Keywords' do
       scenario 'added keyword is the first in the list' do
         visit meta_key_path(meta_key)
 
-        expect(page).to have_content 'Keywords alphabetical order true'
+        expect(page).to have_content 'Keywords alphabetical order [keywords_alphabetical_order] true'
         expect(page).to have_content 'Keywords'
 
         fill_in 'keyword[term]', with: 'Zett 1-2010'
@@ -136,7 +136,7 @@ feature 'Keywords' do
       scenario 'added keywords are correctly ordered' do
         visit meta_key_path(meta_key)
 
-        expect(page).to have_content 'Keywords alphabetical order false'
+        expect(page).to have_content 'Keywords alphabetical order [keywords_alphabetical_order] false'
         expect(page).to have_content 'Keywords'
 
         fill_in 'keyword[term]', with: 'Zett 1-2010'
@@ -159,7 +159,7 @@ feature 'Keywords' do
       scenario 'added keywords are correctly ordered' do
         visit meta_key_path(meta_key)
 
-        expect(page).to have_content 'Keywords alphabetical order true'
+        expect(page).to have_content 'Keywords alphabetical order [keywords_alphabetical_order] true'
         expect(page).to have_content 'Keywords'
 
         fill_in 'keyword[term]', with: 'Zett 1-2010'
@@ -268,6 +268,6 @@ feature 'Keywords' do
     choose(target_state ? 'Yes' : 'No')
     click_button 'Save'
 
-    expect(page).to have_content "Keywords alphabetical order #{target_state}"
+    expect(page).to have_content "Keywords alphabetical order [keywords_alphabetical_order] #{target_state}"
   end
 end

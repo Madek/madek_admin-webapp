@@ -26,8 +26,7 @@
       %tbody
         - @context.attributes.each do |attr|
           %tr
-            %td
-              %strong= attr.first.humanize
+            = admin_db_column(attr.first)
             %td= attr.last
         %tr.info
           %td{colspan: 2} This context is used as: <strong>#{used_as.join(', ')}</strong>

@@ -27,15 +27,15 @@ feature 'Admin Vocabularies' do
       click_link 'Details'
     end
 
-    expect(page).to have_content 'Id test-id'
-    expect(page).to have_content 'Labels ' \
+    expect(page).to have_content 'Id [id] test-id'
+    expect(page).to have_content 'Labels [labels] ' \
                                  '{"de"=>"label DE", "en"=>"label EN"}'
-    expect(page).to have_content 'Descriptions ' \
+    expect(page).to have_content 'Descriptions [descriptions] ' \
                                  '{"de"=>"description DE", ' \
                                  '"en"=>"description EN"}'
-    expect(page).to have_content 'Admin comment new admin comment'
-    expect(page).to have_content 'Enabled for public view true'
-    expect(page).to have_content 'Enabled for public use true'
+    expect(page).to have_content 'Admin comment [admin_comment] new admin comment'
+    expect(page).to have_content 'Enabled for public view [enabled_for_public_view] true'
+    expect(page).to have_content 'Enabled for public use [enabled_for_public_use] true'
   end
 
   scenario 'Editing a vocabulary' do
@@ -62,14 +62,14 @@ feature 'Admin Vocabularies' do
     click_button 'Save'
 
     expect(current_path).to eq vocabulary_path(vocabulary)
-    expect(page).to have_content 'Labels ' \
+    expect(page).to have_content 'Labels [labels] ' \
                                  '{"de"=>"new label DE", "en"=>"new label EN"}'
-    expect(page).to have_content 'Descriptions ' \
+    expect(page).to have_content 'Descriptions [descriptions] ' \
                                  '{"de"=>"new description DE", ' \
                                  '"en"=>"new description EN"}'
-    expect(page).to have_content 'Admin comment new admin comment'
-    expect(page).to have_content 'Enabled for public view false'
-    expect(page).to have_content 'Enabled for public use false'
+    expect(page).to have_content 'Admin comment [admin_comment] new admin comment'
+    expect(page).to have_content 'Enabled for public view [enabled_for_public_view] false'
+    expect(page).to have_content 'Enabled for public use [enabled_for_public_use] false'
   end
 
   scenario 'Changing position' do
@@ -252,9 +252,9 @@ feature 'Admin Vocabularies' do
   scenario 'Displaying details' do
     visit vocabulary_path(vocabulary)
 
-    expect(page).to have_content "Id #{vocabulary.id}"
-    expect(page).to have_content "Labels {\"de\"=>\"#{vocabulary.label}\"}"
-    expect(page).to have_content 'Descriptions ' \
+    expect(page).to have_content "Id [id] #{vocabulary.id}"
+    expect(page).to have_content "Labels [labels] {\"de\"=>\"#{vocabulary.label}\"}"
+    expect(page).to have_content 'Descriptions [descriptions] ' \
                                  "{\"de\"=>\"#{vocabulary.description}\"}"
   end
 

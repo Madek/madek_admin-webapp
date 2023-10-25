@@ -33,6 +33,11 @@ module UiHelper
            locals: { object: object, striped: striped, colspan: colspan }
   end
 
+  def admin_db_column(column_name, column_label = nil)
+    render(partial: 'shared/admin_db_column',
+           locals: { column_name: column_name, column_label: column_label })
+  end
+
   def admin_comment(object)
     comment =
       if object.admin_comment.present?

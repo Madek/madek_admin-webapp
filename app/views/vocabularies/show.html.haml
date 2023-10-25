@@ -26,8 +26,7 @@
       %tbody
         - @vocabulary.attributes.each do |attr|
           %tr
-            %td
-              %strong= attr.first.humanize
+            = admin_db_column(attr.first)
             %td= attr.last
 
 = render 'meta_keys_list'

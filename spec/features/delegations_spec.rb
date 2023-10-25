@@ -20,9 +20,9 @@ feature 'Delegations' do
     click_button 'Save'
 
     expect(page).to have_css('.alert-success')
-    expect(page).to have_text "Name #{new_delegation.name}"
-    expect(page).to have_text "Description #{new_delegation.description}"
-    expect(page).to have_text "Admin comment #{new_delegation.admin_comment}"
+    expect(page).to have_text "Name [name] #{new_delegation.name}"
+    expect(page).to have_text "Description [description] #{new_delegation.description}"
+    expect(page).to have_text "Admin comment [admin_comment] #{new_delegation.admin_comment}"
     expect(page).to have_text 'Users (0)'
     expect(page).to have_text 'Groups (0)'
 
@@ -54,9 +54,9 @@ feature 'Delegations' do
     click_button 'Save'
 
     expect(page).to have_css('.alert-success')
-    expect(page).to have_text "Name #{new_name}"
-    expect(page).to have_text "Description #{new_description}"
-    expect(page).to have_text "Admin comment #{new_admin_comment}"
+    expect(page).to have_text "Name [name] #{new_name}"
+    expect(page).to have_text "Description [description] #{new_description}"
+    expect(page).to have_text "Admin comment [admin_comment] #{new_admin_comment}"
   end
 
   scenario 'Deleting', browser: :firefox do

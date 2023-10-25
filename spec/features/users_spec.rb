@@ -252,14 +252,14 @@ feature 'Admin Users' do
 
     visit user_path(user)
 
-    expect(page).to have_content 'Is deactivated false'
+    expect(page).to have_content 'Is deactivated [is_deactivated] false'
 
     click_link 'Edit'
 
     check 'Is deactivated?'
     click_button 'Save'
 
-    expect(page).to have_content 'Is deactivated true'
+    expect(page).to have_content 'Is deactivated [is_deactivated] true'
   end
 
   def user_rows

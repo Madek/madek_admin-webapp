@@ -12,8 +12,7 @@
       %tbody
         - @media_file.attributes.each do |attr|
           %tr
-            %td.col-xs-2
-              %strong= attr.first.humanize
+            = admin_db_column(attr.first)
             %td
               - if attr.first == 'media_entry_id'
                 = link_to attr.last, media_entry_path(attr.last)

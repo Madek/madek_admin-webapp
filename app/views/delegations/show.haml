@@ -26,7 +26,7 @@
       %tbody
       - @delegation.attributes.each do |name, value|
         %tr
-          %td= name.capitalize.split("_").join(" ")
+          = admin_db_column(name)
           - case name
           - when nil
           - else

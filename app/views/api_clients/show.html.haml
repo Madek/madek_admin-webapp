@@ -23,7 +23,7 @@
       %tbody
       - @api_client.attributes.each do |name,value|
         %tr{'data-attr' => name}
-          %td= name.capitalize.split("_").join(" ")
+          = admin_db_column(name)
           %td
             - if ApiClient.columns_hash[name].type == :text
               = simple_format value

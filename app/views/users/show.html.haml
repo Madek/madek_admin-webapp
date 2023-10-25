@@ -20,8 +20,7 @@
       = @user.admin? ? 'Yes' : 'No'
   - @user.attributes.each do |attr|
     %tr
-      %td
-        %strong #{attr.first.humanize}
+      = admin_db_column(attr.first)
       %td= attr.last
   %tr.info
     %td.col-xs-5

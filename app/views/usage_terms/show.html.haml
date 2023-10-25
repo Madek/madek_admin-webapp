@@ -16,8 +16,7 @@
         - @usage_terms.attributes.each_pair do |attr, value|
           - next if attr == 'body'
           %tr
-            %td.col-xs-2
-              %strong= attr.humanize
+            = admin_db_column(attr)
             %td= value
         %tr
           %td.col-xs-2
