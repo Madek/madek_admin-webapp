@@ -4,7 +4,7 @@
     %td.info(colspan="5")
       .pull-left
         %strong MetaKey:
-        %code= @current_meta_key.id
+        %code.black= @current_meta_key.id
       .pull-right
         - unless @current_meta_key.keywords_alphabetical_order
           = link_to 'Define order of the Keywords', meta_key_path(@current_meta_key), class: 'btn btn-xs btn-warning'

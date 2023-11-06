@@ -6,7 +6,7 @@
   .alert.alert-info{role: "alert"}
     = "Context will be duplicated based on #{@duplicated_from.class.name}"
     = " '#{@duplicated_from.label}' (id: "
-    %code<>= @duplicated_from.id
+    %code.black<>= @duplicated_from.id
     = ')!'
     %br
     = "MetaKeys will be copied from the #{@duplicated_from.class.name}, "

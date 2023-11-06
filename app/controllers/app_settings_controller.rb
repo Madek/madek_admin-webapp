@@ -19,10 +19,10 @@ class AppSettingsController < ApplicationController
     'Other' => {
       sitemap: 'Links for footer menu',
       about_pages:
-        'HTML/Markdown Content for "About Page" (<code>/about</code>)'
+        'HTML/Markdown Content for "About Page" <code class="black">(/about)</code>'
         .html_safe,
       static_pages:
-        'HTML/Markdown Content for "Static Pages" (<code>/about/:page_name</code>)'
+        'HTML/Markdown Content for "Static Pages" <code class="black">(/about/:page_name)</code>'
         .html_safe,
       support_urls: 'Link for support tab',
       ignored_keyword_keys_for_browsing: 'MetaKeys of type Keyword that are ' \

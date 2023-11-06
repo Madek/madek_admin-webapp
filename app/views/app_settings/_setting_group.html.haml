@@ -1,14 +1,14 @@
 .panel.panel-default
   .panel-heading
-    .panel-title= setting_group
+    %h1.panel-title= setting_group
   .panel-body
     %table.table.table-striped
       %tbody
         - settings.each do |attr, description|
           %tr.row{id: attr}
             %td.col-xs-5
-              = setting_header(attr)
-              %code.column-name= "[#{attr}]"
+              %strong= setting_header(attr)
+              %code.black-smaller= "(#{attr})"
               %p.help-block= description
 
             - if attr == :static_pages

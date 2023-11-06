@@ -10,7 +10,7 @@
       - if f.object.persisted?
         %span.help-block
           &rarr;
-          %code= "/about/#{f.object.name}"
+          %code.black= "/about/#{f.object.name}"
   = f.fields_for :contents, OpenStruct.new(f.object.contents) do |lf|
     - I18n.available_locales.each do |locale|
       .form-group

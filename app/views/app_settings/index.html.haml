@@ -9,15 +9,15 @@
 
 .panel.panel-default
   .panel-heading
-    .panel-title MetaData and UI
+    %h1.panel-title MetaData and UI
   .panel-body
     %table.table.table-striped
       %tbody
         - @context_for_views.each do |attr, details|
           %tr.row{id: attr}
             %td.col-xs-4
-              = details[:title]
-              %code.column-name= "[#{attr}]"
+              %strong= details[:title]
+              %code.black-smaller= "(#{attr})"
               %p.help-block= details[:description]
             %td.col-xs-7
               = convert_context_id_to_link(@app_settings[attr])
@@ -28,7 +28,7 @@
 
 .panel.panel-default
   .panel-heading
-    .panel-title
+    %h1.panel-title
       'Explore' Page
   .panel-body#explore-page-section
     %table.table.table-striped
@@ -36,8 +36,8 @@
         - @explore_page_settings.each_pair do |attr, details|
           %tr.row{id: attr}
             %td.col-xs-5
-              = details[:label]
-              %code.column-name= "[#{attr}]"
+              %strong= details[:label]
+              %code.black-smaller= "(#{attr})"
               %p.help-block= details[:description]
             %td.col-xs-7
               - if attr == :catalog_context_keys
@@ -56,14 +56,14 @@
 
 .panel.panel-default
   .panel-heading
-    .panel-title
+    %h1.panel-title
       Sections
   .panel-body
     %table.table.table-striped
       %tbody
         %tr.row{"data-id": :section_meta_key_id}
           %td.col-xs-5
-            Section Label Meta Key 
+            %strong Section Label Meta Key 
           %td.col-xs-6
             %div
               - if @app_settings.section_meta_key_id
@@ -88,9 +88,9 @@
   Configuration per server/instance.
 %p.text-info
   Values are hidden with stars (
-  %code<> *
+  %code.black-smaller<> *
   ) if their key contains "secret", "password", "api_key" or "geheim".
 %p.text-danger Can only be changed on the server itself!
 
 %pre
-  %code= @deploy_config.as_json.to_yaml
+  %code.black= @deploy_config.as_json.to_yaml

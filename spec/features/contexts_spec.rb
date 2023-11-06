@@ -26,11 +26,11 @@ feature 'Admin Contexts' do
     fill_in 'context[admin_comment]', with: 'admin comment'
     click_button 'Create'
 
-    expect(page).to have_content 'Id [id] test-id'
-    expect(page).to have_content 'Labels [labels] {"de"=>"label DE", "en"=>"label EN"}'
-    expect(page).to have_content 'Descriptions [descriptions] ' \
+    expect(page).to have_content 'Id (id) test-id'
+    expect(page).to have_content 'Labels (labels) {"de"=>"label DE", "en"=>"label EN"}'
+    expect(page).to have_content 'Descriptions (descriptions) ' \
                                  '{"de"=>"description DE", "en"=>"description EN"}'
-    expect(page).to have_content 'Admin comment [admin_comment] admin comment'
+    expect(page).to have_content 'Admin comment (admin_comment) admin comment'
   end
 
   scenario 'Editing a context' do
@@ -51,22 +51,22 @@ feature 'Admin Contexts' do
     click_button 'Create'
 
     expect(current_path).to eq context_path(context)
-    expect(page).to have_content 'Labels [labels] ' \
+    expect(page).to have_content 'Labels (labels) ' \
                                  '{"de"=>"new label DE", "en"=>"new label EN"}'
-    expect(page).to have_content 'Descriptions [descriptions] ' \
+    expect(page).to have_content 'Descriptions (descriptions) ' \
                                  '{"de"=>"new description DE", ' \
                                  '"en"=>"new description EN"}'
-    expect(page).to have_content 'Admin comment [admin_comment] new admin comment'
+    expect(page).to have_content 'Admin comment (admin_comment) new admin comment'
   end
 
   scenario 'Displaying details' do
     visit context_path(context)
 
-    expect(page).to have_content "Id [id] #{context.id}"
-    expect(page).to have_content "Labels [labels] {\"de\"=>\"#{context.label}\"}"
-    expect(page).to have_content 'Descriptions [descriptions] ' \
+    expect(page).to have_content "Id (id) #{context.id}"
+    expect(page).to have_content "Labels (labels) {\"de\"=>\"#{context.label}\"}"
+    expect(page).to have_content 'Descriptions (descriptions) ' \
                                  "{\"de\"=>\"#{context.description}\"}"
-    expect(page).to have_content "Admin comment [admin_comment] #{context.admin_comment}"
+    expect(page).to have_content "Admin comment (admin_comment) #{context.admin_comment}"
   end
 
   scenario 'Deleting a context' do

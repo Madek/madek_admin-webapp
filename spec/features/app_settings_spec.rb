@@ -470,16 +470,16 @@ feature 'Admin App Settings' do
     expect(page).to have_css '.alert-success'
 
     within '#explore-page-section' do
-      expect(page).to have_content "Catalog: Name [catalog_titles]\n" \
+      expect(page).to have_content "Catalog: Name (catalog_titles)\n" \
                                    "de → CatalogTitleDE\n" \
                                    "en → CatalogTitleEN"
-      expect(page).to have_content "Catalog: Subtitle [catalog_subtitles]\n" \
+      expect(page).to have_content "Catalog: Subtitle (catalog_subtitles)\n" \
                                    "de → CatalogSubtitleDE\n" \
                                    "en → CatalogSubtitleEN"
-      expect(page).to have_content "Featured Content: Title [featured_set_titles]\n" \
+      expect(page).to have_content "Featured Content: Title (featured_set_titles)\n" \
                                    "de → FeaturedSetTitleDE\n" \
                                    "en → FeaturedSetTitleEN"
-      expect(page).to have_content "Featured Content: Subtitle [featured_set_subtitles]\n" \
+      expect(page).to have_content "Featured Content: Subtitle (featured_set_subtitles)\n" \
                                    "de → FeaturedSetSubtitleDE\n" \
                                    "en → FeaturedSetSubtitleEN"
       expect(find('#featured_set_id')).to have_content collection.id

@@ -46,7 +46,7 @@
     - s[:stores_on_mount].each do |k, v|
       %li
         = "#{v.join(', ')} |"
-        %code= k
+        %code.black= k
     %hr
   %span
     (see

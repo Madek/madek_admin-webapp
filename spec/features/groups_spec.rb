@@ -88,7 +88,7 @@ feature 'Admin Groups' do
     click_button 'Save'
     expect(page).to have_css '.alert-success'
     expect(current_path).to eq group_path(group)
-    expect(page).to have_content 'Name [name] New group name'
+    expect(page).to have_content 'Name (name) New group name'
   end
 
   scenario 'Editing an Institutional Group' do
@@ -107,7 +107,7 @@ feature 'Admin Groups' do
     click_button 'Save'
     expect(page).to have_css '.alert-success'
     expect(current_path).to eq group_path(group)
-    expect(page).to have_content 'Name [name] New institutional group name'
+    expect(page).to have_content 'Name (name) New institutional group name'
   end
 
   scenario 'Editing an Authentication Group' do
@@ -126,7 +126,7 @@ feature 'Admin Groups' do
     click_button 'Save'
     expect(page).to have_css '.alert-success'
     expect(current_path).to eq group_path(group)
-    expect(page).to have_content 'Name [name] New authentication group name'
+    expect(page).to have_content 'Name (name) New authentication group name'
   end
 
   scenario 'Deleting a group with users' do
