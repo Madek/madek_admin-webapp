@@ -3,11 +3,6 @@ require 'spec_helper'
 describe AppSettingsController do
   let(:admin_user) { create :admin_user }
   let(:app_settings) { AppSetting.first }
-  before(:each) do
-    unless AppSetting.first
-      create :app_setting, id: 0
-    end
-  end
 
   describe '#index' do
     it 'responds with status code 200' do

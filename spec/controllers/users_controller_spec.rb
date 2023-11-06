@@ -71,7 +71,7 @@ describe UsersController do
 
       context 'by deactivated person_attributes' do
         it 'returns only deactivated users' do
-          deactivated_user = create :user, is_deactivated: true
+          deactivated_user = create(:user, :deactivated)
 
           get(
             :index,

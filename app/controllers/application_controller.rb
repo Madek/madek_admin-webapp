@@ -103,8 +103,9 @@ class ApplicationController < ActionController::Base
 
   def authorize_admin_if_test
     if Rails.env.test? && !current_user
-      user = FactoryBot.create :admin_user
-      if user and user.authenticate user.password
+      user = FactoryBot.create(:admin_user)
+      user.reload # to get db defaults (`active_until`)
+      if user and user.activated? and user.authenticate(user.password)
         set_madek_session user, AuthSystem.find_by!(id: 'password')
       end
     end

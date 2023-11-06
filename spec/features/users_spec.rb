@@ -27,7 +27,7 @@ feature 'Admin Users' do
   end
 
   scenario 'Filtering deactivated users' do
-    deactivated_user = create :user, is_deactivated: true
+    deactivated_user = create(:user, :deactivated)
 
     visit users_path
     check 'deactivated'
@@ -241,7 +241,7 @@ feature 'Admin Users' do
   end
 
   scenario 'view/show: show deactivated label in the header' do
-    deactivated_user = create :user, is_deactivated: true
+    deactivated_user = create(:user, :deactivated)
 
     visit user_path(deactivated_user)
     expect(page).to have_css '.page-header h1 span', text: 'deactivated'
@@ -251,15 +251,17 @@ feature 'Admin Users' do
     user = create :user
 
     visit user_path(user)
-
-    expect(page).to have_content 'Is deactivated [is_deactivated] false'
-
+    expect(find('tr', text: 'Active until').all('td')[1].text).not_to be_empty
     click_link 'Edit'
-
-    check 'Is deactivated?'
+    fill_in("user[active_until]", with: Date.yesterday)
     click_button 'Save'
 
-    expect(page).to have_content 'Is deactivated [is_deactivated] true'
+    datetime = Date.yesterday
+      .to_datetime
+      .change(offset: AppSetting.first.time_zone_offset)
+      .end_of_day
+
+    expect(find('tr', text: 'Active until').all('td')[1].text).to eq datetime.utc.to_s
   end
 
   def user_rows

@@ -27,7 +27,8 @@ class AppSettingsController < ApplicationController
       support_urls: 'Link for support tab',
       ignored_keyword_keys_for_browsing: 'MetaKeys of type Keyword that are ' \
         'ignored for the feature "Browse similar entries (Stöbern)"',
-      edit_meta_data_power_users_group_id: 'Edit Meta-Data Power-Users Group-ID'
+      edit_meta_data_power_users_group_id: 'Edit Meta-Data Power-Users Group-ID',
+      users_active_until_ui_default: 'Active until default for new user form (in days)'
     },
     'Copyright/License Defaults' => {
       media_entry_default_license_meta_key: 'MetaKey ID MediaEntry Licenses',

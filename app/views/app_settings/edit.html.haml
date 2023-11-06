@@ -5,7 +5,9 @@
 .page-header
   %h1
     Edit Setting
-    %small= setting_header(@field)
+    %small
+      = setting_header(@field)
+      %code.column-name [#{@field}]
   %small
     = link_to "&larr; Go back to settings".html_safe, app_settings_path
 

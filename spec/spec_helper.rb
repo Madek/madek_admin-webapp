@@ -27,6 +27,7 @@ RSpec.configure do |config|
   config.before(:each) do |example|
     truncate_tables
     PgTasks.data_restore Rails.root.join('datalayer', 'db', 'seeds.pgbin')
+    create(:app_setting, id: 0)
   end
 
 

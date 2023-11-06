@@ -4,7 +4,7 @@ require_relative 'shared/admin_comments'
 
 feature 'Admin Contexts' do
   let!(:context) { create :context_with_context_keys }
-  let(:app_settings) { AppSetting.first.presence || create(:app_setting) }
+  let(:app_settings) { AppSetting.first.presence }
   let(:usage_message) do
     'This context is used as: ' \
     'Extra Contexts for Entry View, ' \

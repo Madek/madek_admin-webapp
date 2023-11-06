@@ -38,6 +38,12 @@
         = f.text_area :notes, class: 'form-control'
 
     .form-group
+      %label.control-label.col-xs-2 Active until
+      .col-xs-9
+        - active_until = (Date.today + AppSetting.first.users_active_until_ui_default.days)
+        = f.date_field :active_until, class: 'form-control', value: active_until
+
+    .form-group
       .col-xs-offset-2.col-xs-4
         = button_tag type: 'submit', class: 'btn btn-success' do
           %span.glyphicon.glyphicon-ok

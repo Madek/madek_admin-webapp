@@ -68,11 +68,18 @@ class UsersController < ApplicationController
   end
 
   def switch_to
+    unless @user.activated?
+      raise Errors::ForbiddenError, 'Target user is deactivated.'
+    end
+
     auth_system = @session.auth_system
     reset_session
     destroy_madek_session
     set_madek_session(@user, auth_system)
     redirect_to '/my'
+
+  rescue => e
+    render_error(e)
   end
 
   def grant_admin_role

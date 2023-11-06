@@ -17,6 +17,7 @@
           %tr.row{id: attr}
             %td.col-xs-4
               = details[:title]
+              %code.column-name= "[#{attr}]"
               %p.help-block= details[:description]
             %td.col-xs-7
               = convert_context_id_to_link(@app_settings[attr])
@@ -36,6 +37,7 @@
           %tr.row{id: attr}
             %td.col-xs-5
               = details[:label]
+              %code.column-name= "[#{attr}]"
               %p.help-block= details[:description]
             %td.col-xs-7
               - if attr == :catalog_context_keys

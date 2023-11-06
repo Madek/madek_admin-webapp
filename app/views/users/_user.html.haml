@@ -10,7 +10,7 @@
 
 %tr{'data-id' => user.id, class: ('success' if user.admin?)}
   %td
-    - if user.is_deactivated
+    - if user.deactivated?
       %span.label.label-default deactivated
     = user.login
   %td= user.email
