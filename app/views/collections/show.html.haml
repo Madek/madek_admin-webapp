@@ -2,6 +2,8 @@
   %h1
     %i.glyphicon.glyphicon-folder-open
     #{@collection.title}
+  %small
+    = link_to '&larr; Go back to sets list'.html_safe, collections_path
 
 = render partial: 'action_panel', locals: { collection: @collection, responsible_entity: @responsible_entity }
 

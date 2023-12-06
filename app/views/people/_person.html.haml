@@ -19,8 +19,11 @@
           %span.glyphicon.glyphicon-random
           Merge to
       - else
-        = link_to ui_person_path(person),
-          class: 'btn btn-default', title: 'Details', target: :_blank do
+        = link_to person_path(person),
+          class: 'btn btn-default btn-with-icon-only', title: 'Details' do
           %span.glyphicon.glyphicon-eye-open
-          Show in UI
+          Details
+        = link_to ui_person_path(person), class: 'btn btn-default btn-with-icon-only', title: 'Preview in Web-App', target: :_blank do
+          %span.glyphicon.glyphicon-globe
+          Web-App
         = render partial: 'action_buttons', locals: { person: person, user: false}

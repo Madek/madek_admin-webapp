@@ -17,7 +17,28 @@
   %td
     = link_to person_path(user.person) do
       = "#{user.person.first_name} #{user.person.last_name}"
-  %td= user.responsible_media_entries.count
+  %td
+    :ruby
+      created_entries_count = user.created_media_entries.rewhere(is_published: [true, false]).count
+      responsible_entries_count = user.responsible_media_entries.rewhere(is_published: [true, false]).count
+
+      created_sets_count = user.created_collections.count
+      responsible_sets_count = user.responsible_collections.count
+
+    %i
+      Entries: 
+      %a{href: media_entries_path(filter: { responsible_entity_id: user.id })}= responsible_entries_count
+      (
+      %a{href: media_entries_path(filter: { creator_id: user.id })}= created_entries_count
+      )
+    <br>
+    %i
+      Sets:
+      %a{href: collections_path(filter: { responsible_entity_id: user.id })}= responsible_sets_count
+      (
+      %a{href: collections_path(filter: { creator_id: user.id })}= created_sets_count
+      )
+    <br>
   %td{ class: (user.admin? ? 'success' : 'danger') }
     = user.admin? ? 'Yes' : 'No'
   %td.active.text-center
@@ -44,7 +65,7 @@
                   class: 'btn btn-default' do
           Cancel
       - else
-        = link_to user_path(user),
-          class: 'btn btn-default', title: 'Details' do
+        = link_to user_path(user), class: 'btn btn-default', title: 'Details' do
           %i.glyphicon.glyphicon-eye-open
+          Details
         = render partial: 'action_buttons', locals: { user: user, editable: true, deletable: true }

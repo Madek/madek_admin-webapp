@@ -7,12 +7,25 @@
   .col-xs-12
     .panel.panel-default
       .panel-heading
-        .panel-title Search by title
+        .panel-title Search by title or UUID
       .panel-body
         = form_tag collections_path, method: 'GET', class: 'form-inline'  do
           .form-group
-            = text_field_tag :search_terms, params[:search_terms],
-              class: 'form-control', placeholder: 'Title'
+            %div
+              %label
+                Search Term
+            = text_field_tag :search_terms, params[:search_terms], size: 36, class: 'form-control', placeholder: 'Title / UUID'
+          .form-group
+            %div
+              %label
+                Responsible User/Delegation ID
+            = text_field_tag 'filter[responsible_entity_id]', params[:filter].try(:[], :responsible_entity_id), size: 37, class: 'form-control', placeholder: 'Responsible User/Delegation ID'
+          .form-group
+            %div
+              %label
+                Creator ID
+            = text_field_tag 'filter[creator_id]', params[:filter].try(:[], :creator_id), size: 37, class: 'form-control', placeholder: 'Creator ID'
+          .form-group{style: "margin-top: 25px"}
             = submit_tag 'Apply', class: 'btn btn-primary'
             = link_to 'Reset', collections_path, class: 'btn btn-default'
 .row

@@ -1,12 +1,12 @@
 %tr.group{'data-id' => group.id}
-  %td.col-xs-3= group.name
-  %td= group.institutional_name
-  %td= group.type
+  %td.col-xs-4= group.name
+  %td.col-xs-2= group.institutional_name
+  %td.col-xs-2= group.type
 
   %td.col-xs-2.search-rank= group.respond_to?(:search_rank) ? group.search_rank : ''
 
-  %td.active.col-xs-3.text-center
-    .btn-group.btn-group-sm
+  %td.active.col-xs-2.text-center
+    .btn-group.btn-group-sm.btn-group-vertical
       - if session[:vocabulary_id].present?
         = link_to path_to_vocabulary_permission_form(group), class: 'btn btn-success' do
           Grant Vocabulary Permission
@@ -23,4 +23,8 @@
       - else
         = link_to group_path(group), class: 'btn btn-default btn-with-icon-only' do
           %span.glyphicon.glyphicon-eye-open
+          Details
+        = link_to ui_group_path(group), class: 'btn btn-default btn-with-icon-only', title: 'Preview in Web-App', target: :_blank do
+          %span.glyphicon.glyphicon-globe
+          Web-App
         = render partial: 'action_buttons', locals: { group: group }

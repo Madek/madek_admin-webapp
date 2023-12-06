@@ -18,6 +18,7 @@
       - else
         = link_to meta_key_path(meta_key), class: 'btn btn-default' do
           %span.glyphicon.glyphicon-eye-open
+          Details
         = render partial: 'action_buttons', locals: { meta_key: meta_key }
 = admin_comment_row(meta_key, colspan: 5, striped: striped)
 - if used_as.size > 0

@@ -16,7 +16,7 @@
 - else
   = link_to 'Grant admin role',
       grant_admin_role_user_path(user, redirect_path: request.original_url),
-      method: :patch, class: 'btn btn-success'
+      method: :patch, class: 'btn btn-warning'
 - if deletable
   = link_to user_path(user),
       method: :delete,

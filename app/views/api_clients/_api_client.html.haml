@@ -9,7 +9,7 @@
 
   %td.active.col-xs-3.text-center
     .btn-group.btn-group-sm
-      = link_to api_client_path(api_client), class: 'btn btn-default' do
+      = link_to api_client_path(api_client), class: 'btn btn-default btn-with-icon-only' do
         %i.glyphicon.glyphicon-eye-open
       = render partial: 'action_buttons', locals: {api_client: api_client }
       - if session[:vocabulary_id].present?

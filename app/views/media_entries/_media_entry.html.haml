@@ -13,7 +13,9 @@
       %span.label.label-success Yes
     - else
       %span.label.label-default No
-  %td.active.text-center
-    .btn-group.btn-group-sm
-      = link_to media_entry_path(media_entry), class: 'btn btn-default' do
+  %td.active
+    .btn-group.btn-group-sm.btn-group-vertical
+      = link_to media_entry_path(media_entry), class: 'btn btn-default btn-with-icon-only' do
         %i.glyphicon.glyphicon-eye-open
+      = link_to ui_entry_path(media_entry), class: 'btn btn-default btn-with-icon-only', title: 'Preview in Web-App', target: :_blank do
+        %span.glyphicon.glyphicon-globe

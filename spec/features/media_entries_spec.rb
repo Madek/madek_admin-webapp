@@ -32,27 +32,70 @@ feature 'Admin Media Entries' do
 
     expect(page).to have_select(
       'filter[is_published]',
-      selected: 'Published & not published'
+      selected: 'Yes & No'
     )
     click_link 'Last'
     expect(page).to have_css "tr[data-id='#{not_published_media_entry.id}']"
 
-    select 'Published', from: 'filter[is_published]'
+    select 'Yes', from: 'filter[is_published]'
     click_button 'Apply'
     expect(page).to have_select(
       'filter[is_published]',
-      selected: 'Published'
+      selected: 'Yes'
     )
     click_link 'Last'
     expect(page).not_to have_css "tr[data-id='#{not_published_media_entry.id}']"
 
-    select 'Not published', from: 'filter[is_published]'
+    select 'No', from: 'filter[is_published]'
     click_button 'Apply'
     expect(page).to have_select(
       'filter[is_published]',
-      selected: 'Not published'
+      selected: 'No'
     )
     expect(page).to have_css "tr[data-id='#{not_published_media_entry.id}']"
+  end
+
+  scenario 'Filtering by responsible_entity_id and creator_id attribute (user)', browser: :firefox do
+    user = create(:user)
+    media_entry = create(:media_entry_with_image_media_file,
+                         is_published: true,
+                         creator: user,
+                         responsible_delegation: nil,
+                         responsible_user: user)
+
+    visit media_entries_path
+
+    fill_in "filter[responsible_entity_id]", with: user.id
+    click_button 'Apply'
+    expect(page).to have_css "tr[data-id='#{media_entry.id}']"
+    expect(all("tr[data-id]").count).to eq 1
+    expect(find("h1")).to have_content "Media Entries (1)"
+
+    click_link 'Reset'
+
+    fill_in "filter[creator_id]", with: user.id
+    click_button 'Apply'
+    expect(page).to have_css "tr[data-id='#{media_entry.id}']"
+    expect(all("tr[data-id]").count).to eq 1
+    expect(find("h1")).to have_content "Media Entries (1)"
+  end
+
+  scenario 'Filtering by responsible_entity_id (delegation)', browser: :firefox do
+    delegation = create(:delegation)
+    user = create(:user)
+    media_entry = create(:media_entry_with_image_media_file,
+                         is_published: true,
+                         creator: user,
+                         responsible_delegation: delegation,
+                         responsible_user: nil)
+
+    visit media_entries_path
+
+    fill_in "filter[responsible_entity_id]", with: delegation.id
+    click_button 'Apply'
+    expect(page).to have_css "tr[data-id='#{media_entry.id}']"
+    expect(all("tr[data-id]").count).to eq 1
+    expect(find("h1")).to have_content "Media Entries (1)"
   end
 
   scenario 'Searching for an entry of a delegation renders without error' do

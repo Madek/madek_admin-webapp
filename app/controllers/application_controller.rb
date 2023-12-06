@@ -126,4 +126,12 @@ class ApplicationController < ActionController::Base
   def feature_toggle_sql_reports
     Settings.feature_toggles.try(:admin_sql_reports) == 'on my own risk'
   end
+
+  def valid_uuid?(uuid)
+    UUIDTools::UUID_REGEXP =~ uuid
+  end
+
+  def validate_uuid!(uuid)
+    raise 'Not an UUID!' unless valid_uuid?(uuid)
+  end
 end
