@@ -4,7 +4,7 @@
   %td
     - if api_client.user
       = link_to user_path(api_client.user) do
-        = api_client.user.person
+        = api_client.user
   %td= api_client.description
 
   %td.active.col-xs-3.text-center

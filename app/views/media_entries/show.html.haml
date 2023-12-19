@@ -24,7 +24,7 @@
             %td
               - if %w(responsible_user_id creator_id).include?(key) and val
                 - user = User.find(val)
-                = link_to "#{user.person} (#{user.login})", user_path(user)
+                = link_to "#{user} (#{user.login})", user_path(user)
               - elsif key == 'responsible_delegation_id' and val
                 - delegation = Delegation.find(val)
                 = link_to "#{delegation.name} (Delegation)", delegation_path(delegation)

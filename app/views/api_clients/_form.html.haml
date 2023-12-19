@@ -10,7 +10,7 @@
       = f.label :user_id, 'User', class: 'control-label col-xs-2'
       .col-xs-8
         - if f.object.user
-          %span.text-info= "#{f.object.user.person} [#{f.object.user.login}]"
+          %span.text-info= "#{f.object.user} [#{f.object.user.login}]"
         - else
           %span.text-danger You must choose an user
         = f.hidden_field :user_id if f.object.user

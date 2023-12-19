@@ -22,6 +22,16 @@
         = f.text_field :password, class: 'form-control'
 
     .form-group
+      %label.control-label.col-xs-2 First name
+      .col-xs-9
+        = f.text_field :first_name, class: 'form-control'
+
+    .form-group
+      %label.control-label.col-xs-2 Last name
+      .col-xs-9
+        = f.text_field :last_name, class: 'form-control'
+
+    .form-group
       %label.control-label.col-xs-2 Notes
       .col-xs-9
         = f.text_area :notes, class: 'form-control'

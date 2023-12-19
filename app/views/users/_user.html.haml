@@ -15,8 +15,10 @@
     = user.login
   %td= user.email
   %td
+    = user.to_s
+  %td
     = link_to person_path(user.person) do
-      = "#{user.person.first_name} #{user.person.last_name}"
+      = user.person
   %td
     :ruby
       created_entries_count = user.created_media_entries.rewhere(is_published: [true, false]).count

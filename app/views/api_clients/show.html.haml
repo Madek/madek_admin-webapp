@@ -13,7 +13,7 @@
         .btn-group
           = link_to user_path(@user), class: 'btn btn-default' do
             %i.glyphicon.glyphicon-user
-            #{@user.person}
+            #{@user}
           = render partial: 'action_buttons', locals: {api_client: @api_client, size: nil}
 
 .row

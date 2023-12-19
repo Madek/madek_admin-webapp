@@ -35,7 +35,7 @@ feature 'Admin API Clients' do
 
     expect(page).to have_css '.alert-success'
     expect(page).to have_content 'test-login'
-    expect(page).to have_content user.person.to_s
+    expect(page).to have_content user.to_s
 
     api_client = ApiClient.find_by(login: 'test-login')
     expect(api_client).to be
@@ -104,7 +104,7 @@ feature 'Admin API Clients' do
     click_button 'Save'
 
     expect(page).to have_css '.alert-success'
-    expect(page).to have_content user.person.to_s
+    expect(page).to have_content user.to_s
 
     check_session_cleanup
   end
