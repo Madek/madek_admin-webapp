@@ -20,7 +20,8 @@ class GroupsController < ApplicationController
   define_update_action_for(Group, true)
 
   def create
-    @group = Group.create!(group_params)
+    create_params = group_params.merge(created_by_user_id: current_user.id)
+    @group = Group.create!(create_params)
 
     respond_with @group, location: -> { group_path(@group) }
   end

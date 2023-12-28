@@ -18,6 +18,8 @@ class ApplicationController < ActionController::Base
   include Pundit::Authorization
   include Errors
 
+  include Concerns::WebappPathHelpers
+  
   self.responder = ApplicationResponder
   respond_to :html
 

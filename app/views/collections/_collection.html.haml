@@ -8,6 +8,6 @@
     .btn-group.btn-group-sm
       = link_to collection_path(collection), class: 'btn btn-default btn-with-icon-only' do
         %i.glyphicon.glyphicon-eye-open
-      = link_to ui_set_path(collection), class: 'btn btn-default btn-with-icon-only', target: :_blank do
+      = link_to ui_collection_path(collection), class: 'btn btn-default btn-with-icon-only', target: :_blank do
         %i.glyphicon.glyphicon-globe
       = render partial: 'action_buttons', locals: { collection: collection }

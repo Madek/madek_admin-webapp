@@ -115,11 +115,4 @@ Rails.application.routes.draw do
 
   end
 
-  scope '/' do
-    get 'groups/:id' => redirect("/my/groups/%{id}"), as: :ui_group
-    get 'media_entries/:id' => redirect("/entries/%{id}"), as: :ui_entry
-    get 'people/:id' => redirect("/people/%{id}"), as: :ui_person
-    get 'collections/:id' => redirect("/sets/%{id}"), as: :ui_set
-  end
-
 end
