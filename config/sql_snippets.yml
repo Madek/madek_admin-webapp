@@ -61,8 +61,8 @@ sql_snippets:
       WHERE EXISTS
           ( SELECT 1
            FROM people p2
-           WHERE btrim(p1.first_name) = btrim(p2.first_name)
-             AND btrim(p1.last_name) = btrim(p2.last_name)
+           WHERE lower(btrim(p1.first_name)) = lower(btrim(p2.first_name))
+             AND lower(btrim(p1.last_name)) = lower(btrim(p2.last_name))
              AND p1.id <> p2.id )
       ORDER BY btrim(first_name) ASC, btrim(last_name) ASC;
 
