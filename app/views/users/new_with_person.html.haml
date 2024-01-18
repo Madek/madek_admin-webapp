@@ -4,19 +4,6 @@
 = form_for @user, html: { class: 'form-horizontal', role: 'form' } do |f|
 
   %fieldset
-    = f.fields_for :person do |person|
-      .form-group
-        %label.control-label.col-xs-2 First name
-        .col-xs-9
-          = person.text_field :first_name, class: 'form-control'
-
-      .form-group
-        %label.control-label.col-xs-2 Last name
-        .col-xs-9
-          = person.text_field :last_name, class: 'form-control'
-  %hr
-
-  %fieldset
     .form-group
       %label.control-label.col-xs-2 Login
       .col-xs-9
@@ -31,6 +18,16 @@
       %label.control-label.col-xs-2 Password
       .col-xs-9
         = f.text_field :password, class: 'form-control'
+
+    .form-group
+      %label.control-label.col-xs-2 First name
+      .col-xs-9
+        = f.text_field :first_name, class: 'form-control', required: true
+
+    .form-group
+      %label.control-label.col-xs-2 Last name
+      .col-xs-9
+        = f.text_field :last_name, class: 'form-control', required: true
 
     .form-group
       %label.control-label.col-xs-2 Notes

@@ -69,7 +69,7 @@ describe UsersController do
         end
       end
 
-      context 'by deactivated person_attributes' do
+      context 'by deactivated status' do
         it 'returns only deactivated users' do
           deactivated_user = create(:user, :deactivated)
 
@@ -382,8 +382,9 @@ describe UsersController do
         it 'renders error template' do
           attributes = {
             login: 'example-login',
-            email: 'nickname@example.com',
-            person_attributes: { id: '' }
+            email: 'nickname at example.com', # <-- invalid
+            first_name: 'Nick',
+            last_name: 'Name'
           }
           post(
             :create,
@@ -400,10 +401,8 @@ describe UsersController do
           login: Faker::Internet.user_name,
           email: Faker::Internet.email,
           password: Faker::Internet.password,
-          person_attributes: {
-            first_name: Faker::Name.first_name,
-            last_name: Faker::Name.last_name
-          }
+          first_name: Faker::Name.first_name,
+          last_name: Faker::Name.last_name
         }
       end
     end

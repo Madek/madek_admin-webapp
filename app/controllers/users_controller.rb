@@ -50,6 +50,11 @@ class UsersController < ApplicationController
 
   def create
     @user = User.new(user_params)
+
+    if @user.person_id.nil?
+      @user.person = Person.new(subtype: 'Person', first_name: @user.first_name, last_name: @user.last_name)
+    end
+
     @user.save!
 
     respond_with @user, location: -> { users_path }
@@ -129,10 +134,6 @@ class UsersController < ApplicationController
 
   def find_user
     @user = User.find(params[:id])
-  end
-
-  def person_attributes?
-    params[:user][:person_attributes] rescue false
   end
 
   def user_params

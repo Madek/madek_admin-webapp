@@ -99,8 +99,8 @@ feature 'Admin Users' do
     click_link 'Create user with person'
     expect(current_path).to eq new_with_person_users_path
 
-    fill_in 'user[person_attributes][first_name]', with: 'Fritz'
-    fill_in 'user[person_attributes][last_name]', with: 'Fischer'
+    fill_in 'user[first_name]', with: 'Fritz'
+    fill_in 'user[last_name]', with: 'Fischer'
     fill_in 'user[login]', with: 'fritzli'
     fill_in 'user[email]', with: 'fritzli@zhdk.ch'
     fill_in 'user[password]', with: 'password'
