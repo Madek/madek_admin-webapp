@@ -31,9 +31,14 @@
         = f.list_as_lines :external_uris
 
     .form-group
+      %label.control-label.col-xs-2 Admin Comment
+      .col-xs-8
+        = f.text_area :admin_comment, rows: 5, class: 'form-control'
+
+    .form-group
       %label.control-label.col-xs-2 Is PeopleGroup
       .col-xs-1
-        = f.check_box :subtype, { class: 'form-control' }, 'PeopleGroup', 'Person'
+        = f.check_box :subtype, { style: 'margin-top: 10px' }, 'PeopleGroup', 'Person'
 
     .form-group
       .col-xs-offset-2.col-xs-4
