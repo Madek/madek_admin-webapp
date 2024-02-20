@@ -113,6 +113,10 @@ Rails.application.routes.draw do
       post 'csv_import_roles_update'
     end
 
+    get 'smtp_settings', to: 'smtp_settings#show', as: 'smtp_settings'
+    get 'smtp_settings/edit', to: 'smtp_settings#edit', as: 'edit_smtp_settings'
+    patch 'smtp_settings/update', to: 'smtp_settings#update', as: 'update_smtp_settings'
+
   end
 
 end

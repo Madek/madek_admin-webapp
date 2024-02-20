@@ -1,0 +1,15 @@
+.page-header
+  %h1
+    %i.glyphicon.glyphicon-envelope
+    SMTP Settings
+
+.panel.panel-default
+  .panel-body
+    .btn-group
+      = render partial: 'action_buttons', locals: { smtp_settings: @smtp_settings }
+
+%table.table.table-striped
+  - @smtp_settings_attrs.each do |attr|
+    %tr
+      = admin_db_column(attr.first)
+      %td= attr.last
