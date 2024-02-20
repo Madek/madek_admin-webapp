@@ -1,0 +1,21 @@
+.page-header
+  %h1 Edit SMTP Settings
+
+= form_for @smtp_settings, as: :smtp_settings, url: update_smtp_settings_path, html: { class: 'form-horizontal', role: 'form' }, builder: AdminFormBuilder do |f|
+
+  %fieldset
+    - @attributes.each do |attr|
+      .form-group
+        %label.control-label.col-xs-2= attr.humanize
+        .col-xs-8
+          - if ['is_enabled', 'enable_starttls_auto'].include?(attr)
+            = f.check_box(attr, { style: 'margin-top: 10px' }, 'true', 'false')
+          - else
+            = f.text_field(attr, class: 'form-control')
+
+    .form-group
+      .col-xs-offset-2.col-xs-4
+        = button_tag type: 'submit', class: 'btn btn-success' do
+          %span.glyphicon.glyphicon-ok
+          Save
+        = link_to 'Go back', smtp_settings_path, class: 'btn btn-link'
