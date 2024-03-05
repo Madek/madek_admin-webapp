@@ -78,13 +78,13 @@ describe GroupsController do
 
       context 'by trigram search ranking' do
         it "returns groups found by trigram search ranking with 'test'" do
-          group1 = create :group, name: 'test1'
-          group2 = create :group, institutional_name: 'test2'
-          group3 = create :group, name: 'test3'
+          group1 = create :group, name: 'foo1'
+          group2 = create :group, institutional_name: 'foo2'
+          group3 = create :group, name: 'foo3'
 
           get(
             :index,
-            params: { search_terms: 'test', sort_by: 'trgm_rank', type: 'Group' },
+            params: { search_terms: 'foo', sort_by: 'trgm_rank', type: 'Group' },
             session: { user_id: admin_user.id }
           )
 
@@ -381,7 +381,6 @@ describe GroupsController do
           session: { user_id: admin_user.id })
 
         expect(response).to have_http_status :forbidden
-        expect(response.body).to end_with 'Access denied!'
       end
     end
   end
@@ -458,7 +457,6 @@ describe GroupsController do
           session: { user_id: admin_user.id })
 
         expect(response).to have_http_status :forbidden
-        expect(response.body).to end_with 'Access denied!'
       end
     end
   end

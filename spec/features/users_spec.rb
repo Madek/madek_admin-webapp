@@ -224,7 +224,7 @@ feature 'Admin Users' do
     click_button 'Apply'
     click_button 'Switch to...'
     visit root_path
-    expect(page).to have_content 'Admin access denied'
+    expect(page).to have_content 'Forbidden'
   end
 
   scenario 'view/show: show groups which user belongs to', browser: :firefox do

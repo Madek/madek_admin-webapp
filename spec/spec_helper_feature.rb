@@ -81,6 +81,14 @@ RSpec.configure do |config|
     end
   end
 
+  config.before(:each) do
+    admin_user = FactoryBot.create(:admin_user)
+    visit test_sign_in_path
+    fill_in('login', with: admin_user.login)
+    fill_in('password', with: admin_user.password)
+    click_on 'Login'
+  end
+
   # useful for debugging tests:
   # config.after(:each) do |example|
   #   unless example.exception.nil?

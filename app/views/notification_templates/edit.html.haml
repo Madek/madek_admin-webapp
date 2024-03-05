@@ -1,0 +1,50 @@
+.page-header
+  %h1
+    %span
+      Edit Notification Template:
+      %code.black= @notification_template.label
+
+= form_for @notification_template, html: { class: 'form-horizontal', role: 'form' }, builder: AdminFormBuilder do |f|
+
+  %fieldset
+    .form-group
+      %label.control-label.col-xs-2 Description
+      .col-xs-8
+        = f.text_area :description, class: 'form-control'
+
+    .form-group
+      %label.control-label.col-xs-2 UI (en)
+      .col-xs-8
+        = f.text_area :ui_en, class: 'form-control'
+
+    .form-group
+      %label.control-label.col-xs-2 UI (de)
+      .col-xs-8
+        = f.text_area :ui_de, class: 'form-control'
+
+    .form-group
+      %label.control-label.col-xs-2 Email Single (en)
+      .col-xs-8
+        = f.text_area :email_single_en, class: 'form-control'
+
+    .form-group
+      %label.control-label.col-xs-2 Email Single (de)
+      .col-xs-8
+        = f.text_area :email_single_de, class: 'form-control'
+
+    .form-group
+      %label.control-label.col-xs-2 Email Summary (en)
+      .col-xs-8
+        = f.text_area :email_summary_en, class: 'form-control'
+
+    .form-group
+      %label.control-label.col-xs-2 Email Summary (de)
+      .col-xs-8
+        = f.text_area :email_summary_de, class: 'form-control'
+
+    .form-group
+      .col-xs-offset-2.col-xs-4
+        = button_tag type: 'submit', class: 'btn btn-success' do
+          %span.glyphicon.glyphicon-ok
+          Save
+        = link_to 'Go back', :back, class: 'btn btn-link'

@@ -212,7 +212,7 @@ feature 'Admin Groups' do
     expect(group_user_count).to eq 0
   end
 
-  scenario 'Filtering users belonging to a group' do
+  scenario 'Filtering users belonging to a group', browser: :firefox do
     group = create :group, :with_user
     group.users << create(:user, login: 'test')
     visit group_path(group)

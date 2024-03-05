@@ -28,7 +28,6 @@ class ApplicationController < ActionController::Base
   rescue_from Pundit::NotAuthorizedError,
               with: :error_according_to_login_state
 
-  before_action :authorize_admin_if_test
   before_action :authorize_admin, except: :status
 
   include Concerns::ActionMethods
@@ -70,7 +69,7 @@ class ApplicationController < ActionController::Base
       raise Errors::UnauthorizedError, 'Please log in!'
     end
   rescue => e
-    render_error e, true
+    render_error e, false
   end
 
   def page_params
@@ -101,16 +100,6 @@ class ApplicationController < ActionController::Base
 
   def authorize_admin
     authorize :admin, :logged_in_and_admin?
-  end
-
-  def authorize_admin_if_test
-    if Rails.env.test? && !current_user
-      user = FactoryBot.create(:admin_user)
-      user.reload # to get db defaults (`active_until`)
-      if user and user.activated? and user.authenticate(user.password)
-        set_madek_session user, AuthSystem.find_by!(id: 'password')
-      end
-    end
   end
 
   def filter_value(type, default = '')

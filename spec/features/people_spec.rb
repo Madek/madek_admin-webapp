@@ -167,7 +167,7 @@ feature 'Admin People' do
     expect(page).to have_text 'bar_', count: 2
   end
 
-  scenario 'Reseting search form during merge' do
+  scenario 'Reseting search form during merge', browser: :firefox do
     person = create :person
 
     visit people_path

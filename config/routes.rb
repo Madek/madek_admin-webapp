@@ -2,6 +2,13 @@ Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 
   scope '/admin' do
+    # drop-in replacement for auth module (not for production)
+    if Rails.env.development? or Rails.env.test?
+      get '/sign-in', to: 'test_auth#show', as: 'test_login'
+      post '/sign-in', to: 'test_auth#sign_in', as: 'test_sign_in'
+      post '/sign-out', to: 'test_auth#sign_out', as: 'test_sign_out'
+    end
+
     get :status, controller: :application, action: :status
 
     concern :orderable do
@@ -116,6 +123,8 @@ Rails.application.routes.draw do
     get 'smtp_settings', to: 'smtp_settings#show', as: 'smtp_settings'
     get 'smtp_settings/edit', to: 'smtp_settings#edit', as: 'edit_smtp_settings'
     patch 'smtp_settings/update', to: 'smtp_settings#update', as: 'update_smtp_settings'
+
+    resources :notification_templates, only: [:index, :show, :edit, :update]
 
   end
 

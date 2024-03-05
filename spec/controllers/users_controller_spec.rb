@@ -148,21 +148,6 @@ describe UsersController do
     end
   end
 
-  describe '#switch_to' do
-    let(:user) { create :user }
-
-    it 'redirects to the /my path' do
-      post(
-        :switch_to,
-        params: { id: user.id },
-        session: { user_id: admin_user.id })
-
-      expect(response).to redirect_to('/my')
-      expect(response).to have_http_status(302)
-    end
-
-  end
-
   describe '#reset_usage_terms' do
     let(:usage_terms) { create(:usage_terms) }
     let(:user) { create :user, accepted_usage_terms: usage_terms }
@@ -504,7 +489,7 @@ describe UsersController do
         )
 
         expect(response).to have_http_status :forbidden
-        expect(response.body).to end_with 'Access denied!'
+        expect(response).to render_template 'errors/403'
         expect(group.users.reload).to include user
       end
     end

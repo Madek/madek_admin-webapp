@@ -9,7 +9,7 @@ describe DashboardController do
         get :index
 
         expect(response).to have_http_status(:unauthorized)
-        expect(response.body).to eq 'Error 401 - Please log in!'
+        expect(response).to render_template('errors/401')
       end
     end
 
@@ -20,7 +20,7 @@ describe DashboardController do
         get :index, session: { user_id: user.id }
 
         expect(response).to have_http_status(:forbidden)
-        expect(response.body).to eq 'Error 403 - Admin access denied!'
+        expect(response).to render_template('errors/403')
       end
     end
 

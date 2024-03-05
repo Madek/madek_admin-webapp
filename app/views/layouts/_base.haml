@@ -12,55 +12,68 @@
         .navbar-brand
           Madek Admin
       %ul.nav.navbar-nav.navbar-right
-        = navbar_item 'Dashboard', root_path
-        = navbar_item 'Settings', app_settings_path
-        = navbar_item 'SMTP', smtp_settings_path
-        %li.dropdown
-          %a.dropdown-toggle{href: '#', data: { toggle: 'dropdown' }}
-            Media
-            %b.caret
-          %ul.dropdown-menu
-            = navbar_item 'Media Entries', media_entries_path
-            = navbar_item 'Media Files', media_files_path
-            = navbar_item 'Sets', collections_path
 
-        %li.dropdown
-          %a.dropdown-toggle{href: '#', data: { toggle: 'dropdown' }}
-            Entities
-            %b.caret
-          %ul.dropdown-menu
-            = navbar_item 'Users', users_path
-            = navbar_item 'Groups', groups_path
-            = navbar_item 'Delegations', delegations_path
-            = navbar_item 'API Clients', api_clients_path
-            %li.divider{role: :separator}
-            = navbar_item 'People (public)', people_path
+        - if current_user.try(:admin?)
 
-        %li.dropdown
-          %a.dropdown-toggle{href: '#', data: { toggle: 'dropdown' }}
-            Meta
-            %b.caret
-          %ul.dropdown-menu
-            = navbar_item 'Vocabularies', vocabularies_path
-            = navbar_item 'Contexts', contexts_path
-            = navbar_item 'Meta Keys', meta_keys_path
-            = navbar_item 'Keywords', keywords_path
-            = navbar_item 'Meta Data', meta_datums_path
-            = navbar_item 'Usage Terms', usage_terms_path
-            = navbar_item 'Roles', roles_path
-            %li.divider{role: :separator}
-            = navbar_item 'IO Interfaces', io_interfaces_path
-            = navbar_item 'IO Mappings', io_mappings_path
-        %li.dropdown
-          %a.dropdown-toggle{href: '#', data: { toggle: 'dropdown' }}
-            %i.glyphicon.glyphicon-user
-            User
-            %b.caret
-          %ul.dropdown-menu
-            %li
-              = link_to '/my' do
-                %i.glyphicon.glyphicon-file
-                Home/My
+          = navbar_item 'Dashboard', root_path
+          = navbar_item 'Settings', app_settings_path
+          - if current_user.try(:beta_tester_notifications?)
+            = navbar_item 'SMTP', smtp_settings_path
+            = navbar_item 'Notifications', notification_templates_path
+          %li.dropdown
+            %a.dropdown-toggle{href: '#', data: { toggle: 'dropdown' }}
+              Media
+              %b.caret
+            %ul.dropdown-menu
+              = navbar_item 'Media Entries', media_entries_path
+              = navbar_item 'Media Files', media_files_path
+              = navbar_item 'Sets', collections_path
+
+          %li.dropdown
+            %a.dropdown-toggle{href: '#', data: { toggle: 'dropdown' }}
+              Entities
+              %b.caret
+            %ul.dropdown-menu
+              = navbar_item 'Users', users_path
+              = navbar_item 'Groups', groups_path
+              = navbar_item 'Delegations', delegations_path
+              = navbar_item 'API Clients', api_clients_path
+              %li.divider{role: :separator}
+              = navbar_item 'People (public)', people_path
+
+          %li.dropdown
+            %a.dropdown-toggle{href: '#', data: { toggle: 'dropdown' }}
+              Meta
+              %b.caret
+            %ul.dropdown-menu
+              = navbar_item 'Vocabularies', vocabularies_path
+              = navbar_item 'Contexts', contexts_path
+              = navbar_item 'Meta Keys', meta_keys_path
+              = navbar_item 'Keywords', keywords_path
+              = navbar_item 'Meta Data', meta_datums_path
+              = navbar_item 'Usage Terms', usage_terms_path
+              = navbar_item 'Roles', roles_path
+              %li.divider{role: :separator}
+              = navbar_item 'IO Interfaces', io_interfaces_path
+              = navbar_item 'IO Mappings', io_mappings_path
+
+        - if current_user
+          %li.dropdown{id: 'current-user', data: { id: current_user.try(:id) }}
+            %a.dropdown-toggle{href: '#', data: { toggle: 'dropdown' }}
+              %i.glyphicon.glyphicon-user
+              %span= current_user.try(:to_s).presence || current_user.try(:login) || 'User'
+              %b.caret
+            %ul.dropdown-menu
+              %li
+                = link_to '/my' do
+                  %i.glyphicon.glyphicon-file
+                  Home/My
+              - if Rails.env.development? or Rails.env.test?
+                %li
+                  = form_tag test_sign_out_path, method: :post do
+                    %button
+                      %i.glyphicon.glyphicon-log-out
+                      Logout
 
   #messages.container
     = alerts do |message_type, message, alert_type|

@@ -1,0 +1,17 @@
+.page-header
+  %h1= @notification_template.label
+  %small
+    = link_to "&larr; Go back to Notification Templates".html_safe, notification_templates_path
+
+.panel.panel-default
+  .panel-body
+    .btn-group
+      = link_to edit_notification_template_path(@notification_template), class: 'btn btn-info' do
+        %span.glyphicon.glyphicon-edit
+        Edit
+
+%table.table.table-striped
+  - @notification_template.attributes.each do |attr|
+    %tr
+      = admin_db_column(attr.first)
+      %td= attr.last

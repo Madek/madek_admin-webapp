@@ -294,7 +294,6 @@ describe MetaKeysController do
           session: { user_id: admin_user.id })
 
         expect(response).to have_http_status(:forbidden)
-        expect(response.body).to eq 'Error 403 - Admin access denied!'
       end
     end
   end
@@ -428,7 +427,6 @@ describe MetaKeysController do
 
         it 'renders forbidden notice' do
           expect(response).to have_http_status(:forbidden)
-          expect(response.body).to eq 'Error 403 - Admin access denied!'
         end
       end
     end

@@ -546,6 +546,7 @@ feature 'Admin Meta Keys' do
 
       scenario 'meta key cannot be deleted' do
         visit meta_key_path(meta_key)
+        binding.pry
 
         AuditedChange.delete_all
         audited_changes_before = AuditedChange.count

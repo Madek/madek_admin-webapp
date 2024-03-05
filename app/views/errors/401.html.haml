@@ -1,0 +1,8 @@
+.jumbotron
+  %h1
+    Unauthenticated
+    %small code: #{@status_code}
+  %h3 Message:
+  %p= @error.message
+  - login_path = Rails.env.production? ? '/auth/sign-in' : '/admin/sign-in'
+  %p= link_to 'Login', login_path, class: 'btn btn-primary btn-lg' #-, role: :button

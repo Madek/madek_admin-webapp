@@ -1,0 +1,13 @@
+%tr
+  %td
+    %code.black= notification_template.label
+  %td= notification_template.description
+  %td.active.col-xs-2.text-center
+    .btn-group.btn-group-sm
+      = link_to notification_template_path(notification_template),
+        class: 'btn btn-default btn-with-icon-only', title: 'Details' do
+        %span.glyphicon.glyphicon-eye-open
+        Details
+      = link_to edit_notification_template_path(notification_template), class: 'btn btn-info' do
+        %span.glyphicon.glyphicon-edit
+        Edit

@@ -1,5 +1,11 @@
 class SmtpSettingsController < ApplicationController
 
+  before_action do
+    unless current_user.beta_tester_notifications?
+      raise("Not allowed to use this feature.")
+    end
+  end
+
   ATTRIBUTES = ['is_enabled',
                 'host_address',
                 'port',
