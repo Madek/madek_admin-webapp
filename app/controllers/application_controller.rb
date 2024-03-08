@@ -38,6 +38,7 @@ class ApplicationController < ActionController::Base
   helper_method :current_user
   helper_method :filter_value
   helper_method :feature_toggle_sql_reports
+  helper_method :capitalize_all
 
   def status
     render plain: 'OK, but we need to provide memory usage info ' \
@@ -124,5 +125,9 @@ class ApplicationController < ActionController::Base
 
   def validate_uuid!(uuid)
     raise 'Not an UUID!' unless valid_uuid?(uuid)
+  end
+
+  def capitalize_all(str)
+    str.split.map(&:capitalize).join(' ')
   end
 end

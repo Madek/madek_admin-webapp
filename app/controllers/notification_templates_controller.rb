@@ -7,6 +7,9 @@ class NotificationTemplatesController < ApplicationController
     end
   end
 
+  rescue_from Liquid::SyntaxError, with: :render_error
+  rescue_from Liquid::UndefinedVariable, with: :render_error
+
   def index
     @notification_templates = NotificationTemplate.all
   end
@@ -32,10 +35,7 @@ class NotificationTemplatesController < ApplicationController
   end
 
   def notification_template_params
-    params.require(:notification_template)
-      .permit(:description,
-              :ui_en, :ui_de,
-              :email_single_en, :email_single_de,
-              :email_summary_en, :email_summary_de)
+    cs_with_langs = NotificationTemplate::CATEGORIES.map { |c| [c, [:en, :de]] }.to_h
+    params.require(:notification_template).permit(:description, **cs_with_langs)
   end
 end

@@ -11,7 +11,10 @@
         Edit
 
 %table.table.table-striped
-  - @notification_template.attributes.each do |attr|
+  - @notification_template.attributes.each_pair do |key, val|
     %tr
-      = admin_db_column(attr.first)
-      %td= attr.last
+      :ruby
+        # label = ( key == 'ui' ? key.upcase : capitalize_all(key.humanize) )
+        label = capitalize_all(key.humanize)
+      = admin_db_column(key, label)
+      %td= val
