@@ -36,6 +36,21 @@ class NotificationTemplatesController < ApplicationController
 
   def notification_template_params
     cs_with_langs = NotificationTemplate::CATEGORIES.map { |c| [c, [:en, :de]] }.to_h
-    params.require(:notification_template).permit(:description, **cs_with_langs)
+    params
+      .require(:notification_template)
+      .permit(:description, **cs_with_langs)
+      .transform_values do |v|
+        if v.is_a?(String)
+          sanitize_newlines(v)
+        else
+          v.transform_values do |v|
+            sanitize_newlines(v)
+          end
+        end
+      end
+  end
+
+  def sanitize_newlines(s)
+    s.gsub(/\r\n?/, "\n")
   end
 end
