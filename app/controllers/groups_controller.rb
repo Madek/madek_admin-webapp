@@ -132,21 +132,24 @@ class GroupsController < ApplicationController
       {
         id: Madek::Constants::BETA_TESTERS_QUICK_EDIT_GROUP_ID,
         name: 'Beta-Tester "Metadaten-Stapelverarbeitung"',
-        institutional_id: 'beta_test_quick_edit',
-        type: 'InstitutionalGroup'
+        type: 'Group'
       },
       {
         id: Madek::Constants::BETA_TESTERS_WORKFLOWS_GROUP_ID,
         name: 'Beta-Tester "Workflows"',
-        institutional_id: 'beta_test_workflows',
-        type: 'InstitutionalGroup'
+        type: 'Group'
+      },
+      {
+        id: Madek::Constants::BETA_TESTERS_NOTIFICATIONS_GROUP_ID,
+        name: 'Beta-Tester "Notifications"',
+        type: 'Group'
       }
     ]
     sysgroups.each do |attrs|
       next if Group.find_by(id: attrs[:id].to_s, type: attrs[:type])
-      Group.create!(
-        id: attrs[:id].to_s, type: attrs[:type],
-        name: attrs[:name], institutional_id: attrs[:institutional_id])
+      Group.create!(id: attrs[:id].to_s,
+                    name: attrs[:name],
+                    type: attrs[:type])
     end
   end
   # rubocop:enable Metrics/MethodLength
