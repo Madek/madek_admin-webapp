@@ -124,7 +124,7 @@ Rails.application.routes.draw do
     get 'smtp_settings/edit', to: 'smtp_settings#edit', as: 'edit_smtp_settings'
     patch 'smtp_settings/update', to: 'smtp_settings#update', as: 'update_smtp_settings'
 
-    resources :notification_templates, only: [:index, :show, :edit, :update]
+    resources :notification_cases, only: [:index, :show, :edit, :update]
 
   end
 

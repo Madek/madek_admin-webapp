@@ -19,7 +19,7 @@
           = navbar_item 'Settings', app_settings_path
           - if current_user.try(:beta_tester_notifications?)
             = navbar_item 'SMTP', smtp_settings_path
-            = navbar_item 'Notifications', notification_templates_path
+            = navbar_item 'Notifications', notification_cases_path
           %li.dropdown
             %a.dropdown-toggle{href: '#', data: { toggle: 'dropdown' }}
               Media
