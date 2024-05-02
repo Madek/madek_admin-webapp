@@ -14,6 +14,9 @@
           = link_to form_add_user_delegation_path(@delegation), class: 'btn btn-default' do
             %i.glyphicon.glyphicon-plus
             Add user
+          = link_to form_add_supervisor_delegation_path(@delegation), class: 'btn btn-default' do
+            %i.glyphicon.glyphicon-plus
+            Add supervisor
           = link_to form_add_group_delegation_path(@delegation), class: 'btn btn-default' do
             %i.glyphicon.glyphicon-plus
             Add group
@@ -35,7 +38,7 @@
 .row
   - @members.each_pair do |member_type, hash|
     - singular = member_type.to_s.singularize
-    - opposite = { users: :groups, groups: :users }[member_type]
+    - opposite = { users: :groups, groups: :users}[member_type]
     - reset_path = params.fetch(opposite, {})[:search_term].present? ? delegation_path(@delegation, opposite => { search_term: params.fetch(opposite, {})[:search_term] }) : delegation_path(@delegation)
     .col-xs-6
       .page-header
@@ -49,7 +52,7 @@
           = submit_tag 'Filter', class: 'btn btn-primary'
           = link_to 'Reset', reset_path, class: 'btn btn-default'
 
-      %table#group-users.table.table-striped
+      %table.table.table-striped{id: "delegation_#{member_type}"}
         %thead
           %tr
             - hash[:attributes].each do |attr|
@@ -58,4 +61,5 @@
         %tbody
           = render(partial: "delegations/#{singular}", collection: hash[:collection]) || empty_collection(member_type, hash[:attributes].size + 1)
       
-      = paginate hash[:collection]
+      - unless hash[:collection].blank? 
+        = paginate hash[:collection]

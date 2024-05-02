@@ -17,6 +17,7 @@
             = unescaped_hidden_field_tag "edited_api_client[#{key}]", value
           = hidden_field_tag :add_to_group_id, @group.id if @group
           = hidden_field_tag :add_to_delegation_id, @delegation.id if @delegation
+          = hidden_field_tag :as_supervisor, true if @as_supervisor
           .form-group
             = text_field_tag :search_term, params[:search_term], class: 'form-control', placeholder: 'Search term'
           .form-group

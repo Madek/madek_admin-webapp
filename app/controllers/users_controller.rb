@@ -121,9 +121,18 @@ class UsersController < ApplicationController
 
   def remove_from_delegation
     delegation = Delegation.find(params[:delegation_id])
-    delegation.users.delete(User.find(params[:user_id]))
+    user = User.find(params[:user_id])
 
-    respond_with delegation, notice: 'The user has been removed.'
+    if as_supervisor_param
+      delegation.supervisors.delete(user)
+    else
+      delegation.users.delete(user)
+    end
+
+    respond_with(
+      delegation,
+      notice: "The #{as_supervisor_param ? 'supervisor' : 'user'} has been removed."
+    )
   end
 
   private
@@ -138,6 +147,10 @@ class UsersController < ApplicationController
 
   def user_params
     params.require(:user).permit!
+  end
+
+  def as_supervisor_param
+    params.fetch(:as_supervisor) == 'true'
   end
 
   def get_api_client_params
@@ -155,6 +168,7 @@ class UsersController < ApplicationController
   def get_delegation_from_params
     @delegation = Delegation.find_by(id: params[:add_to_delegation_id])
     @delegation_user_ids = @delegation&.user_ids || []
+    @as_supervisor = ( params[:as_supervisor] == 'true' )
   end
 
   def filter(relation)

@@ -17,7 +17,8 @@ if Rails.env.development? or Rails.env.test?
         redirect_to(root_path)
       else
         destroy_madek_session
-        redirect_to(root_path)
+        flash[:error] = 'Authentication failed.'
+        redirect_to('/admin/sign-in')
       end
     end
 

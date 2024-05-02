@@ -43,6 +43,10 @@ class DelegationsController < ApplicationController
     if (search_term = params.fetch(:users, {})[:search_term]).present?
       users = users.filter_by(search_term, false, true)
     end
+    supervisors = @delegation.supervisors.page(params[:supervisors_page])
+    if (search_term = params.fetch(:supervisors, {})[:search_term]).present?
+      supervisors = supervisors.filter_by(search_term, false, true)
+    end
     groups = @delegation.groups.page(params[:groups_page])
     if (search_term = params.fetch(:groups, {})[:search_term]).present?
       groups = groups.filter_by(search_term, false, true)
@@ -51,6 +55,10 @@ class DelegationsController < ApplicationController
       users: {
         attributes: %w(login email id),
         collection: users
+      },
+      supervisors: {
+        attributes: %w(login email id),
+        collection: supervisors
       },
       groups: {
         attributes: %w(name id),
@@ -68,6 +76,19 @@ class DelegationsController < ApplicationController
     delegation.users << User.find(params[:user_id])
 
     respond_with delegation, notice: 'The user has been added.'
+  end
+
+  def form_add_supervisor
+    redirect_to users_path(add_to_delegation_id: find_delegation.id,
+                           as_supervisor: true)
+  end
+
+  def add_supervisor
+    delegation = find_delegation
+    delegation.supervisors =
+      delegation.supervisors + [User.find(params[:user_id])]
+
+    respond_with delegation, notice: 'The supervisor has been added.'
   end
 
   def form_add_group

@@ -4,6 +4,7 @@ require 'spec_helper_feature'
 feature 'Delegations' do
   given(:new_delegation) { build :delegation }
   given(:delegation) { create :delegation }
+  given(:user) { create :user }
 
   scenario 'Creating' do
     visit '/admin/delegations'
@@ -33,30 +34,56 @@ feature 'Delegations' do
     expect_row(new_delegation.name, 'No members', 0)
   end
 
-  scenario 'Editing' do
-    delegation
+  describe 'Editing' do
+    scenario 'delegation itself' do
+      delegation
 
-    new_name = Faker::Team.name
-    new_description = Faker::Lorem.sentence
-    new_admin_comment = Faker::Lorem.sentence
+      new_name = Faker::Team.name
+      new_description = Faker::Lorem.sentence
+      new_admin_comment = Faker::Lorem.sentence
 
-    visit '/admin/delegations'
+      visit '/admin/delegations'
 
-    within "tr[data-id='#{delegation.id}']" do
-      click_link 'Edit'
+      within "tr[data-id='#{delegation.id}']" do
+        click_link 'Edit'
+      end
+
+      expect(page).to have_text("Edit Delegation #{delegation.name}")
+
+      fill_in 'Name', with: new_name
+      fill_in 'Description', with: new_description
+      fill_in 'Admin comment', with: new_admin_comment
+      click_button 'Save'
+
+      expect(page).to have_css('.alert-success')
+      expect(page).to have_text "Name (name) #{new_name}"
+      expect(page).to have_text "Description (description) #{new_description}"
+      expect(page).to have_text "Admin comment (admin_comment) #{new_admin_comment}"
     end
 
-    expect(page).to have_text("Edit Delegation #{delegation.name}")
-
-    fill_in 'Name', with: new_name
-    fill_in 'Description', with: new_description
-    fill_in 'Admin comment', with: new_admin_comment
-    click_button 'Save'
-
-    expect(page).to have_css('.alert-success')
-    expect(page).to have_text "Name (name) #{new_name}"
-    expect(page).to have_text "Description (description) #{new_description}"
-    expect(page).to have_text "Admin comment (admin_comment) #{new_admin_comment}"
+    scenario 'delegation\'s supervisors', browser: :firefox do
+      user = User.find_by_login('adam')
+      visit "/admin/delegations/#{delegation.id}"
+      expect(page).to have_content('Supervisors (0)')
+      expect(find('#delegation_supervisors')).to have_content('No supervisors')
+      click_on('Add supervisor')
+      within("tr[data-id='#{user.id}']") do
+        click_on('Add to the Delegation')
+      end
+      expect(page).to have_content('Supervisors (1)')
+      within(find('#delegation_supervisors')) do
+        expect(current_scope).not_to have_content('No supervisors')
+        within('tr', text: user.id) do
+          accept_confirm do
+            find("a[data-method='delete']").click
+          end
+        end
+      end
+      expect(page).to have_css('.alert-success')
+      expect(page).to have_content('Supervisors (0)')
+      expect(find('#delegation_supervisors')).to have_content('No supervisors')
+      expect(delegation.supervisors.reload).to be_empty
+    end
   end
 
   scenario 'Deleting', browser: :firefox do

@@ -53,7 +53,13 @@
         - if @delegation_user_ids.include?(user.id)
           .text-muted Already added
         - else
-          = link_to add_user_delegation_path(@delegation, user_id: user.id), method: :patch, class: 'btn btn-success' do
+          :ruby 
+            link = if @as_supervisor
+                     add_supervisor_delegation_path(@delegation, user_id: user.id)
+                   else
+                     add_user_delegation_path(@delegation, user_id: user.id) 
+                   end
+          = link_to link, method: :patch, class: 'btn btn-success' do
             %span.glyphicon.glyphicon-plus
             Add to the Delegation
       - elsif @api_client_params.present?

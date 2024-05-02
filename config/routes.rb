@@ -94,6 +94,8 @@ Rails.application.routes.draw do
         patch :add_group
         get :form_add_user
         patch :add_user
+        get :form_add_supervisor
+        patch :add_supervisor
       end
 
       resources :users, only: [] do

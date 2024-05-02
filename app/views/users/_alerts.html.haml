@@ -21,7 +21,7 @@
   .row
     .col-xs-12
       .alert.alert-info{role: 'alert'}
-        Choose an User to be added to the Delegation <strong>#{@delegation.name}</strong> or #{link_to 'cancel and go back to the delegation', delegation_path(@delegation)}.
+        Choose an User to be added to the Delegation <strong>#{@delegation.name}</strong> <u>#{"as Supervisor" if @as_supervisor}</u> or #{link_to 'cancel and go back to the delegation', delegation_path(@delegation)}.
 
 - if @api_client_params.present?
   .row
