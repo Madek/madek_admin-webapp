@@ -10,13 +10,19 @@ class DelegationsController < ApplicationController
   end
 
   def new
-    @delegation = Delegation.new
+    @delegation = Delegation.new(new_delegation_params)
   end
 
   def create
-    delegation = Delegation.create!(delegation_params)
-
-    respond_with delegation
+    if new_action_type_param == 'add_supervisor'
+      redirect_to users_path(
+        as_supervisor: true,
+        return_to: new_delegation_path(delegation: new_delegation_params)
+      )
+    else
+      delegation = Delegation.create!(new_delegation_params)
+      respond_with delegation
+    end
   end
 
   def edit
@@ -104,10 +110,21 @@ class DelegationsController < ApplicationController
 
   private
 
+  def new_delegation_params
+    params.fetch(:delegation, {}).permit(:name,
+                                         :description,
+                                         :admin_comment,
+                                         :supervisor_ids => [])
+  end
+
   def delegation_params
     params.require(:delegation).permit(:name,
                                        :description,
                                        :admin_comment)
+  end
+
+  def new_action_type_param
+    params.fetch(:button)
   end
 
   def find_delegation

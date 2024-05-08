@@ -3,4 +3,43 @@
 
 .row
   .col-xs-12
-    = render 'form'
+    = form_for @delegation, html: { class: 'form-horizontal', role: 'form' } do |f|
+      .form-group
+        .col-xs-2
+        .col-xs-9
+          = link_to 'Reset', new_delegation_path, class: 'btn btn-default'
+      .form-group
+        .col-xs-2
+          = f.label :name, 'Name', class: 'control-label required'
+        .col-xs-9
+          = f.text_field :name, class: 'form-control'
+      .form-group
+        .col-xs-2
+          = f.label :description, 'Description', class: 'control-label'
+        .col-xs-9
+          = f.text_field :description, class: 'form-control'
+      .form-group
+        .col-xs-2
+          = f.label :admin_comment, 'Admin comment', class: 'control-label'
+        .col-xs-9
+          = f.text_field :admin_comment, class: 'form-control'
+      .form-group
+        .col-xs-2
+          = f.label :supervisors, 'Supervisors', class: 'control-label'
+        .col-xs-9
+          - if @delegation.supervisors.presence
+            %ul.list-group
+              - @delegation.supervisors.each do |supervisor|
+                = hidden_field_tag 'delegation[supervisor_ids][]', supervisor.id
+                %li.list-group-item= supervisor
+          = button_tag type: 'submit', class: 'btn btn-default', value: 'add_supervisor' do
+            %i.glyphicon.glyphicon-plus
+            Add supervisor
+
+      .form-group
+        .col-xs-offset-2.col-xs-3
+          = button_tag type: 'submit', class: 'btn btn-success' do
+            %span.glyphicon.glyphicon-ok
+            Save
+          = link_to 'Go back', delegations_path, class: 'btn btn-link'
+

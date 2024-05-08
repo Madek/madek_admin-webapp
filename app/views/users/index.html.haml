@@ -18,6 +18,7 @@
           = hidden_field_tag :add_to_group_id, @group.id if @group
           = hidden_field_tag :add_to_delegation_id, @delegation.id if @delegation
           = hidden_field_tag :as_supervisor, true if @as_supervisor
+          = hidden_field_tag :return_to, @return_to if @return_to
           .form-group
             = text_field_tag :search_term, params[:search_term], class: 'form-control', placeholder: 'Search term'
           .form-group
