@@ -5,33 +5,81 @@ feature 'Delegations' do
   given(:new_delegation) { build :delegation }
   given(:delegation) { create :delegation }
   given(:user) { create :user }
+  given(:supervisor_1) { create :user }
+  given(:supervisor_2) { create :user }
 
-  scenario 'Creating' do
-    visit '/admin/delegations'
+  describe 'Creating' do
+    before(:example) do
+      visit '/admin/delegations'
 
-    expect(page).to have_text('Delegations (0)')
-    expect(page).to have_text('No delegations')
-    expect(page).to have_no_text('No members')
-    click_link 'Create delegation'
+      expect(page).to have_text('Delegations (0)')
+      expect(page).to have_text('No delegations')
+      expect(page).to have_no_text('No members')
+      click_link 'Create delegation'
 
-    fill_in 'Name', with: new_delegation.name
-    fill_in 'Description', with: new_delegation.description
-    fill_in 'Admin comment', with: new_delegation.admin_comment
+      fill_in 'Name', with: new_delegation.name
+      fill_in 'Description', with: new_delegation.description
+      fill_in 'Admin comment', with: new_delegation.admin_comment
+    end
 
-    click_button 'Save'
+    scenario 'without supervisors' do
+      click_button 'Save'
 
-    expect(page).to have_css('.alert-success')
-    expect(page).to have_text "Name (name) #{new_delegation.name}"
-    expect(page).to have_text "Description (description) #{new_delegation.description}"
-    expect(page).to have_text "Admin comment (admin_comment) #{new_delegation.admin_comment}"
-    expect(page).to have_text 'Users (0)'
-    expect(page).to have_text 'Groups (0)'
+      expect(page).to have_css('.alert-success')
+      expect(page).to have_text "Name (name) #{new_delegation.name}"
+      expect(page).to have_text "Description (description) #{new_delegation.description}"
+      expect(page).to have_text "Admin comment (admin_comment) #{new_delegation.admin_comment}"
+      expect(page).to have_text 'Users (0)'
+      expect(page).to have_text 'Groups (0)'
 
-    visit '/admin/delegations'
+      visit '/admin/delegations'
 
-    expect(page).to have_text('Delegations (1)')
-    expect(page).to have_no_text('No delegations')
-    expect_row(new_delegation.name, 'No members', 0)
+      expect(page).to have_text('Delegations (1)')
+      expect(page).to have_no_text('No delegations')
+      expect_row(new_delegation.name, 'No members', 0)
+    end
+
+    scenario 'with supervisors' do
+      click_button 'Add supervisor'
+      expect(find(".alert")).to have_content new_delegation.name
+      fill_in("search_term", with: supervisor_1.last_name)
+      click_on("Apply")
+      find("tr[data-id='#{supervisor_1.id}']")
+      expect(find(".alert")).to have_content new_delegation.name
+      click_on("Add to the Delegation")
+      expect(page).to have_content("New Delegation")
+      expect(page).to have_content(supervisor_1.to_s)
+      click_button 'Add supervisor'
+      fill_in("search_term", with: supervisor_1.last_name)
+      click_on("Apply")
+      expect(page).to have_content("Already added")
+      find("tr[data-id='#{supervisor_1.id}']")
+      click_on("Reset")
+      expect(find(".alert")).to have_content new_delegation.name
+      fill_in("search_term", with: supervisor_2.last_name)
+      click_on("Apply")
+      click_on("Add to the Delegation")
+
+      click_button 'Save'
+
+      expect(page).to have_css('.alert-success')
+      expect(page).to have_text "Name (name) #{new_delegation.name}"
+      expect(page).to have_text "Description (description) #{new_delegation.description}"
+      expect(page).to have_text "Admin comment (admin_comment) #{new_delegation.admin_comment}"
+      expect(page).to have_text 'Users (0)'
+      expect(page).to have_text 'Groups (0)'
+      expect(page).to have_text 'Supervisors (2)'
+      within(find('#delegation_supervisors')) do
+        expect(current_scope).to have_content(supervisor_1.login)
+        expect(current_scope).to have_content(supervisor_2.login)
+      end
+
+      visit '/admin/delegations'
+
+      expect(page).to have_text('Delegations (1)')
+      expect(page).to have_no_text('No delegations')
+      expect_row(new_delegation.name, 'No members', 0)
+    end
   end
 
   describe 'Editing' do
