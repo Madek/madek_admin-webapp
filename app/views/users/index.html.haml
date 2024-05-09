@@ -17,6 +17,8 @@
             = unescaped_hidden_field_tag "edited_api_client[#{key}]", value
           = hidden_field_tag :add_to_group_id, @group.id if @group
           = hidden_field_tag :add_to_delegation_id, @delegation.id if @delegation
+          = hidden_field_tag :as_supervisor, true if @as_supervisor
+          = hidden_field_tag :return_to, @return_to if @return_to
           .form-group
             = text_field_tag :search_term, params[:search_term], class: 'form-control', placeholder: 'Search term'
           .form-group
@@ -35,7 +37,13 @@
               = check_box_tag :deactivated, '1', params[:deactivated].present?
               Only deactivated
           = submit_tag 'Apply', class: 'btn btn-primary'
-          = link_to 'Reset', users_path, class: 'btn btn-default'
+          :ruby
+            query_params = {}
+            query_params.merge!(as_supervisor: @as_supervisor) if @as_supervisor
+            query_params.merge!(return_to: @return_to) if @return_to
+            query_params.merge!(add_to_group_id: @group.id) if @group
+            query_params.merge!(add_to_delegation_id: @delegation.id) if @delegation
+          = link_to 'Reset', users_path(query_params), class: 'btn btn-default'
       .panel-footer
         .btn-group
           = link_to new_with_person_users_path, class: 'btn btn-default' do

@@ -8,6 +8,7 @@ class UsersController < ApplicationController
     @users = filter(User)
     @users = @users.order_by(params[:sort_by]) if params[:sort_by].present?
     @users = @users.page(page_params).per(16)
+    @return_to = return_to_param
 
     remember_vocabulary_url_params
     get_api_client_params
@@ -18,7 +19,7 @@ class UsersController < ApplicationController
   def reset_usage_terms
     @user.reset_usage_terms
 
-    respond_with @user,
+    respond_with @user, 
                  location: -> { users_path },
                  notice: 'The usage terms have been reset.'
   end
@@ -121,9 +122,18 @@ class UsersController < ApplicationController
 
   def remove_from_delegation
     delegation = Delegation.find(params[:delegation_id])
-    delegation.users.delete(User.find(params[:user_id]))
+    user = User.find(params[:user_id])
 
-    respond_with delegation, notice: 'The user has been removed.'
+    if as_supervisor_param
+      delegation.supervisors.delete(user)
+    else
+      delegation.users.delete(user)
+    end
+
+    respond_with(
+      delegation,
+      notice: "The #{as_supervisor_param ? 'supervisor' : 'user'} has been removed."
+    )
   end
 
   private
@@ -138,6 +148,14 @@ class UsersController < ApplicationController
 
   def user_params
     params.require(:user).permit!
+  end
+
+  def as_supervisor_param
+    params.fetch(:as_supervisor, nil) == 'true'
+  end
+
+  def return_to_param
+    params.fetch(:return_to, nil)
   end
 
   def get_api_client_params
@@ -155,6 +173,25 @@ class UsersController < ApplicationController
   def get_delegation_from_params
     @delegation = Delegation.find_by(id: params[:add_to_delegation_id])
     @delegation_user_ids = @delegation&.user_ids || []
+    @delegation_supervisor_ids = []
+    if as_supervisor_param
+      @as_supervisor = true
+      if @return_to
+        uri = URI.parse(@return_to)
+        query_params = 
+          Rack::Utils
+          .parse_nested_query(uri.query)
+          .with_indifferent_access
+        @uri_spec = { path: uri.path, query_params: query_params }
+        supervisor_ids = query_params[:delegation][:supervisor_ids]
+        if supervisor_ids.present?
+          @delegation_supervisor_ids = supervisor_ids
+        end
+      end
+    end
+    @delegation_name =
+      @delegation.try(:name) ||
+      query_params.try(:[], :delegation).try(:[], :name)
   end
 
   def filter(relation)

@@ -17,11 +17,17 @@
       .alert.alert-info{role: 'alert'}
         Choose an User to be added to the Group <strong>#{@group.name}</strong> or #{link_to 'cancel and go back to the group', group_path(@group)}.
 
-- if @delegation
+- if @delegation || @return_to
+  :ruby 
+    href = if @delegation
+             delegation_path(@delegation)
+           else
+             @return_to
+           end
   .row
     .col-xs-12
       .alert.alert-info{role: 'alert'}
-        Choose an User to be added to the Delegation <strong>#{@delegation.name}</strong> or #{link_to 'cancel and go back to the delegation', delegation_path(@delegation)}.
+        Choose an User to be added to the Delegation <strong>#{@delegation_name}</strong> <u>#{"as Supervisor" if @as_supervisor}</u> or #{link_to 'cancel and go back to the delegation', href}.
 
 - if @api_client_params.present?
   .row

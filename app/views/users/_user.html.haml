@@ -49,11 +49,22 @@
         = link_to add_user_group_path(@group, user_id: user.id), method: :patch, class: 'btn btn-success' do
           %span.glyphicon.glyphicon-plus
           Add to the Group
-      - elsif @delegation
-        - if @delegation_user_ids.include?(user.id)
+      - elsif @delegation || @return_to.presence # for new view
+        - if @delegation_user_ids.include?(user.id) || @delegation_supervisor_ids.include?(user.id)
           .text-muted Already added
         - else
-          = link_to add_user_delegation_path(@delegation, user_id: user.id), method: :patch, class: 'btn btn-success' do
+          :ruby 
+            method = ( @return_to.presence ? :get : :patch )
+            link = if @as_supervisor && @delegation
+                     add_supervisor_delegation_path(@delegation, user_id: user.id)
+                   elsif @as_supervisor && @uri_spec
+                     query_params = @uri_spec[:query_params].deep_dup
+                     query_params[:delegation][:supervisor_ids] = ( @delegation_supervisor_ids + [user.id] )
+                     "#{@uri_spec[:path]}?#{query_params.to_query}"
+                   else
+                     add_user_delegation_path(@delegation, user_id: user.id) 
+                   end
+          = link_to link, method: method, class: 'btn btn-success' do
             %span.glyphicon.glyphicon-plus
             Add to the Delegation
       - elsif @api_client_params.present?

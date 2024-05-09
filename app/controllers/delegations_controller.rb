@@ -10,13 +10,19 @@ class DelegationsController < ApplicationController
   end
 
   def new
-    @delegation = Delegation.new
+    @delegation = Delegation.new(new_delegation_params)
   end
 
   def create
-    delegation = Delegation.create!(delegation_params)
-
-    respond_with delegation
+    if new_action_type_param == 'add_supervisor'
+      redirect_to users_path(
+        as_supervisor: true,
+        return_to: new_delegation_path(delegation: new_delegation_params)
+      )
+    else
+      delegation = Delegation.create!(new_delegation_params)
+      respond_with delegation
+    end
   end
 
   def edit
@@ -43,6 +49,10 @@ class DelegationsController < ApplicationController
     if (search_term = params.fetch(:users, {})[:search_term]).present?
       users = users.filter_by(search_term, false, true)
     end
+    supervisors = @delegation.supervisors.page(params[:supervisors_page])
+    if (search_term = params.fetch(:supervisors, {})[:search_term]).present?
+      supervisors = supervisors.filter_by(search_term, false, true)
+    end
     groups = @delegation.groups.page(params[:groups_page])
     if (search_term = params.fetch(:groups, {})[:search_term]).present?
       groups = groups.filter_by(search_term, false, true)
@@ -51,6 +61,10 @@ class DelegationsController < ApplicationController
       users: {
         attributes: %w(login email id),
         collection: users
+      },
+      supervisors: {
+        attributes: %w(login email id),
+        collection: supervisors
       },
       groups: {
         attributes: %w(name id),
@@ -70,6 +84,19 @@ class DelegationsController < ApplicationController
     respond_with delegation, notice: 'The user has been added.'
   end
 
+  def form_add_supervisor
+    redirect_to users_path(add_to_delegation_id: find_delegation.id,
+                           as_supervisor: true)
+  end
+
+  def add_supervisor
+    delegation = find_delegation
+    delegation.supervisors =
+      delegation.supervisors + [User.find(params[:user_id])]
+
+    respond_with delegation, notice: 'The supervisor has been added.'
+  end
+
   def form_add_group
     redirect_to groups_path(add_to_delegation_id: find_delegation.id)
   end
@@ -83,10 +110,21 @@ class DelegationsController < ApplicationController
 
   private
 
+  def new_delegation_params
+    params.fetch(:delegation, {}).permit(:name,
+                                         :description,
+                                         :admin_comment,
+                                         :supervisor_ids => [])
+  end
+
   def delegation_params
     params.require(:delegation).permit(:name,
                                        :description,
                                        :admin_comment)
+  end
+
+  def new_action_type_param
+    params.fetch(:button)
   end
 
   def find_delegation
