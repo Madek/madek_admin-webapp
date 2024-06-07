@@ -62,13 +62,13 @@ class DelegationsController < ApplicationController
         attributes: %w(login email id),
         collection: users
       },
-      supervisors: {
-        attributes: %w(login email id),
-        collection: supervisors
-      },
       groups: {
         attributes: %w(name id),
         collection: groups
+      },
+      supervisors: {
+        attributes: %w(login email id),
+        collection: supervisors
       }
     }
   end

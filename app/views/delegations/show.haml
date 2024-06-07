@@ -14,13 +14,14 @@
           = link_to form_add_user_delegation_path(@delegation), class: 'btn btn-default' do
             %i.glyphicon.glyphicon-plus
             Add user
-          = link_to form_add_supervisor_delegation_path(@delegation), class: 'btn btn-default' do
-            %i.glyphicon.glyphicon-plus
-            Add supervisor
           = link_to form_add_group_delegation_path(@delegation), class: 'btn btn-default' do
             %i.glyphicon.glyphicon-plus
             Add group
-          = render partial: 'action_buttons', locals: { delegation: @delegation }
+        .btn-group
+          = link_to form_add_supervisor_delegation_path(@delegation), class: 'btn btn-default' do
+            %i.glyphicon.glyphicon-plus
+            %mark Add supervisor
+        = render partial: 'action_buttons', locals: { delegation: @delegation }
 
 .row
   .col-xs-12
@@ -42,7 +43,12 @@
     - reset_path = params.fetch(opposite, {})[:search_term].present? ? delegation_path(@delegation, opposite => { search_term: params.fetch(opposite, {})[:search_term] }) : delegation_path(@delegation)
     .col-xs-6
       .page-header
-        %h3 #{member_type.capitalize} (#{hash[:collection].count})
+        - headline = "#{member_type.capitalize} (#{hash[:collection].count})"
+        %h3
+          - if member_type == :supervisors
+            %mark= headline
+          - else
+            = headline
     
       = form_tag delegation_path(@delegation), method: :get, class: 'form-inline' do
         = hidden_field_tag "#{opposite}[search_term]", params.fetch(opposite, {})[:search_term] if params.fetch(opposite, {})[:search_term].present?
