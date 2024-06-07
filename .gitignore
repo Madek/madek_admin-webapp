@@ -20,6 +20,7 @@
 Gemfile.local
 Gemfile.local.lock
 _docs_html
+admin-webapp.tar.gz
 config/*.conf
 config/*.conf_with_pipe
 config/LDAP.yml

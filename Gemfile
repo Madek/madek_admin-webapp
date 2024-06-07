@@ -2,6 +2,7 @@ eval_gemfile Pathname(File.dirname(File.absolute_path(__FILE__))).join('datalaye
 
 # Webserver
 gem 'puma'
+gem 'puma_worker_killer'
 
 # API
 gem 'responders'
