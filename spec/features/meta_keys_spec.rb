@@ -546,7 +546,6 @@ feature 'Admin Meta Keys' do
 
       scenario 'meta key cannot be deleted' do
         visit meta_key_path(meta_key)
-        binding.pry
 
         AuditedChange.delete_all
         audited_changes_before = AuditedChange.count
@@ -566,6 +565,9 @@ feature 'Admin Meta Keys' do
 
         expect(current_path).to eq(meta_key_path(meta_key))
         expect(meta_key.meta_data.reload).to eq(meta_data)
+
+        visit '/admin/meta_keys'
+        expect(page).not_to have_content('Unauthenticated code: 401')
 
         expect(AuditedChange.count).to eq audited_changes_before
         expect(AuditedRequest.count).to eq (audited_requests_before + 1)

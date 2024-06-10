@@ -2,6 +2,18 @@ require 'application_responder'
 # require 'inshape'
 
 class ApplicationController < ActionController::Base
+  include Concerns::ActionMethods
+  include Concerns::MadekCookieSession
+  include Concerns::ResponsibleEntityPath
+  include Concerns::WebappPathHelpers
+  include Errors
+  include Pundit::Authorization
+
+  self.responder = ApplicationResponder
+  self.respond_to :html
+
+  protect_from_forgery
+
   # https://github.com/Madek/Madek/issues/423
   before_action do
     begin
@@ -11,34 +23,20 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  include Concerns::MadekCookieSession
+  before_action :authorize_admin, except: :status
+  before_action :set_context_for_app_layout
   before_action :notify_if_session_expiring_soon
-
-  include Concerns::ResponsibleEntityPath
-  include Pundit::Authorization
-  include Errors
-
-  include Concerns::WebappPathHelpers
-  
-  self.responder = ApplicationResponder
-  respond_to :html
+  before_action :forget_vocabulary_url_params_if_requested
 
   rescue_from ActiveRecord::ActiveRecordError,
               with: :render_error
   rescue_from Pundit::NotAuthorizedError,
               with: :error_according_to_login_state
 
-  before_action :authorize_admin, except: :status
-
-  include Concerns::ActionMethods
-  before_action :forget_vocabulary_url_params_if_requested
-
-  protect_from_forgery
-
-  helper_method :current_user
-  helper_method :filter_value
-  helper_method :feature_toggle_sql_reports
   helper_method :capitalize_all
+  helper_method :current_user
+  helper_method :feature_toggle_sql_reports
+  helper_method :filter_value
 
   def status
     render plain: 'OK, but we need to provide memory usage info ' \
@@ -47,8 +45,15 @@ class ApplicationController < ActionController::Base
 
   private
 
+  def set_context_for_app_layout
+    # Using this so that error template (incl. base layout)
+    # can be rendered even if exception occured on the DB-level and
+    # the transaction has been closed for further DB-queries.
+    @beta_tester_notifications = current_user.try(:beta_tester_notifications?)
+  end
+
   def current_user
-    validate_services_session_cookie_and_get_user
+    @current_user ||= validate_services_session_cookie_and_get_user
   end
 
   def render_error(error, only_text = false)
