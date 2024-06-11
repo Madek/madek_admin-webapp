@@ -17,7 +17,7 @@
 
           = navbar_item 'Dashboard', root_path
           = navbar_item 'Settings', app_settings_path
-          - if current_user.try(:beta_tester_notifications?)
+          - if @beta_tester_notifications
             = navbar_item 'SMTP', smtp_settings_path
             = navbar_item 'Notifications', notification_cases_path
           %li.dropdown

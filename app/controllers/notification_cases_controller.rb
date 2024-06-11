@@ -2,7 +2,7 @@ class NotificationCasesController < ApplicationController
   include ApplicationHelper
 
   before_action do
-    unless current_user.beta_tester_notifications?
+    unless @beta_tester_notifications
       raise("Not allowed to use this feature.")
     end
   end
