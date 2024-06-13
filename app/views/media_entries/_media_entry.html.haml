@@ -13,6 +13,11 @@
       %span.label.label-success Yes
     - else
       %span.label.label-default No
+  %td
+    - if media_entry.deleted_at
+      %span.label.label-danger Yes
+    - else
+      %span.label.label-default No
   %td.active
     .btn-group.btn-group-sm.btn-group-vertical
       = link_to media_entry_path(media_entry), class: 'btn btn-default btn-with-icon-only' do

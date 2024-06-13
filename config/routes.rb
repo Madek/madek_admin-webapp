@@ -46,9 +46,12 @@ Rails.application.routes.draw do
       member do
         get :media_entries
         get :collections
+        post :restore
       end
     end
-    resources :media_entries, only: [:index, :show]
+    resources :media_entries, only: [:index, :show] do
+      post :restore, on: :member
+    end
     resources :media_files, only: [:index, :show] do
       post :reencode, on: :member
       get :batch_reencoding, on: :collection

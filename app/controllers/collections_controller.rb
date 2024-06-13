@@ -1,12 +1,14 @@
 class CollectionsController < ApplicationController
+  include Concerns::HandleIsDeletedParam
+
   before_action :find_collection, except: [:index]
 
   def index
-    @collections = Collection.page(page_params).per(16)
-    @collections = filter(@collections)
-  end
-
-  def show
+    @collections = Collection.all
+    if params[:filter].present?
+      @collections = filter(@collections.unscoped.not_in_clipboard)
+    end
+    @collections = @collections.ordered.page(page_params).per(16)
   end
 
   def media_entries
@@ -17,10 +19,17 @@ class CollectionsController < ApplicationController
     @collections = @collection.collections.page(page_params).per(16)
   end
 
+  def restore
+    @collection = Collection.unscoped.find(params[:id])
+    @collection.update!(deleted_at: nil)
+    flash[:success] = 'Set restored successfully.'
+    redirect_to collection_path(@collection)
+  end
+
   private
 
   def find_collection
-    @collection = Collection.find params[:id]
+    @collection = Collection.unscoped.find(params[:id])
     @user = @collection.responsible_user
     @delegation = @collection.responsible_user
     @responsible_entity = @user || @delegation
@@ -40,6 +49,7 @@ class CollectionsController < ApplicationController
       validate_uuid!(param_value)
       collections = collections.where(creator_id: param_value)
     end
+    collections = handle_is_deleted_param(collections)
     collections
   end
 end

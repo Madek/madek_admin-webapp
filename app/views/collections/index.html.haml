@@ -18,6 +18,12 @@
           .form-group
             %div
               %label
+                Deleted
+            = select_tag 'filter[is_deleted]',
+              options_for_select([['Yes & No', ''], ['Yes', '1'], ['No', '0']], params[:filter].try(:[], :is_deleted) || '0'), class: 'form-control'
+          .form-group
+            %div
+              %label
                 Responsible User/Delegation ID
             = text_field_tag 'filter[responsible_entity_id]', params[:filter].try(:[], :responsible_entity_id), size: 37, class: 'form-control', placeholder: 'Responsible User/Delegation ID'
           .form-group
@@ -35,6 +41,7 @@
         %tr
           %th Title
           %th Responsible user
+          %th Deleted
           %th
       %tbody
         = render partial: 'collection', collection: @collections

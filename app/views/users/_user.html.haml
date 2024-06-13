@@ -21,24 +21,24 @@
       = user.person
   %td
     :ruby
-      created_entries_count = user.created_media_entries.rewhere(is_published: [true, false]).count
       responsible_entries_count = user.responsible_media_entries.rewhere(is_published: [true, false]).count
+      created_entries_count = user.created_media_entries.rewhere(is_published: [true, false]).count
 
-      created_sets_count = user.created_collections.count
       responsible_sets_count = user.responsible_collections.count
+      created_sets_count = user.created_collections.count
 
     %i
       Entries: 
-      %a{href: media_entries_path(filter: { responsible_entity_id: user.id })}= responsible_entries_count
+      %a{href: media_entries_path(filter: { responsible_entity_id: user.id, is_deleted: '0' })}= responsible_entries_count
       (
-      %a{href: media_entries_path(filter: { creator_id: user.id })}= created_entries_count
+      %a{href: media_entries_path(filter: { creator_id: user.id, is_deleted: '0' })}= created_entries_count
       )
     <br>
     %i
       Sets:
-      %a{href: collections_path(filter: { responsible_entity_id: user.id })}= responsible_sets_count
+      %a{href: collections_path(filter: { responsible_entity_id: user.id, is_deleted: '0' })}= responsible_sets_count
       (
-      %a{href: collections_path(filter: { creator_id: user.id })}= created_sets_count
+      %a{href: collections_path(filter: { creator_id: user.id, is_deleted: '0' })}= created_sets_count
       )
     <br>
   %td{ class: (user.admin? ? 'success' : 'danger') }

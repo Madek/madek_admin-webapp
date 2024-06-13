@@ -1,11 +1,27 @@
 class MediaEntriesController < ApplicationController
+  include Concerns::HandleIsDeletedParam
+
   def index
-    @media_entries = MediaEntry.unscoped.ordered.page(page_params).per(16)
-    @media_entries = filter(@media_entries)
+    # Default scope for admin webapp.
+    # It differs from the default scope in the model.
+    @media_entries = MediaEntry.unscoped.not_deleted
+
+    if params[:filter].present?
+      @media_entries = filter(@media_entries.unscoped)
+    end
+
+    @media_entries = @media_entries.ordered.page(page_params).per(16)
   end
 
   def show
     @media_entry = MediaEntry.unscoped.find(params[:id])
+  end
+
+  def restore
+    @media_entry = MediaEntry.unscoped.find(params[:id])
+    @media_entry.update!(deleted_at: nil)
+    flash[:success] = 'Media-Entry restored successfully.'
+    redirect_to media_entry_path(@media_entry)
   end
 
   private
@@ -28,6 +44,7 @@ class MediaEntriesController < ApplicationController
       validate_uuid!(param_value)
       media_entries = media_entries.where(creator_id: param_value)
     end
+    media_entries = handle_is_deleted_param(media_entries)
     media_entries
   end
 end

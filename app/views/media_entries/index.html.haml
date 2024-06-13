@@ -8,32 +8,46 @@
     .panel.panel-default
       .panel-heading
         .panel-title Filters
-      .panel-body
-        = form_tag media_entries_path, method: :get, class: 'form-inline' do
-          .form-group
-            %div
-              %label
-                Search Term
-            = text_field_tag :search_term, params[:search_term], size: 37, class: 'form-control', placeholder: 'ID, custom url or title'
-          .form-group
-            %div
-              %label
-                Published
-            = select_tag 'filter[is_published]',
-              options_for_select([['Yes & No', ''], ['Yes', '1'], ['No', '0']], params[:filter].try(:[], :is_published)), class: 'form-control'
-          .form-group
-            %div
-              %label
-                Responsible User/Delegation ID
-            = text_field_tag 'filter[responsible_entity_id]', params[:filter].try(:[], :responsible_entity_id), size: 37, class: 'form-control', placeholder: 'Responsible User/Delegation ID'
-          .form-group
-            %div
-              %label
-                Creator ID
-            = text_field_tag 'filter[creator_id]', params[:filter].try(:[], :creator_id), size: 37, class: 'form-control', placeholder: 'Creator ID'
-          .form-group{style: "margin-top: 20px"}
-            = submit_tag 'Apply', class: 'btn btn-primary'
-            = link_to 'Reset', media_entries_path, class: 'btn btn-default'
+        .panel-body
+          = form_tag media_entries_path, method: :get, class: 'form-inline' do
+            .row
+              .col-xs-6
+                .form-group
+                  %div
+                    %label
+                      Search Term
+                  = text_field_tag :search_term, params[:search_term], class: 'form-control', placeholder: 'ID, custom url or title', size: 65
+              .col-xs-6
+                .form-group
+                  %div
+                    %label
+                      Published
+                  = select_tag 'filter[is_published]',
+                    options_for_select([['Yes & No', ''], ['Yes', '1'], ['No', '0']], params[:filter].try(:[], :is_published)), class: 'form-control'
+                .form-group
+                  %div
+                    %label
+                      Deleted
+                  = select_tag 'filter[is_deleted]',
+                    options_for_select([['Yes & No', ''], ['Yes', '1'], ['No', '0']], params[:filter].try(:[], :is_deleted) || '0'), class: 'form-control'
+            .row{style: "margin-top: 10px"}
+              .col-xs-6
+                .form-group
+                  %div
+                    %label
+                      Responsible User/Delegation ID
+                  = text_field_tag 'filter[responsible_entity_id]', params[:filter].try(:[], :responsible_entity_id), class: 'form-control', placeholder: 'Responsible User/Delegation ID', size: 65
+              .col-xs-6
+                .form-group
+                  %div
+                    %label
+                      Creator ID
+                  = text_field_tag 'filter[creator_id]', params[:filter].try(:[], :creator_id), class: 'form-control', placeholder: 'Creator ID', size: 65
+            .row{style: "margin-top: 20px"}
+              .col-xs-6
+                .form-group
+                  = submit_tag 'Apply', class: 'btn btn-primary'
+                  = link_to 'Reset', media_entries_path, class: 'btn btn-default'
 
 .row
   .col-xs-12
@@ -46,6 +60,7 @@
           %th ID
           %th Created at
           %th Published?
+          %th Deleted?
           %th
       %tbody
         = render @media_entries

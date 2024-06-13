@@ -9,3 +9,6 @@
           = render partial: 'action_buttons', locals: { collection: collection, size: nil }
           = link_to meta_datums_path(search_term: @collection.id, search_by: :collection_id), class: 'btn btn-default' do
             Meta Datums: #{@collection.meta_data.count}
+          - if @collection.deleted_at
+            = form_tag restore_collection_path(@collection), method: 'POST', class: 'form-inline'  do
+              = submit_tag 'Restore', class: 'btn btn-primary', data: { confirm: 'Are you sure you want to restore this set?' }

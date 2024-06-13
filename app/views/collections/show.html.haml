@@ -2,6 +2,8 @@
   %h1
     %i.glyphicon.glyphicon-folder-open
     #{@collection.title}
+    - if @collection.deleted_at
+      %span.label.label-danger.small Deleted
   %small
     = link_to '&larr; Go back to sets list'.html_safe, collections_path
 
