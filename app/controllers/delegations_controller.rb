@@ -111,16 +111,24 @@ class DelegationsController < ApplicationController
   private
 
   def new_delegation_params
-    params.fetch(:delegation, {}).permit(:name,
-                                         :description,
-                                         :admin_comment,
-                                         :supervisor_ids => [])
+    params.fetch(:delegation, {})
+      .permit(:name,
+              :description,
+              :admin_comment,
+              :notifications_email,
+              :notify_all_members,
+              :supervisor_ids => [])
+      .transform_values { |v| v.presence }
   end
 
   def delegation_params
-    params.require(:delegation).permit(:name,
-                                       :description,
-                                       :admin_comment)
+    params.require(:delegation)
+      .permit(:name,
+              :description,
+              :admin_comment,
+              :notifications_email,
+              :notify_all_members)
+      .transform_values { |v| v.presence }
   end
 
   def new_action_type_param

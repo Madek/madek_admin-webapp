@@ -25,6 +25,16 @@
           = f.text_field :admin_comment, class: 'form-control'
       .form-group
         .col-xs-2
+          = f.label :notifications_email, 'Notifications email', class: 'control-label'
+        .col-xs-10
+          = f.text_field :notifications_email, class: 'form-control'
+      .form-group
+        .col-xs-2
+          = f.label :notify_all_members, 'Notify all members', class: 'control-label'
+        .col-xs-10
+          = f.check_box :notify_all_members
+      .form-group
+        .col-xs-2
           = f.label :supervisors, 'Supervisors', class: 'control-label'
         .col-xs-9
           - if @delegation.supervisors.presence

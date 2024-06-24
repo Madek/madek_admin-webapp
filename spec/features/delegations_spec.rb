@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'spec_helper_feature'
 
 feature 'Delegations' do
-  given(:new_delegation) { build :delegation }
+  given(:new_delegation) { build :delegation, notifications_email: 'delegation@example.com' }
   given(:delegation) { create :delegation }
   given(:user) { create :user }
   given(:supervisor_1) { create :user }
@@ -20,6 +20,8 @@ feature 'Delegations' do
       fill_in 'Name', with: new_delegation.name
       fill_in 'Description', with: new_delegation.description
       fill_in 'Admin comment', with: new_delegation.admin_comment
+      fill_in 'Notifications email', with: new_delegation.notifications_email
+      uncheck 'Notify all members'
     end
 
     scenario 'without supervisors' do
@@ -29,6 +31,8 @@ feature 'Delegations' do
       expect(page).to have_text "Name (name) #{new_delegation.name}"
       expect(page).to have_text "Description (description) #{new_delegation.description}"
       expect(page).to have_text "Admin comment (admin_comment) #{new_delegation.admin_comment}"
+      expect(page).to have_text "Notifications email (notifications_email) #{new_delegation.notifications_email}"
+      expect(page).to have_text "Notify all members (notify_all_members) false"
       expect(page).to have_text 'Users (0)'
       expect(page).to have_text 'Groups (0)'
 
@@ -96,7 +100,7 @@ feature 'Delegations' do
         click_link 'Edit'
       end
 
-      expect(page).to have_text("Edit Delegation #{delegation.name}")
+      expect(page.text).to match(/Edit Delegation.*#{delegation.name}/m)
 
       fill_in 'Name', with: new_name
       fill_in 'Description', with: new_description
