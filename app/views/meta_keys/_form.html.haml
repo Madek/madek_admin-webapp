@@ -52,7 +52,7 @@
         = second_step_label(:allowed_people_subtypes, f)
       .col-xs-6
         .checkbox.checkbox-collection
-          = f.collection_check_boxes :allowed_people_subtypes, Person.subtypes, :subtype, :subtype do |c|
+          = f.collection_check_boxes :allowed_people_subtypes, Person.subtypes, :subtype, :subtype, {include_hidden: !is_used}, {} do |c|
             = c.label { c.check_box(disabled: is_used) + c.text }
 
   - if not @meta_key.core? and @meta_key.can_have_allowed_rdf_class?
