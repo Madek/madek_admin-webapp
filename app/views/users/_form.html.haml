@@ -39,7 +39,10 @@
     .form-group
       %label.control-label.col-xs-2 Active until
       .col-xs-9
-        - active_until = (Date.today + AppSetting.first.users_active_until_ui_default.days)
+        :ruby
+          active_until =
+            @user.try(:active_until).try(:to_date) ||
+            (Date.today + AppSetting.first.users_active_until_ui_default.days)
         = f.date_field :active_until, class: 'form-control', value: active_until
 
     .form-group
