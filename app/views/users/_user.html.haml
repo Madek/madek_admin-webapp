@@ -50,7 +50,11 @@
           %span.glyphicon.glyphicon-plus
           Add to the Group
       - elsif @delegation || @return_to.presence # for new view
-        - if @delegation_user_ids.include?(user.id) || @delegation_supervisor_ids.include?(user.id)
+        :ruby 
+          in_case_of_supervisor = ( @as_supervisor and @delegation_supervisor_ids.include?(user.id) )
+          in_case_of_user = ( not @as_supervisor and @delegation_user_ids.include?(user.id) ) 
+          already_added = ( in_case_of_supervisor or in_case_of_user )
+        - if already_added
           .text-muted Already added
         - else
           :ruby 

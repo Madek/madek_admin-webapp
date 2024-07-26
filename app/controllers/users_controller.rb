@@ -175,7 +175,6 @@ class UsersController < ApplicationController
     @delegation_user_ids = @delegation&.user_ids || []
     @delegation_supervisor_ids = []
     if as_supervisor_param
-      @as_supervisor = true
       if @return_to
         uri = URI.parse(@return_to)
         query_params = 
@@ -183,10 +182,12 @@ class UsersController < ApplicationController
           .parse_nested_query(uri.query)
           .with_indifferent_access
         @uri_spec = { path: uri.path, query_params: query_params }
-        supervisor_ids = query_params[:delegation][:supervisor_ids]
-        if supervisor_ids.present?
-          @delegation_supervisor_ids = supervisor_ids
-        end
+      end
+
+      @as_supervisor = true
+      supervisor_ids = @delegation.try(:supervisor_ids) || query_params[:delegation][:supervisor_ids]
+      if supervisor_ids.present?
+        @delegation_supervisor_ids = supervisor_ids
       end
     end
     @delegation_name =
