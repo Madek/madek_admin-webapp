@@ -66,6 +66,7 @@ class UsersController < ApplicationController
 
     respond_with @user, location: -> { users_path }
   rescue => e
+    @model_error_messages = @user.errors.map(&:full_message)
     @extra_error_message = [
       'The user cannot be deleted. However you can mark it as deactivated.',
       view_context.link_to('Click here to do that', edit_user_path(@user))

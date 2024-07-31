@@ -127,16 +127,31 @@ feature 'Admin Users' do
     expect { User.find_by!(login: 'fritzli') }.not_to raise_error
   end
 
-  scenario 'Deleting an user', browser: :firefox do
-    user = create :user
+  describe 'Deleting an user', browser: :firefox do
+    scenario 'Is successful' do
+      user = create :user
 
-    visit user_path(user)
-    accept_confirm do
-      click_link 'Delete user'
+      visit user_path(user)
+      accept_confirm do
+        click_link 'Delete user'
+      end
+
+      expect(page).to have_current_path users_path
+      expect { user.reload }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
-    expect(page).to have_current_path users_path
-    expect { user.reload }.to raise_error(ActiveRecord::RecordNotFound)
+    scenario 'Displays the correct error message if there are soft-deleted resources' do
+      user = create :user
+      FactoryBot.create(:collection, creator_id: user.id, deleted_at: Date.yesterday)
+
+      visit user_path(user)
+      accept_confirm do
+        click_link 'Delete user'
+      end
+
+      expect(page).to have_content 'Cannot delete a user with associated soft-deleted media resources.'
+      expect { user.reload }.not_to raise_error(ActiveRecord::RecordNotFound)
+    end
   end
 
   scenario 'Deleting an user who cannot be deleted' do

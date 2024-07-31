@@ -4,6 +4,7 @@
     %small code: #{@status_code}
   %h3 Message:
   %p= @error.message
+  %p= @model_error_messages&.join('\n')
   - if @extra_error_message.present?
     .alert.alert-danger
       %span.glyphicon.glyphicon-exclamation-sign
