@@ -30,7 +30,12 @@
       %tbody
       - @delegation.attributes.each do |name, value|
         %tr
-          = admin_db_column(name)
+          :ruby 
+            help = case name
+                   when 'notifications_email'
+                     'If provided, no emails are sent to members nor supervisors'
+                   end
+          = admin_db_column(name, nil, help)
           - case name
           - when nil
           - else

@@ -2,3 +2,5 @@
   %span
     %strong #{column_label || column_name.humanize} 
     %code.black-smaller (#{column_name})
+    - if help.present?
+      %p.help-block #{help}
