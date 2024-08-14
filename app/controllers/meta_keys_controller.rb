@@ -102,6 +102,8 @@ class MetaKeysController < ApplicationController
         :is_enabled_for_media_entries,
         :is_enabled_for_collections,
         :allowed_rdf_class,
+        :multiple_selection,
+        :selection_field_type,
         {
           allowed_people_subtypes: []
         }.merge(localized_field_params)

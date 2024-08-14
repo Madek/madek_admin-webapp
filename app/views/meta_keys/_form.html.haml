@@ -1,3 +1,10 @@
+:ruby
+  if not @meta_key.core? and @meta_key.can_have_keywords? and @meta_key.multiple_selection
+    multi_keyword_media_entries_count = @meta_key.media_entries_where_keywords_used_more_than_once.count
+    multi_keyword_collections_count = @meta_key.collections_where_keywords_used_more_than_once.count
+    must_have_multiple_selection = multi_keyword_media_entries_count > 0 || multi_keyword_collections_count > 0
+  end
+
 - is_used = @meta_key.meta_data.any?
 
 = form_for @meta_key, html: { class: 'form-horizontal', role: 'form' } do |f|
@@ -92,7 +99,7 @@
       .form-group
         .col-xs-3
           = lf.label locale, "Documentation URL [#{locale}]", class: 'control-label'
-        .col-xs-9
+        .col-xs-6
           = lf.text_field locale, class: 'form-control'
 
   - if not @meta_key.core? and f.object.can_have_text_type?
@@ -118,6 +125,36 @@
             %label
               = f.check_box "is_enabled_for_#{resource_type}"
               Enabled for #{resource_type.humanize(capitalize: false)}?
+
+  - if not @meta_key.core? and @meta_key.can_have_keywords?
+    .form-group
+      .col-xs-3
+        = second_step_label(:multiple_selection, f)
+      .col-xs-6
+        %label.radio-inline
+          = f.radio_button :multiple_selection, true, disabled: must_have_multiple_selection
+          Multiple selection
+        %label.radio-inline
+          = f.radio_button :multiple_selection, false, disabled: must_have_multiple_selection
+          Single selection
+        - if must_have_multiple_selection
+          .help-block
+            Can't be changed to single selection because media resources with multiple keywords are present 
+            (media entries: #{multi_keyword_media_entries_count}, collections: #{multi_keyword_collections_count})
+            = f.hidden_field :multiple_selection
+
+  - if not @meta_key.core? and @meta_key.can_have_keywords?
+    .form-group
+      .col-xs-3
+        = second_step_label(:selection_field_type, f)
+      .col-xs-6
+        = f.collection_radio_buttons :selection_field_type, ['auto', 'list', 'mark'], :to_s, :capitalize do |c|
+          = c.label(class: 'radio-inline') { c.radio_button + c.text }
+        %div.help-block 
+          %div Auto: "List" when more than 16 entries, "Mark" otherwise
+          %div List: Dropdown with inline search
+          %div Mark: Checkboxes for multiple selection, radio buttons for single selection
+
 
   .form-group
     .col-xs-offset-3.col-xs-3

@@ -41,7 +41,7 @@ module MetaKeysCreation
     @second_step_columns ||= {
       'MetaDatum::People' => [:allowed_people_subtypes],
       'MetaDatum::Keywords' => [
-        :allowed_rdf_class, :is_extensible_list, :keywords_alphabetical_order
+        :allowed_rdf_class, :is_extensible_list, :keywords_alphabetical_order, :multiple_selection, :selection_field_type
       ],
       'MetaDatum::Text' => [:text_type]
     }[@meta_key.meta_datum_object_type]
