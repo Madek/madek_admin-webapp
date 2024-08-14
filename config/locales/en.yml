@@ -62,4 +62,6 @@ en:
     is_extensible_list: Decide if keywords should be an extensible list.
     keywords_alphabetical_order: Choose if keywords should be alphabetically ordered.
     text_type: Choose text type.
+    multiple_selection: 'Select multiple or single selection'
+    selection_field_type: 'Select a selection field type'
   session_expiring_soon: You will be logged out in less than %{minutes} minutes. Save your input and log in again.

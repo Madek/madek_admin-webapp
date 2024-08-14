@@ -45,6 +45,8 @@ feature 'Admin Meta Keys' do
       expect(page).not_to have_content 'Allowed Subtypes'
       expect(page).not_to have_content 'Keywords alphabetical order'
       expect(page).not_to have_content 'Extensible?'
+      expect(page).not_to have_content 'Multiple selection'
+      expect(page).not_to have_content 'Selection field type'
       expect(page).to have_content 'Text type'
 
       fill_in 'meta_key[labels][de]', with: 'new label DE'
@@ -70,6 +72,31 @@ feature 'Admin Meta Keys' do
       expect(page).to have_field 'meta_key[hints][de]', with: 'new hint DE'
       expect(page).to have_field 'meta_key[hints][en]', with: 'new hint EN'
       expect(page).to have_select 'meta_key[text_type]', selected: 'block'
+    end
+
+    scenario 'Editing keyword specific fields' do
+      visit meta_key_path(meta_key_keywords)
+
+      click_link 'Edit'
+
+      choose 'meta_key[keywords_alphabetical_order]', with: 'false'
+      choose 'meta_key[allowed_rdf_class]', with: 'License'
+      check 'meta_key[is_extensible_list]'
+      choose 'meta_key[multiple_selection]', with: 'false'
+      choose 'meta_key[selection_field_type]', with: 'mark'
+
+      click_button 'Save'
+
+      expect(current_path).to eq meta_key_path(meta_key_keywords)
+      expect(page).to have_css('.alert-success')
+
+      visit edit_meta_key_path(meta_key_keywords)
+
+      expect(find_field('meta_key[keywords_alphabetical_order]', with: 'false')).to be_checked
+      expect(find_field('meta_key[allowed_rdf_class]', with: 'License')).to be_checked
+      expect(find_field('meta_key[is_extensible_list]')).to be_checked
+      expect(find_field('meta_key[multiple_selection]', with: 'false')).to be_checked
+      expect(find_field('meta_key[selection_field_type]', with: 'mark')).to be_checked
     end
 
     scenario 'Proper values for selects' do
@@ -98,6 +125,16 @@ feature 'Admin Meta Keys' do
 
       visit edit_meta_key_path(meta_key_keywords)
       expect(page).to have_select('Meta datum object type', disabled: true)
+    end
+
+    scenario 'MetaDatum::Keywords: Can not configure single selection when media resources with multiple keywords are present' do
+      visit edit_meta_key_path(meta_key_keywords)
+      expect(page).not_to have_content('Can\'t be changed to single selection')
+
+      create(:meta_datum_keywords, meta_key: meta_key_keywords)
+
+      visit edit_meta_key_path(meta_key_keywords)
+      expect(page).to have_content('Can\'t be changed to single selection because media resources with multiple keywords are present (media entries: 1, collections: 0)')
     end
 
     scenario "Uncheck 'Extensible?' checkbox for MetaDatum::Keywords" do
@@ -197,6 +234,8 @@ feature 'Admin Meta Keys' do
       expect(page).not_to have_content 'Allowed Subtypes'
       expect(page).not_to have_content 'Keywords alphabetical order'
       expect(page).not_to have_content 'Extensible?'
+      expect(page).not_to have_content 'Multiple selection'
+      expect(page).not_to have_content 'Selection field type'
 
       click_button 'Save'
 
@@ -204,6 +243,8 @@ feature 'Admin Meta Keys' do
       expect(page).to have_content 'Allowed Subtypes'
       expect(page).not_to have_content 'Keywords alphabetical order'
       expect(page).not_to have_content 'Extensible?'
+      expect(page).not_to have_content 'Multiple selection'
+      expect(page).not_to have_content 'Selection field type'
       expect(page).not_to have_content 'Text type'
 
       check 'PeopleGroup'
@@ -227,6 +268,8 @@ feature 'Admin Meta Keys' do
       expect(page).not_to have_content 'Allowed Subtypes'
       expect(page).not_to have_content 'Keywords alphabetical order'
       expect(page).not_to have_content 'Extensible?'
+      expect(page).not_to have_content 'Multiple selection'
+      expect(page).not_to have_content 'Selection field type'
 
       click_button 'Save'
 
@@ -235,6 +278,8 @@ feature 'Admin Meta Keys' do
       expect(page).to have_content 'New Meta Key'
       expect(page).to have_content 'Keywords alphabetical order'
       expect(page).to have_content 'Extensible?'
+      expect(page).to have_content 'Multiple selection'
+      expect(page).to have_content 'Selection field type'
       expect(page).not_to have_content 'Allowed Subtypes'
       expect(page).not_to have_content 'Text type'
 
@@ -259,6 +304,8 @@ feature 'Admin Meta Keys' do
       expect(page).not_to have_content 'Allowed Subtypes'
       expect(page).not_to have_content 'Keywords alphabetical order'
       expect(page).not_to have_content 'Extensible?'
+      expect(page).not_to have_content 'Multiple selection'
+      expect(page).not_to have_content 'Selection field type'
 
       click_button 'Save'
 
@@ -280,6 +327,8 @@ feature 'Admin Meta Keys' do
       expect(page).not_to have_content 'Allowed Subtypes'
       expect(page).not_to have_content 'Keywords alphabetical order'
       expect(page).not_to have_content 'Extensible?'
+      expect(page).not_to have_content 'Multiple selection'
+      expect(page).not_to have_content 'Selection field type'
 
       click_button 'Save'
 
