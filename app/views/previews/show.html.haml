@@ -2,7 +2,10 @@
   raw_file_path = preview_raw_file_path(@preview)
 
 .page-header
-  %h1 Preview: #{@preview.id}
+  %h1
+    Preview: #{@preview.id}
+    - unless MediaEntry.find_by_id(@preview.media_file.media_entry_id)
+      %span.label.label-danger.small Deleted
   %small
     = link_to '&larr; Go back to Media File'.html_safe, media_file_path(@preview.media_file)
 
@@ -42,4 +45,4 @@
           = link_to preview_path(@preview), method: :delete, class: 'btn btn-danger',
             data: { confirm: 'Preview will be deleted. Do you want to proceed?' } do
             %i.glyphicon.glyphicon-trash
-            Delete
+            Delete permanently

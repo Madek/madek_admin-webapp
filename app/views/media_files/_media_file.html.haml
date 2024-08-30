@@ -13,6 +13,11 @@
     = link_to media_file.uploader.to_s, user_path(media_file.uploader)
   %td
     = conversion_status_label(media_file)
+  %td
+    - if MediaEntry.find_by_id(media_file.media_entry_id)
+      %span.label.label-default No
+    - else
+      %span.label.label-danger Yes
   %td.active.text-center
     .btn-group.btn-group-sm
       = link_to media_file_path(media_file), class: 'btn btn-default' do
