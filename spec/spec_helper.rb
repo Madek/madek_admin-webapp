@@ -53,7 +53,7 @@ RSpec.configure do |config|
   end
 
   config.include FactoryBot::Syntax::Methods
-  config.include Concerns::MadekCookieSession
+  config.include MadekCookieSession
 
   # Note: rails test provides some sort of mock for for cookies and sessions;
   # we patch the controller instance with a

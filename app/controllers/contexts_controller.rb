@@ -1,5 +1,5 @@
 class ContextsController < ApplicationController
-  include Concerns::LocalizedFieldParams
+  include LocalizedFieldParams
 
   def index
     @contexts = Context.all

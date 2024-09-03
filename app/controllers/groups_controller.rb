@@ -1,5 +1,5 @@
 class GroupsController < ApplicationController
-  include Concerns::PreviousResource
+  include PreviousResource
 
   before_action :ensure_presence_of_system_groups, only: [:index, :show, :edit]
 

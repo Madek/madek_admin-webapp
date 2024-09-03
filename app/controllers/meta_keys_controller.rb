@@ -1,7 +1,7 @@
 class MetaKeysController < ApplicationController
-  include Concerns::MetaKeysCreation
-  include Concerns::MetaKeysMoving
-  include Concerns::LocalizedFieldParams
+  include MetaKeysCreation
+  include MetaKeysMoving
+  include LocalizedFieldParams
 
   def index
     @meta_keys = MetaKey.with_keywords_count.includes(:context_keys)

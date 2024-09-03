@@ -1,5 +1,5 @@
 class VocabularyUserPermissionsController < ApplicationController
-  include Concerns::VocabularyPermissions
+  include VocabularyPermissions
   define_actions_for :user_permissions
 
   def index

@@ -1,5 +1,5 @@
 class MediaEntriesController < ApplicationController
-  include Concerns::HandleIsDeletedParam
+  include HandleIsDeletedParam
 
   def index
     # Default scope for admin webapp.

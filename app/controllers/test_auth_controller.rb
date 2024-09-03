@@ -1,8 +1,9 @@
-if Rails.env.development? or Rails.env.test?
+class TestAuthController < ApplicationController
 
-  class TestAuthController < ApplicationController
-    include Concerns::MadekCookieSession
-    include Concerns::RedirectBackOr
+  if Rails.env.development? or Rails.env.test?
+
+    include MadekCookieSession
+    include RedirectBackOr
 
     skip_before_action :authorize_admin
 
@@ -27,6 +28,7 @@ if Rails.env.development? or Rails.env.test?
       reset_session
       redirect_to(test_login_path)
     end
+
   end
 
 end

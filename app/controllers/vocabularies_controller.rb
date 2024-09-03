@@ -1,5 +1,5 @@
 class VocabulariesController < ApplicationController
-  include Concerns::LocalizedFieldParams
+  include LocalizedFieldParams
 
   def index
     @vocabularies = Vocabulary.with_meta_keys_count

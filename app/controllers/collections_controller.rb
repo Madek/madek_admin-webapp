@@ -1,5 +1,5 @@
 class CollectionsController < ApplicationController
-  include Concerns::HandleIsDeletedParam
+  include HandleIsDeletedParam
 
   before_action :find_collection, except: [:index]
 

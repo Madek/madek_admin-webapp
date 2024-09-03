@@ -1,5 +1,5 @@
 class MediaFilesController < ApplicationController
-  include Concerns::BatchReencoding
+  include BatchReencoding
 
   SORTERS = %i(
     created_at media_type uploader size

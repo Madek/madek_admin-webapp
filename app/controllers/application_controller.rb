@@ -2,10 +2,10 @@ require 'application_responder'
 # require 'inshape'
 
 class ApplicationController < ActionController::Base
-  include Concerns::ActionMethods
-  include Concerns::MadekCookieSession
-  include Concerns::ResponsibleEntityPath
-  include Concerns::WebappPathHelpers
+  include ActionMethods
+  include MadekCookieSession
+  include ResponsibleEntityPath
+  include WebappPathHelpers
   include Errors
   include Pundit::Authorization
 

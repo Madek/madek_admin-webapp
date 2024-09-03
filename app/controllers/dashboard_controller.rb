@@ -1,6 +1,6 @@
 class DashboardController < ApplicationController
 
-  include Concerns::AppEnvironmentInfo
+  include AppEnvironmentInfo
 
   def index
     env_info = Rails.cache.fetch('app_environment_info', expires_in: 10.minutes) do

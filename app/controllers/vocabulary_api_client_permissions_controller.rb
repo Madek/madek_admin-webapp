@@ -1,5 +1,5 @@
 class VocabularyApiClientPermissionsController < ApplicationController
-  include Concerns::VocabularyPermissions
+  include VocabularyPermissions
   define_actions_for :api_client_permissions
 
   def index

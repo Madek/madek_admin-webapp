@@ -1,5 +1,5 @@
 class VocabularyGroupPermissionsController < ApplicationController
-  include Concerns::VocabularyPermissions
+  include VocabularyPermissions
   define_actions_for :group_permissions
 
   def index

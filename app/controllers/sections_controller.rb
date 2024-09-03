@@ -1,5 +1,5 @@
 class SectionsController < ApplicationController
-  include Concerns::LocalizedFieldParams
+  include LocalizedFieldParams
 
   def index
     @section_meta_key = MetaKey.find_by(id: AppSetting.first.section_meta_key_id)

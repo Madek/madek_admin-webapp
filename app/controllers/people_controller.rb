@@ -1,7 +1,7 @@
 class PeopleController < ApplicationController
   include ApplicationHelper
-  include Concerns::Filters
-  include Concerns::PreviousResource
+  include ::Filters
+  include PreviousResource
 
   def index
     @people = Person.page(page_params).per(16)

@@ -1,5 +1,5 @@
 class ContextKeysController < ApplicationController
-  include Concerns::LocalizedFieldParams
+  include LocalizedFieldParams
 
   def edit
     @context_key = ContextKey.find(params[:id])

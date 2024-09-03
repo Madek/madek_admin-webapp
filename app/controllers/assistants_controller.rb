@@ -1,6 +1,6 @@
 # rubocop:disable Metrics/MethodLength
 class AssistantsController < ApplicationController
-  include Concerns::CsvImport
+  include CsvImport
 
   layout '_base', only: %i(sql_reports)
 

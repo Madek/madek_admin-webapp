@@ -1,5 +1,5 @@
 class StaticPagesController < ApplicationController
-  include Concerns::LocalizedFieldParams
+  include LocalizedFieldParams
 
   helper_method :default_locale
 
