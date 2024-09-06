@@ -115,6 +115,7 @@ class DelegationsController < ApplicationController
       .permit(:name,
               :description,
               :admin_comment,
+              :beta_tester_notifications,
               :notifications_email,
               :notify_all_members,
               :supervisor_ids => [])
@@ -126,6 +127,7 @@ class DelegationsController < ApplicationController
       .permit(:name,
               :description,
               :admin_comment,
+              :beta_tester_notifications,
               :notifications_email,
               :notify_all_members)
       .transform_values { |v| v.presence }

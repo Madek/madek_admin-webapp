@@ -7,29 +7,34 @@
   .col-xs-12
     = form_for @delegation, html: { class: 'form-horizontal', role: 'form' } do |f|
       .form-group
-        .col-xs-2
+        .col-xs-3
           = f.label :name, 'Name', class: 'control-label required'
-        .col-xs-10
+        .col-xs-9
           = f.text_field :name, class: 'form-control'
       .form-group
-        .col-xs-2
+        .col-xs-3
           = f.label :description, 'Description', class: 'control-label'
-        .col-xs-10
+        .col-xs-9
           = f.text_field :description, class: 'form-control'
       .form-group
-        .col-xs-2
+        .col-xs-3
           = f.label :admin_comment, 'Admin comment', class: 'control-label'
-        .col-xs-10
+        .col-xs-9
           = f.text_field :admin_comment, class: 'form-control'
       .form-group
-        .col-xs-2
+        .col-xs-3
+          = f.label :beta_tester_notifications, 'Beta Tester "Notifications"', class: 'control-label'
+        .col-xs-9
+          = f.check_box :beta_tester_notifications
+      .form-group
+        .col-xs-3
           = f.label :notifications_email, 'Notifications email', class: 'control-label'
-        .col-xs-10
+        .col-xs-9
           = f.text_field :notifications_email, class: 'form-control'
       .form-group
-        .col-xs-2
+        .col-xs-3
           = f.label :notify_all_members, 'Notify all members', class: 'control-label'
-        .col-xs-10
+        .col-xs-9
           = f.check_box :notify_all_members
 
       .form-group

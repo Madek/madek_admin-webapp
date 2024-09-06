@@ -30,7 +30,16 @@
       %tbody
       - @delegation.attributes.each do |name, value|
         %tr
-          = admin_db_column(name)
+          :ruby 
+            label = nil
+            help = case name
+                   when 'notifications_email'
+                     "#{Madek::Constants::DEFAULT_DELEGATION_NOTIFICATIONS_EMAILS_FREQUENCY.capitalize} summary delivery. No emails are sent to members nor supervisors."
+                   when 'notify_all_members'
+                     label = 'Notify all members via UI'
+                     "Supervisors are always notified."
+                   end
+          = admin_db_column(name, label, help)
           - case name
           - when nil
           - else
