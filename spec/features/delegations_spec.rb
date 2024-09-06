@@ -24,15 +24,15 @@ feature 'Delegations' do
       uncheck 'Notify all members'
     end
 
-    scenario 'without supervisors' do
+    scenario 'without supervisors', browser: :firefox do
       click_button 'Save'
 
       expect(page).to have_css('.alert-success')
       expect(page).to have_text "Name (name) #{new_delegation.name}"
       expect(page).to have_text "Description (description) #{new_delegation.description}"
       expect(page).to have_text "Admin comment (admin_comment) #{new_delegation.admin_comment}"
-      expect(page).to have_text "Notifications email (notifications_email) #{new_delegation.notifications_email}"
-      expect(page).to have_text "Notify all members (notify_all_members) false"
+      expect(page.text).to match /Notifications email \(notifications_email\).*#{new_delegation.notifications_email}/m
+      expect(page.text).to match /Notify all members via UI \(notify_all_members\).*false/m
       expect(page).to have_text 'Users (0)'
       expect(page).to have_text 'Groups (0)'
 
@@ -43,7 +43,7 @@ feature 'Delegations' do
       expect_row(new_delegation.name, 'No members', 0)
     end
 
-    scenario 'with supervisors' do
+    scenario 'with supervisors', browser: :firefox do
       click_button 'Add supervisor'
       expect(find(".alert")).to have_content new_delegation.name
       fill_in("search_term", with: supervisor_1.last_name)
