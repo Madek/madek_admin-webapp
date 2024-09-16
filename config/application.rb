@@ -21,14 +21,13 @@ Bundler.require(*Rails.groups)
 
 module MadekAdmin
   class Application < Rails::Application
-    config.load_defaults 7.0
+    config.load_defaults 7.1
+
     config.responders.flash_keys = [ :success, :error ]
 
     config.active_record.timestamped_migrations = false
     config.active_record.record_timestamps = false
     config.active_record.yaml_column_permitted_classes = [Time, Rational]
-
-    config.eager_load_paths << Rails.root.join('lib')
 
     config.paths['db/migrate'] << \
       Rails.root.join('datalayer', 'db', 'migrate')
@@ -37,6 +36,7 @@ module MadekAdmin
       Rails.root.join('datalayer', 'initializers')
 
     config.eager_load_paths += [
+      Rails.root.join('lib'),
       Rails.root.join('datalayer', 'lib'),
       Rails.root.join('datalayer', 'app', 'models', 'concerns'),
       Rails.root.join('datalayer', 'app', 'controllers'),
@@ -46,7 +46,6 @@ module MadekAdmin
       Rails.root.join('datalayer', 'app', 'queries'),
     ]
 
-    
     # configure logging
     if ENV['RAILS_LOG_LEVEL'].present?
       config.log_level = ENV['RAILS_LOG_LEVEL']
