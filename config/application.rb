@@ -21,7 +21,8 @@ Bundler.require(*Rails.groups)
 
 module MadekAdmin
   class Application < Rails::Application
-    config.load_defaults 7.1
+    # Initialize configuration defaults for originally generated Rails version.
+    config.load_defaults 7.2
 
     config.responders.flash_keys = [ :success, :error ]
 
