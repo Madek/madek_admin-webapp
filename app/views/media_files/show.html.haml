@@ -1,8 +1,11 @@
+:ruby
+  media_entry = MediaEntry.unscoped.find_by_id(@media_file.media_entry_id)
+
 .page-header
   %h1
     %span.glyphicon.glyphicon-file
     Media File: #{@media_file.id}
-    - unless MediaEntry.find_by_id(@media_file.media_entry_id)
+    - if media_entry.deleted?
       %span.label.label-danger.small Deleted
   %small
     = link_to "&larr; Go back to Media Files".html_safe, media_files_path

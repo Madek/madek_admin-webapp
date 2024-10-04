@@ -1,9 +1,9 @@
 :ruby
-  media_entry = media_file.media_entry.presence
+  media_entry = MediaEntry.unscoped.find_by_id(media_file.media_entry_id)
 
 %tr{"data-id" => media_file.id}
-  %td{title: (media_entry.title if media_entry)}
-    / = media_entry.title.truncate(20) if media_entry.present? || media_entry.title.present?
+  %td{title: media_entry.try(:title)}
+    = media_entry.try(:title).try(:truncate, 20)
   %td{title: media_file.filename}
     = media_file.filename.truncate(20)
   %td= media_file.media_type
