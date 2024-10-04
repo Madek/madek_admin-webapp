@@ -214,14 +214,14 @@ feature 'Admin Groups' do
 
   scenario 'Filtering users belonging to a group', browser: :firefox do
     group = create :group, :with_user
-    group.users << create(:user, login: 'test')
+    group.users << create(:user, login: 'test123')
     visit group_path(group)
     expect(group_user_count).to eq 2
-    fill_in 'user[search_term]', with: 'test'
+    fill_in 'user[search_term]', with: 'test123'
     click_button 'Filter'
     expect(group_user_count).to eq 1
     within 'table#group-users' do
-      expect(page).to have_content 'test'
+      expect(page).to have_content 'test123'
     end
   end
 
