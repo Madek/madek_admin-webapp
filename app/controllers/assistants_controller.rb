@@ -97,8 +97,6 @@ class AssistantsController < ApplicationController
     end
   end
 
-  # FIXME: when preparing for non-alpha feature release,
-  #        move all templating/logic this to embedded ruby (`sql_snippets.yml.erb`)
   def prepare_query(query)
     query.gsub(/(:[a-z_]+:)/) do |match|
       send(match.delete(':'))
