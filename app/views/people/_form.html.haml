@@ -44,7 +44,19 @@
       %label.control-label.col-xs-2 Identification Info
       .col-xs-8
         = f.text_field :identification_info, class: 'form-control'
-        .text-muted For disambiguation in person select lists
+        .text-muted 
+          For disambiguation in person select lists
+          - if not @identification_info_is_shown
+            %div Currently hidden according to settings (to show: add `identification_info` to setting `person_info_fields`)
+    .form-group
+      %label.control-label.col-xs-2 Institution
+      .col-xs-8
+        = f.text_field :institution, class: 'form-control'
+
+    .form-group
+      %label.control-label.col-xs-2 Institutional ID
+      .col-xs-8
+        = f.text_field :institutional_id, class: 'form-control'
 
     .form-group
       .col-xs-offset-2.col-xs-4

@@ -24,6 +24,7 @@ class PeopleController < ApplicationController
 
   def edit
     @person = Person.find(params[:id])
+    @identification_info_is_shown = AppSetting.first.person_info_fields.include?('identification_info')
   end
 
   def new

@@ -1,30 +1,91 @@
 .page-header
   %h1
-    %i.glyphicon.glyphicon-person
     = @person
     %small= @person.subtype
   %small
-    = link_to "&larr; Go back to People".html_safe, people_path
+    = link_to "&larr; Go back to people list".html_safe, people_path
 
 .panel.panel-default
   .panel-body
     .btn-group
       :ruby
-        md = @person.published_meta_data
-
         locals = {
           person: @person,
-          size: nil,
-          user: @person.user ? true : false,
-          metadata_usage: { metadata_count: md.count,
-                            entries_count: md.map(&:media_entry_id).uniq.compact.count,
-                            collections_count: md.map(&:collection_id).uniq.compact.count }
+          size: nil        
         }
-
       = render(partial: 'action_buttons', locals: locals)
 
-%table.table.table-striped
-  - @person.attributes.each do |attr|
-    %tr
-      = admin_db_column(attr.first)
-      %td= attr.last
+%table.table.table-striped.with-border-bottom
+  %tr
+    %td{style: "width: 33%"}
+      %strong ID
+      %code.black-smaller (id)
+    %td
+      = @person.id
+  %tr
+    = admin_db_column "first_name"
+    %td= @person.first_name
+  %tr
+    = admin_db_column "last_name"
+    %td= @person.last_name
+  %tr
+    = admin_db_column "pseudonym"
+    %td= @person.pseudonym
+  %tr
+    = admin_db_column "description"
+    %td= @person.description
+  %tr
+    = admin_db_column "external_uris"
+    %td= @person.external_uris
+  %tr
+    = admin_db_column "admin_comment"
+    %td= @person.admin_comment
+  %tr
+    = admin_db_column "subtype"
+    %td= @person.subtype
+  %tr
+    = admin_db_column "institution"
+    %td= @person.institution
+  %tr
+    %td
+      %strong Institutional ID
+      %code.black-smaller (institutional_id)
+    %td= @person.institutional_id
+  %tr
+    = admin_db_column "identification_info"
+    %td= @person.identification_info
+  %tr
+    %td
+      %strong Related user(s)
+      %code.black-smaller (users)
+    %td
+      - if @person.users.empty?
+        %div -
+      %ul.no-indent
+        - @person.users.each do |user|
+          %li
+            = link_to user_path(user) do
+              = user.to_s
+              (#{[user.institution, user.institutional_id].compact.join(' ')})
+            - if user.deactivated?
+              %span.label.label-default deactivated
+            %div
+              = [user.email, user.login].compact.join(', ')
+  %tr
+    = admin_db_column "used_in_metadata"
+    %td 
+      :ruby 
+        md = @person.published_meta_data
+        mdc = md.count
+        ec = md.map(&:media_entry_id).uniq.compact.count
+        cc = md.map(&:collection_id).uniq.compact.count
+      #{mdc} times in #{ec} entries and #{cc} collections
+  %tr
+    = admin_db_column "searchable"
+    %td= @person.searchable
+  %tr
+    = admin_db_column "created_at"
+    %td= @person.created_at
+  %tr
+    = admin_db_column "updated_at"
+    %td= @person.updated_at

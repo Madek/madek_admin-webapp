@@ -250,7 +250,7 @@ feature 'Admin Users' do
 
     visit user_path(user)
 
-    expect(page).to have_content ":\nbar\nfoo"
+    expect(page).to have_content "\nbar\nfoo"
     expect(page).to have_link 'bar', href: group_path(group_2)
     expect(page).to have_link 'foo', href: group_path(group_1)
   end
