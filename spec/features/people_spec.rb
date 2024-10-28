@@ -56,7 +56,7 @@ feature 'Admin People' do
 
 
     visit person_path(person)
-    expect(page).to have_content "Used in metadata: 6 times in 2 entries and 1 collections"
+    expect(page).to have_content "Used in metadata (used_in_metadata) 6 times in 2 entries and 1 collections"
   end
 
   scenario 'Creating a new person' do
@@ -155,7 +155,7 @@ feature 'Admin People' do
     click_link 'Merge to'
 
     expect(page).to have_css '.alert-success'
-    expect(receiver.user).to eq user.reload
+    expect(receiver.users.first).to eq user.reload
 
     filter_for 'Originator'
 

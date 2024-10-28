@@ -12,21 +12,112 @@
     .btn-group
       = render partial: 'action_buttons', locals: { user: @user, editable: true, deletable: true }
 
-%table.table.table-striped
+%table.table.table-striped.with-border-bottom
+  %tr
+    %td{ style: "width: 33%" }
+      %strong ID
+      %code.black-smaller (id)
+    %td
+      = @user.id
+  %tr
+    = admin_db_column "first_name"
+    %td= @user.first_name
+  %tr
+    = admin_db_column "last_name"
+    %td= @user.last_name
+  %tr
+    = admin_db_column "email"
+    %td= @user.email
+  %tr
+    = admin_db_column "login"
+    %td= @user.login
+  %tr
+    = admin_db_column "auth_systems"
+    %td
+      - @user.auth_systems.each do |auth_system|
+        = auth_system.name
+  %tr
+    = admin_db_column "institution"
+    %td= @user.institution
   %tr
     %td
+      %strong Institutional ID
+      %code.black-smaller (institutional_id)
+    %td= @user.institutional_id
+  %tr
+    = admin_db_column "person_id"
+    %td
+      - person = @user.person
+      - inst_info = [person.institution, person.institutional_id].compact.join(' ')
+      = link_to "#{person.to_s} (#{inst_info})", person_path(person)
+      - if person.identification_info
+        %div= person.identification_info
+  %tr
+    = admin_db_column "notes"
+    %td= @user.notes
+  %tr
+    = admin_db_column "active_until"
+    %td= @user.active_until
+  %tr
+    = admin_db_column "last_signed_in_at"
+    %td= @user.last_signed_in_at
+
+
+%h3.title-between Memberships
+
+%table.table.table-striped.with-border-bottom
+  %tr
+    %td{ style: "width: 33%" }
       %strong Admin?
-    %td{ class: (@user.admin? ? 'success' : 'danger') }
-      = @user.admin? ? 'Yes' : 'No'
-  - @user.attributes.each do |attr|
-    %tr
-      = admin_db_column(attr.first)
-      %td= attr.last
-  %tr.info
-    %td.col-xs-5
-      %strong This user belongs to the following groups:
-    %td.col-xs-7= group_links(@user.groups)
-  %tr.info
-    %td.col-xs-5
-      %strong This user belongs to the following delegations:
-    %td.col-xs-7= delegation_links(@user.all_delegations)
+      %code.black-smaller (admin?)
+    %td
+      - if @user.admin?
+        %span.label.label-success{ style: "padding:3px 7px; position:relative; top: 6px;" } Yes
+      - else
+        No
+  %tr
+    = admin_db_column "groups"
+    %td
+      - if @user.groups.empty?
+        %div -
+      %ul.no-indent
+        - @user.groups.order(:name).each do |group|
+          %li
+            = link_to group_name(group), group_path(group) 
+  %tr
+    = admin_db_column "delegations"
+    %td
+      - if @user.delegations.empty?
+        %div -
+      %ul.no-indent
+        - @user.all_delegations.order(:name).each do |delegation|
+          %li
+            = link_to delegation.name, delegation_path(delegation ) 
+
+%h3.title-between Misc
+
+%table.table.table-striped.with-border-bottom
+  %tr
+    %td{ style: "width: 33%" }
+      %strong Created at
+      %code.black-smaller (created_at)
+    %td
+      = @user.created_at
+  %tr
+    = admin_db_column "updated_at"
+    %td= @user.updated_at
+  %tr
+    = admin_db_column "settings"
+    %td= @user.settings
+  %tr
+    = admin_db_column "emails_locale"
+    %td= @user.emails_locale
+  %tr
+    = admin_db_column "accepted_usage_terms_id"
+    %td= @user.accepted_usage_terms_id
+  %tr
+    = admin_db_column "autocomplete"
+    %td= @user.autocomplete
+  %tr
+    = admin_db_column "searchable"
+    %td= @user.searchable

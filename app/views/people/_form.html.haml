@@ -47,6 +47,16 @@
         .text-muted For disambiguation in person select lists
 
     .form-group
+      %label.control-label.col-xs-2 Institution
+      .col-xs-8
+        = f.text_field :institution, class: 'form-control'
+
+    .form-group
+      %label.control-label.col-xs-2 Institutional ID
+      .col-xs-8
+        = f.text_field :institutional_id, class: 'form-control'
+
+    .form-group
       .col-xs-offset-2.col-xs-4
         = button_tag type: 'submit', class: 'btn btn-success' do
           %span.glyphicon.glyphicon-ok

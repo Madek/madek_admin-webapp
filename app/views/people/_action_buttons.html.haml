@@ -1,7 +1,6 @@
-- if user
-  = link_to user_path(person.user), class: 'btn btn-default' do
-    %span.glyphicon.glyphicon-user
-    = person.user.login
+= link_to ui_person_path(person), class: 'btn btn-default', title: 'Preview in Web-App', target: :_blank do
+  %span.glyphicon.glyphicon-globe
+  Web-App
 = link_to people_path(merge_originator_id: person.id), class: 'btn btn-warning' do
   %span.glyphicon.glyphicon-random
   Merge
@@ -12,10 +11,3 @@
     class: 'btn btn-danger' do
   %span.glyphicon.glyphicon-trash
   Delete
-- if metadata_usage.present?
-  :ruby 
-    mdc = metadata_usage[:metadata_count]
-    ec = metadata_usage[:entries_count]
-    cc = metadata_usage[:collections_count]
-  %span
-    %b{ style: "margin-left: 50px" }= "Used in metadata: #{mdc} times in #{ec} entries and #{cc} collections"

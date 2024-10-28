@@ -8,7 +8,7 @@
     end
   end
 
-%tr{'data-id' => user.id, class: ('success' if user.admin?)}
+%tr{'data-id' => user.id}
   %td
     - if user.deactivated?
       %span.label.label-default deactivated
@@ -41,8 +41,11 @@
       %a{href: collections_path(filter: { creator_id: user.id, is_deleted: '0' })}= created_sets_count
       )
     <br>
-  %td{ class: (user.admin? ? 'success' : 'danger') }
-    = user.admin? ? 'Yes' : 'No'
+  %td
+    - if user.admin?
+      %span.label.label-success{ style: "padding:3px 7px; position:relative; top: 6px;" } Admin
+    - else
+      No
   %td.active.text-center
     .btn-group.btn-group-sm.btn-group-vertical
       - if @group.present?
