@@ -14,11 +14,11 @@ class MediaEntriesController < ApplicationController
   end
 
   def show
-    @media_entry = MediaEntry.unscoped.find(params[:id])
+    @media_entry = MediaEntry.unscoped.find_by_id_or_custom_url_id_or_raise(params[:id])
   end
 
   def restore
-    @media_entry = MediaEntry.unscoped.find(params[:id])
+    @media_entry = MediaEntry.unscoped.find_by_id_or_custom_url_id_or_raise(params[:id])
     @media_entry.update!(deleted_at: nil)
     flash[:success] = 'Media-Entry restored successfully.'
     redirect_to media_entry_path(@media_entry)

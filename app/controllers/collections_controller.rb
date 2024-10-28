@@ -20,7 +20,7 @@ class CollectionsController < ApplicationController
   end
 
   def restore
-    @collection = Collection.unscoped.find(params[:id])
+    @collection = Collection.unscoped.find_by_id_or_custom_url_id_or_raise(params[:id])
     @collection.update!(deleted_at: nil)
     flash[:success] = 'Set restored successfully.'
     redirect_to collection_path(@collection)
@@ -29,7 +29,7 @@ class CollectionsController < ApplicationController
   private
 
   def find_collection
-    @collection = Collection.unscoped.find(params[:id])
+    @collection = Collection.unscoped.find_by_id_or_custom_url_id_or_raise(params[:id])
     @user = @collection.responsible_user
     @delegation = @collection.responsible_user
     @responsible_entity = @user || @delegation
