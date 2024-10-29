@@ -14,7 +14,7 @@
   %td
     = conversion_status_label(media_file)
   %td
-    - if MediaEntry.find_by_id(media_file.media_entry_id)
+    - if MediaEntry.unscoped.not_deleted.find_by_id(media_file.media_entry_id)
       %span.label.label-default No
     - else
       %span.label.label-danger Yes
