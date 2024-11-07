@@ -73,7 +73,7 @@
                   path = Rails.env.production? ? '/auth/sign-out' : test_sign_out_path
                 = form_tag path, method: :post, name: "sign-out" do
                   = hidden_field_tag "csrf-token", auth_anti_csrf_token
-                  %button
+                  %button.btn.btn-link
                     %i.glyphicon.glyphicon-log-out
                     Logout
 
