@@ -37,6 +37,7 @@ class ApplicationController < ActionController::Base
   helper_method :current_user
   helper_method :feature_toggle_sql_reports
   helper_method :filter_value
+  helper_method :auth_anti_csrf_token
 
   def status
     render plain: 'OK, but we need to provide memory usage info ' \
@@ -44,6 +45,10 @@ class ApplicationController < ActionController::Base
   end
 
   private
+
+  def auth_anti_csrf_token
+    cookies['madek.auth.anti-csrf-token']
+  end
 
   def set_context_for_app_layout
     # Using this so that error template (incl. base layout)

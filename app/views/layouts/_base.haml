@@ -68,12 +68,14 @@
                 = link_to '/my' do
                   %i.glyphicon.glyphicon-file
                   Home/My
-              - if Rails.env.development? or Rails.env.test?
-                %li
-                  = form_tag test_sign_out_path, method: :post do
-                    %button
-                      %i.glyphicon.glyphicon-log-out
-                      Logout
+              %li
+                :ruby
+                  path = Rails.env.production? ? '/auth/sign-out' : test_sign_out_path
+                = form_tag path, method: :post, name: "sign-out" do
+                  = hidden_field_tag "csrf-token", auth_anti_csrf_token
+                  %button
+                    %i.glyphicon.glyphicon-log-out
+                    Logout
 
   #messages.container
     = alerts do |message_type, message, alert_type|
