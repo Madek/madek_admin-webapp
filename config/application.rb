@@ -67,6 +67,7 @@ module MadekAdmin
 
     # Don't generate system test files.
     config.generators.system_tests = nil
-    config.middleware.insert_before ActionDispatch::ShowExceptions, Madek::Middleware::Audit
+
+    config.middleware.insert_after Rack::TempfileReaper, Madek::Middleware::Audit
   end
 end

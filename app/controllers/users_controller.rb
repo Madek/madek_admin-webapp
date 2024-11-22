@@ -126,7 +126,10 @@ class UsersController < ApplicationController
     user = User.find(params[:user_id])
 
     if as_supervisor_param
-      delegation.supervisors.delete(user)
+      ActiveRecord::Base.transaction do
+        delegation.supervisors.delete(user)
+        ActiveRecord::Base.connection.execute("SET CONSTRAINTS ALL IMMEDIATE")
+      end
     else
       delegation.users.delete(user)
     end

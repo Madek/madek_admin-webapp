@@ -20,7 +20,11 @@ class DelegationsController < ApplicationController
         return_to: new_delegation_path(delegation: new_delegation_params)
       )
     else
-      delegation = Delegation.create!(new_delegation_params)
+      delegation = nil
+      ActiveRecord::Base.transaction do
+        delegation = Delegation.create!(new_delegation_params)
+        ActiveRecord::Base.connection.execute("SET CONSTRAINTS ALL IMMEDIATE")
+      end
       respond_with delegation
     end
   end

@@ -23,13 +23,12 @@ Rails.application.configure do
 
   config.assets.prefix = '/admin/assets'
 
-  # Show full error reports and disable caching.
-  config.consider_all_requests_local = true
+  # Show error reports like in production.
+  config.consider_all_requests_local = false
+
+  # Disable caching.
   config.action_controller.perform_caching = false
   config.cache_store = :null_store
-
-  # Render exception templates for rescuable exceptions and raise for other exceptions.
-  config.action_dispatch.show_exceptions = :rescuable
 
   # For testing in CI, use precompiled assets;
   # it's faster and there is a dedicated test to verify static assets.

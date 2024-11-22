@@ -26,21 +26,7 @@ feature 'Delegations' do
 
     scenario 'without supervisors', browser: :firefox do
       click_button 'Save'
-
-      expect(page).to have_css('.alert-success')
-      expect(page).to have_text "Name (name) #{new_delegation.name}"
-      expect(page).to have_text "Description (description) #{new_delegation.description}"
-      expect(page).to have_text "Admin comment (admin_comment) #{new_delegation.admin_comment}"
-      expect(page.text).to match /Notifications email \(notifications_email\).*#{new_delegation.notifications_email}/m
-      expect(page.text).to match /Notify all members via UI \(notify_all_members\).*false/m
-      expect(page).to have_text 'Users (0)'
-      expect(page).to have_text 'Groups (0)'
-
-      visit '/admin/delegations'
-
-      expect(page).to have_text('Delegations (1)')
-      expect(page).to have_no_text('No delegations')
-      expect_row(new_delegation.name, 'No members', 0)
+      expect(page).to have_content /error.*500.*delegation must have at least one supervisor/im
     end
 
     scenario 'with supervisors', browser: :firefox do
@@ -116,15 +102,14 @@ feature 'Delegations' do
     scenario 'delegation\'s supervisors', browser: :firefox do
       user = User.find_by_login('adam')
       visit "/admin/delegations/#{delegation.id}"
-      expect(page).to have_content('Supervisors (0)')
-      expect(find('#delegation_supervisors')).to have_content('No supervisors')
+      expect(page).to have_content('Supervisors (1)')
+      expect(find('#delegation_supervisors')).not_to have_content('No supervisors')
       click_on('Add supervisor')
       within("tr[data-id='#{user.id}']") do
         click_on('Add to the Delegation')
       end
-      expect(page).to have_content('Supervisors (1)')
+      expect(page).to have_content('Supervisors (2)')
       within(find('#delegation_supervisors')) do
-        expect(current_scope).not_to have_content('No supervisors')
         within('tr', text: user.id) do
           accept_confirm do
             find("a[data-method='delete']").click
@@ -132,9 +117,15 @@ feature 'Delegations' do
         end
       end
       expect(page).to have_css('.alert-success')
-      expect(page).to have_content('Supervisors (0)')
-      expect(find('#delegation_supervisors')).to have_content('No supervisors')
-      expect(delegation.supervisors.reload).to be_empty
+      expect(page).to have_content('Supervisors (1)')
+
+      within(find('#delegation_supervisors')) do
+        accept_confirm do
+          find("a[data-method='delete']").click
+        end
+      end
+      expect(page).to have_content /error.*500.*delegation must have at least one supervisor/im
+      expect(delegation.supervisors.reload.count).to eq 1
     end
   end
 

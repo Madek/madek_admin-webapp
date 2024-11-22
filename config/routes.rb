@@ -9,6 +9,14 @@ Rails.application.routes.draw do
       post '/sign-out', to: 'test_auth#sign_out', as: 'test_sign_out'
     end
 
+    if Rails.env.development? or Rails.env.test?
+      namespace :test do
+        get '/audits/test1', to: 'audits#test1'
+        post '/audits/test2', to: 'audits#test2'
+        post '/audits/test3', to: 'audits#test3'
+      end
+    end
+
     get :status, controller: :application, action: :status
 
     concern :orderable do
