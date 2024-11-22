@@ -20,7 +20,10 @@ class DelegationsController < ApplicationController
         return_to: new_delegation_path(delegation: new_delegation_params)
       )
     else
-      delegation = Delegation.create!(new_delegation_params)
+      delegation = nil
+      ApplicationRecord.tx_with_set_constraints_all_immediate do
+        delegation = Delegation.create!(new_delegation_params)
+      end
       respond_with delegation
     end
   end
