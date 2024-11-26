@@ -40,6 +40,25 @@ feature 'Admin People' do
     end
   end
 
+  scenario 'Showing details of a person' do
+    person = create :person
+    role1 = create :role
+    role2 = create :role
+    collection = create :collection
+    create(:meta_datum_people, people: [person])
+    create(:meta_datum_roles, 
+           people_with_roles: [{ person: person, role: role1 },
+                               { person: person, role: role2 }])
+    create(:meta_datum_people, people: [person], collection: collection)
+    create(:meta_datum_roles, collection: collection,
+           people_with_roles: [{ person: person, role: role1 },
+                               { person: person, role: role2 }])
+
+
+    visit person_path(person)
+    expect(page).to have_content "Used in metadata: 6 times in 2 entries and 1 collections"
+  end
+
   scenario 'Creating a new person' do
     visit people_path
     click_link 'Create person'

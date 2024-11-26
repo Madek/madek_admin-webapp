@@ -12,3 +12,10 @@
     class: 'btn btn-danger' do
   %span.glyphicon.glyphicon-trash
   Delete
+- if metadata_usage.present?
+  :ruby 
+    mdc = metadata_usage[:metadata_count]
+    ec = metadata_usage[:entries_count]
+    cc = metadata_usage[:collections_count]
+  %span
+    %b{ style: "margin-left: 50px" }= "Used in metadata: #{mdc} times in #{ec} entries and #{cc} collections"

@@ -14,7 +14,6 @@ class PeopleController < ApplicationController
       @merge_originator = Person.find(merge_originator_id)
       @people = @people.where.not(id: @merge_originator.id)
     end
-    @people = @people.admin_with_usage_count
   end
 
   def show

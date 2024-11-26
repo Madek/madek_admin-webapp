@@ -9,7 +9,19 @@
 .panel.panel-default
   .panel-body
     .btn-group
-      = render partial: 'action_buttons', locals: { person: @person, size: nil, user: @person.user ? true : false }
+      :ruby
+        md = @person.published_meta_data
+
+        locals = {
+          person: @person,
+          size: nil,
+          user: @person.user ? true : false,
+          metadata_usage: { metadata_count: md.count,
+                            entries_count: md.map(&:media_entry_id).uniq.compact.count,
+                            collections_count: md.map(&:collection_id).uniq.compact.count }
+        }
+
+      = render(partial: 'action_buttons', locals: locals)
 
 %table.table.table-striped
   - @person.attributes.each do |attr|
