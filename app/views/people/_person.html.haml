@@ -6,11 +6,6 @@
         = person.user.login
   %td= person.pseudonym
   %td= person.subtype
-  :ruby
-    meta_data_usage = pluralize(person.meta_data_usage_count, 'time', 'times')
-    media_entries_usage = pluralize(person.media_entries_usage_count, 'entry', 'entries')
-    collections_usage = pluralize(person.collections_usage_count, 'collection', 'collections')
-  %td= "#{meta_data_usage} in #{media_entries_usage} and #{collections_usage}"
   %td.active.col-xs-2.text-center
     .btn-group.btn-group-vertical.btn-group-sm
       - if @merge_originator
@@ -26,4 +21,4 @@
         = link_to ui_person_path(person), class: 'btn btn-default btn-with-icon-only', title: 'Preview in Web-App', target: :_blank do
           %span.glyphicon.glyphicon-globe
           Web-App
-        = render partial: 'action_buttons', locals: { person: person, user: false}
+        = render partial: 'action_buttons', locals: { person: person, user: false, metadata_usage: false }
