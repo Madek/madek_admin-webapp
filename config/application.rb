@@ -28,7 +28,7 @@ module MadekAdmin
 
     config.active_record.timestamped_migrations = false
     config.active_record.record_timestamps = false
-    config.active_record.yaml_column_permitted_classes = [Time, Rational]
+    config.active_record.yaml_column_permitted_classes = [Time, Date, Rational]
 
     config.paths['db/migrate'] << \
       Rails.root.join('datalayer', 'db', 'migrate')
