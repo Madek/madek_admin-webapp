@@ -17,11 +17,6 @@
         = f.technical_field :person_id, rows: 1, required: true
 
     .form-group
-      %label.control-label.col-xs-2 Password
-      .col-xs-9
-        = f.text_field :password, class: 'form-control'
-
-    .form-group
       %label.control-label.col-xs-2 First name
       .col-xs-9
         = f.text_field :first_name, class: 'form-control'
@@ -44,6 +39,11 @@
             @user.try(:active_until).try(:to_date) ||
             (Date.today + AppSetting.first.users_active_until_ui_default.days)
         = f.date_field :active_until, class: 'form-control', value: active_until
+
+    .form-group
+      %label.control-label.col-xs-2 Password sign-in enabled
+      .col-xs-9
+        = f.check_box :password_sign_in_enabled, { style: 'margin-top: 13px' }
 
     .form-group
       .col-xs-offset-2.col-xs-4

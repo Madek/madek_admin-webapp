@@ -61,6 +61,9 @@
   %tr
     = admin_db_column "last_signed_in_at"
     %td= @user.last_signed_in_at
+  %tr
+    = admin_db_column "password_sign_in_enabled"
+    %td= @user.password_sign_in_enabled
 
 
 %h3.title-between Memberships
