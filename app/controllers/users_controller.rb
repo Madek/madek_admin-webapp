@@ -38,14 +38,7 @@ class UsersController < ApplicationController
   end
 
   def update
-
-    if new_password = user_params[:password].presence
-      @user.password = new_password
-      @user.save_new_password
-    end
-
     @user.update!(user_params)
-
     respond_with @user, location: -> { user_path(@user) }
   end
 
@@ -142,7 +135,7 @@ class UsersController < ApplicationController
   private
 
   def initialize_user
-    @user = User.new
+    @user = User.new(password_sign_in_enabled: true)
   end
 
   def find_user
@@ -150,7 +143,11 @@ class UsersController < ApplicationController
   end
 
   def user_params
-    params.require(:user).permit!
+    p = params.require(:user).permit!
+    if p.include?(:password)
+      raise Errors::ForbiddenError, 'You cannot change the password here.'
+    end
+    p
   end
 
   def as_supervisor_param
