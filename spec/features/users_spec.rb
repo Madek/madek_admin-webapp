@@ -103,7 +103,6 @@ feature 'Admin Users' do
     fill_in 'user[last_name]', with: 'Fischer'
     fill_in 'user[login]', with: 'fritzli'
     fill_in 'user[email]', with: 'fritzli@zhdk.ch'
-    fill_in 'user[password]', with: 'password'
     click_button 'Save'
 
     expect(page).to have_content 'Fritz Fischer'
@@ -120,7 +119,6 @@ feature 'Admin Users' do
     click_link 'Create user for existing person'
     fill_in 'user[login]', with: 'fritzli'
     fill_in 'user[email]', with: 'fritzli@zhdk.ch'
-    fill_in 'user[password]', with: 'password'
     fill_in 'user[person_id]', with: person.id
     click_button 'Save'
 
