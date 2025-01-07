@@ -170,3 +170,14 @@ sql_snippets:
         AND k1.id <> k2.id
         GROUP BY k1.id, k1.term, k1.meta_key_id
         ORDER BY k1.term ASC;
+
+  -
+    title: Find the newest group created by the group sync
+    query: |
+      -- find the newest group created by the group sync
+
+      SELECT id, name, institutional_id, institutional_id, created_at, updated_at 
+      FROM groups 
+      WHERE type = 'InstitutionalGroup' AND created_at IS NOT NULL 
+      ORDER BY created_at DESC 
+      LIMIT 10;
