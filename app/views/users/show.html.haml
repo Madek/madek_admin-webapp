@@ -10,7 +10,7 @@
 .panel.panel-default
   .panel-body
     .btn-group
-      = render partial: 'action_buttons', locals: { user: @user, editable: true, deletable: true }
+      = render partial: 'action_buttons', locals: { user: @user, editable: true, deletable: true, set_password: true }
 
 %table.table.table-striped.with-border-bottom
   %tr

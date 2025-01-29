@@ -1,22 +1,26 @@
 = form_tag switch_to_user_path(user), method: :post do
   = button_tag 'Switch to...', class: 'btn btn-default'
+
 = link_to 'Reset usage terms',
     reset_usage_terms_user_path(user),
     method: :patch, class: 'btn btn-default'
+
 - if editable
   = link_to edit_user_path(user), class: 'btn btn-info' do
     %span.glyphicon.glyphicon-edit
     Edit
+
 - if user.admin?
   = link_to 'Remove admin role',
       remove_admin_role_user_path(user, redirect_path: request.original_url),
       method: :delete,
       data: { confirm: 'The admin role will be removed. Do you want to proceed?' },
-      class: 'btn btn-danger'
+      class: 'btn btn-warning'
 - else
   = link_to 'Grant admin role',
       grant_admin_role_user_path(user, redirect_path: request.original_url),
       method: :patch, class: 'btn btn-warning'
+
 - if deletable
   = link_to user_path(user),
       method: :delete,
@@ -24,3 +28,16 @@
       class: 'btn btn-danger' do
     %span.glyphicon.glyphicon-trash
     Delete user
+
+- if set_password and not user.auth_systems.any? { |as| as.id != 'password' }
+  :ruby
+    active = user.password_sign_in_enabled and user.email.present?
+
+  = form_tag set_password_user_path(user), method: :post do
+    = button_tag 'Switch to...',
+                 class: 'btn btn-info',
+                 style: "margin-left: 340px",
+                 title: active ? nil : 'The user must have an email address and password sign-in enabled to set a password',
+                 disabled: !active do 
+      %span.glyphicon.glyphicon-envelope
+      Set password

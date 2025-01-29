@@ -30,6 +30,7 @@ Rails.application.routes.draw do
     resources :users do
       member do
         post :switch_to
+        post :set_password
         patch :reset_usage_terms
         patch :grant_admin_role
         delete :remove_admin_role

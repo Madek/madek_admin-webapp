@@ -277,6 +277,43 @@ feature 'Admin Users' do
     expect(find('tr', text: 'Active until').all('td')[1].text).to eq datetime.utc.to_s
   end
 
+  scenario 'Dispatching set password email', browser: :firefox do
+    app_setting = AppSetting.first
+    app_setting.update!(site_titles: { en: 'Media Archive', de: 'Medienarchiv' })
+    emails_locale = :en
+
+    user = create :user, password_sign_in_enabled: false, emails_locale: emails_locale
+    user.auth_systems << create(:auth_system)
+
+    visit user_path(user)
+    expect(page).not_to have_selector('button', text: 'Set password')
+
+    user.auth_systems.where.not(type: 'password').delete_all
+
+    visit current_path
+    expect(find('button', text: 'Set password')).to be_disabled
+
+    user.auth_systems.destroy_all
+
+    visit current_path
+    expect(find('button', text: 'Set password')).to be_disabled
+
+    click_on 'Edit'
+    check 'user_password_sign_in_enabled'
+    click_button 'Save'
+
+    expect(find('button', text: 'Set password')).not_to be_disabled
+    click_on 'Set password'
+    expect(page).to have_content \
+      "Success! Email with password reset instructions has been sent to #{user.email}."
+    email = Email.find_by_to_address(user.email)
+    expect(email.subject).to eq "Media Archive: set password for your account"
+    ext_base_url = Settings.madek_external_base_url
+    reset_link = "#{ext_base_url}/auth/sign-in/auth-systems/password/password/forgot"
+    site_title = app_setting.site_titles[emails_locale]
+    expect(email.body).to match /#{reset_link}.*#{site_title}/m
+  end
+
   def user_rows
     all('table tbody tr[data-id]')
   end

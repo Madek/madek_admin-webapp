@@ -132,6 +132,25 @@ class UsersController < ApplicationController
     )
   end
 
+  def set_password
+    app_setting = AppSetting.first
+    ext_base_url = Settings.madek_external_base_url
+    tmpl_data = {
+      site_titles: app_setting.site_titles,
+      external_base_url: ext_base_url,
+      reset_link: "#{ext_base_url}/auth/sign-in/auth-systems/password/password/forgot"
+    }
+    tmpl = EmailTemplates::SetPassword.new(tmpl_data)
+    locale = (@user.emails_locale || app_setting.default_locale).to_sym
+    to = @user.email
+    subject = tmpl.render_subject(locale)
+    body = tmpl.render_body(locale)
+
+    Email.dispatch!(user: @user, to: to, subject: subject, body: body)
+    flash[:success] = "Email with password reset instructions has been sent to #{@user.email}."
+    render :show
+  end
+
   private
 
   def initialize_user
