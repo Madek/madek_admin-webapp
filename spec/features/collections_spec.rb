@@ -13,7 +13,7 @@ feature 'Admin Collections' do
     fill_in 'search_terms', with: 'zhdk'
     click_button 'Apply'
     names = all('table tbody tr').map do |tr|
-      expect(tr.find('th:first').text.downcase).to have_content 'zhdk'
+      expect(tr.find('td:first').text.downcase).to have_content 'zhdk'
     end
     expect(find_field('search_terms')[:value]).to eq 'zhdk'
     expect(names).to eq names.sort

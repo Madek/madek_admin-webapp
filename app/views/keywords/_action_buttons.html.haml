@@ -1,8 +1,13 @@
-- is_used = keyword.usage_count > 0
-- if is_used
-  = link_to "Show usage (#{keyword.usage_count})".html_safe, usage_keyword_path(keyword), class: 'btn btn-default'
-- else
-  .btn.btn-default.disabled Not used
+:ruby
+  is_used_in_entries = keyword.entries_usage_count > 0
+  is_used_in_collections = keyword.collections_usage_count > 0
+  is_used = is_used_in_entries || is_used_in_collections
+
+- if is_used_in_entries
+  = link_to "Show Entries (#{keyword.entries_usage_count})".html_safe, entries_usage_keyword_path(keyword), class: 'btn btn-default'
+
+- if is_used_in_collections
+  = link_to "Show Sets (#{keyword.collections_usage_count})".html_safe, collections_usage_keyword_path(keyword), class: 'btn btn-default'
 
 - if webapp_keyword_path(keyword) && is_used
   = link_to webapp_keyword_path(keyword), class: 'btn btn-default', target: :_blank do
@@ -20,8 +25,8 @@
     %i.glyphicon.glyphicon-trash
     Delete
 - else
-  = link_to keyword_path(keyword, redirect_to: request.fullpath), method: :delete, data: { |
-    confirm: 'The keyword will be deleted. Do you want to proceed?' }, |
-    class: 'btn btn-danger' do
+  = link_to keyword_path(keyword, redirect_to: request.fullpath),
+            method: :delete, data: { confirm: 'The keyword will be deleted. Do you want to proceed?' },
+            class: 'btn btn-danger' do
     %i.glyphicon.glyphicon-trash
     Delete

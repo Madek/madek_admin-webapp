@@ -327,7 +327,7 @@ describe KeywordsController do
     end
 
     it 'assigns variables correctly' do
-      get :usage, params: { id: keyword.id }, session: { user_id: admin_user.id }
+      get :entries_usage, params: { id: keyword.id }, session: { user_id: admin_user.id }
 
       expect(assigns[:keyword]).to eq keyword
       expect(assigns[:usage_count]).to eq 0

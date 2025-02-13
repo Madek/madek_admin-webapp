@@ -1,0 +1,23 @@
+.page-header
+  %h1
+    Keyword: #{@keyword}
+    %small Usage in Sets
+  %small
+    = link_to '&larr; Go back to keywords list'.html_safe, keywords_path
+
+.alert.alert-info
+  The <strong>#{@keyword}</strong> keyword is used <strong>#{pluralize(@usage_count, 'time')}</strong> in the following Sets:
+
+.row
+  .col-xs-12
+    %table.table.table-striped
+      %thead
+        %tr
+          %th Title
+          %th Responsible user
+          %th Deleted
+          %th
+      %tbody
+        = render partial: 'collections/collection', collection: @collections, as: :collection
+
+= paginate @collections

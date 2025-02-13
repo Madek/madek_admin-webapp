@@ -12,6 +12,10 @@ feature 'Keywords' do
   let(:keyword_1) { create :keyword, term: 'Zett 1-2011', meta_key: meta_key }
   let(:keyword_2) { create :keyword, term: 'Zett 1-2012', meta_key: meta_key }
   let(:keyword_3) { create :keyword, term: 'Zett 1-2013', meta_key: meta_key }
+  let(:keyword_4) { create :keyword }
+
+  let(:collection) { create :collection_with_title, title: "Collection C" }
+  let(:media_entry) { create :media_entry_with_title, title: "Entry E" }
 
   scenario 'Filtering not used keywords' do
     mdk = create :meta_datum_keywords
@@ -243,6 +247,31 @@ feature 'Keywords' do
     expect_order ['Zett 1-2013',
                   'Zett 1-2011',
                   'Zett 1-2012']
+  end
+
+  scenario 'usage', browser: :firefox do
+    FactoryBot.create(:meta_datum_keywords,
+                      keywords: [keyword_4],
+                      media_entry: media_entry)
+    FactoryBot.create(:meta_datum_keywords,
+                      keywords: [keyword_4],
+                      collection: collection)
+
+    visit keywords_path
+    fill_in "search_term", with: keyword_4.term
+    click_on "Apply"
+    click_on "Show Entries (1)"
+    expect(current_path).to eq entries_usage_keyword_path(keyword_4)
+    expect(all("table tbody tr").count).to eq 1
+    expect(first("table tbody tr td").text).to eq "Entry E"
+
+    click_on "Go back to keywords list"
+    fill_in "search_term", with: keyword_4.term
+    click_on "Apply"
+    click_on "Show Sets (1)"
+    expect(current_path).to eq collections_usage_keyword_path(keyword_4)
+    expect(all("table tbody tr").count).to eq 1
+    expect(first("table tbody tr td").text).to eq "Collection C"
   end
 
   def collect_keyword_terms

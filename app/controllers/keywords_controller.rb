@@ -60,16 +60,30 @@ class KeywordsController < ApplicationController
 
   define_move_actions_for(Keyword) { |keyword| meta_key_path(keyword.meta_key) }
 
-  def usage
+  def entries_usage
     @keyword = Keyword.find(params[:id])
-    @usage_count = Keyword
-                    .usage_count_for(@keyword)
-                    .fetch(@keyword.id, 0)
+    @usage_count = \
+      Keyword
+      .entries_usage_count_for(@keyword)
+      .fetch(@keyword.id, 0)
     @media_entries =
       MediaEntry
         .unscoped
         .where(id: @keyword.meta_data.pluck(:media_entry_id))
         .page(page_params).per(16)
+  end
+
+  def collections_usage
+    @keyword = Keyword.find(params[:id])
+    @usage_count = \
+      Keyword
+      .collections_usage_count_for(@keyword)
+      .fetch(@keyword.id, 0)
+    @collections =
+      Collection
+      .unscoped
+      .where(id: @keyword.meta_data.pluck(:collection_id))
+      .page(page_params).per(16)
   end
 
   def form_merge_to

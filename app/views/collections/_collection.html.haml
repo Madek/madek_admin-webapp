@@ -1,5 +1,5 @@
 %tr.collection{id: collection.id}
-  %th= collection.title
+  %td= collection.title
   %td
     = link_to responsible_entity_path(collection) do
       = collection.responsible_entity_name
@@ -15,4 +15,4 @@
         %i.glyphicon.glyphicon-eye-open
       = link_to ui_collection_path(collection), class: 'btn btn-default btn-with-icon-only', target: :_blank do
         %i.glyphicon.glyphicon-globe
-      = render partial: 'action_buttons', locals: { collection: collection }
+      = render partial: 'collections/action_buttons', locals: { collection: collection }
