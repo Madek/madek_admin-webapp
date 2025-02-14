@@ -14,7 +14,9 @@ module VocabularyPermissions
 
     def define_create_action_for(association)
       define_method :create do
-        @vocabulary.send(association).create!(permission_params)
+        @vocabulary
+          .send(association)
+          .create!(permission_params.merge(creator_id: current_user.id))
         session[:vocabulary_id] = nil
 
         redirect_to send(redirect_path(association), @vocabulary),
@@ -39,7 +41,7 @@ module VocabularyPermissions
     def define_update_action_for(association)
       define_method :update do
         permission = @vocabulary.send(association).find(params[:id])
-        permission.update!(permission_params)
+        permission.update!(permission_params.merge(updator_id: current_user.id))
         session[:vocabulary_id] = nil
 
         redirect_to send(redirect_path(association), @vocabulary),
