@@ -2,7 +2,7 @@
 
 contexts:
   rails:
-    include: 
+    include:
       - cider-ci/context-components/env.yml
       - cider-ci/context-components/rails-setup.yml
     task_defaults:
@@ -10,7 +10,8 @@ contexts:
     tasks:
       assets_manifest:
         name: 'Assets are precompiled and checked in'
-        traits: { asdf: yes }
+        traits:
+          asdf: true
         scripts:
           test:
             timeout: 10 Minutes
