@@ -84,6 +84,12 @@
     = admin_db_column "searchable"
     %td= @person.searchable
   %tr
+    = admin_db_column "creator_id"
+    %td= @person.creator_id
+  %tr
+    = admin_db_column "updator_id"
+    %td= @person.updator_id
+  %tr
     = admin_db_column "created_at"
     %td= @person.created_at
   %tr

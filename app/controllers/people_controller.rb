@@ -33,7 +33,7 @@ class PeopleController < ApplicationController
 
   def update
     find_person
-    @person.update!(person_params)
+    @person.update!(person_params.merge(updator_id: current_user.id))
 
     redirect_to person_path(@person), flash: {
       success: 'The person has been updated.'
@@ -43,7 +43,7 @@ class PeopleController < ApplicationController
   end
 
   def create
-    @person = Person.new(person_params)
+    @person = Person.new(person_params.merge(creator_id: current_user.id))
     @person.save!
 
     redirect_to people_path, flash: {

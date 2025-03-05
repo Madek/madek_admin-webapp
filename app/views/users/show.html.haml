@@ -101,6 +101,12 @@
 
 %table.table.table-striped.with-border-bottom
   %tr
+    = admin_db_column "creator_id"
+    %td= @user.creator_id
+  %tr
+    = admin_db_column "updator_id"
+    %td= @user.updator_id
+  %tr
     %td{ style: "width: 33%" }
       %strong Created at
       %code.black-smaller (created_at)

@@ -38,12 +38,12 @@ class UsersController < ApplicationController
   end
 
   def update
-    @user.update!(user_params)
+    @user.update!(user_params.merge(updator_id: current_user.id))
     respond_with @user, location: -> { user_path(@user) }
   end
 
   def create
-    @user = User.new(user_params)
+    @user = User.new(user_params.merge(creator_id: current_user.id))
 
     if @user.person_id.nil?
       @user.person = Person.new(subtype: 'Person', first_name: @user.first_name, last_name: @user.last_name)
