@@ -88,7 +88,7 @@ Rails.application.routes.draw do
     resources :io_interfaces, except: [:edit, :update]
     resources :app_settings, only: [:index, :edit, :update]
     resources :usage_terms, except: :edit
-    resources :keywords, except: :show, concerns: :orderable do
+    resources :keywords, concerns: :orderable do
       get :entries_usage, on: :member
       get :collections_usage, on: :member
       get :form_merge_to, on: :member

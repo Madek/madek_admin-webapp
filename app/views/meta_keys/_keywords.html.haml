@@ -33,6 +33,6 @@
               .btn-group.btn-group-sm.btn-group-vertical
                 - unless @meta_key.keywords_alphabetical_order
                   = move_buttons(keyword)
-                = render partial: 'keywords/action_buttons', locals: { keyword: keyword }
+                = render partial: 'keywords/action_buttons', locals: { keyword: keyword, details_button: true }
 
 = paginate @keywords

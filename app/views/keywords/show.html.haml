@@ -1,0 +1,25 @@
+.page-header
+  %h1
+    %i.glyphicon.glyphicon-tag
+    = @keyword
+  %small
+    = link_to "&larr; Go back to keywords list".html_safe, keywords_path
+
+.panel.panel-default
+  .panel-body
+    .btn-group
+      :ruby
+        locals = {
+          keyword: @keyword,
+          size: nil,
+          details_button: false
+        }
+      = render(partial: 'action_buttons', locals: locals)
+
+%table.table.table-striped
+  %thead
+    %tbody
+      - @keyword.attributes.each do |name,value|
+        %tr{'data-attr' => name}
+          %td= admin_db_column(name)
+          %td= value

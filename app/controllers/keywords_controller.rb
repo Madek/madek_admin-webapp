@@ -10,6 +10,10 @@ class KeywordsController < ApplicationController
     @current_meta_key = nil
   end
 
+  def show
+    @keyword = Keyword.find(params[:id])
+  end
+
   def edit
     @keyword = Keyword.find(params[:id])
     @vocabulary = @keyword.meta_key.vocabulary

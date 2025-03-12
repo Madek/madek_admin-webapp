@@ -1,3 +1,8 @@
+- if details_button
+  = link_to keyword_path(keyword), class: 'btn btn-default btn-with-icon-only', title: 'Details' do
+    %span.glyphicon.glyphicon-eye-open
+    Details
+
 :ruby
   is_used_in_entries = keyword.entries_usage_count > 0
   is_used_in_collections = keyword.collections_usage_count > 0
