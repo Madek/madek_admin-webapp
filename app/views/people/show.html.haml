@@ -52,6 +52,9 @@
       %code.black-smaller (institutional_id)
     %td= @person.institutional_id
   %tr
+    = admin_db_column "institutional_directory_infos"
+    %td= @person.institutional_directory_infos
+  %tr
     = admin_db_column "identification_info"
     %td= @person.identification_info
   %tr
