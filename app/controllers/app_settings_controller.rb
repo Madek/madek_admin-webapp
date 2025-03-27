@@ -29,7 +29,8 @@ class AppSettingsController < ApplicationController
         'ignored for the feature "Browse similar entries (Stöbern)"',
       edit_meta_data_power_users_group_id: 'Edit Meta-Data Power-Users Group-ID',
       users_active_until_ui_default: 'Active until default for new user form (in days)',
-      person_info_fields: 'Shown in webapp edit form person select lists'
+      person_info_fields: 'Shown in webapp edit form person select lists',
+      banner_messages: 'Message shown in a banner on top of the page in WebApp'
     },
     'Copyright/License Defaults' => {
       media_entry_default_license_meta_key: 'MetaKey ID MediaEntry Licenses',
