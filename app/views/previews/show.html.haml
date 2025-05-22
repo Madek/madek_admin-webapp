@@ -35,13 +35,14 @@
 
 %pre.text-center= @preview.filename
 
-%hr
-
 .row
   .col-xs-12
     .panel.panel-default
       .panel-body
         .btn-group.pull-right
+          = link_to raw_file_path, target: '_blank', rel: 'noopener', class: 'btn btn-default' do
+            %i.glyphicon.glyphicon-new-window
+            View file in new window
           = link_to preview_path(@preview), method: :delete, class: 'btn btn-danger',
             data: { confirm: 'Preview will be deleted. Do you want to proceed?' } do
             %i.glyphicon.glyphicon-trash
