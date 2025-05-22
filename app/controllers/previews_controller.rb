@@ -13,10 +13,10 @@ class PreviewsController < ApplicationController
   end
 
   def raw_file
-    file_path = Preview.find(params[:preview_id]).file_path
-    return unless file_path
-    send_file file_path,
-              type: 'image',
+    preview = Preview.find(params[:preview_id])
+    return unless preview && preview.file_path
+    send_file preview.file_path,
+              type: preview.content_type,
               disposition: 'inline'
   end
 end
