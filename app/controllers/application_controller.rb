@@ -47,12 +47,11 @@ class ApplicationController < ActionController::Base
   private
 
   def auth_anti_csrf_token
-    cookies['madek.auth.anti-csrf-token']
+    cookies['madek-auth_anti-csrf-token']
   end
 
   def set_context_for_app_layout
-    # Using this so that error template (incl. base layout)
-    # can be rendered even if exception occured on the DB-level and
+    # Using this so that error template (incl. base layout) can be rendered even if exception occured on the DB-level and
     # the transaction has been closed for further DB-queries.
     @beta_tester_notifications = current_user.try(:beta_tester_notifications?)
   end
