@@ -7,17 +7,10 @@ class RolesController < ApplicationController
                .sorted
                .page(page_params)
                .per(16)
-    filter_by_vocabulary
-    @vocabularies = Vocabulary.reorder(:id)
-    @vocabulary = Vocabulary.find_by(id: filter_value(:vocabulary_id))
   end
 
   def new
     @role = Role.new
-    @vocabulary = Vocabulary.find(params[:vocabulary_id])
-    @meta_keys = @vocabulary
-                   .meta_keys
-                   .where(meta_datum_object_type: 'MetaDatum::Roles')
   end
 
   def create
@@ -29,10 +22,6 @@ class RolesController < ApplicationController
 
   def edit
     @role = Role.find(params[:id])
-    @vocabulary = @role.meta_key.vocabulary
-    @meta_keys = @vocabulary
-                   .meta_keys
-                   .where(meta_datum_object_type: 'MetaDatum::Roles')
   end
 
   def update
@@ -48,10 +37,6 @@ class RolesController < ApplicationController
   end
 
   private
-
-  def filter_by_vocabulary
-    @roles = @roles.of_vocabulary(params.fetch(:filter, {})[:vocabulary_id])
-  end
 
   def role_params
     params.require(:role).permit!
