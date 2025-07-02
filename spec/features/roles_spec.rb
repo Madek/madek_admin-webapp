@@ -2,46 +2,8 @@ require 'spec_helper'
 require 'spec_helper_feature'
 
 feature 'Roles' do
-  let(:meta_key) { create :meta_key_roles }
-
-  scenario 'Creating when vocabulary has no meta keys of required type' do
-    vocabulary = create :vocabulary
-
-    visit roles_path
-
-    expect(page).to have_content 'Roles ('
-    expect(add_role_button).to match_css '.disabled'
-
-    select vocabulary.id, from: 'Vocabulary'
-    click_button 'Apply'
-
-    expect(page).to have_select 'Vocabulary', selected: vocabulary.id
-    expect(add_role_button).not_to match_css '.disabled'
-
-    add_role_button.click
-
-    expect(page).to have_content 'New Role'
-
-    fill_in 'role[labels][de]', with: Faker::Lorem.characters(number: 10)
-    click_button 'Save'
-
-    expect(page).to have_content "ERROR: null value in column \"meta_key_id\" " \
-      "of relation \"roles\" violates not-null constraint"
-
-  end
-
   scenario 'Creating' do
-    vocabulary = meta_key.vocabulary
-
     visit roles_path
-
-    expect(add_role_button).to match_css '.disabled'
-
-    select vocabulary.id, from: 'Vocabulary'
-    click_button 'Apply'
-
-    expect(page).to have_select 'Vocabulary', selected: vocabulary.id
-    expect(add_role_button).not_to match_css '.disabled'
 
     add_role_button.click
 
@@ -57,12 +19,8 @@ feature 'Roles' do
   end
 
   scenario 'Creating with empty label' do
-    meta_key = create :meta_key_roles
-
     visit roles_path
 
-    select meta_key.vocabulary_id, from: 'Vocabulary'
-    click_button 'Apply'
     add_role_button.click
     click_button 'Save'
 
