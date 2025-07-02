@@ -101,6 +101,7 @@ Rails.application.routes.draw do
     end
 
     resources :roles
+    resources :roles_lists
     resources :delegations do
       member do
         get :form_add_group
