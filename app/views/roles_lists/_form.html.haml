@@ -1,5 +1,5 @@
-= form_for @role, html: { class: 'form-horizontal', role: 'form' } do |f|
-  - if @role.persisted?
+= form_for @roles_list, html: { class: 'form-horizontal', role: 'form' } do |f|
+  - if @roles_list.persisted?
     .form-group
       .col-xs-2
         = f.label :id, class: 'control-label'

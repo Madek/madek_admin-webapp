@@ -1,0 +1,14 @@
+%tr
+  %td= roles_list.id
+  %td
+    - roles_list.labels.each do |locale, label|
+      %div
+        %em= "#{locale}:"
+        = label
+
+  %td.active.col-xs-2.text-center
+    .btn-group.btn-group-sm.btn-group-vertical
+      = link_to roles_list_path(roles_list), class: 'btn btn-default', title: 'Details' do
+        %i.glyphicon.glyphicon-eye-open
+        Details
+      = render partial: 'action_buttons', locals: { roles_list: roles_list }

@@ -1,0 +1,9 @@
+%tr
+  %td #{role.id}
+  %td #{role.labels}
+  %td
+    = link_to roles_list_role_remove_from_roles_list_path(@roles_list, role), method: :delete,
+        data: {confirm: %Q{Are you sure you want to remove "#{role.label}" from this roles list?}},
+        class: 'btn btn-danger btn-xs' do
+      %i.glyphicon.glyphicon-trash
+      Remove from roles list

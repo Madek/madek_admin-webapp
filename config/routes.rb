@@ -101,6 +101,14 @@ Rails.application.routes.draw do
     end
 
     resources :roles
+    resources :roles_lists do
+      member do
+        patch :add_role
+      end
+      resources :roles, only: [] do
+        delete :remove_from_roles_list
+      end
+    end
     resources :delegations do
       member do
         get :form_add_group

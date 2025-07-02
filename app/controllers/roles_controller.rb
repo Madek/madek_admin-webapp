@@ -7,17 +7,14 @@ class RolesController < ApplicationController
                .sorted
                .page(page_params)
                .per(16)
-    filter_by_vocabulary
-    @vocabularies = Vocabulary.reorder(:id)
-    @vocabulary = Vocabulary.find_by(id: filter_value(:vocabulary_id))
+
+    @roles_list = if params[:add_to_roles_list_id].present?
+                    RolesList.find(params[:add_to_roles_list_id])
+                  end
   end
 
   def new
     @role = Role.new
-    @vocabulary = Vocabulary.find(params[:vocabulary_id])
-    @meta_keys = @vocabulary
-                   .meta_keys
-                   .where(meta_datum_object_type: 'MetaDatum::Roles')
   end
 
   def create
@@ -29,10 +26,6 @@ class RolesController < ApplicationController
 
   def edit
     @role = Role.find(params[:id])
-    @vocabulary = @role.meta_key.vocabulary
-    @meta_keys = @vocabulary
-                   .meta_keys
-                   .where(meta_datum_object_type: 'MetaDatum::Roles')
   end
 
   def update
@@ -47,11 +40,14 @@ class RolesController < ApplicationController
     respond_with role, location: roles_path
   end
 
-  private
+  def remove_from_roles_list
+    roles_list = RolesList.find(params[:roles_list_id])
+    roles_list.roles.delete(Role.find(params[:role_id]))
 
-  def filter_by_vocabulary
-    @roles = @roles.of_vocabulary(params.fetch(:filter, {})[:vocabulary_id])
+    respond_with roles_list, notice: 'The role has been removed.'
   end
+
+  private
 
   def role_params
     params.require(:role).permit!

@@ -1,0 +1,33 @@
+.page-header
+  %h1
+    Roles Lists (#{@roles_lists.total_count})
+
+.row
+  .col-xs-12
+    .panel.panel-default
+      .panel-heading
+        .panel-title Filters
+      .panel-body
+        = form_tag request.path, method: :get, class: 'form-inline' do
+          .form-group
+            = text_field_tag 'filter[term]', filter_value(:term), size: 50,
+              class: 'form-control', placeholder: 'ID, term'
+          = submit_tag 'Apply', class: 'btn btn-primary'
+          = link_to 'Reset', roles_lists_path, class: 'btn btn-default'
+      .panel-footer
+        = link_to new_roles_list_path, class: "btn btn-default" do
+          %i.glyphicon.glyphicon-plus
+          Create a Roles List
+
+.row
+  .col-xs-12
+    %table.table.table-striped
+      %thead
+        %tr
+          %th ID
+          %th Label
+          %th
+      %tbody
+        = render @roles_lists
+
+= paginate @roles_lists
