@@ -99,6 +99,11 @@ class AppSettingsController < ApplicationController
       description: 'List of ContextKeys that are displayed as sections of \
       the Catalog'
     },
+    catalog_caching: {
+      label: 'Catalog: Caching',
+      description: "If true, the Catalog will be cached for \
+      #{CacheHelper.catalog_cache_duration.inspect}."
+    },
     featured_set_titles: {
       label: 'Featured Content: Title',
       description: ''
