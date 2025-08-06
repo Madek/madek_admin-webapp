@@ -23,7 +23,7 @@
       %tbody
       - @roles_list.attributes.each do |name,value|
         %tr
-          = admin_db_column(name)
+          = admin_db_column(name, ("Extensible?" if name == 'is_extensible_list'))
           - case name
           - when nil
           - else
