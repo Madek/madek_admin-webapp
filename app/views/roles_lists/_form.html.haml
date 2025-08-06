@@ -13,6 +13,11 @@
         .col-xs-6
           = lf.text_field locale, class: 'form-control'
   .form-group
+    .col-xs-2
+      = f.label :is_extensible_list, "Extensible?", class: 'control-label'
+    .col-xs-6{style: "margin-top: 5px;"}
+      = f.check_box :is_extensible_list
+  .form-group
     .col-xs-offset-2.col-xs-3
       = button_tag type: 'submit', class: 'btn btn-success' do
         %span.glyphicon.glyphicon-ok
