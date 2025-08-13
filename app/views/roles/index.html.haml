@@ -15,6 +15,7 @@
         .panel-title Filters
       .panel-body
         = form_tag request.path, method: :get, class: 'form-inline' do
+          = hidden_field_tag :add_to_roles_list_id, @roles_list.id if @roles_list
           .form-group
             = text_field_tag 'filter[term]', filter_value(:term), size: 50,
               class: 'form-control', placeholder: 'ID, term'
