@@ -1,5 +1,5 @@
-= form_for @role, html: { class: 'form-horizontal', role: 'form' } do |f|
-  - if @role.persisted?
+= form_for @roles_list, html: { class: 'form-horizontal', role: 'form' } do |f|
+  - if @roles_list.persisted?
     .form-group
       .col-xs-2
         = f.label :id, class: 'control-label'
@@ -12,6 +12,11 @@
           = lf.label locale, "Label [#{locale}]", class: 'control-label'
         .col-xs-6
           = lf.text_field locale, class: 'form-control'
+  .form-group
+    .col-xs-2
+      = f.label :is_extensible_list, "Extensible?", class: 'control-label'
+    .col-xs-6{style: "margin-top: 5px;"}
+      = f.check_box :is_extensible_list
   .form-group
     .col-xs-offset-2.col-xs-3
       = button_tag type: 'submit', class: 'btn btn-success' do

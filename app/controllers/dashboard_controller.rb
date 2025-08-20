@@ -47,13 +47,16 @@ class DashboardController < ApplicationController
           path: meta_datums_path
         },
         Keyword,
-        Person
+      ],
+      [
+        Person,
+        RolesList,
+        Role
       ],
       [
         Vocabulary,
         MetaKey,
         Context,
-        Role
       ],
       [
         User,

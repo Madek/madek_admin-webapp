@@ -29,11 +29,13 @@
             options_from_collection_for_select(Vocabulary.sorted, :id, :id, f.object.vocabulary_id),
             {}, class: 'form-control'
 
-  - unless @meta_key.core?
-    .form-group
-      .col-xs-3
-        = f.label :meta_datum_object_type, class: 'control-label'
-      .col-xs-6
+  .form-group
+    .col-xs-3
+      = f.label :meta_datum_object_type, class: 'control-label'
+    .col-xs-6
+      - if @meta_key.core?
+        = content_tag('p', nil, class: 'form-control-static') { content_tag('samp') { concat f.object.meta_datum_object_type } }
+      - else
         = f.select :meta_datum_object_type,
             options_for_select(['', MetaKey.object_types].flatten, f.object.meta_datum_object_type),
             {},
@@ -52,6 +54,15 @@
         %label.radio-inline
           = f.radio_button :keywords_alphabetical_order, false
           No
+
+  - if @meta_key.meta_datum_object_type == 'MetaDatum::People'
+    .form-group
+      .col-xs-3
+        = f.label :roles_list_id, class: 'control-label'
+      .col-xs-6
+        = f.select :roles_list_id,
+            options_from_collection_for_select(RolesList.sorted.to_a.prepend(RolesList.new), :id, :label, f.object.roles_list_id),
+            {}, class: 'form-control'
 
   - if not @meta_key.core? and @meta_key.can_have_people_subtypes?
     .form-group

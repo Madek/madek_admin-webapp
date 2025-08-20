@@ -1,0 +1,46 @@
+.page-header
+  %h1
+    %i.icon-user 
+    #{@roles_list.label}
+  %small
+    = link_to '&larr; Go back to roles lists\' list'.html_safe, roles_lists_path
+
+.row
+  .col-xs-12
+    .panel.panel-default
+      .panel-body
+        .btn-group
+          = link_to roles_path(add_to_roles_list_id: @roles_list.id), class: 'btn btn-default' do
+            %i.glyphicon.glyphicon-plus
+            Add role
+
+          = render partial: 'action_buttons', locals: { roles_list: @roles_list }
+
+.row
+  .col-xs-12
+    %table.table.table-striped
+      %thead
+      %tbody
+      - @roles_list.attributes.each do |name,value|
+        %tr
+          = admin_db_column(name, ("Extensible?" if name == 'is_extensible_list'))
+          - case name
+          - when nil
+          - else
+            %td= value
+
+.row#roles
+  .col-xs-12
+    .page-header
+      %h3 Roles (#{@roles.count})
+    %table#group-users.table.table-striped
+      %thead
+        %tr
+          %th Id
+          %th Labels
+          %th
+            %tbody
+              = render(partial: 'roles_lists/role', collection: @roles) || empty_collection('roles', 4)
+
+-# = paginate @roles
+

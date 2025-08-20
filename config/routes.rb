@@ -101,6 +101,14 @@ Rails.application.routes.draw do
     end
 
     resources :roles
+    resources :roles_lists do
+      member do
+        patch :add_role
+      end
+      resources :roles, only: [] do
+        delete :remove_from_roles_list
+      end
+    end
     resources :delegations do
       member do
         get :form_add_group
@@ -129,10 +137,6 @@ Rails.application.routes.draw do
 
       get 'batch_translate'
       post 'batch_translate', action:'batch_translate_update'
-
-      get 'csv_import_index'
-      get 'csv_import_roles'
-      post 'csv_import_roles_update'
     end
 
     get 'smtp_settings', to: 'smtp_settings#show', as: 'smtp_settings'

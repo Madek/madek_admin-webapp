@@ -95,6 +95,7 @@ class MetaKeysController < ApplicationController
       .permit(
         :id,
         :meta_datum_object_type,
+        :roles_list_id,
         :text_type,
         :is_extensible_list,
         :keywords_alphabetical_order,

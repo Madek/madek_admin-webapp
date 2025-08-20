@@ -1,55 +1,53 @@
 require 'spec_helper'
 require 'spec_helper_feature'
 
-feature 'Roles' do
+feature 'Roles Lists' do
   scenario 'Creating' do
-    visit roles_path
+    visit roles_lists_path
+    click_on 'Create a Roles List'
+    expect(page).to have_content 'New Roles List'
 
-    add_role_button.click
-
-    expect(page).to have_content 'New Role'
-
-    fill_in 'role[labels][de]', with: 'Regisseur'
-    fill_in 'role[labels][en]', with: 'Director'
+    fill_in 'roles_list[labels][de]', with: 'Regisseuren Liste'
+    fill_in 'roles_list[labels][en]', with: 'Directors List'
     click_button 'Save'
 
     expect(page).to have_css '.alert-success'
-    expect(page).to have_content 'de: Regisseur'
-    expect(page).to have_content 'en: Director'
+    expect(page).to have_content 'de: Regisseuren Liste'
+    expect(page).to have_content 'en: Directors List'
   end
 
   scenario 'Creating with empty label' do
-    visit roles_path
-
-    add_role_button.click
+    visit roles_lists_path
+    click_on 'Create a Roles List'
+    expect(page).to have_content 'New Roles List'
     click_button 'Save'
 
     expect(page).to have_content "Validation failed: Label can't be blank"
-    expect(page).not_to have_content 'Roles ('
+    expect(page).not_to have_content 'Roles List ('
   end
 
   scenario 'Editing' do
-    role = create :role
+    roles_list = create :roles_list
 
-    visit roles_path
+    visit roles_lists_path
 
-    filter_by_term role.label
+    filter_by_term roles_list.label
 
     within 'table tbody tr' do
       click_link 'Edit'
     end
 
-    expect(page).to have_content "Edit Role #{role}"
+    expect(page).to have_content "Edit Roles List #{roles_list}"
 
     new_label = Faker::Lorem.characters(number: 10)
 
-    fill_in 'role[labels][de]', with: "#{new_label} DE"
-    fill_in 'role[labels][en]', with: "#{new_label} EN"
+    fill_in 'roles_list[labels][de]', with: "#{new_label} DE"
+    fill_in 'roles_list[labels][en]', with: "#{new_label} EN"
     click_button 'Save'
 
     expect(page).to have_css '.alert-success'
 
-    filter_by_term role.label
+    filter_by_term roles_list.label
 
     expect(page).not_to have_css 'table tbody tr'
 
@@ -62,11 +60,11 @@ feature 'Roles' do
   end
 
   scenario 'Deleting' do
-    role = create :role
+    roles_list = create :roles_list
 
-    visit roles_path
+    visit roles_lists_path
 
-    filter_by_term role.label
+    filter_by_term roles_list.label
 
     within 'table tbody tr' do
       click_link 'Delete'
@@ -74,13 +72,9 @@ feature 'Roles' do
 
     expect(page).to have_css '.alert-success'
 
-    filter_by_term role.label
+    filter_by_term roles_list.label
 
     expect(page).not_to have_css 'table tbody tr'
-  end
-
-  def add_role_button
-    find_link('Create a Role')
   end
 
   def filter_by_term(term)

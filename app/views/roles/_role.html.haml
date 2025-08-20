@@ -1,6 +1,5 @@
 %tr
   %td= role.id
-  %td= link_to role.meta_key_id, meta_key_path(role.meta_key_id)
   %td
     - role.labels.each do |locale, label|
       %div
@@ -9,4 +8,9 @@
 
   %td.active.col-xs-2.text-center
     .btn-group.btn-group-sm
-      = render partial: 'action_buttons', locals: { role: role }
+      - if @roles_list
+        = link_to add_role_roles_list_path(@roles_list.id, role_id: role.id), method: :patch, class: 'btn btn-success' do
+          %span.glyphicon.glyphicon-plus
+          Add to the Roles List
+      - else
+        = render partial: 'action_buttons', locals: { role: role }

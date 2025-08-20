@@ -1,12 +1,6 @@
 .page-header
   %h1
-    Roles (#{@roles.total_count})
-
-- if @roles_list
-  .row
-    .col-xs-12
-      .alert.alert-info{role: 'alert'}
-        Choose a Role to be added to the Roles List <strong>#{@roles_list.label}</strong> or #{link_to 'cancel and go back to the roles_list', roles_list_path(@roles_list)}.
+    Roles Lists (#{@roles_lists.total_count})
 
 .row
   .col-xs-12
@@ -15,16 +9,15 @@
         .panel-title Filters
       .panel-body
         = form_tag request.path, method: :get, class: 'form-inline' do
-          = hidden_field_tag :add_to_roles_list_id, @roles_list.id if @roles_list
           .form-group
             = text_field_tag 'filter[term]', filter_value(:term), size: 50,
               class: 'form-control', placeholder: 'ID, term'
           = submit_tag 'Apply', class: 'btn btn-primary'
-          = link_to 'Reset', roles_path, class: 'btn btn-default'
+          = link_to 'Reset', roles_lists_path, class: 'btn btn-default'
       .panel-footer
-        = link_to new_role_path, class: "btn btn-default" do
+        = link_to new_roles_list_path, class: "btn btn-default" do
           %i.glyphicon.glyphicon-plus
-          Create a Role
+          Create a Roles List
 
 .row
   .col-xs-12
@@ -35,6 +28,6 @@
           %th Label
           %th
       %tbody
-        = render @roles
+        = render @roles_lists
 
-= paginate @roles
+= paginate @roles_lists
