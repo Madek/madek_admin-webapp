@@ -640,7 +640,7 @@ feature 'Admin Meta Keys' do
         visit meta_key_path(meta_key)
 
         expect(page).to have_content('An error occured code: 404')
-        expect(page).to have_content("Couldn't find MetaKey with 'id'=test:foo")
+        expect(page).to have_content("Couldn't find MetaKey with 'id'=\"test:foo\"")
       end
     end
   end
