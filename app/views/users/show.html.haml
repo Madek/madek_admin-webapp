@@ -1,7 +1,7 @@
 .page-header
   %h1
     %i.glyphicon.glyphicon-user
-    #{@user} (#{@user.login})
+    #{@user.user_handle}
     - if @user.deactivated?
       %span.label.label-default deactivated
   %small
@@ -29,7 +29,9 @@
     = admin_db_column "email"
     %td= @user.email
   %tr
-    = admin_db_column "login"
+    %td
+      %strong Username
+      %code.black-smaller (login)
     %td= @user.login
   %tr
     = admin_db_column "auth_systems"

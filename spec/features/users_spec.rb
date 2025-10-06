@@ -35,7 +35,7 @@ feature 'Admin Users' do
 
     expect(page).to have_checked_field 'deactivated'
     within 'table tbody' do
-      expect(page).to have_content "deactivated #{deactivated_user.login}"
+      expect(page).to have_content "#{deactivated_user.login} (#{deactivated_user.institution}) deactivated"
       expect(page).to have_css(:tr, count: 1)
     end
   end

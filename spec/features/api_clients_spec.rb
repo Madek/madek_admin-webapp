@@ -35,7 +35,7 @@ feature 'Admin API Clients' do
 
     expect(page).to have_css '.alert-success'
     expect(page).to have_content 'test-login'
-    expect(page).to have_content user.to_s
+    expect(page).to have_content user.user_handle
 
     api_client = ApiClient.find_by(login: 'test-login')
     expect(api_client).to be
@@ -70,7 +70,7 @@ feature 'Admin API Clients' do
     api_client.reload
     expect(current_path).to eq api_client_path(api_client)
     expect(api_client.description).to eq 'test description'
-    binding.pry
+    #binding.pry
     expect(api_client.password_digest.presence).to eq password_digest.presence
   end
 

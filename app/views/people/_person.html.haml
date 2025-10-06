@@ -6,10 +6,7 @@
     - if person.users.any?
       - person.users.each do |user|
         %div
-          = link_to user_path(user) do
-            = user.login.presence || user.email.presence || user.to_s
-          - if user.deactivated?
-            %span.label.label-default deactivated
+          = render partial: 'shared/user_link_plain', locals: {user: user}
   %td= person.pseudonym
   %td= person.subtype
   %td.active.col-xs-2.text-center

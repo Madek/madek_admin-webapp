@@ -1,5 +1,6 @@
 %tr
-  %td.col-xs-2{style: 'word-break: break-word'}= user.login
+  %td.col-xs-2{style: 'word-break: break-word'}
+    = render partial: 'shared/user_link_plain', locals: {user: user}
   %td.col-xs-4{style: 'word-break: break-word'}= user.email
   %td.col-xs-4= user.id
   %td.col-xs-1.text-center

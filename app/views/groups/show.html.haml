@@ -35,30 +35,29 @@
           - else
             %td= value
 
-.row
-  .col-xs-4
-    .page-header
-      %h3 Filters
   
-    = form_tag group_path(@group), method: 'GET', class: 'form-inline' do
-      .form-group
-        = text_field_tag 'user[search_term]', params.fetch(:user, {}).fetch(:search_term, nil), class: 'form-control', size: 28
-      .form-group 
-        = button_tag type: 'submit', class: 'btn btn-primary' do
-          Filter
 
-  .col-xs-8#users
-    .page-header
-      %h3 Users (#{@users.total_count})
-    %table#group-users.table.table-striped
-      %thead
-        %tr
-          %th Login
-          %th E-mail
-          %th Id
-          %th
-      %tbody
-        = render(partial: 'groups/user', collection: @users) || empty_collection('users', 4)
+%div
+  .page-header
+    %h3 Users (#{@users.total_count})
+
+  = form_tag group_path(@group), method: 'GET', class: 'form-inline' do
+    .form-group
+      = text_field_tag 'user[search_term]', params.fetch(:user, {}).fetch(:search_term, nil), class: 'form-control', size: 28
+    .form-group 
+      = button_tag type: 'submit', class: 'btn btn-primary' do
+        Filter
+
+
+%table#group-users.table.table-striped
+  %thead
+    %tr
+      %th Login
+      %th E-mail
+      %th Full name
+      %th
+  %tbody
+    = render(partial: 'groups/user', collection: @users) || empty_collection('users', 4)
     
 = paginate @users
 

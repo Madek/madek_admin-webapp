@@ -10,12 +10,10 @@
 
 %tr{'data-id' => user.id}
   %td
-    - if user.deactivated?
-      %span.label.label-default deactivated
-    = user.login
+    = render partial: 'shared/user_link_plain', locals: {user: user}
   %td= user.email
   %td
-    = user.to_s
+    = [user.first_name, user.last_name].compact.join(' ')
   %td
     = link_to person_path(user.person) do
       = user.person

@@ -22,8 +22,7 @@
               - if attr.first == 'media_entry_id'
                 = link_to attr.last, media_entry_path(attr.last)
               - elsif attr.first == 'uploader_id'
-                = link_to attr.last, user_path(attr.last)
-                [#{@media_file.uploader.login}]
+                = render partial: 'shared/user_link_plain', locals: {user: @media_file.uploader}
               - else
                 = attr.last
 

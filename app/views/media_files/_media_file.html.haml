@@ -10,7 +10,7 @@
   %td= number_to_human_size(media_file.size)
   %td= media_file.created_at
   %td
-    = link_to media_file.uploader.to_s, user_path(media_file.uploader)
+    = render partial: 'shared/user_link_plain', locals: {user: media_file.uploader}
   %td
     = conversion_status_label(media_file)
   %td

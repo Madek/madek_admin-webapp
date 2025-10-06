@@ -71,7 +71,7 @@
         %thead
           %tr
             - hash[:attributes].each do |attr|
-              %th= t(attr, scope: [:activerecord, :attributes, singular])
+              %th= t(attr, scope: [:activerecord, :attributes, member_type == :supervisors ? "user" : singular])
             %th
         %tbody
           = render(partial: "delegations/#{singular}", collection: hash[:collection]) || empty_collection(member_type, hash[:attributes].size + 1)

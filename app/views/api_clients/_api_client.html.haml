@@ -3,8 +3,7 @@
   %td.col-xs-2= api_client.login
   %td
     - if api_client.user
-      = link_to user_path(api_client.user) do
-        = api_client.user
+      = render partial: 'shared/user_link_plain', locals: {user: api_client.user}
   %td= api_client.description
 
   %td.active.col-xs-3.text-center

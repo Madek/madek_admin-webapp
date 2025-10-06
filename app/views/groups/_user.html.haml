@@ -1,7 +1,9 @@
 %tr
-  %td #{user.login}
+  %td
+    = render partial: 'shared/user_link_plain', locals: {user: user}
   %td #{user.email}
-  %td #{user.id}
+  %td
+    = [user.first_name, user.last_name].compact.join(' ')
   %td
     - if policy(@group).remove_user_from_group?
       = link_to group_user_remove_user_from_group_path(@group, user), method: :delete,

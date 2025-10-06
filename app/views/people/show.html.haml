@@ -67,16 +67,10 @@
     %td
       - if @person.users.empty?
         %div -
-      %ul.no-indent
+      %div
         - @person.users.each do |user|
-          %li
-            = link_to user_path(user) do
-              = user.to_s
-              (#{[user.institution, user.institutional_id].compact.join(' ')})
-            - if user.deactivated?
-              %span.label.label-default deactivated
-            %div
-              = [user.email, user.login].compact.join(', ')
+          %div
+            = render partial: 'shared/user_link_plain', locals: {user: user}
   %tr
     = admin_db_column "used_in_metadata"
     %td 

@@ -28,7 +28,7 @@
             %td
               - if %w(responsible_user_id creator_id).include?(key) and val
                 - user = User.find(val)
-                = link_to "#{user} (#{user.login})", user_path(user)
+                = render partial: 'shared/user_link_plain', locals: {user: user}
               - elsif key == 'responsible_delegation_id' and val
                 - delegation = Delegation.find(val)
                 = link_to "#{delegation.name} (Delegation)", delegation_path(delegation)

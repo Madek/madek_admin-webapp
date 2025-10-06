@@ -25,7 +25,9 @@
         %tr{'data-attr' => name}
           = admin_db_column(name)
           %td
-            - if ApiClient.columns_hash[name].type == :text
+            - if name == 'user_id'
+              = render partial: 'shared/user_link_plain', locals: {user: @api_client.user}
+            - elsif ApiClient.columns_hash[name].type == :text
               = simple_format value
             - else
               = value
