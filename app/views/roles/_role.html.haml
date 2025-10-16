@@ -6,11 +6,14 @@
         %em= "#{locale}:"
         = label
 
-  %td.active.col-xs-2.text-center
-    .btn-group.btn-group-sm
+  %td.active.col-xs-3.text-center
+    .btn-group.btn-group-sm.btn-group-vertical
       - if @roles_list
         = link_to add_role_roles_list_path(@roles_list.id, role_id: role.id), method: :patch, class: 'btn btn-success' do
           %span.glyphicon.glyphicon-plus
           Add to the Roles List
       - else
+        = link_to role_path(role), class: 'btn btn-default', title: 'Details' do
+          %i.glyphicon.glyphicon-eye-open
+          Details
         = render partial: 'action_buttons', locals: { role: role }

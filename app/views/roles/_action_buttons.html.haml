@@ -1,3 +1,7 @@
+= link_to form_merge_to_role_path(role, redirect_to: request.fullpath), data: { confirm: 'Did you either remember or copy ID of the target role? You will need it in the next step.' }, class: 'btn btn-warning' do
+  %span.glyphicon.glyphicon-random
+  Merge to
+
 = link_to edit_role_path(role), class: 'btn btn-info' do
   %i.glyphicon.glyphicon-edit
   Edit

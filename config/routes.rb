@@ -100,7 +100,10 @@ Rails.application.routes.draw do
       post :merge_to, on: :member
     end
 
-    resources :roles
+    resources :roles do
+      get :form_merge_to, on: :member
+      post :merge_to, on: :member
+    end
     resources :roles_lists do
       member do
         patch :add_role

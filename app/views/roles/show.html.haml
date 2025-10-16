@@ -1,0 +1,39 @@
+.page-header
+  %h1
+    %i.glyphicon.glyphicon-sunglasses
+    #{@role.label}
+  %small
+    = link_to '&larr; Go back to roles\' list'.html_safe, roles_path
+
+.row
+  .col-xs-12
+    .panel.panel-default
+      .panel-body
+        .btn-group
+          = render partial: 'action_buttons', locals: { role: @role }
+
+.row
+  .col-xs-12
+    %table.table.table-striped
+      %thead
+      %tbody
+      - @role.attributes.each do |name,value|
+        %tr
+          = admin_db_column(name, nil)
+          - case name
+          - when nil
+          - else
+            %td= value
+
+.row#roles_lists
+  .col-xs-12
+    .page-header
+      %h3 Roles Lists (#{@roles_lists.count})
+    %table#role-roles-lists.table.table-striped
+      %thead
+        %tr
+          %th Id
+          %th Labels
+          %th
+      %tbody
+        = render(partial: 'roles_list', collection: @roles_lists) || empty_collection('roles_lists', 3)
