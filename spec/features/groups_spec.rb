@@ -291,6 +291,42 @@ feature 'Admin Groups' do
     end
   end
 
+  scenario "Can configure group to be unassignable", browser: :firefox do
+    visit groups_path
+    click_link 'Create group'
+    fill_in 'group[name]', with: 'Rookies 314159'
+    click_on 'Save'
+    expect(page).to have_css('.alert-success')
+    expect(page).to have_content('Rookies 314159')
+    expect(page).to have_content('Is assignable (is_assignable) true')
+
+    click_link('Edit')
+    uncheck 'Is assignable'
+    click_on 'Save'
+    expect(page).to have_css('.alert-success')
+    expect(page).to have_content('Is assignable (is_assignable) false')
+
+    # Can not assign to delegation
+    d = FactoryBot.create(:delegation, {name: "My delegation"})
+    visit delegation_path(d)
+    click_on "Add group"
+    fill_in 'Search term', with: "Rookies 314159"
+    click_on 'Apply'
+    expect(page).to have_content('Not assignable')
+    expect(page).not_to have_button('Add to the Delegation')
+    
+    # Can not assign to vocabulary
+    v = FactoryBot.create(:vocabulary, {id: "my_vocabulary"})
+    visit vocabulary_path(v)
+    click_on 'Group Permissions'
+    click_on 'Create Group Permission'
+    click_on 'Choose group'
+    fill_in 'Search term', with: "Rookies 314159"
+    click_on 'Apply'
+    expect(page).to have_content('Not assignable')
+    expect(page).not_to have_button('Grant Vocabulary Permission')
+  end
+
   def group_user_count
     all('table#group-users tbody tr:not(.empty-collection)').count
   end

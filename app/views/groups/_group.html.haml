@@ -9,14 +9,19 @@
   %td.active.col-xs-2.text-center
     .btn-group.btn-group-sm.btn-group-vertical
       - if session[:vocabulary_id].present?
-        = link_to path_to_vocabulary_permission_form(group), class: 'btn btn-success' do
-          Grant Vocabulary Permission
+        - if group.is_assignable
+          = link_to path_to_vocabulary_permission_form(group), class: 'btn btn-success' do
+            Grant Vocabulary Permission
+        - else 
+          .text-muted Not assignable
         = link_to groups_path(reset_vocabulary_params: true),
                   class: 'btn btn-default' do
           Cancel
       - elsif @delegation
         - if @delegation_group_ids.include?(group.id)
           .text-muted Already added
+        - elsif !group.is_assignable
+          .text-muted Not assignable
         - else
           = link_to add_group_delegation_path(@delegation, group_id: group.id), method: :patch, class: 'btn btn-success' do
             %span.glyphicon.glyphicon-plus
