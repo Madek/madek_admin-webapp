@@ -8,7 +8,7 @@ Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
 
 ActiveRecord::Migration.check_all_pending! if defined?(ActiveRecord::Migration)
 
-firefox_bin_path = Pathname.new(`asdf where firefox`.strip).join('bin/firefox').expand_path.to_s
+firefox_bin_path = Pathname.new(`which firefox`.strip).expand_path.to_s
 Selenium::WebDriver::Firefox.path = firefox_bin_path
 
 def truncate_tables
