@@ -536,6 +536,27 @@ feature 'Admin App Settings' do
     end
   end
 
+  scenario 'Updating Permission Public Descriptions' do
+    new_description_de = 'Öffentliche Berechtigung'
+    new_description_en = 'Public permission'
+
+    visit app_settings_path
+
+    within '#permission_public_descriptions' do
+      click_link 'Edit'
+    end
+
+    fill_in '[de]', with: new_description_de
+    fill_in '[en]', with: new_description_en
+    click_button 'Save'
+
+    expect(page).to have_css '.alert-success'
+    within '#permission_public_descriptions' do
+      expect(page).to have_content "de → #{new_description_de}"
+      expect(page).to have_content "en → #{new_description_en}"
+    end
+  end
+
   scenario 'Updating Ignored keyword keys for browsing' do
     valid_meta_key   = create :meta_key_keywords
     invalid_meta_key = create :meta_key_title

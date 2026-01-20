@@ -27,6 +27,18 @@
       .col-xs-8
         = f.text_area :description, class: 'form-control', rows: 5
 
+    = f.fields_for :permission_descriptions, OpenStruct.new(f.object.permission_descriptions) do |lf|
+      - I18n.available_locales.each do |locale|
+        .form-group
+          .col-xs-2
+            = lf.label locale, "Permission description [#{locale}]", class: 'control-label'
+          .col-xs-8
+            = lf.text_area locale, class: 'form-control', rows: 3
+    .form-group
+      .col-xs-2
+      .col-xs-8
+        .helptext Permission description: Shown as tooltip in the permissions view
+
     .form-group
       .col-xs-offset-2.col-xs-4
         = button_tag type: 'submit', class: 'btn btn-success' do

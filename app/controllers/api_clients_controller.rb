@@ -1,4 +1,5 @@
 class ApiClientsController < ApplicationController
+  include LocalizedFieldParams
 
   def index
     @api_clients = ApiClient.page(page_params).per(16)
@@ -65,7 +66,7 @@ class ApiClientsController < ApplicationController
   end
 
   def api_client_params
-    params.require(:api_client).permit(:login, :user_id, :password, :description)
+    params.require(:api_client).permit(:login, :user_id, :password, :description, localized_field_params)
   end
 
   def new_api_client_params

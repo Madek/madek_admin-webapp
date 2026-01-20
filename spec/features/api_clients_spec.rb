@@ -122,6 +122,20 @@ feature 'Admin API Clients' do
     expect(api_client.password_digest).not_to eq password_digest
   end
 
+  scenario 'Editing permission descriptions' do
+    visit api_client_path(api_client)
+    click_link 'Edit'
+
+    fill_in 'api_client[permission_descriptions][de]', with: 'Berechtigungen DE'
+    fill_in 'api_client[permission_descriptions][en]', with: 'Permissions EN'
+    click_button 'Save'
+
+    expect(page).to have_css '.alert-success'
+    api_client.reload
+    expect(api_client.permission_description(:de)).to eq 'Berechtigungen DE'
+    expect(api_client.permission_description(:en)).to eq 'Permissions EN'
+  end
+
   def get_value(attr)
     find("[data-attr='#{attr}'] td:last-child").text
   end

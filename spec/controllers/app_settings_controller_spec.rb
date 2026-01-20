@@ -61,6 +61,26 @@ describe AppSettingsController do
       expect(app_settings.reload.site_title(:en)).to eq 'NEW TITLE'
     end
 
+    it 'updates permission_public_descriptions localized field' do
+      patch(
+        :update,
+        params: {
+          id: app_settings.id,
+          app_setting: {
+            permission_public_descriptions: {
+              de: 'Öffentlich Beschreibung',
+              en: 'Public Description'
+            }
+          }
+        },
+        session: { user_id: admin_user.id }
+      )
+
+      expect(flash[:success]).to eq flash_message(:update, :success)
+      expect(app_settings.reload.permission_public_description).to eq 'Öffentlich Beschreibung'
+      expect(app_settings.reload.permission_public_description(:en)).to eq 'Public Description'
+    end
+
     it 'updates a yaml setting' do
       new_sitemap = YAML.safe_load <<-YAML
         de:

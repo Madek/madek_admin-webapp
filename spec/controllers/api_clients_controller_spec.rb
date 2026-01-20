@@ -115,6 +115,27 @@ describe ApiClientsController do
       expect(api_client.reload.description).to eq 'test description'
     end
 
+    it 'updates permission_descriptions localized field' do
+      patch(
+        :update,
+        params: {
+          id: api_client.id,
+          api_client: {
+            permission_descriptions: {
+              de: 'Beschreibung DE',
+              en: 'Description EN'
+            }
+          }
+        },
+        session: { user_id: admin_user.id }
+      )
+
+      expect(response).to have_http_status(302)
+      api_client.reload
+      expect(api_client.permission_description(:de)).to eq 'Beschreibung DE'
+      expect(api_client.permission_description(:en)).to eq 'Description EN'
+    end
+
     context 'when params include change_user param' do
       let(:user) { create :user }
       let(:api_client_params) do
@@ -172,6 +193,24 @@ describe ApiClientsController do
           params: { api_client: api_client_params },
           session: { user_id: admin_user.id })
       end.to change { ApiClient.count }.by(1)
+    end
+
+    it 'creates an api_client with permission_descriptions' do
+      api_client_params[:permission_descriptions] = {
+        de: 'Beschreibung DE',
+        en: 'Description EN'
+      }
+
+      post(
+        :create,
+        params: { api_client: api_client_params },
+        session: { user_id: admin_user.id }
+      )
+
+      expect(response).to have_http_status(302)
+      created_client = ApiClient.find_by(login: api_client_params[:login])
+      expect(created_client.permission_description(:de)).to eq 'Beschreibung DE'
+      expect(created_client.permission_description(:en)).to eq 'Description EN'
     end
 
     context 'when user is missing' do
