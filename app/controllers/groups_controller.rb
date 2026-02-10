@@ -130,16 +130,6 @@ class GroupsController < ApplicationController
         type: 'AuthenticationGroup'
       },
       {
-        id: Madek::Constants::BETA_TESTERS_QUICK_EDIT_GROUP_ID,
-        name: 'Beta-Tester "Metadaten-Stapelverarbeitung"',
-        type: 'Group'
-      },
-      {
-        id: Madek::Constants::BETA_TESTERS_WORKFLOWS_GROUP_ID,
-        name: 'Beta-Tester "Workflows"',
-        type: 'Group'
-      },
-      {
         id: Madek::Constants::BETA_TESTERS_NOTIFICATIONS_GROUP_ID,
         name: 'Beta-Tester "Notifications"',
         type: 'Group'
