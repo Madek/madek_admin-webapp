@@ -1,4 +1,4 @@
-require 'sys/filesystem'
+require "sys/filesystem"
 include Sys
 
 MADEK_FILE_STORES = {
@@ -16,7 +16,7 @@ module AppEnvironmentInfo
     {
       madek: get_madek_base_info,
       storage: get_file_storage_info,
-      ruby: { version: RUBY_VERSION, platform: RUBY_PLATFORM },
+      ruby: {version: RUBY_VERSION, platform: RUBY_PLATFORM},
       rails: Rails.version,
       postgres: get_pg_version,
       system: GetSystemInfo.read_system_info_for_rails
@@ -26,7 +26,7 @@ module AppEnvironmentInfo
   # helpers
 
   def syscall(cmd)
-    begin; `#{cmd}`.chomp.strip; rescue; nil; end
+    `#{cmd}`.chomp.strip; rescue; nil
   end
 
   def get_madek_base_info
@@ -36,13 +36,12 @@ module AppEnvironmentInfo
       site_title: app_settings.try(:site_title),
       base_url: Settings.madek_external_base_url,
       zencoder: (if Settings.zencoder_enabled && Settings.zencoder_test_mode
-                    zencoder_api_key ? 'TEST MODE!' : 'TEST MODE BUT NO KEY!'
-                  elsif Settings.zencoder_enabled
-                    zencoder_api_key ? 'OK' : 'NO KEY!'
-                  else
-                    'NO!'
-                  end),
-      zhdk_integration: Settings.zhdk_integration ? true : nil
+                   zencoder_api_key ? "TEST MODE!" : "TEST MODE BUT NO KEY!"
+                 elsif Settings.zencoder_enabled
+                   zencoder_api_key ? "OK" : "NO KEY!"
+                 else
+                   "NO!"
+                 end)
     }
   end
 
@@ -58,8 +57,8 @@ module AppEnvironmentInfo
     rescue => err; err; end
 
     mountpoints = begin
-      ignored_paths = ['/dev', '/proc', '/sys']
-      ignored_types = %w(devfs debugfs tmpfs)
+      ignored_paths = ["/dev", "/proc", "/sys"]
+      ignored_types = %w[devfs debugfs tmpfs]
       Sys::Filesystem.mounts.reject do |m|
         ignored_paths.any? { |path| m.mount_point.starts_with?(path) } \
           || ignored_types.any? { |type| m.mount_type == type }
@@ -73,7 +72,6 @@ module AppEnvironmentInfo
   end
 
   def get_pg_version
-    ActiveRecord::Base.connection.execute('SELECT version();').to_a.first
+    ActiveRecord::Base.connection.execute("SELECT version();").to_a.first
   end
-
 end
