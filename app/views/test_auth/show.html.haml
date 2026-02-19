@@ -3,6 +3,6 @@
     %div You are logged in.
   - else
     = form_tag test_sign_in_path, method: "post" do
-      %input{type: "text", name: "login", placeholder: "login"}
+      %input{type: "text", name: "login", placeholder: "login or email"}
       %input{type: "password", name: "password", placeholder: "password"}
       %button{type: "submit"} Login
