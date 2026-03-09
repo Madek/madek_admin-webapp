@@ -3,6 +3,7 @@ require File.expand_path('../../config/environment', __FILE__)
 require 'rspec/rails'
 
 DEFAULT_BROWSER_TIMEOUT = 180 # instead of the default 60
+Capybara.server = :webrick
 
 Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
 
