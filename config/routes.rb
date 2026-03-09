@@ -46,7 +46,7 @@ Rails.application.routes.draw do
         get :form_add_user
         patch :add_user
       end
-      resources :users, only: '' do
+      resources :users, only: [] do
         delete :remove_user_from_group
       end
     end
