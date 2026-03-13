@@ -17,10 +17,22 @@ class GroupsController < ApplicationController
     @group = Group.new params[:group]
   end
 
-  define_update_action_for(Group, true)
+  def update
+    @instance = Group.find(params[:id])
+    authorize(@instance)
+    update_params = update_group_params.merge(updated_by_user_id: current_user.id)
+    @instance.update!(update_params)
+
+    respond_with @instance, location: (lambda do
+      group_path(@instance)
+    end)
+  end
 
   def create
-    create_params = group_params.merge(created_by_user_id: current_user.id)
+    create_params = group_params.merge(
+      created_by_user_id: current_user.id,
+      updated_by_user_id: current_user.id
+    )
     @group = Group.create!(create_params)
 
     respond_with @group, location: -> { group_path(@group) }

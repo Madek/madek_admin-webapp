@@ -186,6 +186,7 @@ describe GroupsController do
 
         expect(flash[:success]).to eq flash_message(:update, :success)
         expect(group.reload.name).to eq 'NEW NAME'
+        expect(group.reload.updated_by_user_id).to eq admin_user.id
       end
 
       context 'failed validations' do
@@ -227,6 +228,7 @@ describe GroupsController do
           flash_message(:update, :success, 'Institutional group')
         )
         expect(group.reload.name).to eq 'NEW NAME'
+        expect(group.reload.updated_by_user_id).to eq admin_user.id
       end
     end
 
@@ -251,6 +253,7 @@ describe GroupsController do
           flash_message(:update, :success, 'Authentication group')
         )
         expect(group.reload.name).to eq 'NEW NAME'
+        expect(group.reload.updated_by_user_id).to eq admin_user.id
       end
     end
   end
@@ -273,6 +276,18 @@ describe GroupsController do
           params: { group: attributes_for(:group) },
           session: { user_id: admin_user.id })
       end.to change { Group.count }.by(1)
+    end
+
+    it 'sets creator and updater ids' do
+      post(
+        :create,
+        params: { group: attributes_for(:group) },
+        session: { user_id: admin_user.id }
+      )
+
+      created_group = assigns(:group)
+      expect(created_group.created_by_user_id).to eq admin_user.id
+      expect(created_group.updated_by_user_id).to eq admin_user.id
     end
 
     context 'failed validation' do
