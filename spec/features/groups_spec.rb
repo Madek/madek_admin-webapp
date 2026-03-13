@@ -57,6 +57,7 @@ feature 'Admin Groups' do
     click_button 'Save'
     expect(page).to have_css('.alert-success')
     expect(page).to have_content('AWESOME GROUP')
+    expect(find("tr", text: "updator_id").all("td").last.text).to eq UserSession.first.user_id
   end
 
   scenario 'Creating a new group' do
@@ -71,7 +72,8 @@ feature 'Admin Groups' do
     click_button 'Save'
     expect(page).to have_css('.alert-success')
     expect(page).to have_content('NEW AWESOME GROUP')
-    expect(find("tr", text: "created_by_user_id").all("td").last.text).to eq UserSession.first.user_id
+    expect(find("tr", text: "creator_id").all("td").last.text).to eq UserSession.first.user_id
+    expect(find("tr", text: "updator_id").all("td").last.text).to eq UserSession.first.user_id
   end
 
   scenario 'Editing a group' do

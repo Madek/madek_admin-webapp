@@ -27,7 +27,8 @@
     %table.table.table-striped
       %thead
       %tbody
-      - @group.attributes.each do |name,value|
+      - attrs = @group.attributes.to_a
+      - attrs.each do |name,value|
         %tr
           = admin_db_column(name)
           - case name

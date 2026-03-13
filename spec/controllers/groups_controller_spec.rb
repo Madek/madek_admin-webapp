@@ -104,6 +104,7 @@ describe GroupsController do
   end
 
   describe '#show' do
+    render_views
     let!(:group) { create :group }
     let(:session) { { user_id: admin_user.id } }
 
@@ -121,6 +122,15 @@ describe GroupsController do
     it 'loads the proper group into @group' do
       get :show, params: { id: group.id }, session: session
       expect(assigns[:group]).to eq group
+    end
+
+    it 'renders updator_id in the attributes table' do
+      group.update!(updator_id: admin_user.id)
+
+      get :show, params: { id: group.id }, session: session
+
+      expect(response.body).to include('updator_id')
+      expect(response.body).to include(admin_user.id)
     end
 
     context 'when previous id was passed' do
@@ -186,6 +196,7 @@ describe GroupsController do
 
         expect(flash[:success]).to eq flash_message(:update, :success)
         expect(group.reload.name).to eq 'NEW NAME'
+        expect(group.reload.updator_id).to eq admin_user.id
       end
 
       context 'failed validations' do
@@ -227,6 +238,7 @@ describe GroupsController do
           flash_message(:update, :success, 'Institutional group')
         )
         expect(group.reload.name).to eq 'NEW NAME'
+        expect(group.reload.updator_id).to eq admin_user.id
       end
     end
 
@@ -251,6 +263,7 @@ describe GroupsController do
           flash_message(:update, :success, 'Authentication group')
         )
         expect(group.reload.name).to eq 'NEW NAME'
+        expect(group.reload.updator_id).to eq admin_user.id
       end
     end
   end
@@ -273,6 +286,18 @@ describe GroupsController do
           params: { group: attributes_for(:group) },
           session: { user_id: admin_user.id })
       end.to change { Group.count }.by(1)
+    end
+
+    it 'sets creator and updater ids' do
+      post(
+        :create,
+        params: { group: attributes_for(:group) },
+        session: { user_id: admin_user.id }
+      )
+
+      created_group = assigns(:group)
+      expect(created_group.creator_id).to eq admin_user.id
+      expect(created_group.updator_id).to eq admin_user.id
     end
 
     context 'failed validation' do
