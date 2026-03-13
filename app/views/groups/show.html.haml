@@ -27,7 +27,16 @@
     %table.table.table-striped
       %thead
       %tbody
-      - @group.attributes.each do |name,value|
+      - attrs = @group.attributes.to_a
+      - updated_attr = attrs.find { |(name, _)| name == 'updator_id' }
+      - attrs = attrs.reject { |(name, _)| name == 'updator_id' }
+      - created_idx = attrs.index { |(name, _)| name == 'creator_id' }
+      - if updated_attr
+        - if created_idx
+          - attrs.insert(created_idx + 1, updated_attr)
+        - else
+          - attrs << updated_attr
+      - attrs.each do |name,value|
         %tr
           = admin_db_column(name)
           - case name
