@@ -226,7 +226,7 @@ GEM
       pry (>= 0.13.0)
     psych (3.3.4)
     public_suffix (6.0.1)
-    puma (6.4.2)
+    puma (6.6.1)
       nio4r (~> 2.0)
     puma_worker_killer (1.0.0)
       bigdecimal (>= 2.0)
@@ -395,7 +395,7 @@ DEPENDENCIES
   pry-nav
   pry-rails
   psych (< 4)
-  puma
+  puma (~> 6.5)
   puma_worker_killer
   pundit
   rails (~> 8.0.0)
