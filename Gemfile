@@ -1,7 +1,7 @@
 eval_gemfile Pathname(File.dirname(File.absolute_path(__FILE__))).join('datalayer', 'Gemfile')
 
 # Webserver
-gem 'puma'
+gem 'puma', '~> 6.5'
 gem 'puma_worker_killer'
 
 # API
