@@ -34,4 +34,4 @@ gem 'ffi', '>= 1.15.5', group: [:test, :development]
 gem 'rest-client', group: [:test, :development, :personas]
 gem 'ruby-prof', group: [:development]
 gem 'rails-controller-testing', group: :test
-gem 'selenium-webdriver', group: [:test]
+gem 'selenium-webdriver', '~> 4.41', group: [:test]

@@ -406,7 +406,7 @@ DEPENDENCIES
   ruby-prof
   sass (= 3.4.22)
   sass-rails (~> 5.0)
-  selenium-webdriver
+  selenium-webdriver (~> 4.41)
   sprockets (< 4)
   strong_password
   sys-filesystem (>= 1.4.3)
