@@ -28,14 +28,10 @@
       %thead
       %tbody
       - attrs = @group.attributes.to_a
-      - updated_attr = attrs.find { |(name, _)| name == 'updator_id' }
-      - attrs = attrs.reject { |(name, _)| name == 'updator_id' }
-      - created_idx = attrs.index { |(name, _)| name == 'creator_id' }
-      - if updated_attr
-        - if created_idx
-          - attrs.insert(created_idx + 1, updated_attr)
-        - else
-          - attrs << updated_attr
+      - audit_attr_names = ['created_at', 'creator_id', 'updated_at', 'updator_id']
+      - audit_attrs = audit_attr_names.map { |audit_name| attrs.find { |(name, _)| name == audit_name } }.compact
+      - attrs = attrs.reject { |(name, _)| audit_attr_names.include?(name) }
+      - attrs += audit_attrs
       - attrs.each do |name,value|
         %tr
           = admin_db_column(name)
