@@ -28,10 +28,6 @@
       %thead
       %tbody
       - attrs = @group.attributes.to_a
-      - audit_attr_names = ['created_at', 'creator_id', 'updated_at', 'updator_id']
-      - audit_attrs = audit_attr_names.map { |audit_name| attrs.find { |(name, _)| name == audit_name } }.compact
-      - attrs = attrs.reject { |(name, _)| audit_attr_names.include?(name) }
-      - attrs += audit_attrs
       - attrs.each do |name,value|
         %tr
           = admin_db_column(name)
