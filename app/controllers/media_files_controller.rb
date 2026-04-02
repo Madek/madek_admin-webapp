@@ -111,6 +111,10 @@ class MediaFilesController < ApplicationController
                         .match(/(.+)_(asc|desc)/)
                         .captures
 
+    unless %w[created_at media_type uploader size ""].include?(sort_param)
+      return default_sorting
+    end
+
     @media_files =
       if sort_param == 'uploader'
         @media_files.sort_by_uploader(dir)
