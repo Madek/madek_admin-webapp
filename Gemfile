@@ -1,14 +1,14 @@
 eval_gemfile Pathname(File.dirname(File.absolute_path(__FILE__))).join('datalayer', 'Gemfile')
 
 # Webserver
-gem 'puma', '>= 6.5'
+gem "puma", "~> 7.2.1"
 gem 'puma_worker_killer'
 
 # API
 gem 'responders'
 
 # FRONTEND
-gem 'bootstrap-sass', '= 3.3.7'
+gem 'bootstrap-sass', '~> 3.4.0'
 gem 'haml-rails', '~> 2.0'
 gem 'sass', '= 3.4.22'
 gem 'sass-rails', '~> 5.0'
