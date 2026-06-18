@@ -411,7 +411,6 @@ DEPENDENCIES
   sass (= 3.4.22)
   sass-rails (~> 5.0)
   selenium-webdriver
-  sprockets (< 4)
   strong_password
   sys-filesystem (>= 1.4.3)
   textacular (~> 5.0)
