@@ -45,5 +45,5 @@
     .col-xs-offset-2.col-xs-3
       = button_tag type: 'submit', class: 'btn btn-success' do
         %span.glyphicon.glyphicon-ok
-        Create
+        = @context.persisted? ? 'Save' : 'Create'
       = link_to 'Go back', :back, class: 'btn btn-link'
