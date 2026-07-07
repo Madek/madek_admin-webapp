@@ -7,6 +7,7 @@ class GroupsController < ApplicationController
     @groups = sort_and_filter(params)
 
     remember_vocabulary_url_params
+    remember_context_permission_url_params
     get_delegation_from_params
   rescue ArgumentError => e
     @groups = Group.all.page(page_params)

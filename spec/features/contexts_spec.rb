@@ -48,7 +48,7 @@ feature 'Admin Contexts' do
     fill_in 'context[descriptions][en]', with: 'new description EN'
     fill_in 'context[admin_comment]', with: 'new admin comment'
 
-    click_button 'Create'
+    click_button 'Save'
 
     expect(current_path).to eq context_path(context)
     expect(page).to have_content 'Labels (labels) ' \

@@ -11,6 +11,7 @@ class UsersController < ApplicationController
     @return_to = return_to_param
 
     remember_vocabulary_url_params
+    remember_context_permission_url_params
     get_api_client_params
     get_group_from_params
     get_delegation_from_params

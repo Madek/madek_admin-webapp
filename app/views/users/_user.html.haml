@@ -82,6 +82,12 @@
         = link_to users_path(reset_vocabulary_params: true),
                   class: 'btn btn-default' do
           Cancel
+      - elsif session[:context_permission_context_id].present?
+        = link_to path_to_context_permission_form(user), class: 'btn btn-success' do
+          Grant Context Permission
+        = link_to users_path(reset_context_permission_params: true),
+                  class: 'btn btn-default' do
+          Cancel
       - else
         = link_to user_path(user), class: 'btn btn-default', title: 'Details' do
           %i.glyphicon.glyphicon-eye-open
