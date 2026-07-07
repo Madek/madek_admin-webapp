@@ -17,3 +17,9 @@
         = link_to api_clients_path(reset_vocabulary_params: true),
                   class: 'btn btn-default' do
           Cancel
+      - elsif session[:context_permission_context_id].present?
+        = link_to path_to_context_permission_form(api_client), class: 'btn btn-success' do
+          Grant Context Permission
+        = link_to api_clients_path(reset_context_permission_params: true),
+                  class: 'btn btn-default' do
+          Cancel

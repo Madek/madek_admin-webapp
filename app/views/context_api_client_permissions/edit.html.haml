@@ -1,0 +1,13 @@
+.page-header
+  %h1
+    Edit API Client Permission
+    %small Context: #{@context}
+
+.row
+  .col-xs-12
+    = form_for [@context, @permission],
+        method: :patch,
+        as: :context_api_client_permission,
+        url: context_context_api_client_permission_path(@context, @permission),
+        html: { class: 'form-horizontal', role: 'form' } do |f|
+      = render partial: 'form_fields', locals: { f: f }

@@ -84,6 +84,8 @@ class ContextsController < ApplicationController
       .require(:context)
       .permit(
         :admin_comment,
+        :enabled_for_public_view,
+        :enabled_for_public_use,
         localized_field_params)
   end
 
@@ -96,6 +98,8 @@ class ContextsController < ApplicationController
                                     :admin_comment,
                                     :from_context,
                                     :from_vocabulary,
+                                    :enabled_for_public_view,
+                                    :enabled_for_public_use,
                                     localized_field_params)
   end
 

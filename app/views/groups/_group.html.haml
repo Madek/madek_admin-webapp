@@ -12,9 +12,18 @@
         - if group.is_assignable
           = link_to path_to_vocabulary_permission_form(group), class: 'btn btn-success' do
             Grant Vocabulary Permission
-        - else 
+        - else
           .text-muted Not assignable
         = link_to groups_path(reset_vocabulary_params: true),
+                  class: 'btn btn-default' do
+          Cancel
+      - elsif session[:context_permission_context_id].present?
+        - if group.is_assignable
+          = link_to path_to_context_permission_form(group), class: 'btn btn-success' do
+            Grant Context Permission
+        - else
+          .text-muted Not assignable
+        = link_to groups_path(reset_context_permission_params: true),
                   class: 'btn btn-default' do
           Cancel
       - elsif @delegation

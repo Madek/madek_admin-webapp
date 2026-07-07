@@ -1,0 +1,9 @@
+.btn-group
+  = link_to edit_context_context_group_permission_path(@context, group_permission), class: "btn btn-info #{size}" do
+    %i.glyphicon.glyphicon-edit
+    Edit
+  = link_to context_context_group_permission_path(@context, group_permission), method: :delete, data: {   |
+    confirm: 'The Context Group Permission will be deleted. Do you want to proceed?' }, |
+    class: "btn btn-danger #{size}" do
+    %i.glyphicon.glyphicon-trash
+    Delete
