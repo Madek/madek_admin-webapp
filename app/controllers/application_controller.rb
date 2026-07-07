@@ -27,6 +27,7 @@ class ApplicationController < ActionController::Base
   before_action :set_context_for_app_layout
   before_action :notify_if_session_expiring_soon
   before_action :forget_vocabulary_url_params_if_requested
+  before_action :forget_context_permission_url_params_if_requested
 
   rescue_from ActiveRecord::ActiveRecordError,
               with: :render_error
@@ -105,6 +106,28 @@ class ApplicationController < ActionController::Base
       vocabulary_id
       permission_id
       is_persisted
+    )
+  end
+
+  def forget_context_permission_url_params_if_requested
+    if params[:reset_context_permission_params]
+      context_permission_url_params.each do |key|
+        session[key] = nil
+      end
+    end
+  end
+
+  def remember_context_permission_url_params
+    context_permission_url_params.each do |key|
+      session[key] = params[key] if params[key].present?
+    end
+  end
+
+  def context_permission_url_params
+    %i(
+      context_permission_context_id
+      context_permission_id
+      context_permission_is_persisted
     )
   end
 

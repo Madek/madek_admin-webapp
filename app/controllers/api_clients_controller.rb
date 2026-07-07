@@ -4,6 +4,7 @@ class ApiClientsController < ApplicationController
   def index
     @api_clients = ApiClient.page(page_params).per(16)
     remember_vocabulary_url_params
+    remember_context_permission_url_params
   end
 
   def show

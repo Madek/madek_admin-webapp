@@ -31,7 +31,19 @@
       = f.text_area :admin_comment, class: 'form-control', rows: 4
   .form-group
     .col-xs-offset-2.col-xs-3
+      .checkbox
+        %label
+          = f.check_box :enabled_for_public_view
+          Enabled for public view?
+  .form-group
+    .col-xs-offset-2.col-xs-3
+      .checkbox
+        %label
+          = f.check_box :enabled_for_public_use
+          Enabled for public use?
+  .form-group
+    .col-xs-offset-2.col-xs-3
       = button_tag type: 'submit', class: 'btn btn-success' do
         %span.glyphicon.glyphicon-ok
-        Create
+        = @context.persisted? ? 'Save' : 'Create'
       = link_to 'Go back', :back, class: 'btn btn-link'
