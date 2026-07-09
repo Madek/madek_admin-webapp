@@ -36,7 +36,14 @@
     .panel.panel-default
       .panel-body
         .btn-group
-          = link_to 'Recreate Thumbnails', '#', class: 'btn btn-info disabled'
+          - if @media_file.previews_internal?
+            = link_to 'Recreate Thumbnails',
+              recreate_thumbnails_media_file_path(@media_file),
+              method: :post,
+              class: 'btn btn-info',
+              data: { confirm: 'All existing previews will be deleted and recreated. Do you want to proceed?' }
+          - else
+            = link_to 'Recreate Thumbnails', '#', class: 'btn btn-info disabled'
 
     %table.previews.table.table-striped
       %thead

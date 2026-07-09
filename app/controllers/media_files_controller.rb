@@ -33,6 +33,31 @@ class MediaFilesController < ApplicationController
     render plain: e.message
   end
 
+  def recreate_thumbnails
+    media_file = MediaFile.find(params[:id])
+
+    unless media_file.previews_internal?
+      return redirect_to media_file_path(media_file), flash: {
+        error: 'Thumbnails can only be recreated for images and PDF documents.'
+      }
+    end
+
+    recreate_thumbnail_files!(media_file)
+
+    redirect_to media_file_path(media_file), flash: {
+      info: 'The thumbnails were successfully recreated.'
+    }
+  rescue => e
+    raise unless media_file
+
+    redirect_to media_file_path(media_file),
+                flash: {
+                  error: "The thumbnails could not be recreated: #{e.message} " \
+                         'Any previously existing previews may have been removed — ' \
+                         'retry this action to regenerate them.'
+                }
+  end
+
   def reencode_missing # simple batch request ALL missing
     limit = Settings.zencoder_test_mode ? 10 : 1000
     @media_files = MediaFile
@@ -57,6 +82,36 @@ class MediaFilesController < ApplicationController
   end
 
   private
+
+  def recreate_thumbnail_files!(media_file)
+    original_previews = media_file.previews.to_a
+    original_preview_ids = original_previews.map(&:id)
+    original_file_paths = original_previews.map(&:file_path)
+
+    delete_preview_rows!(media_file, original_preview_ids)
+    delete_thumbnail_files(original_file_paths)
+    media_file.create_previews!
+  end
+
+  def delete_preview_rows!(media_file, original_preview_ids)
+    ActiveRecord::Base.transaction do
+      deleted_count = media_file.previews.where(id: original_preview_ids)
+                                .delete_all
+      unless deleted_count == original_preview_ids.size
+        raise "Expected to delete #{original_preview_ids.size} previews, "\
+              "deleted #{deleted_count}."
+      end
+    end
+  end
+
+  def delete_thumbnail_files(file_paths)
+    file_paths.each do |path|
+      File.delete(path)
+    rescue Errno::ENOENT, Errno::EROFS, Errno::EACCES, Errno::EPERM => e
+      Rails.logger.warn(e)
+      nil
+    end
+  end
 
   def filter
     sanitize_filter_params

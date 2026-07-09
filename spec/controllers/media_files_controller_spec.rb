@@ -301,6 +301,299 @@ describe MediaFilesController do
     end
   end
 
+  describe '#recreate_thumbnails' do
+    let(:existing_thumbnail) { 'small' }
+
+    shared_examples 'redirects to media file show page' do
+      it 'redirects to media file show page' do
+        expect(response).to redirect_to(media_file_path(media_file))
+        expect(response).to have_http_status(302)
+      end
+    end
+
+    shared_examples 'sets flash message' do |type|
+      it "sets #{type} flash message" do
+        expect(flash[type]).not_to be_empty
+      end
+    end
+
+    shared_examples 'successful thumbnail recreation' do |expected_thumbnails|
+      let(:media_file) do
+        create(:media_file, media_file_attributes)
+      end
+
+      let!(:preview) do
+        create(:preview,
+               media_file: media_file,
+               content_type: 'image/jpeg',
+               media_type: 'image',
+               filename: "#{media_file.guid}_#{existing_thumbnail}.jpg",
+               thumbnail: existing_thumbnail)
+      end
+      let(:thumbnail_file) { preview.file_path }
+
+      before do
+        stub_preview_conversion(media_file)
+        expect(File).to receive(:delete).with(thumbnail_file)
+
+        post(
+          :recreate_thumbnails,
+          params: { id: media_file.id },
+          session: { user_id: admin_user.id })
+      end
+
+      it 'destroys existing previews' do
+        expect(Preview.exists?(preview.id)).to be false
+      end
+
+      it 'recreates the expected thumbnail sizes' do
+        expect(media_file.reload.previews.pluck(:thumbnail))
+          .to match_array(expected_thumbnails.map(&:to_s))
+      end
+
+      it_behaves_like 'redirects to media file show page'
+      it_behaves_like 'sets flash message', :info
+    end
+
+    context 'when media file can create previews internally' do
+      let(:media_file_attributes) { { height: 1500, width: 2000 } }
+
+      it_behaves_like 'successful thumbnail recreation',
+                      Madek::Constants::THUMBNAILS.keys
+    end
+
+    context 'when media file has an existing active thumbnail' do
+      let(:media_file_attributes) { { height: 1500, width: 2000 } }
+      let(:existing_thumbnail) { 'medium' }
+
+      it_behaves_like 'successful thumbnail recreation',
+                      Madek::Constants::THUMBNAILS.keys
+    end
+
+    context 'when PDF media file can create previews internally' do
+      let(:media_file_attributes) do
+        {
+          content_type: 'application/pdf',
+          extension: 'pdf',
+          height: nil,
+          media_type: 'document',
+          width: nil
+        }
+      end
+
+      it_behaves_like 'successful thumbnail recreation',
+                      Madek::Constants::THUMBNAILS.keys
+    end
+
+    context 'when media file cannot create previews internally' do
+      let(:media_file) { create(:media_file_for_audio) }
+      let!(:preview) { create(:preview, media_file: media_file) }
+
+      before do
+        expect(controller).not_to receive(:recreate_thumbnail_files!)
+        expect_any_instance_of(MediaFile)
+          .not_to receive(:create_previews!)
+
+        post(
+          :recreate_thumbnails,
+          params: { id: media_file.id },
+          session: { user_id: admin_user.id })
+      end
+
+      it 'keeps existing previews' do
+        expect(Preview.exists?(preview.id)).to be true
+      end
+
+      it_behaves_like 'redirects to media file show page'
+      it_behaves_like 'sets flash message', :error
+    end
+
+    context 'when thumbnail recreation fails' do
+      let(:media_file) do
+        create(:media_file, height: 1500, width: 2000)
+      end
+      let!(:preview) { create(:preview, media_file: media_file) }
+      let(:thumbnail_file) do
+        preview.file_path
+      end
+
+      before do
+        expect(File).to receive(:delete).with(thumbnail_file)
+        allow_any_instance_of(MediaFile)
+          .to receive(:create_previews!)
+          .and_raise('conversion failed')
+
+        post(
+          :recreate_thumbnails,
+          params: { id: media_file.id },
+          session: { user_id: admin_user.id })
+      end
+
+      it 'deletes existing previews before recreating thumbnails' do
+        expect(Preview.exists?(preview.id)).to be false
+      end
+
+      it_behaves_like 'redirects to media file show page'
+
+      it 'sets error flash message with retry hint' do
+        expect(flash[:error]).to include('conversion failed')
+        expect(flash[:error]).to include('retry this action')
+      end
+    end
+
+    context 'when old thumbnail files have permission-denied errors' do
+      let(:media_file) do
+        create(:media_file, height: 1500, width: 2000)
+      end
+      let!(:preview) do
+        create(:preview,
+               media_file: media_file,
+               content_type: 'image/jpeg',
+               filename: "#{media_file.guid}_small.jpg",
+               media_type: 'image',
+               thumbnail: 'small')
+      end
+
+      before do
+        stub_preview_conversion(media_file)
+        allow(File)
+          .to receive(:delete)
+          .with(preview.file_path)
+          .and_raise(Errno::EACCES, 'permission denied')
+
+        post(
+          :recreate_thumbnails,
+          params: { id: media_file.id },
+          session: { user_id: admin_user.id })
+      end
+
+      it 'recreates previews despite permission-denied error' do
+        expect(media_file.reload.previews.pluck(:thumbnail))
+          .to match_array(Madek::Constants::THUMBNAILS.keys.map(&:to_s))
+      end
+
+      it_behaves_like 'redirects to media file show page'
+      it_behaves_like 'sets flash message', :info
+    end
+
+    context 'when old preview rows cannot be deleted' do
+      let(:media_file) do
+        create(:media_file, height: 1500, width: 2000)
+      end
+      let!(:preview) do
+        create(:preview,
+               media_file: media_file,
+               content_type: 'image/jpeg',
+               filename: "#{media_file.guid}_medium.jpg",
+               media_type: 'image',
+               thumbnail: 'medium')
+      end
+
+      before do
+        stub_preview_conversion(media_file)
+        allow(controller)
+          .to receive(:delete_preview_rows!)
+          .and_raise('Expected to delete 1 previews, deleted 0.')
+        expect(File).not_to receive(:delete).with(preview.file_path)
+        expect_any_instance_of(MediaFile)
+          .not_to receive(:create_previews!)
+
+        post(
+          :recreate_thumbnails,
+          params: { id: media_file.id },
+          session: { user_id: admin_user.id })
+      end
+
+      it 'keeps existing previews' do
+        expect(Preview.exists?(preview.id)).to be true
+      end
+
+      it 'does not generate new previews' do
+        expect(media_file.reload.previews.pluck(:id)).to eq [preview.id]
+      end
+
+      it_behaves_like 'redirects to media file show page'
+
+      it 'sets error flash message' do
+        expect(flash[:error]).to include('Expected to delete 1 previews')
+      end
+    end
+
+    context 'when old thumbnail file deletion fails' do
+      let(:media_file) do
+        create(:media_file, height: 1500, width: 2000)
+      end
+      let!(:preview) do
+        create(:preview,
+               media_file: media_file,
+               content_type: 'image/jpeg',
+               filename: "#{media_file.guid}_small.jpg",
+               media_type: 'image',
+               thumbnail: 'small')
+      end
+
+      before do
+        stub_preview_conversion(media_file)
+        allow(File)
+          .to receive(:delete)
+          .with(preview.file_path)
+          .and_raise('cleanup failed')
+        expect_any_instance_of(MediaFile)
+          .not_to receive(:create_previews!)
+
+        post(
+          :recreate_thumbnails,
+          params: { id: media_file.id },
+          session: { user_id: admin_user.id })
+      end
+
+      it 'deletes old preview rows before file cleanup' do
+        expect(Preview.exists?(preview.id)).to be false
+      end
+
+      it_behaves_like 'redirects to media file show page'
+
+      it 'sets error flash message' do
+        expect(flash[:error]).to include('cleanup failed')
+      end
+    end
+
+    context 'when old thumbnail files are on read-only storage' do
+      let(:media_file) do
+        create(:media_file, height: 1500, width: 2000)
+      end
+      let!(:preview) do
+        create(:preview,
+               media_file: media_file,
+               content_type: 'image/jpeg',
+               filename: "#{media_file.guid}_small.jpg",
+               media_type: 'image',
+               thumbnail: 'small')
+      end
+
+      before do
+        stub_preview_conversion(media_file)
+        allow(File)
+          .to receive(:delete)
+          .with(preview.file_path)
+          .and_raise(Errno::EROFS, 'read-only file system')
+
+        post(
+          :recreate_thumbnails,
+          params: { id: media_file.id },
+          session: { user_id: admin_user.id })
+      end
+
+      it 'recreates previews on the first request' do
+        expect(media_file.reload.previews.pluck(:thumbnail))
+          .to match_array(Madek::Constants::THUMBNAILS.keys.map(&:to_s))
+      end
+
+      it_behaves_like 'redirects to media file show page'
+      it_behaves_like 'sets flash message', :info
+    end
+  end
+
   def prepare_uploader(first_name, last_name)
     create(
       :user,
@@ -310,5 +603,17 @@ describe MediaFilesController do
         last_name: last_name
       )
     )
+  end
+
+  def stub_preview_conversion(media_file)
+    allow(File).to receive(:exist?).and_call_original
+    allow(File)
+      .to receive(:exist?)
+      .with(media_file.original_store_location)
+      .and_return(true)
+    allow(FileConversion).to receive(:convert)
+    allow_any_instance_of(MediaFile)
+      .to receive(:get_dimensions)
+      .and_return(width: 100, height: 100)
   end
 end

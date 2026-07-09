@@ -63,6 +63,7 @@ Rails.application.routes.draw do
     end
     resources :media_files, only: [:index, :show] do
       post :reencode, on: :member
+      post :recreate_thumbnails, on: :member
       get :batch_reencoding, on: :collection
       post :batch_reencode, on: :collection
     end
