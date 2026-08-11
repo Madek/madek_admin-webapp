@@ -1,4 +1,6 @@
 class NotificationCasesController < ApplicationController
+  self.admin_permission_key = :notifications
+
   include ApplicationHelper
 
   before_action do

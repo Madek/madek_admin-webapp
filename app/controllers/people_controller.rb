@@ -1,4 +1,6 @@
 class PeopleController < ApplicationController
+  self.admin_permission_key = :people
+
   include ApplicationHelper
   include ::Filters
   include PreviousResource

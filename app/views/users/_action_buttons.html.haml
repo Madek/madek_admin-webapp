@@ -10,16 +10,15 @@
     %span.glyphicon.glyphicon-edit
     Edit
 
-- if user.admin?
-  = link_to 'Remove admin role',
-      remove_admin_role_user_path(user, redirect_path: request.original_url),
-      method: :delete,
-      data: { confirm: 'The admin role will be removed. Do you want to proceed?' },
-      class: 'btn btn-warning'
-- else
-  = link_to 'Grant admin role',
-      grant_admin_role_user_path(user, redirect_path: request.original_url),
-      method: :patch, class: 'btn btn-warning'
+- if current_user.has_admin_permission?('manage_admin_permissions')
+  - if user.admin?
+    = link_to edit_admin_permissions_user_path(user), class: 'btn btn-warning' do
+      %span.glyphicon.glyphicon-edit
+      Edit admin role
+  - else
+    = link_to 'Grant admin role', 
+        edit_admin_permissions_user_path(user),
+        class: 'btn btn-warning'
 
 - if deletable
   = link_to user_path(user),
@@ -33,10 +32,9 @@
   :ruby
     active = user.password_sign_in_enabled and user.email.present?
 
-  = form_tag set_password_user_path(user), method: :post do
+  = form_tag set_password_user_path(user), method: :post, style: 'margin-left: auto' do
     = button_tag 'Switch to...',
                  class: 'btn btn-info',
-                 style: "margin-left: 340px",
                  title: active ? nil : 'The user must have an email address and password sign-in enabled to set a password',
                  disabled: !active do 
       %span.glyphicon.glyphicon-envelope

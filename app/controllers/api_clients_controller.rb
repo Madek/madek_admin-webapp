@@ -1,4 +1,6 @@
 class ApiClientsController < ApplicationController
+  self.admin_permission_key = :api_clients
+
   include LocalizedFieldParams
 
   def index

@@ -1,4 +1,6 @@
 class VocabularyApiClientPermissionsController < ApplicationController
+  self.admin_permission_key = :vocabularies
+
   include VocabularyPermissions
   define_actions_for :api_client_permissions
 

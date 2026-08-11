@@ -4,7 +4,7 @@ class TestAuthController < ApplicationController
     include MadekCookieSession
     include RedirectBackOr
 
-    skip_before_action :authorize_admin
+    skip_before_action :authorize_admin_permission
 
     def show
     end

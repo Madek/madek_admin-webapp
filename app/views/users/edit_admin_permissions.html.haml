@@ -1,0 +1,123 @@
+.page-header
+  %h1
+    Admin permissions for
+    %em= @user.user_handle
+  %small
+    = link_to '&larr; Back to user'.html_safe, user_path(@user)
+
+= form_tag update_admin_permissions_user_path(@user), method: :patch, class: 'form-horizontal' do
+
+  :ruby
+    admin_webapp_groups = [
+      {
+        title: 'Data Quality',
+        keys: %w[people roles keywords sql_assistant]
+      },
+      {
+        title: 'Data Stewardship',
+        keys: %w[entries sets groups users vocabularies contexts delegations meta_data]
+      },
+      {
+        title: 'System Configuration',
+        keys: %w[settings api_clients io usage_terms notifications manage_admin_permissions smtp]
+      }
+    ]
+    known_keys = admin_webapp_groups.flat_map { |g| g[:keys] }
+    other_keys = AdminPermission::ADMIN_WEBAPP_KEYS - known_keys
+    admin_webapp_groups += [{ title: 'Other', keys: other_keys }] if other_keys.any?
+
+  .row
+    #admin-permissions-column.col-sm-6{ style: 'padding-right: 40px' }
+      %small
+        = link_to 'Select all', '#', class: 'js-select-all-admin'
+        |
+        = link_to 'Deselect all', '#', class: 'js-deselect-all-admin'
+      - admin_webapp_groups.each_with_index do |group, i|
+        .admin-permission-group{ style: ('margin-top: 36px' if i > 0) }
+          .clearfix
+            %h4.pull-left= "Admin - #{group[:title]}"
+            %small.pull-right{ style: 'padding-top: 18px' }
+              = link_to 'all', '#', class: 'js-select-group'
+              |
+              = link_to 'none', '#', class: 'js-deselect-group'
+          - group[:keys].each do |key|
+            - label = AdminPermission::LABELS[key]
+            .checkbox
+              %label
+                = check_box_tag 'permission_keys[]', key, @user.has_admin_permission?(key)
+                = label
+
+    #webapp-permissions-column.col-sm-6
+      .clearfix
+        %h4.pull-left Webapp - Uberadmin Permissions
+        %small.pull-right{ style: 'padding-top: 18px' }
+          = link_to 'all', '#', class: 'js-select-all-webapp'
+          |
+          = link_to 'none', '#', class: 'js-deselect-all-webapp'
+      - AdminPermission::WEBAPP_KEYS.each do |key|
+        - label = AdminPermission::LABELS[key]
+        .checkbox
+          - if key == 'uberadmin_view' && @user.has_admin_permission?('uberadmin_edit')
+            %label{ title: "Included via 'Uberadmin (Edit)'" }
+              = check_box_tag 'permission_keys[]', key, true, disabled: true
+              = label
+              %small.text-muted (included via Uberadmin Edit)
+          - else
+            %label
+              = check_box_tag 'permission_keys[]', key, @user.has_admin_permission?(key)
+              = label
+
+  %hr
+
+  = button_tag type: 'submit', class: 'btn btn-success' do
+    %span.glyphicon.glyphicon-ok
+    Save
+  = link_to 'Cancel', user_path(@user), class: 'btn btn-link'
+  - if @user.admin?
+    = link_to 'Remove admin role',
+        remove_admin_role_user_path(@user, redirect_path: user_path(@user)),
+        method: :delete,
+        data: { confirm: 'The admin role will be removed. Do you want to proceed?' },
+        class: 'btn btn-danger pull-right'
+
+:javascript
+  document.addEventListener('DOMContentLoaded', function() {
+    var adminCol = document.getElementById('admin-permissions-column');
+
+    function checkboxes(scope) {
+      return scope.querySelectorAll('input[type="checkbox"]:not([disabled])');
+    }
+
+    adminCol.querySelector('.js-select-all-admin').addEventListener('click', function(e) {
+      e.preventDefault();
+      checkboxes(adminCol).forEach(function(cb) { cb.checked = true; });
+    });
+
+    adminCol.querySelector('.js-deselect-all-admin').addEventListener('click', function(e) {
+      e.preventDefault();
+      checkboxes(adminCol).forEach(function(cb) { cb.checked = false; });
+    });
+
+    var webappCol = document.getElementById('webapp-permissions-column');
+
+    webappCol.querySelector('.js-select-all-webapp').addEventListener('click', function(e) {
+      e.preventDefault();
+      checkboxes(webappCol).forEach(function(cb) { cb.checked = true; });
+    });
+
+    webappCol.querySelector('.js-deselect-all-webapp').addEventListener('click', function(e) {
+      e.preventDefault();
+      checkboxes(webappCol).forEach(function(cb) { cb.checked = false; });
+    });
+
+    adminCol.querySelectorAll('.admin-permission-group').forEach(function(group) {
+      group.querySelector('.js-select-group').addEventListener('click', function(e) {
+        e.preventDefault();
+        checkboxes(group).forEach(function(cb) { cb.checked = true; });
+      });
+      group.querySelector('.js-deselect-group').addEventListener('click', function(e) {
+        e.preventDefault();
+        checkboxes(group).forEach(function(cb) { cb.checked = false; });
+      });
+    });
+  });

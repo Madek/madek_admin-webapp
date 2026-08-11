@@ -1,4 +1,6 @@
 class PreviewsController < ApplicationController
+  self.admin_permission_key = :entries
+
   def show
     @preview = Preview.find(params[:id])
   end

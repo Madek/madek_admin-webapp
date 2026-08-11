@@ -1,4 +1,6 @@
 class RolesListsController < ApplicationController
+  self.admin_permission_key = :roles
+
   def index
     @roles_lists = RolesList
       .filter_by(filter_value(:term, nil))

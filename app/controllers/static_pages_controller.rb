@@ -1,4 +1,6 @@
 class StaticPagesController < ApplicationController
+  self.admin_permission_key = :settings
+
   include LocalizedFieldParams
 
   helper_method :default_locale

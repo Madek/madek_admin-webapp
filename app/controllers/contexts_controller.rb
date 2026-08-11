@@ -1,4 +1,6 @@
 class ContextsController < ApplicationController
+  self.admin_permission_key = :contexts
+
   include LocalizedFieldParams
 
   def index

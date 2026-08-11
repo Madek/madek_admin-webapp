@@ -1,4 +1,6 @@
 class MetaKeysController < ApplicationController
+  self.admin_permission_key = :meta_data
+
   include MetaKeysCreation
   include MetaKeysMoving
   include LocalizedFieldParams

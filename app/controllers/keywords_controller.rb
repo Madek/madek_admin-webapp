@@ -1,4 +1,6 @@
 class KeywordsController < ApplicationController
+  self.admin_permission_key = :keywords
+
   include ApplicationHelper
 
   def index

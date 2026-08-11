@@ -1,4 +1,6 @@
 class UsageTermsController < ApplicationController
+  self.admin_permission_key = :usage_terms
+
   def index
     @usage_terms = UsageTerms.order(created_at: :desc)
   end

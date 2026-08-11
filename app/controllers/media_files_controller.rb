@@ -1,4 +1,6 @@
 class MediaFilesController < ApplicationController
+  self.admin_permission_key = :entries
+
   include BatchReencoding
 
   SORTERS = %i(

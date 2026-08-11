@@ -1,4 +1,5 @@
 class IoMappingsController < ApplicationController
+  self.admin_permission_key = :io
 
   def index
     @io_mappings = paginate filter IoMapping.all
