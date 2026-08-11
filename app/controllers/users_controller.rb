@@ -1,4 +1,17 @@
 class UsersController < ApplicationController
+  self.admin_permission_key = :users
+
+  MANAGE_ADMIN_PERMISSIONS_ACTIONS = [
+    :grant_admin_role, :remove_admin_role,
+    :grant_admin_permission, :remove_admin_permission,
+    :grant_all_admin_permissions, :revoke_all_admin_permissions
+  ].freeze
+
+  skip_before_action :authorize_admin_permission, only: MANAGE_ADMIN_PERMISSIONS_ACTIONS
+  before_action(only: MANAGE_ADMIN_PERMISSIONS_ACTIONS) do
+    authorize :manage_admin_permissions, :has_permission?, policy_class: AdminPolicy
+  end
+
   before_action :find_user, except: [
     :index, :new, :new_with_person, :create, :remove_user_from_group, :remove_from_delegation
   ]
@@ -92,11 +105,78 @@ class UsersController < ApplicationController
   end
 
   def remove_admin_role
+    if AdminPermission.where(permission_key: 'manage_admin_permissions')
+                       .where.not(admin_id: @user.admin.id)
+                       .empty?
+      raise Errors::ForbiddenError,
+        'Cannot remove the last remaining admin who can manage admin permissions.'
+    end
+
     Admin.find_by(user_id: @user.id).destroy!
 
     respond_with @user,
                  location: -> { params[:redirect_path] },
                  notice: 'The admin role has been removed from the user.'
+  rescue Errors::ForbiddenError => e
+    render_error(e)
+  end
+
+  def grant_admin_permission
+    key = params.require(:key)
+    raise Errors::ForbiddenError, 'Invalid permission key.' unless AdminPermission::KEYS.include?(key)
+
+    AdminPermission.find_or_create_by!(admin: @user.admin, permission_key: key)
+
+    respond_with @user,
+                 location: -> { params[:redirect_path] },
+                 notice: "The '#{AdminPermission::LABELS[key]}' permission has been granted to the user."
+  rescue Errors::ForbiddenError => e
+    render_error(e)
+  end
+
+  def remove_admin_permission
+    key = params.require(:key)
+
+    if key == 'manage_admin_permissions' &&
+       AdminPermission.where(permission_key: key).where.not(admin_id: @user.admin.id).empty?
+      raise Errors::ForbiddenError,
+        'Cannot remove the last remaining admin who can manage admin permissions.'
+    end
+
+    AdminPermission.find_by(admin: @user.admin, permission_key: key)&.destroy!
+
+    respond_with @user,
+                 location: -> { params[:redirect_path] },
+                 notice: "The '#{AdminPermission::LABELS[key]}' permission has been removed from the user."
+  rescue Errors::ForbiddenError => e
+    render_error(e)
+  end
+
+  def grant_all_admin_permissions
+    AdminPermission::KEYS.each do |key|
+      AdminPermission.find_or_create_by!(admin: @user.admin, permission_key: key)
+    end
+
+    respond_with @user,
+                 location: -> { params[:redirect_path] },
+                 notice: 'All admin permissions have been granted to the user.'
+  end
+
+  def revoke_all_admin_permissions
+    if AdminPermission.where(permission_key: 'manage_admin_permissions')
+                       .where.not(admin_id: @user.admin.id)
+                       .empty?
+      raise Errors::ForbiddenError,
+        'Cannot remove the last remaining admin who can manage admin permissions.'
+    end
+
+    @user.admin.admin_permissions.destroy_all
+
+    respond_with @user,
+                 location: -> { params[:redirect_path] },
+                 notice: 'All admin permissions have been revoked from the user.'
+  rescue Errors::ForbiddenError => e
+    render_error(e)
   end
 
   def remove_user_from_group

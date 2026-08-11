@@ -242,6 +242,119 @@ describe UsersController do
 
       expect(user.reload).not_to be_admin
     end
+
+    it 'is forbidden when removing the last manage_admin_permissions holder' do
+      delete(
+        :remove_admin_role,
+        params: { id: admin_user.id, redirect_path: users_path },
+        session: { user_id: admin_user.id }
+      )
+
+      expect(response).to have_http_status(:forbidden)
+      expect(admin_user.reload).to be_admin
+    end
+  end
+
+  describe '#grant_admin_permission' do
+    let(:user) { create :admin_user }
+
+    before do
+      user.admin.admin_permissions.where(permission_key: 'people').destroy_all
+    end
+
+    it 'grants the given permission to the user' do
+      patch(
+        :grant_admin_permission,
+        params: { id: user.id, key: 'people', redirect_path: user_path(user) },
+        session: { user_id: admin_user.id }
+      )
+
+      expect(response).to redirect_to(user_path(user))
+      expect(user.reload.has_admin_permission?('people')).to be true
+    end
+
+    it 'is forbidden without manage_admin_permissions' do
+      user.admin.admin_permissions.where(permission_key: 'manage_admin_permissions').destroy_all
+
+      patch(
+        :grant_admin_permission,
+        params: { id: user.id, key: 'people', redirect_path: user_path(user) },
+        session: { user_id: user.id }
+      )
+
+      expect(response).to have_http_status(:forbidden)
+    end
+  end
+
+  describe '#remove_admin_permission' do
+    let(:user) { create :admin_user }
+
+    it 'removes the given permission from the user' do
+      delete(
+        :remove_admin_permission,
+        params: { id: user.id, key: 'people', redirect_path: user_path(user) },
+        session: { user_id: admin_user.id }
+      )
+
+      expect(response).to redirect_to(user_path(user))
+      expect(user.reload.has_admin_permission?('people')).to be false
+    end
+
+    it 'is forbidden when removing the last manage_admin_permissions holder' do
+      delete(
+        :remove_admin_permission,
+        params: {
+          id: admin_user.id, key: 'manage_admin_permissions', redirect_path: users_path
+        },
+        session: { user_id: admin_user.id }
+      )
+
+      expect(response).to have_http_status(:forbidden)
+      expect(admin_user.reload.has_admin_permission?('manage_admin_permissions')).to be true
+    end
+  end
+
+  describe '#grant_all_admin_permissions' do
+    let(:user) { create :admin_user }
+
+    before { user.admin.admin_permissions.destroy_all }
+
+    it 'grants all permission keys to the user' do
+      patch(
+        :grant_all_admin_permissions,
+        params: { id: user.id, redirect_path: user_path(user) },
+        session: { user_id: admin_user.id }
+      )
+
+      expect(response).to redirect_to(user_path(user))
+      expect(user.reload.admin.permission_keys.sort).to eq(AdminPermission::KEYS.sort)
+    end
+  end
+
+  describe '#revoke_all_admin_permissions' do
+    let(:user) { create :admin_user }
+
+    it 'revokes all permission keys from the user' do
+      delete(
+        :revoke_all_admin_permissions,
+        params: { id: user.id, redirect_path: users_path },
+        session: { user_id: admin_user.id }
+      )
+
+      expect(response).to redirect_to(users_path)
+      expect(user.reload.admin.permission_keys).to be_empty
+    end
+
+    it 'is forbidden when it would remove the last manage_admin_permissions holder' do
+      delete(
+        :revoke_all_admin_permissions,
+        params: { id: admin_user.id, redirect_path: users_path },
+        session: { user_id: admin_user.id }
+      )
+
+      expect(response).to have_http_status(:forbidden)
+      expect(admin_user.reload.has_admin_permission?('manage_admin_permissions')).to be true
+    end
   end
 
   describe '#edit' do

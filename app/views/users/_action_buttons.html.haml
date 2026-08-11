@@ -10,16 +10,17 @@
     %span.glyphicon.glyphicon-edit
     Edit
 
-- if user.admin?
-  = link_to 'Remove admin role',
-      remove_admin_role_user_path(user, redirect_path: request.original_url),
-      method: :delete,
-      data: { confirm: 'The admin role will be removed. Do you want to proceed?' },
-      class: 'btn btn-warning'
-- else
-  = link_to 'Grant admin role',
-      grant_admin_role_user_path(user, redirect_path: request.original_url),
-      method: :patch, class: 'btn btn-warning'
+- if current_user.has_admin_permission?('manage_admin_permissions')
+  - if user.admin?
+    = link_to 'Remove admin role',
+        remove_admin_role_user_path(user, redirect_path: request.original_url),
+        method: :delete,
+        data: { confirm: 'The admin role will be removed. Do you want to proceed?' },
+        class: 'btn btn-warning'
+  - else
+    = link_to 'Grant admin role',
+        grant_admin_role_user_path(user, redirect_path: request.original_url),
+        method: :patch, class: 'btn btn-warning'
 
 - if deletable
   = link_to user_path(user),

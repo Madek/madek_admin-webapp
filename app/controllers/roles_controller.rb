@@ -1,6 +1,7 @@
 require 'csv'
 
 class RolesController < ApplicationController
+  self.admin_permission_key = :roles
   def index
     @roles = Role
                .filter_by(filter_value(:term, nil))

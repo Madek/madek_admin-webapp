@@ -1,4 +1,6 @@
 class CollectionsController < ApplicationController
+  self.admin_permission_key = :sets
+
   include HandleIsDeletedParam
 
   before_action :find_collection, except: [:index]

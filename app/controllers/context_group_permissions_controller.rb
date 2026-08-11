@@ -1,4 +1,6 @@
 class ContextGroupPermissionsController < ApplicationController
+  self.admin_permission_key = :contexts
+
   include ContextPermissions
   define_actions_for :group_permissions
 

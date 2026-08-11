@@ -1,4 +1,6 @@
 class VocabulariesController < ApplicationController
+  self.admin_permission_key = :vocabularies
+
   include LocalizedFieldParams
 
   def index

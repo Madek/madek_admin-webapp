@@ -1,10 +1,16 @@
 class AdminPolicy < DefaultPolicy
-  def initialize(user, admin)
+  def initialize(user, permission_key)
     @user = user
-    @admin = admin
+    @permission_key = permission_key
   end
 
-  def logged_in_and_admin?
-    user and user.admin?
+  def has_permission?
+    return false unless user
+
+    permission_key == :any ? user.any_admin_permission? : user.has_admin_permission?(permission_key)
   end
+
+  private
+
+  attr_reader :permission_key
 end

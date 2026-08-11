@@ -1,4 +1,6 @@
 class DelegationsController < ApplicationController
+  self.admin_permission_key = :delegations
+
   def index
     @delegations = Delegation
       .all

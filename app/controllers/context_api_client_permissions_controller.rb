@@ -1,4 +1,6 @@
 class ContextApiClientPermissionsController < ApplicationController
+  self.admin_permission_key = :contexts
+
   include ContextPermissions
   define_actions_for :api_client_permissions
 

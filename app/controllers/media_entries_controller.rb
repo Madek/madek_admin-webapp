@@ -1,4 +1,6 @@
 class MediaEntriesController < ApplicationController
+  self.admin_permission_key = :entries
+
   include HandleIsDeletedParam
 
   def index

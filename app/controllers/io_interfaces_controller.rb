@@ -1,4 +1,6 @@
 class IoInterfacesController < ApplicationController
+  self.admin_permission_key = :io
+
   def index
     @io_interfaces = IoInterface.page(page_params).per(16)
   end

@@ -1,4 +1,6 @@
 class VocabularyGroupPermissionsController < ApplicationController
+  self.admin_permission_key = :vocabularies
+
   include VocabularyPermissions
   define_actions_for :group_permissions
 

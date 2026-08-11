@@ -1,0 +1,48 @@
+.btn-group{ style: "margin-bottom: 8px;" }
+  = link_to 'Grant all',
+      grant_all_admin_permissions_user_path(user, redirect_path: request.original_url),
+      method: :patch, class: 'btn btn-xs btn-success'
+  = link_to 'Revoke all',
+      revoke_all_admin_permissions_user_path(user, redirect_path: request.original_url),
+      method: :delete,
+      data: { confirm: 'Revoke all admin permissions from this user?' },
+      class: 'btn btn-xs btn-danger'
+
+.row
+  .col-sm-6
+    %h4 Admin-Webapp
+    %ul.no-indent{ style: "margin-bottom: 12px" }
+      - AdminPermission::ADMIN_WEBAPP_KEYS.each do |key|
+        - label = AdminPermission::LABELS[key]
+        %li
+          - if user.has_admin_permission?(key)
+            = link_to "#{label} ✓",
+                remove_admin_permission_user_path(user, key: key, redirect_path: request.original_url),
+                method: :delete,
+                data: { confirm: "Revoke the '#{label}' permission from this user?" },
+                class: 'btn btn-xs btn-warning'
+          - else
+            = link_to label,
+                grant_admin_permission_user_path(user, key: key, redirect_path: request.original_url),
+                method: :patch,
+                class: 'btn btn-xs btn-default'
+  .col-sm-6
+    %h4 Webapp
+    %ul.no-indent{ style: "margin-bottom: 12px" }
+      - AdminPermission::WEBAPP_KEYS.each do |key|
+        - label = AdminPermission::LABELS[key]
+        %li
+          - if key == 'uberadmin_view' && user.has_admin_permission?('uberadmin_edit')
+            %button.btn.btn-xs.btn-warning{ disabled: true, title: "Included via 'Uberadmin (Edit)'" }
+              = "#{label} ✓"
+          - elsif user.has_admin_permission?(key)
+            = link_to "#{label} ✓",
+                remove_admin_permission_user_path(user, key: key, redirect_path: request.original_url),
+                method: :delete,
+                data: { confirm: "Revoke the '#{label}' permission from this user?" },
+                class: 'btn btn-xs btn-warning'
+          - else
+            = link_to label,
+                grant_admin_permission_user_path(user, key: key, redirect_path: request.original_url),
+                method: :patch,
+                class: 'btn btn-xs btn-default'

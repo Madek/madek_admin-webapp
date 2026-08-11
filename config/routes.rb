@@ -34,6 +34,10 @@ Rails.application.routes.draw do
         patch :reset_usage_terms
         patch :grant_admin_role
         delete :remove_admin_role
+        patch :grant_admin_permission
+        delete :remove_admin_permission
+        patch :grant_all_admin_permissions
+        delete :revoke_all_admin_permissions
       end
       collection do
         get :new_with_person

@@ -1,5 +1,7 @@
 # rubocop:disable Metrics/MethodLength
 class AssistantsController < ApplicationController
+  self.admin_permission_key = :sql_assistant
+
   layout '_base', only: %i(sql_reports)
 
   def show

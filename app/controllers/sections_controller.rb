@@ -1,4 +1,6 @@
 class SectionsController < ApplicationController
+  self.admin_permission_key = :settings
+
   include LocalizedFieldParams
 
   def index

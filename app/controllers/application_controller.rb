@@ -12,6 +12,8 @@ class ApplicationController < ActionController::Base
   self.responder = ApplicationResponder
   self.respond_to :html
 
+  class_attribute :admin_permission_key
+
   protect_from_forgery
 
   # https://github.com/Madek/Madek/issues/423
@@ -23,7 +25,7 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  before_action :authorize_admin, except: :status
+  before_action :authorize_admin_permission, except: :status
   before_action :set_context_for_app_layout
   before_action :notify_if_session_expiring_soon
   before_action :forget_vocabulary_url_params_if_requested
@@ -131,8 +133,8 @@ class ApplicationController < ActionController::Base
     )
   end
 
-  def authorize_admin
-    authorize :admin, :logged_in_and_admin?
+  def authorize_admin_permission
+    authorize admin_permission_key, :has_permission?, policy_class: AdminPolicy
   end
 
   def filter_value(type, default = '')

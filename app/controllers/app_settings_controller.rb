@@ -1,4 +1,5 @@
 class AppSettingsController < ApplicationController
+  self.admin_permission_key = :settings
 
   before_action :set_app_settings
   helper_method :edit_partials

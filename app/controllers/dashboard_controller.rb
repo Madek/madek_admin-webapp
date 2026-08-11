@@ -1,4 +1,5 @@
 class DashboardController < ApplicationController
+  self.admin_permission_key = :any
 
   include AppEnvironmentInfo
 
@@ -28,67 +29,49 @@ class DashboardController < ApplicationController
           title: 'drafts',
           model: MediaEntry,
           scope: -> { MediaEntry.unscoped.not_published },
-          path: media_entries_path(filter: { is_published: 0 })
+          path: media_entries_path(filter: { is_published: 0 }),
+          permission_key: 'entries'
         },
-        {
-          title: 'entries',
-          model: MediaEntry
-        },
-        {
-          title: 'sets',
-          model: Collection
-        }
+        { title: 'entries', model: MediaEntry, permission_key: 'entries' },
+        { title: 'sets', model: Collection, permission_key: 'sets' }
       ],
       [
-        MediaFile,
-        {
-          title: 'metadata',
-          model: MetaDatum,
-          path: meta_datums_path
-        },
-        Keyword,
+        { model: MediaFile, permission_key: 'entries' },
+        { title: 'metadata', model: MetaDatum, path: meta_datums_path, permission_key: 'meta_data' },
+        { model: Keyword, permission_key: 'keywords' }
       ],
       [
-        Person,
-        RolesList,
-        Role
+        { model: Person, permission_key: 'people' },
+        { model: RolesList, permission_key: 'roles' },
+        { model: Role, permission_key: 'roles' }
       ],
       [
-        Vocabulary,
-        MetaKey,
-        Context,
+        { model: Vocabulary, permission_key: 'vocabularies' },
+        { model: MetaKey, permission_key: 'meta_data' },
+        { model: Context, permission_key: 'contexts' }
       ],
       [
-        User,
-        Group,
-        Delegation,
-        {
-          title: 'api-clients',
-          model: ApiClient
-        }
+        { model: User, permission_key: 'users' },
+        { model: Group, permission_key: 'groups' },
+        { model: Delegation, permission_key: 'delegations' },
+        { title: 'api-clients', model: ApiClient, permission_key: 'api_clients' }
       ]
-    ].map { |row| row.map(&method(:app_resource_data_item)) }
+    ].map { |row| row.select { |item| current_user.has_admin_permission?(item[:permission_key]) } }
+     .reject(&:empty?)
+     .map { |row| row.map(&method(:app_resource_data_item)) }
   end
   # rubocop:enable Metrics/MethodLength
 
   def app_resource_data_item(item)
-    if item.is_a?(Hash)
-      item[:counter] =
-        if item.key?(:scope)
-          item[:scope].call.count
-        else
-          item[:model].count
-        end
-      item[:title] ||= title(item[:model])
-      item[:path]  ||= app_resource_path(item[:model])
-      item.except(:model, :scope)
-    elsif item.is_a?(Class)
-      {
-        title: title(item),
-        counter: item.count,
-        path: app_resource_path(item)
-      }
-    end
+    item[:counter] =
+      if item.key?(:scope)
+        item[:scope].call.count
+      else
+        item[:model].count
+      end
+    item[:title] ||= title(item[:model])
+    item[:path]  ||= app_resource_path(item[:model])
+    item.except(:model, :scope, :permission_key)
   end
 
   def app_resource_path(model)

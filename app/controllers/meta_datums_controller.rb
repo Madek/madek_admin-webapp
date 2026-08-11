@@ -1,4 +1,6 @@
 class MetaDatumsController < ApplicationController
+  self.admin_permission_key = :meta_data
+
   def index
     @meta_datums = MetaDatum.includes(:meta_key)
     filter

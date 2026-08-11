@@ -4,9 +4,10 @@
   %h2.h3 Resources
   = render partial: 'resource_statistics'
 
-%section{style: 'margin-bottom: 5rem'}
-  %h2.h3 Assistant
-  = link_to 'Go to the section &rarr;'.html_safe, assistant_path
+- if current_user.has_admin_permission?('sql_assistant')
+  %section{style: 'margin-bottom: 5rem'}
+    %h2.h3 Assistant
+    = link_to 'Go to the section &rarr;'.html_safe, assistant_path
 
 %section
   %h2.h3 System

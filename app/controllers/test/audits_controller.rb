@@ -1,4 +1,6 @@
 class Test::AuditsController < ApplicationController
+  self.admin_permission_key = :any
+
   def test1
   end
 

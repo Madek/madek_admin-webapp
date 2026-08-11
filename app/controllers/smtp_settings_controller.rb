@@ -1,4 +1,5 @@
 class SmtpSettingsController < ApplicationController
+  self.admin_permission_key = :settings
 
   before_action do
     unless @beta_tester_notifications
