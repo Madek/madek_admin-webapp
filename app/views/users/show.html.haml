@@ -9,7 +9,7 @@
 
 .panel.panel-default
   .panel-body
-    .btn-group
+    .btn-group{ style: 'display: flex; align-items: flex-start' }
       = render partial: 'action_buttons', locals: { user: @user, editable: true, deletable: true, set_password: true }
 
 %table.table.table-striped.with-border-bottom

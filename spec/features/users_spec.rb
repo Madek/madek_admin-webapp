@@ -190,6 +190,8 @@ feature 'Admin Users' do
 
     visit user_path(user)
     click_link 'Grant admin role'
+    expect(current_path).to eq edit_admin_permissions_user_path(user)
+    click_button 'Save'
     expect(current_path).to eq user_path(user)
     expect(find('table tr', text: 'Admin?')).to have_content 'Yes'
 
@@ -207,7 +209,7 @@ feature 'Admin Users' do
     click_button 'Apply'
     expect(page).to have_content user.email
 
-    visit user_path(user)
+    visit edit_admin_permissions_user_path(user)
     click_link 'Remove admin role'
     expect(current_path).to eq user_path(user)
     expect(find('table tr', text: 'Admin?')).to have_content 'No'

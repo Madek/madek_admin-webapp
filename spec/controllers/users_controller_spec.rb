@@ -357,6 +357,85 @@ describe UsersController do
     end
   end
 
+  describe '#update_admin_permissions' do
+    context 'when user is already an admin' do
+      let(:user) { create :admin_user }
+
+      before do
+        user.admin.admin_permissions.where(permission_key: 'people').destroy_all
+      end
+
+      it 'redirects to the user show page' do
+        patch(
+          :update_admin_permissions,
+          params: { id: user.id, permission_keys: ['people'] },
+          session: { user_id: admin_user.id }
+        )
+
+        expect(response).to redirect_to(user_path(user))
+        expect(response).to have_http_status(302)
+      end
+
+      it 'updates the permissions' do
+        patch(
+          :update_admin_permissions,
+          params: { id: user.id, permission_keys: ['people'] },
+          session: { user_id: admin_user.id }
+        )
+
+        expect(user.reload.has_admin_permission?('people')).to be true
+      end
+
+      it 'revokes permissions not in the submitted set' do
+        patch(
+          :update_admin_permissions,
+          params: { id: user.id, permission_keys: [] },
+          session: { user_id: admin_user.id }
+        )
+
+        expect(user.reload.has_admin_permission?('manage_admin_permissions')).to be false
+      end
+    end
+
+    context 'when it would remove the last manage_admin_permissions holder' do
+      it 'is forbidden' do
+        patch(
+          :update_admin_permissions,
+          params: { id: admin_user.id, permission_keys: [] },
+          session: { user_id: admin_user.id }
+        )
+
+        expect(response).to have_http_status(:forbidden)
+        expect(admin_user.reload.has_admin_permission?('manage_admin_permissions')).to be true
+      end
+    end
+
+    context 'when user is not yet an admin' do
+      let(:user) { create :user }
+
+      it 'grants the admin role and sets permissions' do
+        patch(
+          :update_admin_permissions,
+          params: { id: user.id, permission_keys: ['people'] },
+          session: { user_id: admin_user.id }
+        )
+
+        expect(user.reload).to be_admin
+        expect(user.reload.has_admin_permission?('people')).to be true
+      end
+
+      it 'redirects to the user show page' do
+        patch(
+          :update_admin_permissions,
+          params: { id: user.id, permission_keys: [] },
+          session: { user_id: admin_user.id }
+        )
+
+        expect(response).to redirect_to(user_path(user))
+      end
+    end
+  end
+
   describe '#edit' do
     let(:user) { create :user }
 

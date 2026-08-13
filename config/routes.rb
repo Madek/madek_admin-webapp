@@ -38,6 +38,8 @@ Rails.application.routes.draw do
         delete :remove_admin_permission
         patch :grant_all_admin_permissions
         delete :revoke_all_admin_permissions
+        get :edit_admin_permissions
+        patch :update_admin_permissions
       end
       collection do
         get :new_with_person
