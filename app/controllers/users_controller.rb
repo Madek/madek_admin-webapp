@@ -4,7 +4,8 @@ class UsersController < ApplicationController
   MANAGE_ADMIN_PERMISSIONS_ACTIONS = [
     :grant_admin_role, :remove_admin_role,
     :grant_admin_permission, :remove_admin_permission,
-    :grant_all_admin_permissions, :revoke_all_admin_permissions
+    :grant_all_admin_permissions, :revoke_all_admin_permissions,
+    :edit_admin_permissions, :update_admin_permissions
   ].freeze
 
   skip_before_action :authorize_admin_permission, only: MANAGE_ADMIN_PERMISSIONS_ACTIONS
@@ -175,6 +176,41 @@ class UsersController < ApplicationController
     respond_with @user,
                  location: -> { params[:redirect_path] },
                  notice: 'All admin permissions have been revoked from the user.'
+  rescue Errors::ForbiddenError => e
+    render_error(e)
+  end
+
+  def edit_admin_permissions
+  end
+
+  def update_admin_permissions
+    submitted_keys = Array(params[:permission_keys]) & AdminPermission::KEYS
+
+    # uberadmin_edit implies uberadmin_view
+    submitted_keys |= ['uberadmin_view'] if submitted_keys.include?('uberadmin_edit')
+
+    current_keys = @user.admin.admin_permissions.pluck(:permission_key)
+    keys_to_revoke = current_keys - submitted_keys
+
+    if keys_to_revoke.include?('manage_admin_permissions') &&
+       AdminPermission.where(permission_key: 'manage_admin_permissions')
+                      .where.not(admin_id: @user.admin.id)
+                      .empty?
+      raise Errors::ForbiddenError,
+        'Cannot remove the last remaining admin who can manage admin permissions.'
+    end
+
+    submitted_keys.each do |key|
+      AdminPermission.find_or_create_by!(admin: @user.admin, permission_key: key)
+    end
+
+    keys_to_revoke.each do |key|
+      AdminPermission.find_by(admin: @user.admin, permission_key: key)&.destroy!
+    end
+
+    respond_with @user,
+                 location: -> { edit_admin_permissions_user_path(@user) },
+                 notice: 'Admin permissions have been updated.'
   rescue Errors::ForbiddenError => e
     render_error(e)
   end

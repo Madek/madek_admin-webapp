@@ -1,19 +1,4 @@
 .page-header
   %h1 Edit user
 
-- show_permissions_tab = @user.admin? and current_user.has_admin_permission?('manage_admin_permissions')
-
-- if show_permissions_tab
-  %ul.nav.nav-tabs{ role: 'tablist' }
-    %li.active{ role: 'presentation' }
-      %a{ href: '#details', data: { toggle: 'tab' }, role: 'tab' } Details
-    %li{ role: 'presentation' }
-      %a{ href: '#permissions', data: { toggle: 'tab' }, role: 'tab' } Admin permissions
-
-  .tab-content{ style: 'margin-top: 20px' }
-    #details.tab-pane.active{ role: 'tabpanel' }
-      = render 'form'
-    #permissions.tab-pane{ role: 'tabpanel' }
-      = render partial: 'admin_permissions', locals: { user: @user }
-- else
-  = render 'form'
+= render 'form'

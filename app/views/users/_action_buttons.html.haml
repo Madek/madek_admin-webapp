@@ -17,6 +17,9 @@
         method: :delete,
         data: { confirm: 'The admin role will be removed. Do you want to proceed?' },
         class: 'btn btn-warning'
+    = link_to edit_admin_permissions_user_path(user), class: 'btn btn-default' do
+      %span.glyphicon.glyphicon-lock
+      Admin permissions
   - else
     = link_to 'Grant admin role',
         grant_admin_role_user_path(user, redirect_path: request.original_url),
