@@ -54,11 +54,18 @@
             %small
               %em from MetaKey: #{@context_key.meta_key.documentation_urls[locale] || _EMPTY_MARKER }
   .form-group
-    .col-xs-offset-3.col-sm-4
+    .col-xs-offset-3.col-sm-8
       .checkbox
         %label
           = f.check_box :is_required
           Required?
+      %span.help-block
+        %small
+          %em
+            - if !AppSetting.first.uses_context_as(@context_key.context.id).include?('contexts_for_entry_validation')
+              Not applied, because this context is not configured for validation (see
+              = link_to 'App Settings', app_settings_path
+              &rarr; Contexts for MediaEntry Validation).
   .form-group
     .col-xs-3
       = f.label :length_min, class: 'control-label'
