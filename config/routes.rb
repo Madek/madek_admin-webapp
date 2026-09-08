@@ -14,6 +14,7 @@ Rails.application.routes.draw do
         get '/audits/test1', to: 'audits#test1'
         post '/audits/test2', to: 'audits#test2'
         post '/audits/test3', to: 'audits#test3'
+        post '/audits/test4', to: 'audits#test4'
       end
     end
 

@@ -38,6 +38,19 @@ feature 'Audits' do
 
     Capybara.raise_server_errors == true
   end
+
+  # Regression test for #946: proves the `redirect_to` heal specifically
+  # (as opposed to the around_action's post-yield backstop, which would
+  # only heal *after* the whole action returns -- too late for the write
+  # below to succeed).
+  scenario "POST: redirect_to heals the connection after a locally-rescued DB error",
+           browser: :firefox do
+    visit '/admin/test/audits/test1'
+    click_button 'Submit to test4'
+
+    expect(page).to have_content 'OK'
+    expect(Group.where(name: 'Test Group After Redirect').count).to eq 1
+  end
 end
 
 def flush_audits
