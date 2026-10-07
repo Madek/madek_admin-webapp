@@ -1,12 +1,13 @@
-%tr
+%tr{'data-id' => io_mapping.id}
   %td= io_mapping.io_interface_id
   %td= io_mapping.meta_key_id
   %td= io_mapping.key_map
   %td= io_mapping.key_map_type
-  %td.active.col-xs-3.text-center
-    .btn-group.btn-group-sm
-      = link_to io_mapping_path(io_mapping), class: 'btn btn-default btn-with-icon-only' do
+  %td.active.col-xs-2
+    .btn-group.btn-group-sm.btn-group-vertical
+      = link_to io_mapping_path(io_mapping), class: 'btn btn-default' do
         %span.glyphicon.glyphicon-eye-open
+        Details
       = link_to edit_io_mapping_path(io_mapping), class: 'btn btn-info' do
         %span.glyphicon.glyphicon-edit
         Edit
@@ -15,3 +16,4 @@
           class: 'btn btn-danger' do
         %i.glyphicon.glyphicon-trash
         Delete
+      = move_buttons(io_mapping)
