@@ -1,17 +1,33 @@
-%tr
+%tr{'data-id' => io_mapping.id}
   %td= io_mapping.io_interface_id
   %td= io_mapping.meta_key_id
   %td= io_mapping.key_map
   %td= io_mapping.key_map_type
-  %td.active.col-xs-3.text-center
-    .btn-group.btn-group-sm
-      = link_to io_mapping_path(io_mapping), class: 'btn btn-default btn-with-icon-only' do
-        %span.glyphicon.glyphicon-eye-open
-      = link_to edit_io_mapping_path(io_mapping), class: 'btn btn-info' do
-        %span.glyphicon.glyphicon-edit
-        Edit
-      = link_to io_mapping_path(io_mapping), method: :delete,
-          data: { confirm: 'The IO mapping will be deleted. Do you want to proceed?' },
-          class: 'btn btn-danger' do
-        %i.glyphicon.glyphicon-trash
-        Delete
+  - if @reorderable
+    %td.active
+      .btn-group.btn-group-sm.btn-group-vertical
+        = link_to io_mapping_path(io_mapping), class: 'btn btn-default' do
+          %i.glyphicon.glyphicon-eye-open
+          Details
+        = link_to edit_io_mapping_path(io_mapping), class: 'btn btn-info' do
+          %span.glyphicon.glyphicon-edit
+          Edit
+        = link_to io_mapping_path(io_mapping), method: :delete,
+            data: { confirm: 'The IO mapping will be deleted. Do you want to proceed?' },
+            class: 'btn btn-danger' do
+          %i.glyphicon.glyphicon-trash
+          Delete
+        = move_buttons(io_mapping, url_params: { search_term: params[:search_term].presence, page: params[:page] })
+  - else
+    %td.active.col-xs-3.text-center
+      .btn-group.btn-group-sm
+        = link_to io_mapping_path(io_mapping), class: 'btn btn-default btn-with-icon-only' do
+          %span.glyphicon.glyphicon-eye-open
+        = link_to edit_io_mapping_path(io_mapping), class: 'btn btn-info' do
+          %span.glyphicon.glyphicon-edit
+          Edit
+        = link_to io_mapping_path(io_mapping), method: :delete,
+            data: { confirm: 'The IO mapping will be deleted. Do you want to proceed?' },
+            class: 'btn btn-danger' do
+          %i.glyphicon.glyphicon-trash
+          Delete

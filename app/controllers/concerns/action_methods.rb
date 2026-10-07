@@ -27,12 +27,13 @@ module ActionMethods
       end
     end
 
-    def define_move_actions_for(model, perform_authorization = false, &block)
+    def define_move_actions_for(model, perform_authorization = false, move_scope: nil, &block)
       %i(to_top up down to_bottom).each do |direction|
         define_method "move_#{direction}" do
           resource = model.find(params[:id])
           authorize(resource) if perform_authorization
-          resource.send "move_#{direction}"
+          scope = move_scope && instance_exec(&move_scope)
+          resource.send "move_#{direction}", *[scope].compact
           success_path = instance_exec(resource, &block)
           direction_name = direction.to_s.split('_').join(' ')
 
