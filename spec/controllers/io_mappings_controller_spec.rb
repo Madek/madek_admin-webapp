@@ -115,5 +115,44 @@ describe IoMappingsController do
           session: { user_id: @admin_user.id })
       end.to change { IoMapping.count }.by(1)
     end
+
+  end
+
+  describe '#move_up' do
+    it 'swaps position with the previous mapping and redirects' do
+      earlier = create(:io_mapping, meta_key: @meta_key, io_interface: @io_interface)
+      mapping = create(:io_mapping, meta_key: @meta_key, io_interface: @io_interface)
+      earlier_position = earlier.position
+      mapping_position = mapping.position
+
+      patch :move_up,
+            params: { id: mapping.id },
+            session: { user_id: @admin_user.id }
+
+      expect(response).to have_http_status(302)
+      expect(response).to redirect_to(io_mappings_path)
+      expect(flash[:success]).to be_present
+      expect(mapping.reload.position).to eq earlier_position
+      expect(earlier.reload.position).to eq mapping_position
+    end
+  end
+
+  describe '#move_down' do
+    it 'swaps position with the next mapping and redirects' do
+      first = create(:io_mapping, meta_key: @meta_key, io_interface: @io_interface)
+      later = create(:io_mapping, meta_key: @meta_key, io_interface: @io_interface)
+      first_position = first.position
+      later_position = later.position
+
+      patch :move_down,
+            params: { id: first.id },
+            session: { user_id: @admin_user.id }
+
+      expect(response).to have_http_status(302)
+      expect(response).to redirect_to(io_mappings_path)
+      expect(flash[:success]).to be_present
+      expect(first.reload.position).to eq later_position
+      expect(later.reload.position).to eq first_position
+    end
   end
 end

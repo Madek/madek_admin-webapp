@@ -27,6 +27,7 @@ class IoMappingsController < ApplicationController
 
   define_update_action_for(IoMapping)
   define_destroy_action_for(IoMapping)
+  define_move_actions_for(IoMapping) { io_mappings_path }
 
   private
 
