@@ -27,7 +27,7 @@ class IoMappingsController < ApplicationController
 
   define_update_action_for(IoMapping)
   define_destroy_action_for(IoMapping)
-  define_move_actions_for(IoMapping) { io_mappings_path }
+  define_move_actions_for(IoMapping) { |m| io_mappings_path(io_interface_id: m.io_interface_id) }
 
   private
 
