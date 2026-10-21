@@ -11,7 +11,7 @@ contexts:
       assets_manifest:
         name: 'Assets are precompiled and checked in'
         traits:
-          asdf: true
+          mise: true
         scripts:
           test:
             timeout: 10 Minutes
