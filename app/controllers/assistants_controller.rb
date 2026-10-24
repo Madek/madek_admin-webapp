@@ -111,6 +111,9 @@ class AssistantsController < ApplicationController
       query << preview_type(:image, "previews.thumbnail = '#{thumb_size}'")
     end
     Settings.zencoder_video_output_formats.to_h.each_key do |label|
+      # HLS rungs live inside the single `hls` preview and never get their own row.
+      next if label.to_s.match?(/\Ahls_\d+\z/)
+
       query << preview_type(:video, "previews.conversion_profile = '#{label}'")
     end
     query.join(' OR ')
