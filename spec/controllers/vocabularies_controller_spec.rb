@@ -307,6 +307,141 @@ describe VocabulariesController do
     end
   end
 
+  describe 'changing position' do
+    let!(:v1) { create :vocabulary, id: 'order-test-alpha' }
+    let!(:hidden) { create :vocabulary, id: 'not-matching-filter' }
+    let!(:v2) { create :vocabulary, id: 'order-test-beta' }
+    let!(:v3) { create :vocabulary, id: 'order-test-gamma' }
+
+    def order_of(*vocabularies)
+      ids = vocabularies.map(&:id)
+      Vocabulary.reorder(:position).pluck(:id) & ids
+    end
+
+    def move(direction, vocabulary, extra_params = {})
+      patch "move_#{direction}",
+            params: { id: vocabulary.id }.merge(extra_params),
+            session: { user_id: admin_user.id }
+    end
+
+    context 'without filter' do
+      it '#move_up swaps with the previous vocabulary' do
+        move(:up, v2)
+        expect(order_of(v1, hidden, v2, v3)).to eq [v1, v2, hidden, v3].map(&:id)
+      end
+
+      it '#move_down swaps with the next vocabulary' do
+        move(:down, v1)
+        expect(order_of(v1, hidden, v2, v3)).to eq [hidden, v1, v2, v3].map(&:id)
+      end
+
+      it '#move_to_top moves to the first position of all vocabularies' do
+        move(:to_top, v3)
+        expect(Vocabulary.reorder(:position).first).to eq v3
+      end
+
+      it '#move_to_bottom moves to the last position of all vocabularies' do
+        move(:to_bottom, v1)
+        expect(Vocabulary.reorder(:position).last).to eq v1
+      end
+
+      it '#move_up on the first vocabulary does not change the order' do
+        move(:to_top, v1)
+        move(:up, v1)
+        expect(Vocabulary.reorder(:position).first).to eq v1
+      end
+
+      it '#move_down on the last vocabulary does not change the order' do
+        move(:to_bottom, v3)
+        move(:down, v3)
+        expect(Vocabulary.reorder(:position).last).to eq v3
+      end
+
+      it '#move_to_top on the first vocabulary does not change the order' do
+        move(:to_top, v2)
+        before_move = Vocabulary.reorder(:position).pluck(:id)
+        move(:to_top, v2)
+        expect(Vocabulary.reorder(:position).pluck(:id)).to eq before_move
+      end
+
+      it '#move_to_bottom on the last vocabulary does not change the order' do
+        move(:to_bottom, v2)
+        before_move = Vocabulary.reorder(:position).pluck(:id)
+        move(:to_bottom, v2)
+        expect(Vocabulary.reorder(:position).pluck(:id)).to eq before_move
+      end
+
+      it '#move_to_top keeps the relative order of the others' do
+        move(:to_top, v3)
+        expect(order_of(v1, hidden, v2, v3)).to eq [v3, v1, hidden, v2].map(&:id)
+      end
+
+      it '#move_to_bottom keeps the relative order of the others' do
+        move(:to_bottom, v1)
+        expect(order_of(v1, hidden, v2, v3)).to eq [hidden, v2, v3, v1].map(&:id)
+      end
+
+      it 'a sequence of moves ends in the expected order' do
+        move(:down, v1)
+        move(:to_top, v3)
+        move(:up, v1)
+        move(:to_bottom, v3)
+        expect(order_of(v1, hidden, v2, v3)).to eq [v1, hidden, v2, v3].map(&:id)
+      end
+
+      %i(up down to_top to_bottom).each do |direction|
+        it "#move_#{direction} redirects to the vocabularies list with a success flash" do
+          move(direction, v2)
+          expect(response).to have_http_status(302)
+          expect(response).to redirect_to(vocabularies_path)
+          expect(flash[:success]).to be_present
+        end
+
+        it "#move_#{direction} renders 404 for an unknown vocabulary" do
+          patch "move_#{direction}",
+                params: { id: 'does-not-exist' },
+                session: { user_id: admin_user.id }
+          expect(response).to have_http_status(404)
+          expect(response).to render_template 'errors/404'
+        end
+      end
+
+      it 'keeps positions gapless and unique' do
+        move(:up, v3)
+        move(:to_top, v2)
+        move(:to_bottom, hidden)
+        positions = Vocabulary.reorder(:position).pluck(:position)
+        expect(positions).to eq((0...Vocabulary.count).to_a)
+      end
+    end
+
+    # Vocabularies are ordered globally. A search term only hides rows,
+    # the move still works on the global order.
+    context 'with filter (search_term)' do
+      it '#move_up swaps with the global neighbour, even if it is hidden by the filter' do
+        move(:up, v2, search_term: 'order-test-')
+        expect(order_of(v1, hidden, v2, v3)).to eq [v1, v2, hidden, v3].map(&:id)
+      end
+
+      it '#move_down swaps with the global neighbour, even if it is hidden by the filter' do
+        move(:down, v1, search_term: 'alpha')
+        expect(order_of(v1, hidden, v2, v3)).to eq [hidden, v1, v2, v3].map(&:id)
+      end
+
+      it '#move_to_top / #move_to_bottom work on the global order' do
+        move(:to_top, v3, search_term: 'gamma')
+        expect(Vocabulary.reorder(:position).first).to eq v3
+        move(:to_bottom, v3, search_term: 'gamma')
+        expect(Vocabulary.reorder(:position).last).to eq v3
+      end
+
+      it 'redirects to the unfiltered list (search term and page are dropped)' do
+        move(:up, v2, search_term: 'order-test-', page: '2')
+        expect(response).to redirect_to(vocabularies_path)
+      end
+    end
+  end
+
   def flash_message(action, type)
     I18n.t type, scope: "flash.actions.#{action}", resource_name: 'Vocabulary'
   end

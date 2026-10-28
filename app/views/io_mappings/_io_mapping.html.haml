@@ -16,4 +16,5 @@
           class: 'btn btn-danger' do
         %i.glyphicon.glyphicon-trash
         Delete
-      = move_buttons(io_mapping)
+      - if @reorderable
+        = move_buttons(io_mapping, url_params: { page: params[:page].presence }.compact)
