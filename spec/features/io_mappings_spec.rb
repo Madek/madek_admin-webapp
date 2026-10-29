@@ -60,11 +60,40 @@ feature 'Admin IO Mappings ordering' do
     expect(page).to have_css('.reorder-hint')
   end
 
+  scenario 'move buttons for every mapping of the selected interface' do
+    visit io_mappings_path(io_interface_id: interface.id)
+
+    expect(page).not_to have_css('.reorder-hint')
+    mappings.each do |mapping|
+      within("tr[data-id='#{mapping.id}']") { expect_move_buttons(count: 1) }
+    end
+  end
+
   scenario 'no move buttons without an interface' do
     visit io_mappings_path
 
-    expect(page).not_to have_css('.move-up')
+    expect(page).to have_css('table tbody tr[data-id]', minimum: 2)
+    expect_move_buttons(count: 0)
     expect(page).to have_css('.reorder-hint')
+  end
+
+  scenario 'no move buttons after switching back to all interfaces' do
+    visit io_mappings_path(io_interface_id: interface.id)
+    expect_move_buttons(count: 3)
+
+    select 'All IO interfaces', from: 'io_interface_id'
+    click_on 'Apply'
+
+    expect(page).to have_field('io_interface_id', with: '')
+    expect(page).to have_css('h1', text: "IO Mappings (#{IoMapping.count})")
+    expect_move_buttons(count: 0)
+    expect(page).to have_css('.reorder-hint')
+  end
+
+  def expect_move_buttons(count:)
+    %w(.move-to-top .move-up .move-down .move-to-bottom).each do |css|
+      expect(page).to have_css(css, count: count)
+    end
   end
 
   def expect_order(key_maps)
