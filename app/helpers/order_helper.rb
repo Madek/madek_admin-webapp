@@ -1,21 +1,21 @@
 module OrderHelper
-  def move_buttons(object, labels: true)
+  def move_buttons(object, labels: true, url_params: {})
     directions = %i(to_top up down to_bottom).select do |direction|
       object.respond_to?("move_#{direction}") \
         && check_policy?(object, "move_#{direction}?")
     end
     directions.each do |direction|
-      concat move_button(object, direction, labels)
+      concat move_button(object, direction, labels, url_params)
     end
     nil
   end
 
-  def move_button(object, direction, label)
+  def move_button(object, direction, label, url_params = {})
     title = "Move #{direction.to_s.split('_').join(' ')}"
     body = title if label
-    url = url_for(action: "move_#{direction}",
-                  controller: object.class.name.underscore.pluralize,
-                  id: object)
+    url = url_for(url_params.merge(action: "move_#{direction}",
+                                   controller: object.class.name.underscore.pluralize,
+                                   id: object))
     css_class = "move_#{direction}".dasherize
     icon =
       case direction

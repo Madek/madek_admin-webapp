@@ -247,6 +247,60 @@ feature 'Admin Vocabularies' do
     expect_order %w(toni)
   end
 
+  # Vocabularies are ordered globally: with a search term the swap partner of
+  # "Move up"/"Move down" can be a hidden vocabulary. Filter "media" shows
+  # media_content (10), media_object (13), media_set (15).
+  scenario 'Changing position with filter: up / down' do
+    visit vocabularies_path
+    filter('media')
+    expect_order %w(media_content media_object media_set)
+
+    within find('table tr[data-id="media_object"]') do
+      click_link 'Move up'
+    end
+    expect(page).to have_css('.alert-success')
+    expect(current_url).not_to include('search_term')
+    expect(global_order[11..13]).to eq %w(nutzung media_object copyright)
+
+    filter('media')
+    expect_order %w(media_content media_object media_set)
+
+    within find('table tr[data-id="media_content"]') do
+      click_link 'Move down'
+    end
+    expect(page).to have_css('.alert-success')
+    expect(current_url).not_to include('search_term')
+    expect(global_order[10..12]).to eq %w(nutzung media_content media_object)
+
+    filter('media')
+    expect_order %w(media_content media_object media_set)
+  end
+
+  scenario 'Changing position with filter: to top / to bottom' do
+    visit vocabularies_path
+    filter('media')
+    expect_order %w(media_content media_object media_set)
+
+    within find('table tr[data-id="media_set"]') do
+      click_link 'Move to top'
+    end
+    expect(page).to have_css('.alert-success')
+    expect(current_url).not_to include('search_term')
+    expect(global_order.first).to eq 'media_set'
+
+    filter('media')
+    expect_order %w(media_set media_content media_object)
+
+    within find('table tr[data-id="media_content"]') do
+      click_link 'Move to bottom'
+    end
+    expect(page).to have_css('.alert-success')
+    expect(global_order.last).to eq 'media_content'
+
+    filter('media')
+    expect_order %w(media_set media_object media_content)
+  end
+
   include_examples 'display admin comments on overview page'
 
   scenario 'Displaying details' do
@@ -262,6 +316,10 @@ feature 'Admin Vocabularies' do
     expect(
       all('table tr[data-id]').map { |tr| tr['data-id'] }
     ).to eq(order)
+  end
+
+  def global_order
+    Vocabulary.reorder(:position).pluck(:id)
   end
 
   def filter(search_term)

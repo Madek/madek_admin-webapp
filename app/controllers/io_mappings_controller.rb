@@ -2,7 +2,9 @@ class IoMappingsController < ApplicationController
   self.admin_permission_key = :io
 
   def index
-    @io_mappings = paginate filter IoMapping.all
+    @io_mappings = paginate filter IoMapping.reorder(:io_interface_id, :position, :id)
+    @io_interfaces = IoInterface.order(:id)
+    @reorderable = params[:io_interface_id].present? && params[:search_term].blank?
   end
 
   def show
@@ -27,6 +29,9 @@ class IoMappingsController < ApplicationController
 
   define_update_action_for(IoMapping)
   define_destroy_action_for(IoMapping)
+  define_move_actions_for(IoMapping) do |m|
+    io_mappings_path(io_interface_id: m.io_interface_id, page: params[:page].presence)
+  end
 
   private
 
@@ -41,7 +46,7 @@ class IoMappingsController < ApplicationController
   end
 
   def filter_by_search_term(io_mappings)
-    if params[:search_term]
+    if params[:search_term].present?
       io_mappings.filter_by(params[:search_term])
     else
       io_mappings
@@ -49,7 +54,7 @@ class IoMappingsController < ApplicationController
   end
 
   def filter_by_io_interface_id(io_mappings)
-    if params[:io_interface_id]
+    if params[:io_interface_id].present?
       io_mappings.where(io_interface_id: params[:io_interface_id])
     else
       io_mappings

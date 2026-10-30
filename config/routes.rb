@@ -95,7 +95,7 @@ Rails.application.routes.draw do
     end
     resources :context_keys, only: [:edit, :update, :destroy], concerns: :orderable
     resources :meta_datums, only: :index
-    resources :io_mappings
+    resources :io_mappings, concerns: :orderable
     resources :io_interfaces, except: [:edit, :update]
     resources :app_settings, only: [:index, :edit, :update]
     resources :usage_terms, except: :edit
