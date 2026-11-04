@@ -1,0 +1,22 @@
+%tr
+  %td= xmp_property.position
+  %td
+    %samp= xmp_property.qualified_name
+  %td
+    %samp= xmp_property.exiftool_key
+  %td= xmp_property.value_type
+  %td= xmp_property.label
+  %td
+    - xmp_property.io_mappings.each do |io_mapping|
+      = link_to "#{io_mapping.io_interface_id}: #{io_mapping.meta_key_id}", io_mapping_path(io_mapping)
+      %br
+  %td.active.col-xs-3.text-center
+    .btn-group.btn-group-sm
+      = link_to edit_xmp_namespace_xmp_property_path(xmp_property.xmp_namespace, xmp_property), class: 'btn btn-info' do
+        %span.glyphicon.glyphicon-edit
+        Edit
+      = link_to xmp_namespace_xmp_property_path(xmp_property.xmp_namespace, xmp_property), method: :delete,
+          data: { confirm: 'The XMP property will be deleted. Do you want to proceed?' },
+          class: 'btn btn-danger' do
+        %i.glyphicon.glyphicon-trash
+        Delete

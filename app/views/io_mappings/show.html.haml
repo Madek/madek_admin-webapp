@@ -23,4 +23,7 @@
         - @io_mapping.attributes.each do |attr|
           %tr
             = admin_db_column(attr.first)
-            %td= attr.last
+            - if attr.first == 'meta_key_id'
+              %td= link_to attr.last, meta_key_path(attr.last)
+            - else
+              %td= attr.last

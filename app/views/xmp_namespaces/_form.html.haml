@@ -1,0 +1,40 @@
+= form_for @xmp_namespace, html: { class: 'form-horizontal', role: 'form' }, builder: AdminFormBuilder do |f|
+  .form-group
+    .col-xs-2
+      = f.label :prefix, class: 'control-label'
+    .col-xs-8
+      = f.technical_field :prefix, rows: 1
+      %p.help-block
+        As used in ExifTool group names (<samp>XMP-&lt;prefix&gt;</samp>) and expected in files
+  .form-group
+    .col-xs-2
+      = f.label :uri, 'URI', class: 'control-label'
+    .col-xs-8
+      = f.technical_field :uri, rows: 1
+      %p.help-block Must end with <samp>/</samp> or <samp>#</samp>
+  .form-group
+    .col-xs-offset-2.col-xs-8
+      .checkbox
+        %label
+          = f.check_box :is_managed
+          Managed? (defined here and published under <samp>/ns/&lt;prefix&gt;</samp> in the webapp)
+  = f.fields_for :labels, OpenStruct.new(f.object.labels) do |lf|
+    - I18n.available_locales.each do |locale|
+      .form-group
+        .col-xs-2
+          = lf.label locale, "Label [#{locale}]", class: 'control-label'
+        .col-xs-6
+          = lf.text_field locale, class: 'form-control'
+  = f.fields_for :descriptions, OpenStruct.new(f.object.descriptions) do |lf|
+    - I18n.available_locales.each do |locale|
+      .form-group
+        .col-xs-2
+          = lf.label locale, "Description [#{locale}]", class: 'control-label'
+        .col-xs-6
+          = lf.text_area locale, class: 'form-control', rows: 4
+  .form-group
+    .col-xs-offset-2.col-xs-3
+      = button_tag type: :submit, class: 'btn btn-success' do
+        %span.glyphicon.glyphicon-ok
+        Save
+      = link_to 'Go back', xmp_namespaces_path, class: 'btn btn-link'

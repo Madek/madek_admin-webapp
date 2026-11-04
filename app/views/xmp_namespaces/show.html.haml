@@ -1,0 +1,51 @@
+.page-header
+  %h1
+    XMP Namespace:
+    %samp= @xmp_namespace.prefix
+  %small
+    = link_to '&larr; Go back to XMP namespaces'.html_safe, xmp_namespaces_path
+
+.row
+  .col-xs-12
+    .panel.panel-default
+      .panel-body
+        .btn-group
+          = link_to edit_xmp_namespace_path(@xmp_namespace), class: 'btn btn-info' do
+            %span.glyphicon.glyphicon-edit
+            Edit
+          = link_to xmp_namespace_path(@xmp_namespace), method: :delete,
+              data: { confirm: 'The XMP namespace and its properties will be deleted. Do you want to proceed?' },
+              class: 'btn btn-danger' do
+            %i.glyphicon.glyphicon-trash
+            Delete
+
+.row
+  .col-xs-12
+    %table.table.table-striped
+      %thead
+      %tbody
+        - @xmp_namespace.attributes.each do |name, value|
+          %tr
+            = admin_db_column(name)
+            %td= value
+
+.row
+  .col-xs-12
+    .page-header
+      %h3 Properties (#{@xmp_namespace.xmp_properties.size})
+    .btn-group
+      = link_to new_xmp_namespace_xmp_property_path(@xmp_namespace), class: 'btn btn-default' do
+        %i.glyphicon.glyphicon-plus
+        Create XMP Property
+    %table.table.table-striped
+      %thead
+        %tr
+          %th Position
+          %th Name
+          %th ExifTool key
+          %th Value type
+          %th Label
+          %th IO mappings
+          %th
+      %tbody
+        = render(partial: 'xmp_properties/xmp_property', collection: @xmp_namespace.xmp_properties) || empty_collection('properties', 7)

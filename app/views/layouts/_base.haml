@@ -78,6 +78,7 @@
                   %li.divider{role: :separator}
                   = navbar_item 'IO Interfaces', io_interfaces_path
                   = navbar_item 'IO Mappings', io_mappings_path
+                  = navbar_item 'XMP Namespaces', xmp_namespaces_path
 
         - if current_user
           %li.dropdown{id: 'current-user', data: { id: current_user.try(:id) }}

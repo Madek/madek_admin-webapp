@@ -1,7 +1,12 @@
 %tr
   %td= io_mapping.io_interface_id
   %td= io_mapping.meta_key_id
-  %td= io_mapping.key_map
+  %td
+    - if io_mapping.xmp_property
+      = link_to io_mapping.xmp_property.exiftool_key, xmp_namespace_path(io_mapping.xmp_property.xmp_namespace)
+    - else
+      = io_mapping.key_map
+  %td= io_mapping.position
   %td= io_mapping.key_map_type
   %td.active.col-xs-3.text-center
     .btn-group.btn-group-sm

@@ -1,0 +1,26 @@
+.page-header
+  %h1
+    %i.icon-media-entry
+    XMP Namespaces (#{@xmp_namespaces.total_count})
+
+.row
+  .col-xs-12
+    .btn-group
+      = link_to new_xmp_namespace_path, class: 'btn btn-default' do
+        %i.glyphicon.glyphicon-plus
+        Create XMP Namespace
+
+.row
+  .col-xs-12
+    %table.table.table-striped
+      %thead
+        %tr
+          %th Prefix
+          %th URI
+          %th Managed
+          %th Properties
+          %th
+      %tbody
+        = render(@xmp_namespaces) || empty_collection('XMP namespaces', 5)
+
+= paginate @xmp_namespaces
