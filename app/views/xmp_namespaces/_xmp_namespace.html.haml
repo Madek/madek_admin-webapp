@@ -1,0 +1,19 @@
+%tr
+  %td
+    %samp= xmp_namespace.prefix
+  %td
+    %samp= xmp_namespace.uri
+  %td= xmp_namespace.is_managed ? 'yes' : 'no'
+  %td= xmp_namespace.xmp_properties.size
+  %td.active.col-xs-3.text-center
+    .btn-group.btn-group-sm
+      = link_to xmp_namespace_path(xmp_namespace), class: 'btn btn-default btn-with-icon-only' do
+        %span.glyphicon.glyphicon-eye-open
+      = link_to edit_xmp_namespace_path(xmp_namespace), class: 'btn btn-info' do
+        %span.glyphicon.glyphicon-edit
+        Edit
+      = link_to xmp_namespace_path(xmp_namespace), method: :delete,
+          data: { confirm: 'The XMP namespace and its properties will be deleted. Do you want to proceed?' },
+          class: 'btn btn-danger' do
+        %i.glyphicon.glyphicon-trash
+        Delete

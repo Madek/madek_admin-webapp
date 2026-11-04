@@ -11,9 +11,24 @@
       = f.technical_field :meta_key_id, rows: 1
   .form-group
     .col-xs-3
+      = f.label :xmp_property_id, 'XMP property'
+    .col-xs-8
+      = f.grouped_collection_select :xmp_property_id,
+          XmpNamespace.sorted.includes(:xmp_properties), :xmp_properties, :prefix, :id, :qualified_name,
+          { include_blank: true }, class: 'form-control'
+      %p.help-block Either an XMP property or a key map
+  .form-group
+    .col-xs-3
       = f.label :key_map
     .col-xs-8
       = f.technical_field :key_map, rows: 1
+      %p.help-block Free key(s) as reported by ExifTool, e.g. <samp>PDF:PageCount</samp>
+  .form-group
+    .col-xs-3
+      = f.label :position
+    .col-xs-2
+      = f.number_field :position, class: 'form-control'
+      %p.help-block Lower first, the first present value wins
   .form-group
     .col-xs-3
       = f.label :key_map_type

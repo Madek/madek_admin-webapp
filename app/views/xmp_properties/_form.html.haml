@@ -1,0 +1,43 @@
+= form_for [@xmp_namespace, @xmp_property], html: { class: 'form-horizontal', role: 'form' }, builder: AdminFormBuilder do |f|
+  .form-group
+    .col-xs-2
+      %label.control-label Namespace
+    .col-xs-8
+      %p.form-control-static
+        %samp #{@xmp_namespace.prefix} (#{@xmp_namespace.uri})
+  .form-group
+    .col-xs-2
+      = f.label :name, class: 'control-label'
+    .col-xs-8
+      = f.technical_field :name, rows: 1
+      %p.help-block XMP local name, case-sensitive (e.g. <samp>title</samp> in Dublin Core)
+  .form-group
+    .col-xs-2
+      = f.label :value_type, class: 'control-label'
+    .col-xs-4
+      = f.select :value_type, XmpProperty::VALUE_TYPES, {}, class: 'form-control'
+  .form-group
+    .col-xs-2
+      = f.label :position, class: 'control-label'
+    .col-xs-2
+      = f.number_field :position, class: 'form-control'
+  = f.fields_for :labels, OpenStruct.new(f.object.labels) do |lf|
+    - I18n.available_locales.each do |locale|
+      .form-group
+        .col-xs-2
+          = lf.label locale, "Label [#{locale}]", class: 'control-label'
+        .col-xs-6
+          = lf.text_field locale, class: 'form-control'
+  = f.fields_for :descriptions, OpenStruct.new(f.object.descriptions) do |lf|
+    - I18n.available_locales.each do |locale|
+      .form-group
+        .col-xs-2
+          = lf.label locale, "Description [#{locale}]", class: 'control-label'
+        .col-xs-6
+          = lf.text_area locale, class: 'form-control', rows: 4
+  .form-group
+    .col-xs-offset-2.col-xs-3
+      = button_tag type: :submit, class: 'btn btn-success' do
+        %span.glyphicon.glyphicon-ok
+        Save
+      = link_to 'Go back', xmp_namespace_path(@xmp_namespace), class: 'btn btn-link'

@@ -97,6 +97,9 @@ Rails.application.routes.draw do
     resources :meta_datums, only: :index
     resources :io_mappings
     resources :io_interfaces, except: [:edit, :update]
+    resources :xmp_namespaces do
+      resources :xmp_properties, except: [:index, :show]
+    end
     resources :app_settings, only: [:index, :edit, :update]
     resources :usage_terms, except: :edit
     resources :keywords, concerns: :orderable do

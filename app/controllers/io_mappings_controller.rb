@@ -2,7 +2,9 @@ class IoMappingsController < ApplicationController
   self.admin_permission_key = :io
 
   def index
-    @io_mappings = paginate filter IoMapping.all
+    @io_mappings = paginate filter IoMapping
+      .includes(xmp_property: :xmp_namespace)
+      .order(:io_interface_id, :meta_key_id, :position)
   end
 
   def show
@@ -60,7 +62,12 @@ class IoMappingsController < ApplicationController
     params.require(:io_mapping).permit(:io_interface_id,
                                        :meta_key_id,
                                        :key_map,
-                                       :key_map_type)
+                                       :key_map_type,
+                                       :xmp_property_id,
+                                       :position).tap do |permitted|
+      # blank form fields would violate the key map xor XMP property constraint
+      %i(key_map xmp_property_id).each { |k| permitted[k] = permitted[k].presence if permitted.key?(k) }
+    end
   end
 
   alias_method :update_io_mapping_params, :io_mapping_params
