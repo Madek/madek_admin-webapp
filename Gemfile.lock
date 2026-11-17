@@ -397,7 +397,6 @@ DEPENDENCIES
   ffi (>= 1.15.5)
   haml-rails (~> 2.0)
   jquery-rails
-  json (< 3)
   kaminari
   kramdown
   liquid
