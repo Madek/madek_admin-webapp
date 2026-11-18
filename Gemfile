@@ -1,5 +1,8 @@
 eval_gemfile Pathname(File.dirname(File.absolute_path(__FILE__))).join('datalayer', 'Gemfile')
 
+# stay on patched rack 2.2.x (Rails stack for this app)
+gem 'rack', '~> 2.2.25'
+
 # Webserver
 gem "puma", "~> 7.2.1"
 gem 'puma_worker_killer'
